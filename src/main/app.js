@@ -1,0 +1,37 @@
+import { app } from 'electron';
+import Window from './window';
+
+export default class App {
+  load() {
+    this.handleEvents();
+  }
+  createWindow() {
+    if (this.window) {
+      return;
+    }
+
+    this.window = new Window(this);
+    this.window.open();
+  }
+  removeWindow() {
+    this.window = null;
+  }
+  handleEvents() {
+    app.on('ready', () => {
+      this.createWindow();
+    });
+
+    app.on('activate', () => {
+      this.createWindow();
+    });
+
+    app.on('window-all-closed', () => {
+      if (process.platform !== 'darwin') {
+        app.quit();
+      }
+    });
+
+    app.on('will-quit', () => {
+    });
+  }
+}

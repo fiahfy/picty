@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hosty</title>
+    <style>
+      html {
+        height: 100%;
+      }
+      body {
+        font-family: Roboto, sans-serif;
+        height: 100%;
+        margin: 0;
+      }
+      #app {
+        height: 100%;
+      }
+      #loading {
+        display: table;
+        height: 100%;
+        width: 100%;
+      }
+      #loading>div {
+        color: grey;
+        display: table-cell;
+        font-size: 14px;
+        height: 100%;
+        text-align: center;
+        vertical-align: middle;
+      }
+      /* drawer */
+      .drawer>div:first-of-type>div:first-of-type {
+        width: 48px!important;
+      }
+      .drawer>div:first-of-type>div:first-of-type>div:first-of-type {
+        padding: 0!important;
+        width: 48px!important;
+      }
+      .drawer>div:first-of-type>div:first-of-type>div:first-of-type
+      >div>span:first-of-type>div:first-of-type>div {
+        padding: 0!important;
+      }
+      .drawer>div:first-of-type>div:first-of-type>div:first-of-type
+      >div>span:first-of-type>div:first-of-type>div>svg:first-of-type {
+        left: 0!important;
+      }
+      /* nav */
+      .nav>.list>div:first-of-type>div:first-of-type,
+      .nav>.list>div:first-of-type>div:last-of-type {
+        width: 256px!important;
+      }
+      /* list */
+      .list {
+        height: 100%!important;
+        position: relative!important;
+      }
+      .list>div:first-of-type {
+        height: 100%!important;
+      }
+      .list>div:first-of-type>div:first-of-type {
+        position: fixed!important;
+        z-index: 1!important;
+      }
+      .list>div:first-of-type>div:nth-of-type(2) {
+        height: calc(100% - 59px)!important;
+        margin-top: 59px!important;
+      }
+      /* result-list */
+      .result-list>div:first-of-type>div:first-of-type>button:first-of-type {
+        height: 38px!important;
+        margin: 0 6px!important;
+        padding: 7px!important;
+        width: 38px!important;
+      }
+      /* todo */
+      td>div>input {
+        height: 47px!important;
+      }
+      /* see: https://github.com/electron/electron/issues/4420 */
+      ::selection {
+        background: #accef7;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="loading">
+        <div>Loading...</div>
+      </div>
+    </div>
+    <script>
+      (function() {
+        const script = document.createElement('script')
+        script.src = process.env.HOT ? 'http://localhost:3000/assets/js/renderer.js' : './assets/js/renderer.js'
+        document.querySelector('head').appendChild(script)
+      }())
+    </script>
+  </body>
+</html>

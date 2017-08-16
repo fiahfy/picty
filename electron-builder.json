@@ -1,0 +1,15 @@
+{
+  "appId": "net.fiahfy.hosty",
+  "files": [
+    "!dist"
+  ],
+  "mac": {
+    "target": ["dmg"]
+  },
+  "win": {
+    "target": ["nsis"]
+  },
+  "publish": {
+    "provider": "github"
+  }
+}
