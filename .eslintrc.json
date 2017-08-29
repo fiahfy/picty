@@ -1,11 +1,10 @@
 {
-  "extends": "airbnb",
+  "extends": "airbnb-base",
   "parser": "babel-eslint",
   "globals": {
     "window": true
   },
   "rules": {
-    "react/forbid-prop-types": "off",
     "import/no-extraneous-dependencies": "off"
   }
 }

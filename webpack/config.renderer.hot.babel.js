@@ -9,12 +9,6 @@ const plugins = config.plugins.concat([
 
 export default {
   ...config,
-  entry: [
-    'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:3000/',
-    'webpack/hot/only-dev-server',
-    config.entry,
-  ],
   output: {
     ...config.output,
     publicPath: 'http://localhost:3000/assets/',

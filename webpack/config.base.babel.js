@@ -9,6 +9,15 @@ export default {
   module: {
     rules: [
       {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+          },
+          // other vue-loader options go here
+        },
+      },
+      {
         test: /\.jsx?$/,
         use: ['babel-loader'],
         exclude: /node_modules/,
@@ -22,7 +31,4 @@ export default {
       },
     }),
   ],
-  resolve: {
-    extensions: ['.js', '.jsx'],
-  },
 };

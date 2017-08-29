@@ -1,4 +1,4 @@
-import { app, shell, dialog, ipcMain, Menu } from 'electron';
+import { app, shell, Menu } from 'electron';
 
 export default class MenuBuilder {
   constructor(window) {
@@ -27,6 +27,7 @@ export default class MenuBuilder {
         .popup(this.window);
     });
   }
+  /* eslint-disable */
   buildTemplate() {
     const template = [
       {
@@ -110,4 +111,5 @@ export default class MenuBuilder {
 
     return template;
   }
+  /* eslint-enable */
 }
