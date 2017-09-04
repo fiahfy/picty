@@ -10,7 +10,8 @@
   "dependencies": {
     "electron-window-state": "^4.1.1",
     "is-electron-renderer": "^2.0.1",
-    "vue": "^2.4.2"
+    "vue": "^2.4.2",
+    "vue-router": "^2.7.0"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
@@ -24,6 +25,7 @@
     "electron-builder": "^19.22.1",
     "eslint": "^4.4.1",
     "eslint-config-airbnb-base": "^11.3.2",
+    "eslint-import-resolver-webpack": "^0.8.3",
     "eslint-plugin-import": "^2.7.0",
     "file-loader": "^0.11.2",
     "npm-run-all": "^4.0.2",

@@ -4,7 +4,22 @@
   "globals": {
     "window": true
   },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": {
+          "resolve": {
+            "extensions": [".js", ".vue"]
+          }
+        }
+      }
+    }
+  },
   "rules": {
+    "import/extensions": ["error", "always", {
+      "js": "never",
+      "vue": "never"
+    }],
     "import/no-extraneous-dependencies": "off"
   }
 }
