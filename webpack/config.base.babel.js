@@ -9,16 +9,7 @@ export default {
   module: {
     rules: [
       {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-          },
-          // other vue-loader options go here
-        },
-      },
-      {
-        test: /\.jsx?$/,
+        test: /\.js$/,
         use: ['babel-loader'],
         exclude: /node_modules/,
       },
