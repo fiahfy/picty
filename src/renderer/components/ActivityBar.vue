@@ -5,7 +5,7 @@
 <script>
 export default {
   name: 'activity-bar',
-}
+};
 </script>
 
 <style scoped>

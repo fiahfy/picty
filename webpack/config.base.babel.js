@@ -13,6 +13,15 @@ export default {
         use: ['babel-loader'],
         exclude: /node_modules/,
       },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+          },
+          // other vue-loader options go here
+        },
+      },
     ],
   },
   plugins: [
@@ -22,4 +31,11 @@ export default {
       },
     }),
   ],
+  resolve: {
+    extensions: ['.js', '.vue'],
+    alias: {
+      vue$: 'vue/dist/vue.esm.js',
+      '@': '../../src',
+    },
+  },
 };

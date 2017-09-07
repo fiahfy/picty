@@ -13,15 +13,6 @@ export default {
     rules: [
       ...config.module.rules,
       {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-          },
-          // other vue-loader options go here
-        },
-      },
-      {
         test: /\.css$/,
         use: [
           'style-loader',
@@ -46,11 +37,5 @@ export default {
         },
       },
     ],
-  },
-  resolve: {
-    extensions: ['.js', '.vue'],
-    alias: {
-      vue$: 'vue/dist/vue.esm.js',
-    },
   },
 };

@@ -6,8 +6,8 @@
 
 <script>
 export default {
-  name: 'settings',
-}
+  name: 'settings-page',
+};
 </script>
 
 <style scoped>

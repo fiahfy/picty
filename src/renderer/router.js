@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Main from './components/Main';
-import Settings from './components/Settings';
+import MainPage from '@/renderer/pages/MainPage';
+import SettingsPage from '@/renderer/pages/SettingsPage';
 
 Vue.use(Router);
 
@@ -10,12 +10,12 @@ export default new Router({
     {
       path: '/',
       name: 'main',
-      component: Main,
+      component: MainPage,
     },
     {
       path: '/settings',
       name: 'settings',
-      component: Settings,
+      component: SettingsPage,
     },
   ],
 });

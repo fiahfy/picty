@@ -21,7 +21,7 @@ import TitleBar from './components/TitleBar';
 export default {
   name: 'app',
   components: { ActivityBar, TitleBar },
-}
+};
 </script>
 
 <style scoped>

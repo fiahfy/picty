@@ -1,17 +1,20 @@
 {
-  "extends": "airbnb-base",
+  "root": true,
   "parser": "babel-eslint",
-  "globals": {
-    "window": true
+  "parserOptions": {
+    "sourceType": "module"
   },
+  "env": {
+    "browser": true
+  },
+  "extends": "airbnb-base",
+  "plugins": [
+    "html"
+  ],
   "settings": {
     "import/resolver": {
       "webpack": {
-        "config": {
-          "resolve": {
-            "extensions": [".js", ".vue"]
-          }
-        }
+        "config": "webpack/config.base.babel.js"
       }
     }
   },

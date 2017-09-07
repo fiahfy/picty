@@ -5,7 +5,7 @@
 <script>
 export default {
   name: 'title-bar',
-}
+};
 </script>
 
 <style scoped>
