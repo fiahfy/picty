@@ -1,5 +1,5 @@
 <template>
-  <div id="title-bar">Title</div>
+  <div class="title-bar">Title</div>
 </template>
 
 <script>
@@ -9,7 +9,7 @@ export default {
 </script>
 
 <style scoped>
-#title-bar {
+.title-bar {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   box-sizing: border-box;
