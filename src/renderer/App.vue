@@ -41,6 +41,7 @@ export default {
 
 #app>.content-wrapper>.content {
   flex: 1;
+  overflow-y: auto;
 }
 
 ul {
