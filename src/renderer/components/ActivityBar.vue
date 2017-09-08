@@ -1,6 +1,7 @@
 <template>
   <div class="activity-bar">
-    <mdc-icon-toggle icon="favorite_border" checkedIcon="favorite" checked/>
+    <mdc-icon-toggle icon="list" />
+    <mdc-icon-toggle icon="settings"/>
   </div>
 </template>
 
@@ -15,9 +16,12 @@ export default {
 
 <style scoped>
 .activity-bar {
-  background-color: lightgoldenrodyellow;
   border-right-style: solid;
   border-right-width: 1px;
-  width: 564px;
+  overflow: hidden;
+  width: 48px;
+}
+.mdc-icon-toggle {
+  display: block;
 }
 </style>
