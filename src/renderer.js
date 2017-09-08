@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { sync } from 'vuex-router-sync';
+import 'material-components-web/dist/material-components-web.css';
 import App from './renderer/App';
 import router from './renderer/router';
 import store from './renderer/store';
