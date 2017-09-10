@@ -1,9 +1,9 @@
 <template>
   <div class="activity-bar">
     <ul>
-      <li v-for="menu in menus" :key="menu.routeName">
-        <mdc-button class="mdc-button" @click="click(menu.routeName)">
-          <mdc-icon :icon="menu.icon" :checked="menu.checked" />
+      <li v-for="item in items" :key="item.routeName">
+        <mdc-button class="mdc-button" @click="click(item.routeName)">
+          <mdc-icon :icon="item.icon" :checked="item.checked" />
         </mdc-button>
       </li>
     </ul>
@@ -19,7 +19,7 @@ export default {
   components: { MdcButton, MdcIcon },
   data() {
     return {
-      menus: [
+      items: [
         { icon: "list", routeName: "main", checked: true },
         { icon: "settings", routeName: "settings", checked: false },
       ],
@@ -32,9 +32,9 @@ export default {
   },
   watch: {
     '$route'(to, from) {
-      this.menus = this.menus.map(menu => {
-        menu.checked = menu.routeName === to.name;
-        return menu;
+      this.items = this.items.map(item => {
+        item.checked = item.routeName === to.name;
+        return item;
       });
     },
   },
@@ -43,6 +43,7 @@ export default {
 
 <style scoped>
 .activity-bar {
+  border-right-color: rgba(0, 0, 0, 0.12);
   border-right-style: solid;
   border-right-width: 1px;
   overflow: hidden;

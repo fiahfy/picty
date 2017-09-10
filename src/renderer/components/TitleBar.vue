@@ -10,6 +10,7 @@ export default {
 
 <style scoped>
 .title-bar {
+  border-bottom-color: rgba(0, 0, 0, 0.12);
   border-bottom-style: solid;
   border-bottom-width: 1px;
   box-sizing: border-box;
