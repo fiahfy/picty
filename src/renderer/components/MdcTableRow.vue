@@ -1,5 +1,5 @@
 <template>
-  <tr class="mdc-table-row">
+  <tr class="mdc-table-row" @click="click">
     <slot/>
   </tr>
 </template>
@@ -7,6 +7,11 @@
 <script>
 export default {
   name: 'mdc-table-row',
+  methods: {
+    click() {
+      this.$emit('click');
+    },
+  },
 };
 </script>
 

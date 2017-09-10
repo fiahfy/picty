@@ -2,7 +2,7 @@
   <div class="activity-bar">
     <ul>
       <li v-for="item in items" :key="item.routeName">
-        <mdc-button class="mdc-button" @click="click(item.routeName)">
+        <mdc-button @click="click(item.routeName)">
           <mdc-icon :icon="item.icon" :checked="item.checked" />
         </mdc-button>
       </li>

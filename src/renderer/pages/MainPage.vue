@@ -1,6 +1,7 @@
 <template>
   <div class="main-page">
     <div class="menu-bar">
+      <mdc-icon icon="folder"/>
       <mdc-textfield
         label="Input path..."
         fullwidth
@@ -22,7 +23,7 @@
           </mdc-table-row>
         </mdc-table-header>
         <mdc-table-body>
-          <mdc-table-row v-for="file in files" :key="file.name">
+          <mdc-table-row v-for="file in files" :key="file.name" @click="rowClick(file)">
             <mdc-table-column class="name">
               <mdc-icon :icon="file.stats.isDirectory() ? 'folder' : 'note'"/>
               {{ file.name }}
@@ -38,7 +39,7 @@
 </template>
 
 <script>
-import { remote } from 'electron';
+import path from 'path';
 import MdcIcon from '../components/MdcIcon';
 import MdcTextfield from '../components/MdcTextfield';
 import MdcTable from '../components/MdcTable';
@@ -60,11 +61,6 @@ export default {
     MdcTableHeaderColumn,
     MdcTableRow,
   },
-  mounted() {
-  },
-  asyncData({ store }) {
-    return store.dispatch('changePath', remote.app.getPath('home'));
-  },
   data() {
     return {
       path: '',
@@ -81,6 +77,20 @@ export default {
   methods: {
     keyupEnter() {
       this.$store.dispatch('changePath', this.path);
+    },
+    rowClick(file) {
+      if (file.stats.isDirectory()) {
+        this.path = path.join(this.defaultPath, file.name);
+        this.$store.dispatch('changePath', this.path);
+      } else if (file.name.match(/.(jpe?g|gif|png)$/i)) {
+        const filepath = path.join(this.defaultPath, file.name);
+        this.$router.push({ name: 'viewer', params: { path: filepath } });
+      }
+    },
+  },
+  watch: {
+    defaultPath() {
+      this.$el.querySelector('.content').scrollTop = 0;
     },
   },
   filters: {
@@ -103,40 +113,51 @@ export default {
   flex-direction: column;
   height: 100%;
 }
+.menu-bar {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  display: flex;
+  padding: 4px;
+}
+.menu-bar .mdc-icon {
+  padding: 4px;
+}
 .content {
   flex: 1;
   height: 100%;
   overflow-y: auto;
 }
 .mdc-textfield {
+  border: none;
   font-size: smaller;
   height: 32px;
-  padding: 0 8px;
 }
 .mdc-table {
   table-layout: fixed;
 }
 .mdc-table-header-column {
   background-color: white;
+  font-size: smaller;
   position: sticky;
   top: 0;
 }
 .mdc-table-header-column.modified-date {
-  width: 200px;
+  width: 128px;
 }
 .mdc-table-row {
   cursor: pointer;
 }
 .mdc-table-column {
+  font-size: smaller;
+  vertical-align: bottom;
   white-space: nowrap;
+}
+.mdc-table-column.name {
   overflow: hidden;
+  text-align: left;
   text-overflow: ellipsis;
   vertical-align: bottom;
 }
-.mdc-table-column.name {
-  text-align: left;
-}
-.mdc-icon {
+.mdc-table-column .mdc-icon {
   padding: 0;
   vertical-align: bottom;
 }

@@ -65,6 +65,11 @@ export default {
       }
     },
   },
+  watch: {
+    defaultValue(value) {
+      this.value = value;
+    },
+  },
 };
 </script>
 
