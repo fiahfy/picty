@@ -1,7 +1,7 @@
 {
   "name": "picty",
   "description": "Hosts file manager based on Electron",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
