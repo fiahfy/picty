@@ -9,6 +9,8 @@
       :id="id"
       :placeholder="placeholder"
       :aria-label="placeholder"
+      :value="value"
+      @keyup="keyup"
     />
     <label
       class="mdc-textfield__label"
@@ -31,10 +33,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    defaultValue: {
+      type: String,
+    },
   },
   data() {
     return {
       id: -1,
+      value: this.defaultValue,
     };
   },
   mounted() {
@@ -49,6 +55,14 @@ export default {
     },
     placeholder() {
       return this.fullwidth ? this.label : null;
+    },
+  },
+  methods: {
+    keyup(e) {
+      this.$emit('input', e.target.value);
+      if (event.keyCode === 13) {
+        this.$emit('keyupEnter');
+      }
     },
   },
 };
