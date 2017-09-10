@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <title-bar/>
+    <title-bar v-if="hasTitleBar"/>
     <div class="content-wrapper">
       <activity-bar/>
       <div class="content">
@@ -23,6 +23,11 @@ export default {
   },
   asyncData({ store }) {
     return store.dispatch('changePath', remote.app.getPath('home'));
+  },
+  computed: {
+    hasTitleBar() {
+      return process.platform !== 'win32';
+    },
   },
 };
 </script>
