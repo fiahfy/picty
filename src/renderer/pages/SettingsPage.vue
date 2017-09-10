@@ -1,6 +1,6 @@
 <template>
-  <div>
-    settings page
+  <div class="settings-page">
+    Not implemented.
   </div>
 </template>
 
