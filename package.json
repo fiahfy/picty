@@ -1,7 +1,7 @@
 {
   "name": "picty",
   "description": "Simple Image Viewer based on Electron",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
@@ -45,9 +45,9 @@
   },
   "keywords": [
     "electron",
+    "viewer",
     "vue",
-    "webpack",
-    "viewer"
+    "webpack"
   ],
   "main": "main.js",
   "private": true,
@@ -58,11 +58,11 @@
   },
   "scripts": {
     "build": "build -mw -p onTagOrDraft",
+    "dev": "cross-env HOT=1 run-p dev-server start:main",
+    "dev-server": "webpack-dev-server --config webpack/config.renderer.hot.babel.js",
     "lint": "eslint src --ext .js,.vue",
-    "hot:renderer": "webpack-dev-server --config webpack/config.renderer.hot.babel.js",
     "release": "cross-env NODE_ENV=production run-s webpack build",
-    "start": "run-p watch:renderer start:main",
-    "start:hot": "cross-env HOT=1 run-p hot:renderer start:main",
+    "start": "run-s webpack:renderer start:main",
     "start:main": "run-s webpack:main start:main:electron",
     "start:main:electron": "electron main.js",
     "test": "run-s lint",

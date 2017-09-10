@@ -26,15 +26,5 @@ https://github.com/fiahfy/picty/releases
 $ git clone https://github.com/fiahfy/picty.git
 $ cd picty
 $ yarn
-$ yarn start:hot
-```
-
-### Run for Development
-```
-$ yarn start
-```
-
-### Run for Development(HMR)
-```
-$ yarn start:hot
+$ yarn dev
 ```
