@@ -26,7 +26,7 @@ export default {
   },
   mounted() {
     MDCIconToggle.attachTo(this.$el);
-    this.$el.addEventListener('MDCIconToggle:change', ({detail}) => {
+    this.$el.addEventListener('MDCIconToggle:change', ({ detail }) => {
       this.$emit('change', detail.isOn);
     });
   },

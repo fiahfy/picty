@@ -19,21 +19,14 @@
 
 <script>
 import { remote } from 'electron';
-import MdcTextfield from '../components/MdcTextfield'
+import MdcTextfield from '../components/MdcTextfield';
 
 export default {
   name: 'main-page',
   components: { MdcTextfield },
   mounted() {
-    // console.warn("OK");
-    // console.log(mdcSelect);
-    // const select = new mdcSelect.MDCSelect(document.querySelector('.mdc-select'));
-    // select.listen('MDCSelect:change', () => {
-    //   alert(`Selected "${select.selectedOptions[0].textContent}" at index ${select.selectedIndex} ` +
-    //         `with value "${select.value}"`);
-    // });
   },
-  asyncData ({ store, route }) {
+  asyncData({ store }) {
     return store.dispatch('changePath', remote.app.getPath('home'));
   },
   data() {
@@ -47,7 +40,7 @@ export default {
     },
     files() {
       return this.$store.state.files;
-    }
+    },
   },
   methods: {
     keyupEnter() {

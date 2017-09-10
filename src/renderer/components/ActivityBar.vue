@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import MdcButton from '../components/MdcButton'
-import MdcIcon from '../components/MdcIcon'
+import MdcButton from '../components/MdcButton';
+import MdcIcon from '../components/MdcIcon';
 
 export default {
   name: 'activity-bar',
@@ -20,8 +20,8 @@ export default {
   data() {
     return {
       items: [
-        { icon: "list", routeName: "main", checked: true },
-        { icon: "settings", routeName: "settings", checked: false },
+        { icon: 'list', routeName: 'main', checked: true },
+        { icon: 'settings', routeName: 'settings', checked: false },
       ],
     };
   },
@@ -31,11 +31,13 @@ export default {
     },
   },
   watch: {
-    '$route'(to, from) {
-      this.items = this.items.map(item => {
-        item.checked = item.routeName === to.name;
-        return item;
-      });
+    '$route'(to) { // eslint-disable-line object-shorthand
+      this.items = this.items.map(item => (
+        Object.assign({}, {
+          ...item,
+          checked: item.routeName === to.name,
+        })
+      ));
     },
   },
 };

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { MDCTextfield } from '@material/textfield'
+import { MDCTextfield } from '@material/textfield';
 
 export default {
   name: 'mdc-textfield',
@@ -44,8 +44,8 @@ export default {
     };
   },
   mounted() {
-    new MDCTextfield(this.$el);
-    this.id = this._uid;
+    new MDCTextfield(this.$el); // eslint-disable-line no-new
+    this.id = this._uid; // eslint-disable-line no-underscore-dangle
   },
   computed: {
     classes() {
