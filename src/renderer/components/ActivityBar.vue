@@ -1,0 +1,68 @@
+<template>
+  <div class="activity-bar">
+    <ul>
+      <li v-for="item in items" :key="item.routeName">
+        <mdc-button @click="click(item.routeName)">
+          <mdc-icon :icon="item.icon" :checked="item.checked" />
+        </mdc-button>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+import MdcButton from '../components/MdcButton';
+import MdcIcon from '../components/MdcIcon';
+
+export default {
+  name: 'activity-bar',
+  components: {
+    MdcButton,
+    MdcIcon,
+  },
+  data() {
+    return {
+      items: [
+        { icon: 'list', routeName: 'main', checked: true },
+        { icon: 'settings', routeName: 'settings', checked: false },
+      ],
+    };
+  },
+  methods: {
+    click(routeName) {
+      this.$router.push({ name: routeName });
+    },
+  },
+  watch: {
+    '$route'(to) { // eslint-disable-line object-shorthand
+      this.items = this.items.map(item => (
+        Object.assign({}, {
+          ...item,
+          checked: item.routeName === to.name,
+        })
+      ));
+    },
+  },
+};
+</script>
+
+<style scoped>
+.activity-bar {
+  border-right-color: rgba(0, 0, 0, 0.12);
+  border-right-style: solid;
+  border-right-width: 1px;
+  overflow: hidden;
+  width: 48px;
+}
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.mdc-button {
+  border-radius: 0;
+  height: auto;
+  min-width: auto;
+  padding: 0;
+}
+</style>

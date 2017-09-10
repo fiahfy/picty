@@ -1,4 +1,4 @@
-import { app, shell, dialog, ipcMain, Menu } from 'electron';
+import { app, shell, Menu } from 'electron';
 
 export default class MenuBuilder {
   constructor(window) {
@@ -27,6 +27,7 @@ export default class MenuBuilder {
         .popup(this.window);
     });
   }
+  /* eslint-disable */
   buildTemplate() {
     const template = [
       {
@@ -67,7 +68,7 @@ export default class MenuBuilder {
       {
         role: 'help',
         submenu: [
-          { label: 'Learn More', click: () => { shell.openExternal('https://github.com/fiahfy/hosty'); } },
+          { label: 'Learn More', click: () => { shell.openExternal('https://github.com/fiahfy/picty'); } },
         ],
       },
     ];
@@ -110,4 +111,5 @@ export default class MenuBuilder {
 
     return template;
   }
+  /* eslint-enable */
 }

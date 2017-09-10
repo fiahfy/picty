@@ -9,9 +9,18 @@ export default {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.js$/,
         use: ['babel-loader'],
         exclude: /node_modules/,
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+          },
+          // other vue-loader options go here
+        },
       },
     ],
   },
@@ -23,6 +32,9 @@ export default {
     }),
   ],
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.vue'],
+    alias: {
+      vue$: 'vue/dist/vue.esm.js',
+    },
   },
 };
