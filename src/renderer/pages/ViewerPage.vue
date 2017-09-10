@@ -36,6 +36,7 @@ export default {
 <style scoped>
 .viewer-page {
   height: 100%;
+  position:relative;
 }
 .mdc-button {
   border-radius: 0;
@@ -46,7 +47,14 @@ export default {
   right: 0;
 }
 img {
+  bottom:0;
+  left: 0;
+  margin:auto;
   max-height: 100%;
   max-width: 100%;
+  position:absolute;
+  right: 0;
+  top:0;
+  vertical-align: middle;
 }
 </style>
