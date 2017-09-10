@@ -16,7 +16,10 @@ import TitleBar from './components/TitleBar';
 
 export default {
   name: 'app',
-  components: { ActivityBar, TitleBar },
+  components: {
+    ActivityBar,
+    TitleBar,
+  },
 };
 </script>
 
