@@ -1,5 +1,5 @@
 <template>
-  <div class="title-bar">Title</div>
+  <div class="title-bar">Picty</div>
 </template>
 
 <script>

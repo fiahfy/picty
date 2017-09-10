@@ -1,13 +1,11 @@
-# Hosty
-[![Build Status](https://travis-ci.org/fiahfy/hosty.svg?branch=master)](https://travis-ci.org/fiahfy/hosty)
+# Picty
+[![Build Status](https://travis-ci.org/fiahfy/picty.svg?branch=master)](https://travis-ci.org/fiahfy/picty)
 
-Hosts file manager based on Electron.
+Simple Image Viewer based on Electron.
 
 
 ## Features
-* GUI manager
-* Managing with groups
-* Import/Export settings
+* todos
 
 
 ## Screenshot
@@ -15,18 +13,18 @@ Hosts file manager based on Electron.
 
 
 ## Installation
-1. Download the file for your platform from [releases page](https://github.com/fiahfy/hosty/releases).
+1. Download the file for your platform from [releases page](https://github.com/fiahfy/picty/releases).
 2. Open `.dmg` for OS X, Run `.exe` for Windows.
 
 
 ## Download
-https://github.com/fiahfy/hosty/releases
+https://github.com/fiahfy/picty/releases
 
 
 ## Development
 ```
-$ git clone https://github.com/fiahfy/hosty.git
-$ cd hosty
+$ git clone https://github.com/fiahfy/picty.git
+$ cd picty
 $ yarn
 $ yarn start:hot
 ```

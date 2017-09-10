@@ -1,5 +1,5 @@
 {
-  "name": "hosty",
+  "name": "picty",
   "description": "Hosts file manager based on Electron",
   "version": "0.0.0",
   "author": {
@@ -50,10 +50,10 @@
   ],
   "main": "main.js",
   "private": true,
-  "productName": "Hosty",
+  "productName": "Picty",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fiahfy/hosty"
+    "url": "https://github.com/fiahfy/picty"
   },
   "scripts": {
     "build": "build -mw -p onTagOrDraft",
