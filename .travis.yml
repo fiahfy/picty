@@ -20,7 +20,7 @@ cache:
 
 before_install:
   - mkdir -p /tmp/git-lfs && curl -L https://github.com/github/git-lfs/releases/download/v2.2.0/git-lfs-darwin-amd64-2.2.0.tar.gz | tar -xz -C /tmp/git-lfs --strip-components 1 && /tmp/git-lfs/git-lfs pull
-  - curl -L https://yarnpkg.com/latest.tar.gz | tar xvz && mv yarn-* $HOME/.yarn
+  - curl -L https://github.com/yarnpkg/yarn/releases/download/v0.27.5/yarn-v0.27.5.tar.gz | tar xvz && mv dist $HOME/.yarn
   - export PATH="$HOME/.yarn/bin:$PATH"
 
 install:
