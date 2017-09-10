@@ -4,10 +4,6 @@
     <div class="content-wrapper">
       <activity-bar/>
       <div class="content">
-        <ul>
-          <li><router-link to="/">Go Main</router-link></li>
-          <li><router-link to="/settings">Go Settings</router-link></li>
-        </ul>
         <router-view/>
       </div>
     </div>

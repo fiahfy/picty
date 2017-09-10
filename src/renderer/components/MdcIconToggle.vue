@@ -27,7 +27,7 @@ export default {
   mounted() {
     MDCIconToggle.attachTo(this.$el);
     this.$el.addEventListener('MDCIconToggle:change', ({detail}) => {
-      // emit;
+      this.$emit('change', detail.isOn);
     });
   },
   computed: {
@@ -47,4 +47,7 @@ export default {
 </script>
 
 <style scoped>
+i {
+  overflow: hidden;
+}
 </style>
