@@ -66,6 +66,9 @@ export default {
       path: '',
     };
   },
+  asyncData({ store }) {
+    return store.dispatch('changePath', store.state.path);
+  },
   computed: {
     defaultPath() {
       return this.$store.state.path;

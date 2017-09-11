@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import { remote } from 'electron';
 import ActivityBar from './components/ActivityBar';
 import TitleBar from './components/TitleBar';
 
@@ -20,9 +19,6 @@ export default {
   components: {
     ActivityBar,
     TitleBar,
-  },
-  asyncData({ store }) {
-    return store.dispatch('changePath', remote.app.getPath('home'));
   },
   computed: {
     hasTitleBar() {

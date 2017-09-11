@@ -1,4 +1,5 @@
 import { app, shell, Menu } from 'electron';
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 
 export default class MenuBuilder {
   constructor(window) {
@@ -13,6 +14,10 @@ export default class MenuBuilder {
     Menu.setApplicationMenu(menu);
   }
   setupDevelopmentEnvironment() {
+    installExtension(VUEJS_DEVTOOLS)
+      .catch((err) => {
+        console.log('Unable to install `vue-devtools`: \n', err); // eslint-disable-line no-console
+      });
     this.window.openDevTools();
     this.window.webContents.on('context-menu', (e, props) => {
       const { x, y } = props;

@@ -1,22 +1,20 @@
+import { remote } from 'electron';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
 import { listFiles } from '../utils/file';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    path: '',
+    path: remote.app.getPath('home'),
     files: [],
   },
   actions: {
     async changePath({ commit }, path) {
       commit('setPath', { path });
       const files = await listFiles(path);
-      commit('setFiles', { files });
-    },
-    async readDir({ commit }, dir) {
-      const files = await listFiles(dir);
       commit('setFiles', { files });
     },
   },
@@ -28,4 +26,9 @@ export default new Vuex.Store({
       Vue.set(state, 'path', path);
     },
   },
+  plugins: [
+    createPersistedState({
+      paths: ['path'],
+    }),
+  ],
 });

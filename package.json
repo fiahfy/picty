@@ -8,6 +8,7 @@
     "url": "http://fiahfy.blogspot.com/"
   },
   "dependencies": {
+    "electron-devtools-installer": "^2.2.0",
     "electron-window-state": "^4.1.1",
     "is-electron-renderer": "^2.0.1",
     "material-components-web": "^0.20.0",
@@ -15,6 +16,7 @@
     "vue": "^2.4.2",
     "vue-router": "^2.7.0",
     "vuex": "^2.4.0",
+    "vuex-persistedstate": "^2.0.0",
     "vuex-router-sync": "^4.3.1"
   },
   "devDependencies": {

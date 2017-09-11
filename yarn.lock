@@ -22,6 +22,10 @@
     "7zip-bin-mac" "^1.0.1"
     "7zip-bin-win" "^2.1.0"
 
+"7zip@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/7zip/-/7zip-0.0.6.tgz#9cafb171af82329490353b4816f03347aa150a30"
+
 "@material/animation@^0.3.1":
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/@material/animation/-/animation-0.3.1.tgz#229de6927d0590d6d6b20157d778d264ef02229a"
@@ -1799,6 +1803,10 @@ cross-spawn@^5.0.1, cross-spawn@^5.1.0:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
+cross-unzip@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/cross-unzip/-/cross-unzip-0.0.2.tgz#5183bc47a09559befcf98cc4657964999359372f"
+
 cryptiles@2.x.x:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/cryptiles/-/cryptiles-2.0.5.tgz#3bdfecdc608147c1c67202fa291e7dca59eaa3b8"
@@ -2213,6 +2221,15 @@ electron-builder@^19.22.1:
     update-notifier "^2.2.0"
     uuid-1345 "^0.99.6"
     yargs "^8.0.2"
+
+electron-devtools-installer@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/electron-devtools-installer/-/electron-devtools-installer-2.2.0.tgz#9813e6811afcd69ddca3cae5416db72ea7ecfb6a"
+  dependencies:
+    "7zip" "0.0.6"
+    cross-unzip "0.0.2"
+    rimraf "^2.5.2"
+    semver "^5.3.0"
 
 electron-download-tf@4.3.4:
   version "4.3.4"
@@ -3842,6 +3859,10 @@ lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
 
+lodash.merge@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.0.tgz#69884ba144ac33fe699737a6086deffadd0f89c5"
+
 lodash.restparam@^3.0.0:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/lodash.restparam/-/lodash.restparam-3.6.1.tgz#936a4e309ef330a7645ed4145986c85ae5b20805"
@@ -4323,6 +4344,10 @@ object-keys@^1.0.8:
 object-keys@~0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-0.4.0.tgz#28a6aae7428dd2c3a92f3d95f21335dd204e0336"
+
+object-path@^0.11.2:
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/object-path/-/object-path-0.11.4.tgz#370ae752fbf37de3ea70a861c23bba8915691949"
 
 object-path@^0.9.2:
   version "0.9.2"
@@ -5309,7 +5334,7 @@ right-align@^0.1.1:
   dependencies:
     align-text "^0.1.1"
 
-rimraf@2, rimraf@^2.2.8, rimraf@^2.5.1, rimraf@^2.6.1:
+rimraf@2, rimraf@^2.2.8, rimraf@^2.5.1, rimraf@^2.5.2, rimraf@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.1.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
   dependencies:
@@ -6155,6 +6180,13 @@ vue-template-es2015-compiler@^1.2.2:
 vue@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.4.2.tgz#a9855261f191c978cc0dc1150531b8d08149b58c"
+
+vuex-persistedstate@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/vuex-persistedstate/-/vuex-persistedstate-2.0.0.tgz#b84f530da4679bdf694c5ddf65c23033aa79b1bb"
+  dependencies:
+    lodash.merge "^4.6.0"
+    object-path "^0.11.2"
 
 vuex-router-sync@^4.3.1:
   version "4.3.1"
