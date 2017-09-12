@@ -81,7 +81,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "~@material/theme/_color_palette.scss";
+
 .file-list {
   height: 100%;
   overflow-y: auto;
@@ -112,8 +114,9 @@ export default {
   text-overflow: ellipsis;
   vertical-align: bottom;
 }
-.mdc-table-column .mdc-icon {
+.mdc-table-column {.mdc-icon {
   padding: 0;
+  color: $material-color-green-50;
   vertical-align: bottom;
-}
+}}
 </style>
