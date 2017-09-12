@@ -1,5 +1,5 @@
-import { remote } from 'electron';
 import path from 'path';
+import { remote } from 'electron';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
