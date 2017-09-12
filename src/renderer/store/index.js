@@ -13,10 +13,13 @@ export default new Vuex.Store({
     files: [],
   },
   actions: {
-    async changeDirectory({ commit }, dir) {
-      commit('setDirectory', { dir });
+    async loadFiles({ commit }, dir) {
       const files = await listFiles(dir);
       commit('setFiles', { files });
+    },
+    async changeDirectory({ commit, dispatch }, dir) {
+      commit('setDirectory', { dir });
+      dispatch('loadFiles', dir);
     },
     async changeChildDirectory({ dispatch, state }, dirname) {
       const child = path.join(state.directory, dirname);
@@ -25,6 +28,9 @@ export default new Vuex.Store({
     async changeParentDirectory({ dispatch, state }) {
       const parent = path.dirname(state.directory);
       await dispatch('changeDirectory', parent);
+    },
+    async refreshDirectory({ dispatch, state }) {
+      await dispatch('loadFiles', state.directory);
     },
   },
   mutations: {
