@@ -38,3 +38,17 @@ export async function listFiles(dir) {
     }),
   );
 }
+
+export function isImage(file) {
+  const extensions = [
+    '.jpg',
+    '.png',
+    '.gif',
+    '.webp',
+    '.tif',
+    '.bmp',
+    '.jxr',
+    '.psd',
+  ];
+  return extensions.includes(path.extname(file));
+}

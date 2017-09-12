@@ -22,8 +22,8 @@ export default {
   border-bottom-color: $material-color-grey-300;
   border-bottom-style: solid;
   border-bottom-width: 1px;
-}
-.mdc-table-row:hover {
-  background-color: $material-color-grey-100;
+  &:hover {
+    background-color: $material-color-grey-100;
+  }
 }
 </style>

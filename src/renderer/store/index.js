@@ -10,12 +10,20 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     directory: remote.app.getPath('home'),
-    files: [],
+    file: {
+      items: [],
+      error: false,
+    },
+    viewing: null,
   },
   actions: {
     async loadFiles({ commit }, dir) {
-      const files = await listFiles(dir);
-      commit('setFiles', { files });
+      try {
+        const items = await listFiles(dir);
+        commit('setFile', { file: { items, error: false } });
+      } catch (e) {
+        commit('setFile', { file: { items: [], error: true } });
+      }
     },
     async changeDirectory({ commit, dispatch }, dir) {
       commit('setDirectory', { dir });
@@ -37,8 +45,8 @@ export default new Vuex.Store({
     setDirectory(state, { dir }) {
       Vue.set(state, 'directory', dir);
     },
-    setFiles(state, { files }) {
-      Vue.set(state, 'files', files);
+    setFile(state, { file }) {
+      Vue.set(state, 'file', file);
     },
   },
   plugins: [

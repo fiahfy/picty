@@ -61,6 +61,9 @@ export default {
 }
 .directory {
   display: flex;
+  .mdc-icon {
+    color: $material-color-blue-200;
+  }
 }
 .buttons {
   text-align: left;

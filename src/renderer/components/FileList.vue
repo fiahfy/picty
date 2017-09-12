@@ -1,6 +1,9 @@
 <template>
   <div class="file-list">
-    <mdc-table>
+    <div class="error" v-if="file.error">
+      <span>Invalid Directory</span>
+    </div>
+    <mdc-table v-else>
       <mdc-table-header>
         <mdc-table-row>
           <mdc-table-header-column class="name">
@@ -12,9 +15,12 @@
         </mdc-table-row>
       </mdc-table-header>
       <mdc-table-body>
-        <mdc-table-row v-for="file in files" :key="file.name" @click="rowClick(file)">
+        <mdc-table-row v-for="file in file.items" :key="file.name" @click="rowClick(file)">
           <mdc-table-column class="name">
-            <mdc-icon :icon="file.stats.isDirectory() ? 'folder' : 'note'"/>
+            <mdc-icon
+              :icon="icon(file)"
+              :class="icon(file)"
+            />
             {{ file.name }}
           </mdc-table-column>
           <mdc-table-column class="modified-date">
@@ -35,6 +41,7 @@ import MdcTableColumn from '../components/MdcTableColumn';
 import MdcTableHeader from '../components/MdcTableHeader';
 import MdcTableHeaderColumn from '../components/MdcTableHeaderColumn';
 import MdcTableRow from '../components/MdcTableRow';
+import { isImage } from '../utils/file';
 
 export default {
   name: 'file-list',
@@ -48,9 +55,15 @@ export default {
     MdcTableRow,
   },
   computed: mapState([
-    'files',
+    'file',
   ]),
   methods: {
+    icon(file) {
+      if (file.stats.isDirectory()) {
+        return 'folder';
+      }
+      return isImage(file.name) ? 'photo' : 'note';
+    },
     rowClick(file) {
       if (file.stats.isDirectory()) {
         this.changeDirectory(file.path);
@@ -63,7 +76,7 @@ export default {
     ]),
   },
   watch: {
-    files() {
+    file() {
       this.$el.scrollTop = 0;
     },
   },
@@ -88,34 +101,53 @@ export default {
   height: 100%;
   overflow-y: auto;
 }
+.error {
+  display: table;
+  height: 100%;
+  vertical-align: middle;
+  width: 100%;
+  span {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+  }
+}
 .mdc-table {
   table-layout: fixed;
+}
+.mdc-table-row {
+  cursor: pointer;
 }
 .mdc-table-header-column {
   background-color: white;
   font-size: smaller;
   position: sticky;
   top: 0;
-}
-.mdc-table-header-column.modified-date {
-  width: 128px;
-}
-.mdc-table-row {
-  cursor: pointer;
+  &.modified-date {
+    width: 128px;
+  }
 }
 .mdc-table-column {
   font-size: smaller;
-  vertical-align: middle;
+  vertical-align: bottom;
   white-space: nowrap;
+  &.name {
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+  }
 }
-.mdc-table-column.name {
-  overflow: hidden;
-  text-align: left;
-  text-overflow: ellipsis;
-}
-.mdc-table-column {.mdc-icon {
+.mdc-icon {
   padding: 0;
-  color: $material-color-green-50;
-  vertical-align: middle;
-}}
+  vertical-align: bottom;
+  &.folder {
+    color: $material-color-blue-200;
+  }
+  &.photo {
+    color: $material-color-green-200;
+  }
+  &.note {
+    color: $material-color-grey-300;
+  }
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="viewer-page">
+  <div class="viewer">
     <mdc-button @click="click">
       <mdc-icon icon="close" />
     </mdc-button>
@@ -8,23 +8,19 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
 import MdcButton from '../components/MdcButton';
 import MdcIcon from '../components/MdcIcon';
 
 export default {
-  name: 'viewer-page',
+  name: 'viewer',
   components: {
     MdcButton,
     MdcIcon,
   },
-  data() {
-    return {
-      src: '',
-    };
-  },
-  mounted() {
-    this.src = this.$route.params.path;
-  },
+  computed: mapState([
+    'files',
+  ]),
   methods: {
     click() {
       this.$router.push({ name: 'main' });
@@ -34,7 +30,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.viewer-page {
+.viewer {
   height: 100%;
   position:relative;
 }
