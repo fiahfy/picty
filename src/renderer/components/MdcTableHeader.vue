@@ -9,6 +9,3 @@ export default {
   name: 'mdc-table-header',
 };
 </script>
-
-<style scoped>
-</style>

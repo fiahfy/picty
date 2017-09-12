@@ -9,6 +9,3 @@ export default {
   name: 'mdc-table-body',
 };
 </script>
-
-<style scoped>
-</style>
