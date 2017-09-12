@@ -52,9 +52,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "~@material/theme/_color_palette.scss";
+
 .menu-bar>div {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid $material-color-grey-300;
   padding: 4px;
 }
 .directory {

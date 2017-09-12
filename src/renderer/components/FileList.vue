@@ -105,18 +105,17 @@ export default {
 }
 .mdc-table-column {
   font-size: smaller;
-  vertical-align: bottom;
+  vertical-align: middle;
   white-space: nowrap;
 }
 .mdc-table-column.name {
   overflow: hidden;
   text-align: left;
   text-overflow: ellipsis;
-  vertical-align: bottom;
 }
 .mdc-table-column {.mdc-icon {
   padding: 0;
   color: $material-color-green-50;
-  vertical-align: bottom;
+  vertical-align: middle;
 }}
 </style>

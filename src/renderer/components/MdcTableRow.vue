@@ -15,13 +15,15 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "~@material/theme/_color_palette.scss";
+
 .mdc-table-row {
-  border-bottom-color: rgba(0, 0, 0, 0.06);
+  border-bottom-color: $material-color-grey-300;
   border-bottom-style: solid;
   border-bottom-width: 1px;
 }
 .mdc-table-row:hover {
-  background-color: rgba(0, 0, 0, 0.12);
+  background-color: $material-color-grey-100;
 }
 </style>

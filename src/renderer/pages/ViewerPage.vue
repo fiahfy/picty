@@ -33,7 +33,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .viewer-page {
   height: 100%;
   position:relative;

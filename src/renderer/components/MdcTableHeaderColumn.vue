@@ -10,7 +10,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .mdc-table-header-column {
   padding: 8px;
 }

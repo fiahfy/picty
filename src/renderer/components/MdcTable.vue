@@ -10,7 +10,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .mdc-table {
   border-collapse: collapse;
   border-spacing: 0;

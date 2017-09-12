@@ -28,7 +28,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #app {
   color: #2c3e50;
   display: flex;

@@ -21,7 +21,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .main-page {
   display: flex;
   flex-direction: column;

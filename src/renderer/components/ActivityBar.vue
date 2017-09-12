@@ -46,9 +46,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "~@material/theme/_color_palette.scss";
+
 .activity-bar {
-  border-right-color: rgba(0, 0, 0, 0.12);
+  border-right-color: $material-color-grey-300;
   border-right-style: solid;
   border-right-width: 1px;
   overflow: hidden;
