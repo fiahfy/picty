@@ -1,14 +1,21 @@
 <template>
   <div class="main-page">
     <div class="menu-bar">
-      <mdc-icon icon="folder"/>
-      <mdc-textfield
-        label="Input path..."
-        fullwidth
-        :defaultValue="defaultPath"
-        v-model="path"
-        @keyupEnter="keyupEnter"
-      />
+      <div class="path">
+        <mdc-icon icon="folder"/>
+        <mdc-textfield
+          label="Input path..."
+          fullwidth
+          :defaultValue="directory"
+          v-model="path"
+          @keyupEnter="keyupEnter"
+        />
+      </div>
+      <div class="buttons">
+        <mdc-button @click="moveUpButtonClick()">
+          <mdc-icon icon="arrow_upward" />
+        </mdc-button>
+      </div>
     </div>
     <div class="content">
       <mdc-table>
@@ -39,7 +46,8 @@
 </template>
 
 <script>
-import path from 'path';
+import { mapActions, mapState } from 'vuex';
+import MdcButton from '../components/MdcButton';
 import MdcIcon from '../components/MdcIcon';
 import MdcTextfield from '../components/MdcTextfield';
 import MdcTable from '../components/MdcTable';
@@ -52,6 +60,7 @@ import MdcTableRow from '../components/MdcTableRow';
 export default {
   name: 'main-page',
   components: {
+    MdcButton,
     MdcIcon,
     MdcTextfield,
     MdcTable,
@@ -67,32 +76,33 @@ export default {
     };
   },
   asyncData({ store }) {
-    return store.dispatch('changePath', store.state.path);
+    return store.dispatch('changeDirectory', store.state.directory);
   },
-  computed: {
-    defaultPath() {
-      return this.$store.state.path;
-    },
-    files() {
-      return this.$store.state.files;
-    },
-  },
+  computed: mapState([
+    'directory',
+    'files',
+  ]),
   methods: {
     keyupEnter() {
-      this.$store.dispatch('changePath', this.path);
+      this.changeDirectory(this.path);
+    },
+    moveUpButtonClick() {
+      this.changeParentDirectory();
     },
     rowClick(file) {
       if (file.stats.isDirectory()) {
-        this.path = path.join(this.defaultPath, file.name);
-        this.$store.dispatch('changePath', this.path);
+        this.changeDirectory(file.path);
       } else if (file.name.match(/.(jpe?g|gif|png)$/i)) {
-        const filepath = path.join(this.defaultPath, file.name);
-        this.$router.push({ name: 'viewer', params: { path: filepath } });
+        this.$router.push({ name: 'viewer', params: { path: file.path } });
       }
     },
+    ...mapActions([
+      'changeDirectory',
+      'changeParentDirectory',
+    ]),
   },
   watch: {
-    defaultPath() {
+    directory() {
       this.$el.querySelector('.content').scrollTop = 0;
     },
   },
@@ -116,13 +126,26 @@ export default {
   flex-direction: column;
   height: 100%;
 }
-.menu-bar {
+.menu-bar>div {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  display: flex;
   padding: 4px;
+}
+.path {
+  display: flex;
+}
+.buttons {
+  text-align: left;
 }
 .menu-bar .mdc-icon {
   padding: 4px;
+}
+.buttons .mdc-button {
+  border-radius: 0;
+  height: auto;
+  line-height: initial;
+  margin-right: auto;
+  min-width: auto;
+  padding: 0;
 }
 .content {
   flex: 1;

@@ -30,7 +30,11 @@ export async function listFiles(dir) {
   return Promise.all(
     files.map(async (file) => {
       const stats = await lstatAsync(path.join(dir, file));
-      return { name: file, stats };
+      return {
+        name: file,
+        path: path.join(dir, file),
+        stats,
+      };
     }),
   );
 }
