@@ -1,5 +1,5 @@
 <template>
-  <div class="main-page">
+  <div class="explorer">
     <menu-bar/>
     <file-list/>
   </div>
@@ -8,14 +8,12 @@
 <script>
 import MenuBar from '../components/MenuBar'
 import FileList from '../components/FileList'
-import Viewer from '../components/Viewer'
 
 export default {
-  name: 'main-page',
+  name: 'explorer',
   components: {
     MenuBar,
-    FileList,
-    Viewer
+    FileList
   },
   async asyncData ({ store }) {
     await store.dispatch('changeDirectory', store.state.directory)
@@ -24,7 +22,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.main-page {
+.explorer {
   display: flex;
   flex-direction: column;
   height: 100%;

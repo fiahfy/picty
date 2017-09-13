@@ -1,11 +1,11 @@
 <template>
-  <div class="settings-page">
+  <div class="settings">
     Not implemented.
   </div>
 </template>
 
 <script>
 export default {
-  name: 'settings-page'
+  name: 'settings'
 }
 </script>

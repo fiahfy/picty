@@ -15,7 +15,13 @@
         </mdc-table-row>
       </mdc-table-header>
       <mdc-table-body>
-        <mdc-table-row v-for="file in files" :key="file.name" @click="rowClick(file)">
+        <mdc-table-row
+          v-for="file in files"
+          :key="file.name"
+          :selected="isSelected(file)"
+          @click="selectFile({ file: file.path })"
+          @dblclick.native="doubleClick(file)"
+        >
           <mdc-table-column class="name">
             <mdc-icon
               :icon="icon(file)"
@@ -33,7 +39,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 import MdcIcon from '../components/MdcIcon'
 import MdcTable from '../components/MdcTable'
 import MdcTableBody from '../components/MdcTableBody'
@@ -56,22 +62,35 @@ export default {
   },
   computed: mapState([
     'files',
-    'error'
+    'error',
+    'selectedFile'
   ]),
   methods: {
     icon (file) {
       if (file.stats.isDirectory()) {
         return 'folder'
       }
-      return isImage(file.name) ? 'photo' : 'note'
+      return isImage(file.path) ? 'photo' : 'note'
     },
-    rowClick (file) {
-      if (file.stats.isDirectory()) {
-        this.changeDirectory(file.path)
-      } else if (file.name.match(/.(jpe?g|gif|png)$/i)) {
-        this.$router.push({ name: 'viewer', params: { path: file.path } })
+    isSelected (file) {
+      return file.path === this.selectedFile
+    },
+    doubleClick (file) {
+      if (!isImage(file.path)) {
+        return
       }
+      this.$router.push({ name: 'viewer' })
     },
+    // rowClick (file) {
+    //   if (file.stats.isDirectory()) {
+    //     this.changeDirectory(file.path)
+    //   } else if (file.name.match(/.(jpe?g|gif|png)$/i)) {
+    //     this.$router.push({ name: 'viewer', params: { path: file.path } })
+    //   }
+    // },
+    ...mapMutations([
+      'selectFile'
+    ]),
     ...mapActions([
       'changeDirectory'
     ])

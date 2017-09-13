@@ -1,5 +1,5 @@
 <template>
-  <tr class="mdc-table-row" @click="click">
+  <tr class="mdc-table-row" :class="classes" @click="click">
     <slot/>
   </tr>
 </template>
@@ -7,6 +7,18 @@
 <script>
 export default {
   name: 'mdc-table-row',
+  props: {
+    selected: {
+      type: Boolean
+    }
+  },
+  computed: {
+    classes () {
+      return {
+        selected: this.selected
+      }
+    }
+  },
   methods: {
     click () {
       this.$emit('click')
@@ -24,6 +36,9 @@ export default {
   border-bottom-width: 1px;
   &:hover {
     background-color: $material-color-grey-100;
+  }
+  &.selected {
+    background-color: $material-color-grey-300;
   }
 }
 </style>

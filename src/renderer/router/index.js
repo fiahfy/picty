@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import MainPage from '../pages/MainPage'
-import SettingsPage from '../pages/SettingsPage'
+import Container from '../pages/Container'
+import Explorer from '../pages/Explorer'
+import Settings from '../pages/Settings'
+import Viewer from '../pages/Viewer'
 
 Vue.use(Router)
 
@@ -9,13 +11,24 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'main',
-      component: MainPage
+      component: Container,
+      children: [
+        {
+          path: '',
+          name: 'explorer',
+          component: Explorer
+        },
+        {
+          path: 'settings',
+          name: 'settings',
+          component: Settings
+        }
+      ]
     },
     {
-      path: '/settings',
-      name: 'settings',
-      component: SettingsPage
+      path: '/viewer',
+      name: 'viewer',
+      component: Viewer
     }
   ]
 })

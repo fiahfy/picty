@@ -11,6 +11,7 @@ export default new Vuex.Store({
   state: {
     directory: remote.app.getPath('home'),
     files: [],
+    selectedFile: '',
     error: false,
     viewing: null
   },
@@ -24,7 +25,7 @@ export default new Vuex.Store({
       }
     },
     async changeDirectory ({ commit, dispatch }, dir) {
-      commit('setDirectory', { dir })
+      commit('changeDirectory', { dir })
       await dispatch('loadFiles', dir)
     },
     async changeChildDirectory ({ dispatch, state }, dirname) {
@@ -40,12 +41,15 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    setDirectory (state, { dir }) {
-      Vue.set(state, 'directory', dir)
+    changeDirectory (state, { dir }) {
+      state.directory = dir
     },
     loadFiles (state, { files, error }) {
       state.files = files
       state.error = error
+    },
+    selectFile (state, { file }) {
+      state.selectedFile = file
     }
   },
   plugins: [
