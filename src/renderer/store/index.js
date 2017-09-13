@@ -14,6 +14,7 @@ export default new Vuex.Store({
     directory: remote.app.getPath('home'),
     files: [],
     selectedFile: '',
+    isViewing: false,
     images: [],
     currentImage: ''
   },
@@ -41,16 +42,15 @@ export default new Vuex.Store({
     async refreshDirectory ({ dispatch, state }) {
       await dispatch('loadFiles', state.directory)
     },
-    async moveViewer ({ commit }, file) {
+    async showViewer ({ commit }, file) {
       try {
         const dir = path.dirname(file)
         let files = await listFiles(dir)
         files = files.filter((file) => isImage(file.path))
-        commit('loadedImage', { files, file, error: false })
+        commit('preparedViewer', { files, file, error: false })
       } catch (e) {
-        commit('loadedImage', { files: [], file: '', error: true })
+        commit('preparedViewer', { files: [], file: '', error: true })
       }
-      router.push({ name: 'viewer' })
     }
   },
   mutations: {
@@ -61,9 +61,10 @@ export default new Vuex.Store({
       state.files = files
       state.error = error
     },
-    loadedImage (state, { files, file }) {
+    preparedViewer (state, { files, file }) {
       state.images = files
       state.currentImage = file
+      state.isViewing = true
     },
     selectFile (state, { file }) {
       state.selectedFile = file
@@ -89,8 +90,8 @@ export default new Vuex.Store({
     changeRoute (state, { name }) {
       router.push({ name })
     },
-    goBack (state) {
-      router.go(-1)
+    closeViewer (state) {
+      state.isViewing = false
     }
   },
   plugins: [

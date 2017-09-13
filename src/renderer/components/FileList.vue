@@ -79,7 +79,7 @@ export default {
       if (file.stats.isDirectory()) {
         this.changeDirectory(file.path)
       } else if (isImage(file.path)) {
-        this.moveViewer(file.path)
+        this.showViewer(file.path)
       }
     },
     ...mapMutations([
@@ -87,7 +87,7 @@ export default {
     ]),
     ...mapActions([
       'changeDirectory',
-      'moveViewer'
+      'showViewer'
     ])
   },
   watch: {
@@ -103,7 +103,7 @@ export default {
       const d = String(date.getDate()).padStart(2, '0')
       const H = String(date.getHours()).padStart(2, '0')
       const i = String(date.getMinutes()).padStart(2, '0')
-      return `${Y}/${m}/${d} ${H}:${i}`
+      return `${Y}-${m}-${d} ${H}:${i}`
     }
   }
 }

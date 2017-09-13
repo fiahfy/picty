@@ -26,7 +26,7 @@ export default {
     keyup (e) {
       switch (e.keyCode) {
         case 27:
-          this.goBack()
+          this.closeViewer()
           break
         case 37:
         case 48:
@@ -41,7 +41,7 @@ export default {
     ...mapMutations([
       'viewPreviousImage',
       'viewNextImage',
-      'goBack'
+      'closeViewer'
     ])
   }
 }
@@ -51,6 +51,7 @@ export default {
 .viewer {
   height: 100%;
   position:relative;
+  user-select: none;
 }
 .error {
   display: table;

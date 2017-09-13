@@ -1,24 +1,36 @@
 <template>
   <div id="app">
     <title-bar v-if="hasTitleBar"/>
-    <div class="content">
-      <router-view/>
+    <div class="container" v-show="!isViewing">
+      <activity-bar/>
+      <div class="content">
+        <router-view/>
+      </div>
     </div>
+    <viewer v-if="isViewing"/>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import ActivityBar from './components/ActivityBar'
 import TitleBar from './components/TitleBar'
+import Viewer from './components/Viewer'
 
 export default {
   name: 'app',
   components: {
-    TitleBar
+    ActivityBar,
+    TitleBar,
+    Viewer
   },
   computed: {
     hasTitleBar () {
       return process.platform !== 'win32'
-    }
+    },
+    ...mapState([
+      'isViewing'
+    ])
   }
 }
 </script>
@@ -32,8 +44,12 @@ export default {
   height: 100%;
   text-align: center;
 }
-.content {
+.container {
+  display: flex;
   flex: 1;
   overflow: hidden;
+}
+.content {
+  flex: 1;
 }
 </style>

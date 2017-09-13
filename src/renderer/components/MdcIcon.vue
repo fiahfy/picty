@@ -32,5 +32,6 @@ export default {
 <style scoped lang="scss">
 .mdc-icon {
   padding: 12px;
+  user-select: none;
 }
 </style>
