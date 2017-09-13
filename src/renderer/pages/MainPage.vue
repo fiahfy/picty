@@ -1,17 +1,11 @@
 <template>
   <div class="main-page">
-    <template v-if="isViewing">
-      <viewer/>
-    </template>
-    <template v-else>
-      <menu-bar/>
-      <file-list/>
-    </template>
+    <menu-bar/>
+    <file-list/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import MenuBar from '../components/MenuBar'
 import FileList from '../components/FileList'
 import Viewer from '../components/Viewer'
@@ -25,10 +19,7 @@ export default {
   },
   async asyncData ({ store }) {
     await store.dispatch('changeDirectory', store.state.directory)
-  },
-  computed: mapState([
-    'isViewing'
-  ])
+  }
 }
 </script>
 

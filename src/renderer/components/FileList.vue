@@ -10,7 +10,7 @@
             Name
           </mdc-table-header-column>
           <mdc-table-header-column class="modified-date">
-            Modified Date
+            Date Modified
           </mdc-table-header-column>
         </mdc-table-row>
       </mdc-table-header>
