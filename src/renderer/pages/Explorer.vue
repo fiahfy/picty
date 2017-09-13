@@ -16,7 +16,7 @@ export default {
     FileList
   },
   async asyncData ({ store }) {
-    await store.dispatch('changeDirectory', store.state.directory)
+    await store.dispatch('refreshDirectory', store.state.directory)
   }
 }
 </script>

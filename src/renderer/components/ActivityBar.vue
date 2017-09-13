@@ -2,7 +2,7 @@
   <div class="activity-bar">
     <ul>
       <li v-for="item in items" :key="item.routeName">
-        <mdc-button @click="click(item.routeName)">
+        <mdc-button @click="changeRoute(item)">
           <mdc-icon :icon="item.icon" :checked="item.checked" />
         </mdc-button>
       </li>
@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 
@@ -23,16 +25,14 @@ export default {
   data () {
     return {
       items: [
-        { icon: 'list', routeName: 'main', checked: true },
-        { icon: 'settings', routeName: 'settings', checked: false }
+        { icon: 'list', name: 'explorer', checked: true },
+        { icon: 'settings', name: 'settings', checked: false }
       ]
     }
   },
-  methods: {
-    click (routeName) {
-      this.$router.push({ name: routeName })
-    }
-  },
+  methods: mapMutations([
+    'changeRoute'
+  ]),
   watch: {
     '$route' (to) { // eslint-disable-line object-shorthand
       this.items = this.items.map(item => (

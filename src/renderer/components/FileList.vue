@@ -61,8 +61,8 @@ export default {
     MdcTableRow
   },
   computed: mapState([
-    'files',
     'error',
+    'files',
     'selectedFile'
   ]),
   methods: {
@@ -76,23 +76,18 @@ export default {
       return file.path === this.selectedFile
     },
     doubleClick (file) {
-      if (!isImage(file.path)) {
-        return
+      if (file.stats.isDirectory()) {
+        this.changeDirectory(file.path)
+      } else if (isImage(file.path)) {
+        this.moveViewer(file.path)
       }
-      this.$router.push({ name: 'viewer' })
     },
-    // rowClick (file) {
-    //   if (file.stats.isDirectory()) {
-    //     this.changeDirectory(file.path)
-    //   } else if (file.name.match(/.(jpe?g|gif|png)$/i)) {
-    //     this.$router.push({ name: 'viewer', params: { path: file.path } })
-    //   }
-    // },
     ...mapMutations([
       'selectFile'
     ]),
     ...mapActions([
-      'changeDirectory'
+      'changeDirectory',
+      'moveViewer'
     ])
   },
   watch: {

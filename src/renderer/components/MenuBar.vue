@@ -11,10 +11,16 @@
       />
     </div>
     <div class="buttons">
-      <mdc-button @click="changeParentDirectory()">
+      <mdc-button
+        title="Change parent drectory"
+        @click="changeParentDirectory()"
+      >
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
-      <mdc-button @click="refreshDirectory()">
+      <mdc-button
+        title="Refresh current directory"
+        @click="refreshDirectory()"
+      >
         <mdc-icon icon="refresh" />
       </mdc-button>
     </div>
