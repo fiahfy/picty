@@ -11,21 +11,21 @@
 </template>
 
 <script>
-import ActivityBar from './components/ActivityBar';
-import TitleBar from './components/TitleBar';
+import ActivityBar from './components/ActivityBar'
+import TitleBar from './components/TitleBar'
 
 export default {
   name: 'app',
   components: {
     ActivityBar,
-    TitleBar,
+    TitleBar
   },
   computed: {
-    hasTitleBar() {
-      return process.platform !== 'win32';
-    },
-  },
-};
+    hasTitleBar () {
+      return process.platform !== 'win32'
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

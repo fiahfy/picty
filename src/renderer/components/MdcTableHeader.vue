@@ -6,6 +6,6 @@
 
 <script>
 export default {
-  name: 'mdc-table-header',
-};
+  name: 'mdc-table-header'
+}
 </script>

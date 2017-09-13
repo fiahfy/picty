@@ -4,8 +4,8 @@
 
 <script>
 export default {
-  name: 'title-bar',
-};
+  name: 'title-bar'
+}
 </script>
 
 <style scoped lang="scss">

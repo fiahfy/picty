@@ -11,25 +11,25 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import MenuBar from '../components/MenuBar';
-import FileList from '../components/FileList';
-import Viewer from '../components/Viewer';
+import { mapState } from 'vuex'
+import MenuBar from '../components/MenuBar'
+import FileList from '../components/FileList'
+import Viewer from '../components/Viewer'
 
 export default {
   name: 'main-page',
   components: {
     MenuBar,
     FileList,
-    Viewer,
+    Viewer
   },
-  async asyncData({ store }) {
-    await store.dispatch('changeDirectory', store.state.directory);
+  async asyncData ({ store }) {
+    await store.dispatch('changeDirectory', store.state.directory)
   },
   computed: mapState([
-    'isViewing',
-  ]),
-};
+    'isViewing'
+  ])
+}
 </script>
 
 <style scoped lang="scss">

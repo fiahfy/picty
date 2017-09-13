@@ -5,17 +5,17 @@
 </template>
 
 <script>
-import { MDCRipple } from '@material/ripple';
+import { MDCRipple } from '@material/ripple'
 
 export default {
   name: 'mdc-button',
-  mounted() {
-    MDCRipple.attachTo(this.$el);
+  mounted () {
+    MDCRipple.attachTo(this.$el)
   },
   methods: {
-    click() {
-      this.$emit('click');
-    },
-  },
-};
+    click () {
+      this.$emit('click')
+    }
+  }
+}
 </script>

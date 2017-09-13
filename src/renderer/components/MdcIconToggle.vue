@@ -8,42 +8,42 @@
 </template>
 
 <script>
-import { MDCIconToggle } from '@material/icon-toggle';
+import { MDCIconToggle } from '@material/icon-toggle'
 
 export default {
   name: 'mdc-icon-toggle',
   props: {
     icon: {
-      type: String,
+      type: String
     },
     checkedIcon: {
-      type: String,
+      type: String
     },
     checked: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
-  mounted() {
-    MDCIconToggle.attachTo(this.$el);
+  mounted () {
+    MDCIconToggle.attachTo(this.$el)
     this.$el.addEventListener('MDCIconToggle:change', ({ detail }) => {
-      this.$emit('change', detail.isOn);
-    });
+      this.$emit('change', detail.isOn)
+    })
   },
   computed: {
-    toggleOn() {
+    toggleOn () {
       return JSON.stringify({
         content: this.checkedIcon ? this.checkedIcon : this.icon,
-        cssClass: 'mdc-icon-toggle--primary',
-      });
+        cssClass: 'mdc-icon-toggle--primary'
+      })
     },
-    toggleOff() {
+    toggleOff () {
       return JSON.stringify({
-        content: this.icon,
-      });
-    },
-  },
-};
+        content: this.icon
+      })
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

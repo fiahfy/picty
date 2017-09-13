@@ -21,54 +21,54 @@
 </template>
 
 <script>
-import { MDCTextfield } from '@material/textfield';
+import { MDCTextfield } from '@material/textfield'
 
 export default {
   name: 'mdc-textfield',
   props: {
     label: {
-      type: String,
+      type: String
     },
     fullwidth: {
       type: Boolean,
-      default: false,
+      default: false
     },
     defaultValue: {
-      type: String,
-    },
+      type: String
+    }
   },
-  data() {
+  data () {
     return {
       id: -1,
-      value: this.defaultValue,
-    };
+      value: this.defaultValue
+    }
   },
-  mounted() {
-    new MDCTextfield(this.$el); // eslint-disable-line no-new
-    this.id = this._uid; // eslint-disable-line no-underscore-dangle
+  mounted () {
+    new MDCTextfield(this.$el) // eslint-disable-line no-new
+    this.id = this._uid // eslint-disable-line no-underscore-dangle
   },
   computed: {
-    classes() {
+    classes () {
       return {
-        'mdc-textfield--fullwidth': this.fullwidth,
-      };
-    },
-    placeholder() {
-      return this.fullwidth ? this.label : null;
-    },
-  },
-  methods: {
-    keyup(e) {
-      this.$emit('input', e.target.value);
-      if (event.keyCode === 13) {
-        this.$emit('keyupEnter');
+        'mdc-textfield--fullwidth': this.fullwidth
       }
     },
+    placeholder () {
+      return this.fullwidth ? this.label : null
+    }
+  },
+  methods: {
+    keyup (e) {
+      this.$emit('input', e.target.value)
+      if (event.keyCode === 13) {
+        this.$emit('keyupEnter')
+      }
+    }
   },
   watch: {
-    defaultValue(value) {
-      this.value = value;
-    },
-  },
-};
+    defaultValue (value) {
+      this.value = value
+    }
+  }
+}
 </script>

@@ -8,25 +8,25 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import MdcButton from '../components/MdcButton';
-import MdcIcon from '../components/MdcIcon';
+import { mapState } from 'vuex'
+import MdcButton from '../components/MdcButton'
+import MdcIcon from '../components/MdcIcon'
 
 export default {
   name: 'viewer',
   components: {
     MdcButton,
-    MdcIcon,
+    MdcIcon
   },
   computed: mapState([
-    'files',
+    'files'
   ]),
   methods: {
-    click() {
-      this.$router.push({ name: 'main' });
-    },
-  },
-};
+    click () {
+      this.$router.push({ name: 'main' })
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

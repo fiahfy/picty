@@ -22,34 +22,34 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import MdcButton from '../components/MdcButton';
-import MdcIcon from '../components/MdcIcon';
-import MdcTextfield from '../components/MdcTextfield';
+import { mapActions, mapState } from 'vuex'
+import MdcButton from '../components/MdcButton'
+import MdcIcon from '../components/MdcIcon'
+import MdcTextfield from '../components/MdcTextfield'
 
 export default {
   name: 'menu-bar',
   components: {
     MdcButton,
     MdcIcon,
-    MdcTextfield,
+    MdcTextfield
   },
-  data() {
+  data () {
     return {
-      path: '',
-    };
+      path: ''
+    }
   },
   computed: mapState([
-    'directory',
+    'directory'
   ]),
   methods: {
     ...mapActions([
       'changeDirectory',
       'changeParentDirectory',
-      'refreshDirectory',
-    ]),
-  },
-};
+      'refreshDirectory'
+    ])
+  }
+}
 </script>
 
 <style scoped lang="scss">

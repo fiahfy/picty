@@ -1,6 +1,6 @@
 <template>
   <div class="file-list">
-    <div class="error" v-if="file.error">
+    <div class="error" v-if="error">
       <span>Invalid Directory</span>
     </div>
     <mdc-table v-else>
@@ -15,7 +15,7 @@
         </mdc-table-row>
       </mdc-table-header>
       <mdc-table-body>
-        <mdc-table-row v-for="file in file.items" :key="file.name" @click="rowClick(file)">
+        <mdc-table-row v-for="file in files" :key="file.name" @click="rowClick(file)">
           <mdc-table-column class="name">
             <mdc-icon
               :icon="icon(file)"
@@ -33,15 +33,15 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import MdcIcon from '../components/MdcIcon';
-import MdcTable from '../components/MdcTable';
-import MdcTableBody from '../components/MdcTableBody';
-import MdcTableColumn from '../components/MdcTableColumn';
-import MdcTableHeader from '../components/MdcTableHeader';
-import MdcTableHeaderColumn from '../components/MdcTableHeaderColumn';
-import MdcTableRow from '../components/MdcTableRow';
-import { isImage } from '../utils/file';
+import { mapActions, mapState } from 'vuex'
+import MdcIcon from '../components/MdcIcon'
+import MdcTable from '../components/MdcTable'
+import MdcTableBody from '../components/MdcTableBody'
+import MdcTableColumn from '../components/MdcTableColumn'
+import MdcTableHeader from '../components/MdcTableHeader'
+import MdcTableHeaderColumn from '../components/MdcTableHeaderColumn'
+import MdcTableRow from '../components/MdcTableRow'
+import { isImage } from '../utils/file'
 
 export default {
   name: 'file-list',
@@ -52,46 +52,47 @@ export default {
     MdcTableColumn,
     MdcTableHeader,
     MdcTableHeaderColumn,
-    MdcTableRow,
+    MdcTableRow
   },
   computed: mapState([
-    'file',
+    'files',
+    'error'
   ]),
   methods: {
-    icon(file) {
+    icon (file) {
       if (file.stats.isDirectory()) {
-        return 'folder';
+        return 'folder'
       }
-      return isImage(file.name) ? 'photo' : 'note';
+      return isImage(file.name) ? 'photo' : 'note'
     },
-    rowClick(file) {
+    rowClick (file) {
       if (file.stats.isDirectory()) {
-        this.changeDirectory(file.path);
+        this.changeDirectory(file.path)
       } else if (file.name.match(/.(jpe?g|gif|png)$/i)) {
-        this.$router.push({ name: 'viewer', params: { path: file.path } });
+        this.$router.push({ name: 'viewer', params: { path: file.path } })
       }
     },
     ...mapActions([
-      'changeDirectory',
-    ]),
+      'changeDirectory'
+    ])
   },
   watch: {
-    file() {
-      this.$el.scrollTop = 0;
-    },
+    file () {
+      this.$el.scrollTop = 0
+    }
   },
   filters: {
-    date(value) {
-      const date = new Date(value);
-      const Y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, '0');
-      const d = String(date.getDate()).padStart(2, '0');
-      const H = String(date.getHours()).padStart(2, '0');
-      const i = String(date.getMinutes()).padStart(2, '0');
-      return `${Y}/${m}/${d} ${H}:${i}`;
-    },
-  },
-};
+    date (value) {
+      const date = new Date(value)
+      const Y = date.getFullYear()
+      const m = String(date.getMonth() + 1).padStart(2, '0')
+      const d = String(date.getDate()).padStart(2, '0')
+      const H = String(date.getHours()).padStart(2, '0')
+      const i = String(date.getMinutes()).padStart(2, '0')
+      return `${Y}/${m}/${d} ${H}:${i}`
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

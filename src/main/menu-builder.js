@@ -1,36 +1,36 @@
-import { app, shell, Menu } from 'electron';
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import { app, shell, Menu } from 'electron'
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
 export default class MenuBuilder {
-  constructor(window) {
-    this.window = window;
+  constructor (window) {
+    this.window = window
   }
-  build() {
+  build () {
     if (process.env.NODE_ENV !== 'production') {
-      this.setupDevelopmentEnvironment();
+      this.setupDevelopmentEnvironment()
     }
-    const template = this.buildTemplate();
-    const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
+    const template = this.buildTemplate()
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
   }
-  setupDevelopmentEnvironment() {
+  setupDevelopmentEnvironment () {
     installExtension(VUEJS_DEVTOOLS)
       .catch((err) => {
-        console.log('Unable to install `vue-devtools`: \n', err); // eslint-disable-line no-console
-      });
-    this.window.openDevTools();
+        console.log('Unable to install `vue-devtools`: \n', err) // eslint-disable-line no-console
+      })
+    this.window.openDevTools()
     this.window.webContents.on('context-menu', (e, props) => {
-      const { x, y } = props;
+      const { x, y } = props
 
       Menu
         .buildFromTemplate([{
           label: 'Inspect element',
           click: () => {
-            this.window.inspectElement(x, y);
-          },
+            this.window.inspectElement(x, y)
+          }
         }])
-        .popup(this.window);
-    });
+        .popup(this.window)
+    })
   }
   /* eslint-disable */
   buildTemplate() {

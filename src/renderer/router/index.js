@@ -1,21 +1,21 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import MainPage from '../pages/MainPage';
-import SettingsPage from '../pages/SettingsPage';
+import Vue from 'vue'
+import Router from 'vue-router'
+import MainPage from '../pages/MainPage'
+import SettingsPage from '../pages/SettingsPage'
 
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
   routes: [
     {
       path: '/',
       name: 'main',
-      component: MainPage,
+      component: MainPage
     },
     {
       path: '/settings',
       name: 'settings',
-      component: SettingsPage,
-    },
-  ],
-});
+      component: SettingsPage
+    }
+  ]
+})

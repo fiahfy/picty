@@ -6,6 +6,6 @@
 
 <script>
 export default {
-  name: 'settings-page',
-};
+  name: 'settings-page'
+}
 </script>

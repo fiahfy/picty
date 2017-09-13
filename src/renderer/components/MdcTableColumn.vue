@@ -6,8 +6,8 @@
 
 <script>
 export default {
-  name: 'mdc-table-column',
-};
+  name: 'mdc-table-column'
+}
 </script>
 
 <style scoped lang="scss">

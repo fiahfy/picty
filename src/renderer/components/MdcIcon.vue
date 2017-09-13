@@ -9,24 +9,24 @@ export default {
   name: 'mdc-icon',
   props: {
     icon: {
-      type: String,
+      type: String
     },
     checked: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   computed: {
-    classes() {
+    classes () {
       return {
-        'mdc-icon-toggle--primary': this.checked,
-      };
+        'mdc-icon-toggle--primary': this.checked
+      }
     },
-    content() {
-      return this.icon;
-    },
-  },
-};
+    content () {
+      return this.icon
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

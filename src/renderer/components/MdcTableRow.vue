@@ -8,11 +8,11 @@
 export default {
   name: 'mdc-table-row',
   methods: {
-    click() {
-      this.$emit('click');
-    },
-  },
-};
+    click () {
+      this.$emit('click')
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

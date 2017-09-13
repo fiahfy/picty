@@ -11,39 +11,39 @@
 </template>
 
 <script>
-import MdcButton from '../components/MdcButton';
-import MdcIcon from '../components/MdcIcon';
+import MdcButton from '../components/MdcButton'
+import MdcIcon from '../components/MdcIcon'
 
 export default {
   name: 'activity-bar',
   components: {
     MdcButton,
-    MdcIcon,
+    MdcIcon
   },
-  data() {
+  data () {
     return {
       items: [
         { icon: 'list', routeName: 'main', checked: true },
-        { icon: 'settings', routeName: 'settings', checked: false },
-      ],
-    };
+        { icon: 'settings', routeName: 'settings', checked: false }
+      ]
+    }
   },
   methods: {
-    click(routeName) {
-      this.$router.push({ name: routeName });
-    },
+    click (routeName) {
+      this.$router.push({ name: routeName })
+    }
   },
   watch: {
-    '$route'(to) { // eslint-disable-line object-shorthand
+    '$route' (to) { // eslint-disable-line object-shorthand
       this.items = this.items.map(item => (
         Object.assign({}, {
           ...item,
-          checked: item.routeName === to.name,
+          checked: item.routeName === to.name
         })
-      ));
-    },
-  },
-};
+      ))
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">
