@@ -44,7 +44,7 @@ export default {
     }
   },
   mounted () {
-    new MDCTextfield(this.$el) // eslint-disable-line no-new
+    MDCTextfield.attachTo(this.$el)
     this.id = this._uid // eslint-disable-line no-underscore-dangle
   },
   computed: {

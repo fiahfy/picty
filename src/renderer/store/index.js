@@ -14,7 +14,8 @@ export default new Vuex.Store({
     error: false,
     directory: remote.app.getPath('home'),
     files: [],
-    selectedFile: {}
+    selectedFile: {},
+    settings: {}
   },
   actions: {
     async loadFiles ({ commit }, dir) {
@@ -26,7 +27,7 @@ export default new Vuex.Store({
       }
     },
     async changeDirectory ({ commit, dispatch }, dir) {
-      commit('changedDirectory', { dir })
+      commit('changedDirectory', dir)
       await dispatch('loadFiles', dir)
     },
     async changeChildDirectory ({ dispatch, state }, dirname) {
@@ -42,18 +43,24 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    changedDirectory (state, { dir }) {
+    changedDirectory (state, dir) {
       state.directory = dir
     },
     loadedFiles (state, { files, error }) {
       state.files = files
       state.error = error
     },
-    selectFile (state, { file }) {
+    selectFile (state, file) {
       state.selectedFile = file
     },
-    changeRoute (state, { name }) {
+    changeRoute (state, name) {
       router.push({ name })
+    },
+    setFullScreen (state, fullScreen) {
+      state.settings = Object.assign({}, state.settings, {
+        ...state.settings,
+        fullScreen
+      })
     }
   },
   modules: {
@@ -61,7 +68,10 @@ export default new Vuex.Store({
   },
   plugins: [
     createPersistedState({
-      paths: ['directory']
+      paths: [
+        'directory',
+        'settings'
+      ]
     })
   ]
 })

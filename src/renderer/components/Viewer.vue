@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { remote } from 'electron'
 import { mapMutations, mapState } from 'vuex'
 
 export default {
@@ -27,14 +28,23 @@ export default {
       return ''
     },
     ...mapState([
-      'viewer'
+      'viewer',
+      'settings'
     ])
   },
   created () {
     document.addEventListener('keyup', this.keyup)
+    if (this.settings.fullScreen) {
+      const browserWindow = remote.getCurrentWindow()
+      browserWindow.setFullScreen(true)
+      browserWindow.setMenuBarVisibility(false)
+    }
   },
   beforeDestroy () {
     document.removeEventListener('keyup', this.keyup)
+    const browserWindow = remote.getCurrentWindow()
+    browserWindow.setFullScreen(false)
+    browserWindow.setMenuBarVisibility(true)
   },
   methods: {
     keyup (e) {

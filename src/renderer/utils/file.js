@@ -41,6 +41,7 @@ export async function listFiles (dir) {
 
 export function isImage (file) {
   const extensions = [
+    '.jpeg',
     '.jpg',
     '.png',
     '.gif',

@@ -19,7 +19,7 @@
           v-for="file in files"
           :key="file.name"
           :selected="isSelected(file)"
-          @click="selectFile({ file })"
+          @click="selectFile(file)"
           @dblclick.native="doubleClick(file)"
         >
           <mdc-table-column class="name">
@@ -78,7 +78,7 @@ export default {
     doubleClick (file) {
       if (file.stats.isDirectory()) {
         this.changeDirectory(file.path)
-      } else if (isImage(file.path)) {
+      } else {
         this.showViewer(file)
       }
     },
