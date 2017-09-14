@@ -3,7 +3,7 @@
     <ul>
       <li v-for="item in items" :key="item.routeName">
         <mdc-button @click="changeRoute(item)">
-          <mdc-icon :icon="item.icon" :checked="item.checked" />
+          <mdc-icon :icon="item.icon" :class="item.classes" />
         </mdc-button>
       </li>
     </ul>
@@ -25,8 +25,8 @@ export default {
   data () {
     return {
       items: [
-        { icon: 'list', name: 'explorer', checked: true },
-        { icon: 'settings', name: 'settings', checked: false }
+        { icon: 'list', name: 'explorer', classes: ['selected'] },
+        { icon: 'settings', name: 'settings', classes: [] }
       ]
     }
   },
@@ -38,7 +38,9 @@ export default {
       this.items = this.items.map(item => (
         Object.assign({}, {
           ...item,
-          checked: item.routeName === to.name
+          classes: {
+            selected: item.name === to.name
+          }
         })
       ))
     }
@@ -67,5 +69,13 @@ ul {
   line-height: initial;
   min-width: auto;
   padding: 0;
+  .mdc-icon {
+    &:not(.selected) {
+      color: $material-color-grey-400
+    }
+    &.selected {
+      color: $material-color-pink-400
+    }
+  }
 }
 </style>

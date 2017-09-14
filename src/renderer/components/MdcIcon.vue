@@ -1,5 +1,5 @@
 <template>
-  <i class="mdc-icon material-icons" :class="classes">
+  <i class="mdc-icon material-icons">
     {{ content }}
   </i>
 </template>
@@ -10,18 +10,9 @@ export default {
   props: {
     icon: {
       type: String
-    },
-    checked: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {
-    classes () {
-      return {
-        'mdc-icon-toggle--primary': this.checked
-      }
-    },
     content () {
       return this.icon
     }
