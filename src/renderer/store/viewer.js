@@ -11,32 +11,24 @@ export default {
   actions: {
     async showViewer ({ commit }, file) {
       try {
-        const dir = path.dirname(file.path)
-        let files = await listFiles(dir)
-        files = files.filter((file) => isImage(file.path))
+        let files
+        if (file.stats.isDirectory()) {
+          files = await listFiles(file.path)
+          files = files.filter((file) => isImage(file.path))
+          file = files[0]
+        } else {
+          const dir = path.dirname(file.path)
+          files = await listFiles(dir)
+          files = files.filter((file) => isImage(file.path))
+        }
         commit('preparedViewer', { files, file, error: false })
       } catch (e) {
-        commit('preparedViewer', { files: [], file: '', error: true })
+        commit('preparedViewer', { files: [], file: {}, error: true })
       }
     },
-    // async showViewerWithDirectory ({ commit }, dir) {
-    //   try {
-    //     let files = await listFiles(dir)
-    //     files = files.filter((file) => isImage(file.path))
-    //     const file = files[0]
-    //     commit('preparedViewer', { files, file, error: false })
-    //   } catch (e) {
-    //     commit('preparedViewer', { files: [], file: '', error: true })
-    //   }
-    // },
-    // async showViewerWithSelectedFile ({ dispatch, rootState }) {
-    //   const file = rootState.selectedFile
-    //   if (file) {
-    //     dispatch('showViewerWithDirectory', file)
-    //   } else {
-    //     dispatch('showViewer', file)
-    //   }
-    // }
+    async showViewerWithSelectedFile ({ dispatch, rootState }) {
+      await dispatch('showViewer', rootState.selectedFile)
+    }
   },
   mutations: {
     preparedViewer (state, { files, file, error }) {

@@ -1,7 +1,7 @@
 <template>
   <div class="viewer">
-    <div class="error" v-if="viewer.error || error">
-      <span>Invalid Image</span>
+    <div class="error" v-if="message">
+      <span>{{ message }}</span>
     </div>
     <img v-else :src="viewer.currentFile.path" @error="loadError"/>
   </div>
@@ -17,9 +17,19 @@ export default {
       error: false
     }
   },
-  computed: mapState([
-    'viewer'
-  ]),
+  computed: {
+    message () {
+      if (this.viewer.error || this.error) {
+        return 'Invalid Image'
+      } else if (!this.viewer.currentFile) {
+        return 'Not Found'
+      }
+      return ''
+    },
+    ...mapState([
+      'viewer'
+    ])
+  },
   created () {
     document.addEventListener('keyup', this.keyup)
   },

@@ -13,5 +13,6 @@ export default {
 <style scoped lang="scss">
 .mdc-table-header-column {
   padding: 8px;
+  user-select: none;
 }
 </style>
