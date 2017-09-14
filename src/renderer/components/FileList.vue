@@ -19,7 +19,7 @@
           v-for="file in files"
           :key="file.name"
           :selected="isSelected(file)"
-          @click="selectFile({ file: file.path })"
+          @click="selectFile({ file })"
           @dblclick.native="doubleClick(file)"
         >
           <mdc-table-column class="name">
@@ -73,13 +73,13 @@ export default {
       return isImage(file.path) ? 'photo' : 'note'
     },
     isSelected (file) {
-      return file.path === this.selectedFile
+      return file.path === this.selectedFile.path
     },
     doubleClick (file) {
       if (file.stats.isDirectory()) {
         this.changeDirectory(file.path)
       } else if (isImage(file.path)) {
-        this.showViewer(file.path)
+        this.showViewer(file)
       }
     },
     ...mapMutations([

@@ -14,7 +14,7 @@ export default new Vuex.Store({
     error: false,
     directory: remote.app.getPath('home'),
     files: [],
-    selectedFile: ''
+    selectedFile: {}
   },
   actions: {
     async loadFiles ({ commit }, dir) {

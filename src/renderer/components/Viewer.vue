@@ -3,7 +3,7 @@
     <div class="error" v-if="viewer.error || error">
       <span>Invalid Image</span>
     </div>
-    <img v-else :src="viewer.currentImage" @error="loadError"/>
+    <img v-else :src="viewer.currentFile.path" @error="loadError"/>
   </div>
 </template>
 
