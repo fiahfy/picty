@@ -1,13 +1,13 @@
 <template>
   <div id="app">
     <title-bar v-if="hasTitleBar"/>
-    <div class="container" v-show="!isViewing">
+    <div class="container" v-show="!viewer.isViewing">
       <activity-bar/>
       <div class="content">
         <router-view/>
       </div>
     </div>
-    <viewer v-if="isViewing"/>
+    <viewer v-if="viewer.isViewing"/>
   </div>
 </template>
 
@@ -29,7 +29,7 @@ export default {
       return process.platform !== 'win32'
     },
     ...mapState([
-      'isViewing'
+      'viewer'
     ])
   }
 }
@@ -50,6 +50,9 @@ export default {
   overflow: hidden;
 }
 .content {
+  flex: 1;
+}
+.viewer {
   flex: 1;
 }
 </style>

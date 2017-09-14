@@ -1,9 +1,9 @@
 <template>
   <div class="viewer">
-    <div class="error" v-if="error">
+    <div class="error" v-if="viewer.error || error">
       <span>Invalid Image</span>
     </div>
-    <img v-else :src="currentImage"/>
+    <img v-else :src="viewer.currentImage" @error="loadError"/>
   </div>
 </template>
 
@@ -12,9 +12,13 @@ import { mapMutations, mapState } from 'vuex'
 
 export default {
   name: 'viewer',
+  data () {
+    return {
+      error: false
+    }
+  },
   computed: mapState([
-    'error',
-    'currentImage'
+    'viewer'
   ]),
   created () {
     document.addEventListener('keyup', this.keyup)
@@ -30,13 +34,18 @@ export default {
           break
         case 37:
         case 48:
+          this.error = false
           this.viewPreviousImage()
           break
         case 39:
         case 40:
+          this.error = false
           this.viewNextImage()
           break
       }
+    },
+    loadError (e) {
+      this.error = true
     },
     ...mapMutations([
       'viewPreviousImage',
@@ -49,7 +58,6 @@ export default {
 
 <style scoped lang="scss">
 .viewer {
-  height: 100%;
   position:relative;
   user-select: none;
 }

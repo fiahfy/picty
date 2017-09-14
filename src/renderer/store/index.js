@@ -4,7 +4,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import router from '../router'
-import { listFiles, isImage } from '../utils/file'
+import viewer from './viewer'
+import { listFiles } from '../utils/file'
 
 Vue.use(Vuex)
 
@@ -13,10 +14,7 @@ export default new Vuex.Store({
     error: false,
     directory: remote.app.getPath('home'),
     files: [],
-    selectedFile: '',
-    isViewing: false,
-    images: [],
-    currentImage: ''
+    selectedFile: ''
   },
   actions: {
     async loadFiles ({ commit }, dir) {
@@ -41,16 +39,6 @@ export default new Vuex.Store({
     },
     async refreshDirectory ({ dispatch, state }) {
       await dispatch('loadFiles', state.directory)
-    },
-    async showViewer ({ commit }, file) {
-      try {
-        const dir = path.dirname(file)
-        let files = await listFiles(dir)
-        files = files.filter((file) => isImage(file.path))
-        commit('preparedViewer', { files, file, error: false })
-      } catch (e) {
-        commit('preparedViewer', { files: [], file: '', error: true })
-      }
     }
   },
   mutations: {
@@ -61,38 +49,15 @@ export default new Vuex.Store({
       state.files = files
       state.error = error
     },
-    preparedViewer (state, { files, file }) {
-      state.images = files
-      state.currentImage = file
-      state.isViewing = true
-    },
     selectFile (state, { file }) {
       state.selectedFile = file
     },
-    viewPreviousImage (state) {
-      let index = state.images.findIndex((file) => {
-        return file.path === state.currentImage
-      }) - 1
-      if (index < 0) {
-        index = state.images.length - 1
-      }
-      state.currentImage = state.images[index].path
-    },
-    viewNextImage (state) {
-      let index = state.images.findIndex((file) => {
-        return file.path === state.currentImage
-      }) + 1
-      if (index > state.images.length - 1) {
-        index = 0
-      }
-      state.currentImage = state.images[index].path
-    },
     changeRoute (state, { name }) {
       router.push({ name })
-    },
-    closeViewer (state) {
-      state.isViewing = false
     }
+  },
+  modules: {
+    viewer
   },
   plugins: [
     createPersistedState({
