@@ -18,6 +18,24 @@ export default {
       } catch (e) {
         commit('preparedViewer', { files: [], file: '', error: true })
       }
+    },
+    async showViewerWithDirectory ({ commit }, dir) {
+      try {
+        let files = await listFiles(dir)
+        files = files.filter((file) => isImage(file.path))
+        const file = files[0]
+        commit('preparedViewer', { files, file, error: false })
+      } catch (e) {
+        commit('preparedViewer', { files: [], file: '', error: true })
+      }
+    },
+    async showViewerWithSelectedFile ({ dispatch, rootState }) {
+      const file = rootState.selectedFile
+      if (file) {
+        dispatch('showViewerWithDirectory', file)
+      } else {
+        dispatch('showViewer', file)
+      }
     }
   },
   mutations: {

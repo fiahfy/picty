@@ -13,15 +13,21 @@
     <div class="buttons">
       <mdc-button
         title="Change parent drectory"
-        @click="changeParentDirectory()"
+        @click="changeParentDirectory"
       >
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
-        title="Refresh current directory"
-        @click="refreshDirectory()"
+        title="Refresh"
+        @click="refreshDirectory"
       >
         <mdc-icon icon="refresh" />
+      </mdc-button>
+      <mdc-button
+        title="View"
+        @click="showViewerWithSelectedFile"
+      >
+        <mdc-icon icon="photo" />
       </mdc-button>
     </div>
   </div>
@@ -52,7 +58,8 @@ export default {
     ...mapActions([
       'changeDirectory',
       'changeParentDirectory',
-      'refreshDirectory'
+      'refreshDirectory',
+      'showViewerWithSelectedFile'
     ])
   }
 }
