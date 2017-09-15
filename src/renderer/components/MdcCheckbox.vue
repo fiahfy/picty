@@ -5,8 +5,9 @@
         type="checkbox"
         class="mdc-checkbox__native-control"
         :id="id"
-        v-model="_checked"
-        @change="updateChecked"
+        :value="value"
+        :checked="value"
+        @change="updateValue"
       />
       <div class="mdc-checkbox__background">
         <svg
@@ -32,7 +33,7 @@ import { MDCCheckbox } from '@material/checkbox'
 export default {
   name: 'mdc-checkbox',
   props: {
-    checked: {
+    value: {
       type: Boolean
     },
     label: {
@@ -48,14 +49,9 @@ export default {
     MDCCheckbox.attachTo(this.$el.querySelector('.mdc-checkbox'))
     this.id = this._uid // eslint-disable-line no-underscore-dangle
   },
-  computed: {
-    _checked () {
-      return this.checked
-    }
-  },
   methods: {
-    updateChecked (e) {
-      this.$emit('change', e.target.checked)
+    updateValue (e) {
+      this.$emit('input', e.target.checked)
     }
   }
 }

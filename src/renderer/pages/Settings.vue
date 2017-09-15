@@ -1,12 +1,11 @@
 <template>
   <div class="settings">
     <h4>Viewer</h4>
-    <mdc-checkbox label="View in full screen" v-model="fullScreen" @change="setFullScreen"/>
+    <mdc-checkbox label="View in full screen" v-model="fullScreen"/>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
 import MdcCheckbox from '../components/MdcCheckbox'
 
 export default {
@@ -14,12 +13,16 @@ export default {
   components: {
     MdcCheckbox
   },
-  computed: mapState({
-    fullScreen: state => state.settings.fullScreen
-  }),
-  methods: mapMutations([
-    'setFullScreen'
-  ])
+  computed: {
+    fullScreen: {
+      get () {
+        return this.$store.state.settings.fullScreen
+      },
+      set (value) {
+        this.$store.commit('setFullScreen', value)
+      }
+    }
+  }
 }
 </script>
 

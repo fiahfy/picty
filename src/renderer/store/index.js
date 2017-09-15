@@ -5,6 +5,7 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import router from '../router'
 import viewer from './viewer'
+import settings from './settings'
 import { listFiles } from '../utils/file'
 
 Vue.use(Vuex)
@@ -14,8 +15,7 @@ export default new Vuex.Store({
     error: false,
     directory: remote.app.getPath('home'),
     files: [],
-    selectedFile: {},
-    settings: {}
+    selectedFile: {}
   },
   actions: {
     async loadFiles ({ commit }, dir) {
@@ -59,16 +59,11 @@ export default new Vuex.Store({
     },
     changeRoute (state, name) {
       router.push({ name })
-    },
-    setFullScreen (state, fullScreen) {
-      state.settings = Object.assign({}, state.settings, {
-        ...state.settings,
-        fullScreen
-      })
     }
   },
   modules: {
-    viewer
+    viewer,
+    settings
   },
   plugins: [
     createPersistedState({
