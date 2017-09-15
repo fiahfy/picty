@@ -10,6 +10,7 @@
       :placeholder="placeholder"
       :aria-label="placeholder"
       :value="value"
+      @input="updateValue"
       @keyup="keyup"
     />
     <label
@@ -26,21 +27,20 @@ import { MDCTextfield } from '@material/textfield'
 export default {
   name: 'mdc-textfield',
   props: {
+    value: {
+      type: String
+    },
     label: {
       type: String
     },
     fullwidth: {
       type: Boolean,
       default: false
-    },
-    defaultValue: {
-      type: String
     }
   },
   data () {
     return {
-      id: -1,
-      value: this.defaultValue
+      id: -1
     }
   },
   mounted () {
@@ -58,11 +58,11 @@ export default {
     }
   },
   methods: {
-    keyup (e) {
+    updateValue (e) {
       this.$emit('input', e.target.value)
-      if (event.keyCode === 13) {
-        this.$emit('keyupEnter')
-      }
+    },
+    keyup (e) {
+      this.$emit('keyup', e)
     }
   },
   watch: {

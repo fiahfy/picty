@@ -5,9 +5,8 @@
       <mdc-textfield
         label="Input path..."
         fullwidth
-        :defaultValue="directory"
-        v-model="path"
-        @keyupEnter="changeDirectory(path)"
+        @keyup="keyup"
+        v-model="directory"
       />
     </div>
     <div class="buttons">
@@ -34,7 +33,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcTextfield from '../components/MdcTextfield'
@@ -51,10 +50,22 @@ export default {
       path: ''
     }
   },
-  computed: mapState([
-    'directory'
-  ]),
+  computed: {
+    directory: {
+      get () {
+        return this.$store.state.directory
+      },
+      set (value) {
+        this.$store.commit('setDirectory', value)
+      }
+    }
+  },
   methods: {
+    keyup (e) {
+      if (event.keyCode === 13) {
+        this.changeDirectory(e.target.value)
+      }
+    },
     ...mapActions([
       'changeDirectory',
       'changeParentDirectory',

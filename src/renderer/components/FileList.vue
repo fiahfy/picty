@@ -91,7 +91,7 @@ export default {
     ])
   },
   watch: {
-    file () {
+    files () {
       this.$el.scrollTop = 0
     }
   },

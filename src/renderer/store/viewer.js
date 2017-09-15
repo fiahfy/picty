@@ -21,21 +21,32 @@ export default {
           files = await listFiles(dir)
           files = files.filter((file) => isImage(file.path))
         }
-        commit('preparedViewer', { files, file, error: false })
+        commit('setViewerError', false)
+        commit('setViewerCurrentFile', file)
+        commit('setViewerFiles', files)
       } catch (e) {
-        commit('preparedViewer', { files: [], file: {}, error: true })
+        commit('setViewerError', true)
+        commit('setViewerCurrentFile', {})
+        commit('setViewerFiles', [])
       }
+      commit('setViewerViewing', true)
     },
     async showViewerWithSelectedFile ({ dispatch, rootState }) {
       await dispatch('showViewer', rootState.selectedFile)
     }
   },
   mutations: {
-    preparedViewer (state, { files, file, error }) {
-      state.files = files
-      state.currentFile = file
-      state.isViewing = true
+    setViewerError (state, error) {
       state.error = error
+    },
+    setViewerViewing (state, isViewing) {
+      state.isViewing = isViewing
+    },
+    setViewerFiles (state, files) {
+      state.files = files
+    },
+    setViewerCurrentFile (state, file) {
+      state.currentFile = file
     },
     viewPreviousImage (state) {
       let index = state.files.findIndex((file) => {
@@ -54,9 +65,6 @@ export default {
         index = 0
       }
       state.currentFile = state.files[index]
-    },
-    closeViewer (state) {
-      state.isViewing = false
     }
   }
 }

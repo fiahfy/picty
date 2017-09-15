@@ -21,13 +21,15 @@ export default new Vuex.Store({
     async loadFiles ({ commit }, dir) {
       try {
         const files = await listFiles(dir)
-        commit('loadedFiles', { files, error: false })
+        commit('setError', false)
+        commit('setFiles', files)
       } catch (e) {
-        commit('loadedFiles', { files: [], error: true })
+        commit('setError', true)
+        commit('setFiles', [])
       }
     },
     async changeDirectory ({ commit, dispatch }, dir) {
-      commit('changedDirectory', dir)
+      commit('setDirectory', dir)
       await dispatch('loadFiles', dir)
     },
     async changeChildDirectory ({ dispatch, state }, dirname) {
@@ -43,12 +45,14 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    changedDirectory (state, dir) {
+    setError (state, error) {
+      state.error = error
+    },
+    setDirectory (state, dir) {
       state.directory = dir
     },
-    loadedFiles (state, { files, error }) {
+    setFiles (state, files) {
       state.files = files
-      state.error = error
     },
     selectFile (state, file) {
       state.selectedFile = file

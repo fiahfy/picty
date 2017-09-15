@@ -50,7 +50,7 @@ export default {
     keyup (e) {
       switch (e.keyCode) {
         case 27:
-          this.closeViewer()
+          this.setViewerViewing(false)
           break
         case 37:
         case 48:
@@ -70,7 +70,7 @@ export default {
     ...mapMutations([
       'viewPreviousImage',
       'viewNextImage',
-      'closeViewer'
+      'setViewerViewing'
     ])
   }
 }
