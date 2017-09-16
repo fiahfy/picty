@@ -84,7 +84,9 @@ export default {
   user-select: none;
 }
 .menu-bar>div {
-  border-bottom: 1px solid $material-color-grey-300;
+  border-bottom-color: $material-color-grey-300;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
   padding: 4px;
 }
 .directory {
@@ -111,5 +113,10 @@ export default {
   margin-right: auto;
   min-width: auto;
   padding: 0;
+}
+.mdc-theme--dark {
+  .menu-bar>div {
+    border-bottom-color: $material-color-grey-600;
+  }
 }
 </style>

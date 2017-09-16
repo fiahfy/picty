@@ -85,4 +85,9 @@ ul {
     }
   }
 }
+.mdc-theme--dark {
+  .activity-bar {
+    border-right-color: $material-color-grey-600;
+  }
+}
 </style>

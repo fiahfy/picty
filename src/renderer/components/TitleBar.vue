@@ -20,4 +20,9 @@
   user-select: none;
   -webkit-app-region: drag;
 }
+.mdc-theme--dark {
+  .title-bar {
+    border-bottom-color: $material-color-grey-600;
+  }
+}
 </style>

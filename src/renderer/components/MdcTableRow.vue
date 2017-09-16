@@ -40,4 +40,15 @@ export default {
     background-color: $material-color-grey-300;
   }
 }
+.mdc-theme--dark {
+  .mdc-table-row {
+    border-bottom-color: $material-color-grey-600;
+    &:hover {
+      background-color: $material-color-grey-800;
+    }
+    &.selected {
+      background-color: $material-color-grey-600;
+    }
+  }
+}
 </style>

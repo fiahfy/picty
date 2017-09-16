@@ -1,5 +1,10 @@
 <template>
   <div class="settings">
+    <h4>General</h4>
+    <mdc-form-field>
+      <mdc-checkbox id="dark-theme" v-model="darkTheme"/>
+      <label for="dark-theme">User dark theme</label>
+    </mdc-form-field>
     <h4>Viewer</h4>
     <mdc-form-field>
       <mdc-checkbox id="full-screen" v-model="fullScreen"/>
@@ -18,6 +23,14 @@ export default {
     MdcFormField
   },
   computed: {
+    darkTheme: {
+      get () {
+        return this.$store.state.settings.darkTheme
+      },
+      set (value) {
+        this.$store.commit('settings/setDarkTheme', value)
+      }
+    },
     fullScreen: {
       get () {
         return this.$store.state.settings.fullScreen

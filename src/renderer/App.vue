@@ -1,13 +1,13 @@
 <template>
-  <div id="app">
+  <div id="app" :class="classes">
     <title-bar v-if="hasTitleBar"/>
-    <div class="container" v-show="!viewer.isViewing">
+    <div class="container" v-show="!isViewing">
       <activity-bar/>
       <div class="content">
         <router-view/>
       </div>
     </div>
-    <viewer v-if="viewer.isViewing"/>
+    <viewer v-if="isViewing"/>
   </div>
 </template>
 
@@ -24,11 +24,19 @@ export default {
     Viewer
   },
   computed: {
+    classes () {
+      return {
+        'mdc-theme--dark': this.darkTheme
+      }
+    },
     hasTitleBar () {
       return process.platform !== 'win32'
     },
-    ...mapState([
-      'viewer'
+    ...mapState('viewer', [
+      'isViewing'
+    ]),
+    ...mapState('settings', [
+      'darkTheme'
     ])
   }
 }
@@ -42,6 +50,10 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   height: 100%;
   text-align: center;
+  &.mdc-theme--dark {
+    background-color: #303030;
+    color: white;
+  }
 }
 .container {
   display: flex;

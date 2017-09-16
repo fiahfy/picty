@@ -189,4 +189,9 @@ export default {
     color: $material-color-grey-300;
   }
 }
+.mdc-theme--dark {
+  .mdc-table-header-column {
+    background-color: #303030;
+  }
+}
 </style>
