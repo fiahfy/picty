@@ -33,7 +33,7 @@ export default {
       commit('setViewing', true)
     },
     async showViewerWithSelectedFile ({ dispatch, rootState }) {
-      await dispatch('showViewer', rootState.selectedFile)
+      await dispatch('showViewer', rootState.explorer.selectedFile)
     }
   },
   mutations: {
