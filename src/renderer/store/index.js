@@ -23,6 +23,8 @@ export default new Vuex.Store({
     createPersistedState({
       paths: [
         'explorer.directory',
+        'explorer.sortKey',
+        'explorer.sortOrder',
         'settings'
       ]
     })

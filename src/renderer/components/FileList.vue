@@ -6,11 +6,25 @@
     <mdc-table v-else>
       <mdc-table-header>
         <mdc-table-row>
-          <mdc-table-header-column class="name">
-            Name
+          <mdc-table-header-column
+            class="name"
+            @click.native="changeSort('name')"
+          >
+            <span>Name</span>
+            <mdc-icon
+              :icon="sortIcon"
+              v-if="sortKey === 'name'"
+            />
           </mdc-table-header-column>
-          <mdc-table-header-column class="modified-date">
-            Date Modified
+          <mdc-table-header-column
+            class="date-modified"
+            @click.native="changeSort('date_modified')"
+          >
+            <span>Date Modified</span>
+            <mdc-icon
+              :icon="sortIcon"
+              v-if="sortKey === 'date_modified'"
+            />
           </mdc-table-header-column>
         </mdc-table-row>
       </mdc-table-header>
@@ -29,7 +43,7 @@
             />
             {{ file.name }}
           </mdc-table-column>
-          <mdc-table-column class="modified-date">
+          <mdc-table-column class="date-modified">
             {{ file.stats.mtime | date }}
           </mdc-table-column>
         </mdc-table-row>
@@ -59,11 +73,18 @@ export default {
     MdcTableHeaderColumn,
     MdcTableRow
   },
-  computed: mapState('explorer', [
-    'error',
-    'files',
-    'selectedFile'
-  ]),
+  computed: {
+    sortIcon () {
+      return this.sortOrder === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
+    },
+    ...mapState('explorer', [
+      'error',
+      'files',
+      'selectedFile',
+      'sortKey',
+      'sortOrder'
+    ])
+  },
   methods: {
     icon (file) {
       if (file.stats.isDirectory()) {
@@ -85,7 +106,8 @@ export default {
       'selectFile'
     ]),
     ...mapActions('explorer', [
-      'changeDirectory'
+      'changeDirectory',
+      'changeSort'
     ]),
     ...mapActions('viewer', [
       'showViewer'
@@ -139,7 +161,8 @@ export default {
   font-size: smaller;
   position: sticky;
   top: 0;
-  &.modified-date {
+  vertical-align: bottom;
+  &.date-modified {
     width: 128px;
   }
 }
