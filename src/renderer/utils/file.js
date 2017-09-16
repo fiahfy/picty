@@ -1,42 +1,24 @@
 import fs from 'fs'
 import path from 'path'
 
-export function readdirAsync (dir) {
-  return new Promise((resolve, reject) => {
-    fs.readdir(dir, (err, files) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(files)
-      }
-    })
-  })
-}
-
-export function lstatAsync (file) {
-  return new Promise((resolve, reject) => {
-    fs.lstat(file, (err, stats) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(stats)
-      }
-    })
-  })
-}
-
 export async function listFiles (dir) {
-  const files = await readdirAsync(dir)
-  return Promise.all(
-    files.map(async (file) => {
-      const stats = await lstatAsync(path.join(dir, file))
-      return {
-        name: file,
-        path: path.join(dir, file),
-        stats
+  try {
+    const files = fs.readdirSync(dir)
+    return files.map(file => {
+      try {
+        const stats = fs.lstatSync(path.join(dir, file))
+        return {
+          name: file,
+          path: path.join(dir, file),
+          stats
+        }
+      } catch (e) {
+        return null
       }
-    }),
-  )
+    }).filter(file => file)
+  } catch (e) {
+    return []
+  }
 }
 
 export function isImage (file) {
@@ -51,5 +33,5 @@ export function isImage (file) {
     '.jxr',
     '.psd'
   ]
-  return extensions.includes(path.extname(file))
+  return extensions.includes(path.extname(file).toLowerCase())
 }
