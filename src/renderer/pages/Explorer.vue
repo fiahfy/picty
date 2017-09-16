@@ -1,11 +1,17 @@
 <template>
   <div class="explorer">
     <menu-bar/>
-    <file-list/>
+    <div class="container">
+      <div class="error" v-if="error">
+        <span>{{ error.message }}</span>
+      </div>
+      <file-list v-else/>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import MenuBar from '../components/MenuBar'
 import FileList from '../components/FileList'
 
@@ -16,7 +22,10 @@ export default {
   },
   async asyncData ({ store }) {
     await store.dispatch('explorer/refreshDirectory')
-  }
+  },
+  computed: mapState('explorer', [
+    'error'
+  ])
 }
 </script>
 
@@ -26,7 +35,20 @@ export default {
   flex-direction: column;
   height: 100%;
 }
-.file-list {
+.container {
   flex: 1;
+  height: 100%;
+  overflow-y: auto;
+}
+.error {
+  display: table;
+  height: 100%;
+  vertical-align: middle;
+  width: 100%;
+  span {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+  }
 }
 </style>

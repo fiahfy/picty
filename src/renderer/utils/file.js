@@ -2,23 +2,19 @@ import fs from 'fs'
 import path from 'path'
 
 export async function listFiles (dir) {
-  try {
-    const files = fs.readdirSync(dir)
-    return files.map(file => {
-      try {
-        const stats = fs.lstatSync(path.join(dir, file))
-        return {
-          name: file,
-          path: path.join(dir, file),
-          stats
-        }
-      } catch (e) {
-        return null
+  const files = fs.readdirSync(dir)
+  return files.map(file => {
+    try {
+      const stats = fs.lstatSync(path.join(dir, file))
+      return {
+        name: file,
+        path: path.join(dir, file),
+        stats
       }
-    }).filter(file => file)
-  } catch (e) {
-    return []
-  }
+    } catch (e) {
+      return null
+    }
+  }).filter(file => file)
 }
 
 export function isImage (file) {
