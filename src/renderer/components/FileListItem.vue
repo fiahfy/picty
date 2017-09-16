@@ -57,6 +57,7 @@ export default {
 
 .mdc-table-column {
   font-size: smaller;
+  line-height: 20px;
   vertical-align: bottom;
   white-space: nowrap;
   &.name {
@@ -64,18 +65,18 @@ export default {
     text-align: left;
     text-overflow: ellipsis;
   }
-}
-.mdc-icon {
-  padding: 0;
-  vertical-align: bottom;
-  &.folder {
-    color: $material-color-blue-200;
-  }
-  &.photo {
-    color: $material-color-green-200;
-  }
-  &.note {
-    color: $material-color-grey-300;
+  .mdc-icon {
+    padding: 0;
+    vertical-align: bottom;
+    &.folder {
+      color: $material-color-blue-200;
+    }
+    &.photo {
+      color: $material-color-green-200;
+    }
+    &.note {
+      color: $material-color-grey-300;
+    }
   }
 }
 </style>
