@@ -9,7 +9,7 @@
 
 <script>
 import { remote } from 'electron'
-import { mapMutations, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   data () {
@@ -18,15 +18,14 @@ export default {
     }
   },
   created () {
-    document.addEventListener('keyup', this.keyup)
-    if (this.fullScreen) {
-      const browserWindow = remote.getCurrentWindow()
-      browserWindow.setFullScreen(true)
-      browserWindow.setMenuBarVisibility(false)
+    if (!this.fullScreen) {
+      return
     }
+    const browserWindow = remote.getCurrentWindow()
+    browserWindow.setFullScreen(true)
+    browserWindow.setMenuBarVisibility(false)
   },
   beforeDestroy () {
-    document.removeEventListener('keyup', this.keyup)
     const browserWindow = remote.getCurrentWindow()
     browserWindow.setFullScreen(false)
     browserWindow.setMenuBarVisibility(true)
@@ -49,31 +48,9 @@ export default {
     ])
   },
   methods: {
-    keyup (e) {
-      switch (e.keyCode) {
-        case 27:
-          this.setViewing(false)
-          break
-        case 37:
-        case 48:
-          this.hasLoadError = false
-          this.viewPreviousImage()
-          break
-        case 39:
-        case 40:
-          this.hasLoadError = false
-          this.viewNextImage()
-          break
-      }
-    },
     loadError (e) {
       this.hasLoadError = true
-    },
-    ...mapMutations('viewer', [
-      'viewPreviousImage',
-      'viewNextImage',
-      'setViewing'
-    ])
+    }
   }
 }
 </script>

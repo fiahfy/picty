@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
 import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
@@ -22,6 +22,12 @@ export default {
     ActivityBar,
     TitleBar,
     Viewer
+  },
+  created () {
+    document.addEventListener('keyup', this.keyup)
+  },
+  beforeDestroy () {
+    document.removeEventListener('keyup', this.keyup)
   },
   computed: {
     classes () {
@@ -37,6 +43,30 @@ export default {
     ]),
     ...mapState('settings', [
       'darkTheme'
+    ])
+  },
+  methods: {
+    keyup (e) {
+      switch (e.keyCode) {
+        case 27:
+          this.setViewing(false)
+          break
+        case 37:
+        case 38:
+          this.hasLoadError = false
+          this.viewPreviousImage()
+          break
+        case 39:
+        case 40:
+          this.hasLoadError = false
+          this.viewNextImage()
+          break
+      }
+    },
+    ...mapMutations('viewer', [
+      'viewPreviousImage',
+      'viewNextImage',
+      'setViewing'
     ])
   }
 }
