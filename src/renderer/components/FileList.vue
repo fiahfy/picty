@@ -29,24 +29,14 @@
         </mdc-table-row>
       </mdc-table-header>
       <mdc-table-body>
-        <mdc-table-row
-          v-for="file in files"
+        <file-list-item
+          :file="file"
           :key="file.name"
-          :selected="isSelected(file)"
-          @click="selectFile(file)"
+          :class="{selected: isSelected(file)}"
+          @click.native="selectFile(file)"
           @dblclick.native="doubleClick(file)"
-        >
-          <mdc-table-column class="name">
-            <mdc-icon
-              :icon="icon(file)"
-              :class="icon(file)"
-            />
-            {{ file.name }}
-          </mdc-table-column>
-          <mdc-table-column class="date-modified">
-            {{ file.stats.mtime | date }}
-          </mdc-table-column>
-        </mdc-table-row>
+          v-for="file in files"
+        />
       </mdc-table-body>
     </mdc-table>
   </div>
@@ -54,21 +44,20 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex'
+import FileListItem from '../components/FileListItem'
 import MdcIcon from '../components/MdcIcon'
 import MdcTable from '../components/MdcTable'
 import MdcTableBody from '../components/MdcTableBody'
-import MdcTableColumn from '../components/MdcTableColumn'
 import MdcTableHeader from '../components/MdcTableHeader'
 import MdcTableHeaderColumn from '../components/MdcTableHeaderColumn'
 import MdcTableRow from '../components/MdcTableRow'
-import { isImage } from '../utils/file'
 
 export default {
   components: {
+    FileListItem,
     MdcIcon,
     MdcTable,
     MdcTableBody,
-    MdcTableColumn,
     MdcTableHeader,
     MdcTableHeaderColumn,
     MdcTableRow
@@ -86,12 +75,6 @@ export default {
     ])
   },
   methods: {
-    icon (file) {
-      if (file.stats.isDirectory()) {
-        return 'folder'
-      }
-      return isImage(file.path) ? 'photo' : 'note'
-    },
     isSelected (file) {
       return file.path === this.selectedFile.path
     },
@@ -117,24 +100,11 @@ export default {
     files () {
       this.$el.scrollTop = 0
     }
-  },
-  filters: {
-    date (value) {
-      const date = new Date(value)
-      const Y = date.getFullYear()
-      const m = String(date.getMonth() + 1).padStart(2, '0')
-      const d = String(date.getDate()).padStart(2, '0')
-      const H = String(date.getHours()).padStart(2, '0')
-      const i = String(date.getMinutes()).padStart(2, '0')
-      return `${Y}-${m}-${d} ${H}:${i}`
-    }
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color_palette.scss";
-
 .file-list {
   height: 100%;
   overflow-y: auto;
@@ -165,28 +135,9 @@ export default {
   &.date-modified {
     width: 128px;
   }
-}
-.mdc-table-column {
-  font-size: smaller;
-  vertical-align: bottom;
-  white-space: nowrap;
-  &.name {
-    overflow: hidden;
-    text-align: left;
-    text-overflow: ellipsis;
-  }
-}
-.mdc-icon {
-  padding: 0;
-  vertical-align: bottom;
-  &.folder {
-    color: $material-color-blue-200;
-  }
-  &.photo {
-    color: $material-color-green-200;
-  }
-  &.note {
-    color: $material-color-grey-300;
+  .mdc-icon {
+    padding: 0;
+    vertical-align: bottom;
   }
 }
 .mdc-theme--dark {

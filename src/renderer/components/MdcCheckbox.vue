@@ -6,7 +6,8 @@
       :id="id"
       :value="value"
       :checked="value"
-      @change="updateValue"/>
+      @change="updateValue"
+    />
     <div class="mdc-checkbox__background">
       <svg
         class="mdc-checkbox__checkmark"
@@ -16,13 +17,11 @@
           class="mdc-checkbox__checkmark__path"
           fill="none"
           stroke="white"
-          d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+          d="M1.73,12.91 8.1,19.28 22.79,4.59"
+        />
       </svg>
-      <div class="mdc-checkbox__mixedmark"></div>
+      <div class="mdc-checkbox__mixedmark"/>
     </div>
-  </div>
-</div>
-
   </div>
 </template>
 
