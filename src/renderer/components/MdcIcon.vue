@@ -1,36 +1,27 @@
 <template>
-  <i class="mdc-icon material-icons" :class="classes">
+  <i class="mdc-icon material-icons">
     {{ content }}
   </i>
 </template>
 
 <script>
 export default {
-  name: 'mdc-icon',
   props: {
     icon: {
-      type: String,
-    },
-    checked: {
-      type: Boolean,
-      default: false,
-    },
+      type: String
+    }
   },
   computed: {
-    classes() {
-      return {
-        'mdc-icon-toggle--primary': this.checked,
-      };
-    },
-    content() {
-      return this.icon;
-    },
-  },
-};
+    content () {
+      return this.icon
+    }
+  }
+}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .mdc-icon {
   padding: 12px;
+  user-select: none;
 }
 </style>

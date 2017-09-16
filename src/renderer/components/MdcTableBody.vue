@@ -3,12 +3,3 @@
     <slot/>
   </tbody>
 </template>
-
-<script>
-export default {
-  name: 'mdc-table-body',
-};
-</script>
-
-<style scoped>
-</style>

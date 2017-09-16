@@ -1,27 +1,21 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import MainPage from '../pages/MainPage';
-import ViewerPage from '../pages/ViewerPage';
-import SettingsPage from '../pages/SettingsPage';
+import Vue from 'vue'
+import Router from 'vue-router'
+import Explorer from '../pages/Explorer'
+import Settings from '../pages/Settings'
 
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'main',
-      component: MainPage,
-    },
-    {
-      path: '/viewer',
-      name: 'viewer',
-      component: ViewerPage,
+      name: 'explorer',
+      component: Explorer
     },
     {
       path: '/settings',
       name: 'settings',
-      component: SettingsPage,
-    },
-  ],
-});
+      component: Settings
+    }
+  ]
+})

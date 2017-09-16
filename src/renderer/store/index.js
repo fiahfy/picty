@@ -1,31 +1,32 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import { listFiles } from '../utils/file';
+import Vue from 'vue'
+import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
+import router from '../router'
+import explorer from './explorer'
+import settings from './settings'
+import viewer from './viewer'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-    path: '',
-    files: [],
-  },
-  actions: {
-    async changePath({ commit }, path) {
-      commit('setPath', { path });
-      const files = await listFiles(path);
-      commit('setFiles', { files });
-    },
-    async readDir({ commit }, dir) {
-      const files = await listFiles(dir);
-      commit('setFiles', { files });
-    },
+  modules: {
+    explorer,
+    settings,
+    viewer
   },
   mutations: {
-    setFiles(state, { files }) {
-      Vue.set(state, 'files', files);
-    },
-    setPath(state, { path }) {
-      Vue.set(state, 'path', path);
-    },
+    changeRoute (state, name) {
+      router.push({ name })
+    }
   },
-});
+  plugins: [
+    createPersistedState({
+      paths: [
+        'explorer.directory',
+        'explorer.sortKey',
+        'explorer.sortOrder',
+        'settings'
+      ]
+    })
+  ]
+})

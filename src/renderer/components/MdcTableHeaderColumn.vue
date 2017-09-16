@@ -4,14 +4,9 @@
   </th>
 </template>
 
-<script>
-export default {
-  name: 'mdc-table-header-column',
-};
-</script>
-
-<style scoped>
+<style scoped lang="scss">
 .mdc-table-header-column {
   padding: 8px;
+  user-select: none;
 }
 </style>

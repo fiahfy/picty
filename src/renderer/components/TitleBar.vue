@@ -2,15 +2,11 @@
   <div class="title-bar">Picty</div>
 </template>
 
-<script>
-export default {
-  name: 'title-bar',
-};
-</script>
+<style scoped lang="scss">
+@import "~@material/theme/_color_palette.scss";
 
-<style scoped>
 .title-bar {
-  border-bottom-color: rgba(0, 0, 0, 0.12);
+  border-bottom-color: $material-color-grey-300;
   border-bottom-style: solid;
   border-bottom-width: 1px;
   box-sizing: border-box;
@@ -23,5 +19,10 @@ export default {
   text-overflow: ellipsis;
   user-select: none;
   -webkit-app-region: drag;
+}
+.mdc-theme--dark {
+  .title-bar {
+    border-bottom-color: $material-color-grey-600;
+  }
 }
 </style>

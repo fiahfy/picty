@@ -1,13 +1,14 @@
 {
   "name": "picty",
   "description": "Simple Image Viewer based on Electron",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
     "url": "http://fiahfy.blogspot.com/"
   },
   "dependencies": {
+    "electron-devtools-installer": "^2.2.0",
     "electron-window-state": "^4.1.1",
     "is-electron-renderer": "^2.0.1",
     "material-components-web": "^0.20.0",
@@ -15,6 +16,7 @@
     "vue": "^2.4.2",
     "vue-router": "^2.7.0",
     "vuex": "^2.4.0",
+    "vuex-persistedstate": "^2.0.0",
     "vuex-router-sync": "^4.3.1"
   },
   "devDependencies": {
@@ -29,13 +31,14 @@
     "electron": "^1.7.5",
     "electron-builder": "^19.22.1",
     "eslint": "^4.4.1",
-    "eslint-config-airbnb-base": "^11.3.2",
-    "eslint-import-resolver-webpack": "^0.8.3",
+    "eslint-config-standard": "^6.2.1",
     "eslint-plugin-html": "^3.2.1",
-    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^2.0.1",
     "file-loader": "^0.11.2",
+    "node-sass": "^4.5.3",
     "npm-run-all": "^4.0.2",
-    "resolve-url-loader": "^2.1.0",
+    "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
     "url-loader": "^0.5.9",
     "vue-loader": "^12.1.0",
@@ -45,9 +48,9 @@
   },
   "keywords": [
     "electron",
+    "viewer",
     "vue",
-    "webpack",
-    "viewer"
+    "webpack"
   ],
   "main": "main.js",
   "private": true,
@@ -58,11 +61,11 @@
   },
   "scripts": {
     "build": "build -mw -p onTagOrDraft",
+    "dev": "cross-env HOT=1 run-p dev-server start:main",
+    "dev-server": "webpack-dev-server --config webpack/config.renderer.hot.babel.js",
     "lint": "eslint src --ext .js,.vue",
-    "hot:renderer": "webpack-dev-server --config webpack/config.renderer.hot.babel.js",
     "release": "cross-env NODE_ENV=production run-s webpack build",
-    "start": "run-p watch:renderer start:main",
-    "start:hot": "cross-env HOT=1 run-p hot:renderer start:main",
+    "start": "run-s webpack:renderer start:main",
     "start:main": "run-s webpack:main start:main:electron",
     "start:main:electron": "electron main.js",
     "test": "run-s lint",

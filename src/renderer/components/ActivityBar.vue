@@ -2,8 +2,8 @@
   <div class="activity-bar">
     <ul>
       <li v-for="item in items" :key="item.routeName">
-        <mdc-button @click="click(item.routeName)">
-          <mdc-icon :icon="item.icon" :checked="item.checked" />
+        <mdc-button @click="changeRoute(item.name)">
+          <mdc-icon :icon="item.icon" :class="item.classes" />
         </mdc-button>
       </li>
     </ul>
@@ -11,44 +11,55 @@
 </template>
 
 <script>
-import MdcButton from '../components/MdcButton';
-import MdcIcon from '../components/MdcIcon';
+import { mapMutations } from 'vuex'
+
+import MdcButton from '../components/MdcButton'
+import MdcIcon from '../components/MdcIcon'
 
 export default {
-  name: 'activity-bar',
   components: {
     MdcButton,
-    MdcIcon,
+    MdcIcon
   },
-  data() {
+  data () {
     return {
       items: [
-        { icon: 'list', routeName: 'main', checked: true },
-        { icon: 'settings', routeName: 'settings', checked: false },
-      ],
-    };
+        { icon: 'list', name: 'explorer', classes: [] },
+        { icon: 'settings', name: 'settings', classes: [] }
+      ]
+    }
+  },
+  mounted () {
+    this.updateItems(this.$route.name)
   },
   methods: {
-    click(routeName) {
-      this.$router.push({ name: routeName });
-    },
-  },
-  watch: {
-    '$route'(to) { // eslint-disable-line object-shorthand
+    updateItems (name) {
       this.items = this.items.map(item => (
         Object.assign({}, {
           ...item,
-          checked: item.routeName === to.name,
+          classes: {
+            selected: item.name === name
+          }
         })
-      ));
+      ))
     },
+    ...mapMutations([
+      'changeRoute'
+    ])
   },
-};
+  watch: {
+    '$route' (to) { // eslint-disable-line object-shorthand
+      this.updateItems(to.name)
+    }
+  }
+}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "~@material/theme/_color_palette.scss";
+
 .activity-bar {
-  border-right-color: rgba(0, 0, 0, 0.12);
+  border-right-color: $material-color-grey-300;
   border-right-style: solid;
   border-right-width: 1px;
   overflow: hidden;
@@ -62,7 +73,21 @@ ul {
 .mdc-button {
   border-radius: 0;
   height: auto;
+  line-height: initial;
   min-width: auto;
   padding: 0;
+  .mdc-icon {
+    &:not(.selected) {
+      color: $material-color-grey-400
+    }
+    &.selected {
+      color: $material-color-pink-400
+    }
+  }
+}
+.mdc-theme--dark {
+  .activity-bar {
+    border-right-color: $material-color-grey-600;
+  }
 }
 </style>

@@ -10,6 +10,7 @@
       :placeholder="placeholder"
       :aria-label="placeholder"
       :value="value"
+      @input="updateValue"
       @keyup="keyup"
     />
     <label
@@ -21,57 +22,52 @@
 </template>
 
 <script>
-import { MDCTextfield } from '@material/textfield';
+import { MDCTextfield } from '@material/textfield'
 
 export default {
-  name: 'mdc-textfield',
   props: {
+    value: {
+      type: String
+    },
     label: {
-      type: String,
+      type: String
     },
     fullwidth: {
       type: Boolean,
-      default: false,
-    },
-    defaultValue: {
-      type: String,
-    },
+      default: false
+    }
   },
-  data() {
+  data () {
     return {
-      id: -1,
-      value: this.defaultValue,
-    };
+      id: -1
+    }
   },
-  mounted() {
-    new MDCTextfield(this.$el); // eslint-disable-line no-new
-    this.id = this._uid; // eslint-disable-line no-underscore-dangle
+  mounted () {
+    MDCTextfield.attachTo(this.$el)
+    this.id = this._uid // eslint-disable-line no-underscore-dangle
   },
   computed: {
-    classes() {
+    classes () {
       return {
-        'mdc-textfield--fullwidth': this.fullwidth,
-      };
-    },
-    placeholder() {
-      return this.fullwidth ? this.label : null;
-    },
-  },
-  methods: {
-    keyup(e) {
-      this.$emit('input', e.target.value);
-      if (event.keyCode === 13) {
-        this.$emit('keyupEnter');
+        'mdc-textfield--fullwidth': this.fullwidth
       }
     },
+    placeholder () {
+      return this.fullwidth ? this.label : null
+    }
+  },
+  methods: {
+    updateValue (e) {
+      this.$emit('input', e.target.value)
+    },
+    keyup (e) {
+      this.$emit('keyup', e)
+    }
   },
   watch: {
-    defaultValue(value) {
-      this.value = value;
-    },
-  },
-};
+    defaultValue (value) {
+      this.value = value
+    }
+  }
+}
 </script>
-
-<style scoped>
-</style>

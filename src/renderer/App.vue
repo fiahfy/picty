@@ -1,38 +1,48 @@
 <template>
-  <div id="app">
+  <div id="app" :class="classes">
     <title-bar v-if="hasTitleBar"/>
-    <div class="content-wrapper">
+    <div class="container" v-show="!isViewing">
       <activity-bar/>
       <div class="content">
         <router-view/>
       </div>
     </div>
+    <viewer v-if="isViewing"/>
   </div>
 </template>
 
 <script>
-import { remote } from 'electron';
-import ActivityBar from './components/ActivityBar';
-import TitleBar from './components/TitleBar';
+import { mapState } from 'vuex'
+import ActivityBar from './components/ActivityBar'
+import TitleBar from './components/TitleBar'
+import Viewer from './components/Viewer'
 
 export default {
-  name: 'app',
   components: {
     ActivityBar,
     TitleBar,
-  },
-  asyncData({ store }) {
-    return store.dispatch('changePath', remote.app.getPath('home'));
+    Viewer
   },
   computed: {
-    hasTitleBar() {
-      return process.platform !== 'win32';
+    classes () {
+      return {
+        'mdc-theme--dark': this.darkTheme
+      }
     },
-  },
-};
+    hasTitleBar () {
+      return process.platform !== 'win32'
+    },
+    ...mapState('viewer', [
+      'isViewing'
+    ]),
+    ...mapState('settings', [
+      'darkTheme'
+    ])
+  }
+}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #app {
   color: #2c3e50;
   display: flex;
@@ -40,30 +50,20 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   height: 100%;
   text-align: center;
+  &.mdc-theme--dark {
+    background-color: #303030;
+    color: white;
+  }
 }
-
-#app>.content-wrapper {
+.container {
   display: flex;
   flex: 1;
+  overflow: hidden;
 }
-
-#app>.content-wrapper>.content {
+.content {
   flex: 1;
-  overflow-y: auto;
 }
-
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
+.viewer {
+  flex: 1;
 }
 </style>

@@ -1,27 +1,54 @@
 <template>
-  <tr class="mdc-table-row" @click="click">
+  <tr class="mdc-table-row" :class="classes" @click="click">
     <slot/>
   </tr>
 </template>
 
 <script>
 export default {
-  name: 'mdc-table-row',
-  methods: {
-    click() {
-      this.$emit('click');
-    },
+  props: {
+    selected: {
+      type: Boolean
+    }
   },
-};
+  computed: {
+    classes () {
+      return {
+        selected: this.selected
+      }
+    }
+  },
+  methods: {
+    click () {
+      this.$emit('click')
+    }
+  }
+}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "~@material/theme/_color_palette.scss";
+
 .mdc-table-row {
-  border-bottom-color: rgba(0, 0, 0, 0.06);
+  border-bottom-color: $material-color-grey-300;
   border-bottom-style: solid;
   border-bottom-width: 1px;
+  &:hover {
+    background-color: $material-color-grey-100;
+  }
+  &.selected {
+    background-color: $material-color-grey-300;
+  }
 }
-.mdc-table-row:hover {
-  background-color: rgba(0, 0, 0, 0.12);
+.mdc-theme--dark {
+  .mdc-table-row {
+    border-bottom-color: $material-color-grey-600;
+    &:hover {
+      background-color: $material-color-grey-800;
+    }
+    &.selected {
+      background-color: $material-color-grey-600;
+    }
+  }
 }
 </style>

@@ -32,7 +32,7 @@ export default {
     }),
   ],
   resolve: {
-    extensions: ['.js', '.vue'],
+    extensions: ['.js', '.json', '.vue'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
     },

@@ -4,13 +4,7 @@
   </table>
 </template>
 
-<script>
-export default {
-  name: 'mdc-table',
-};
-</script>
-
-<style scoped>
+<style scoped lang="scss">
 .mdc-table {
   border-collapse: collapse;
   border-spacing: 0;

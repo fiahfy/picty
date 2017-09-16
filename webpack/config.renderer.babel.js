@@ -13,11 +13,18 @@ export default {
     rules: [
       ...config.module.rules,
       {
-        test: /\.css$/,
+        test: /\.s?css$/,
         use: [
           'style-loader',
           'css-loader',
-          'resolve-url-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              includePaths: [
+                `${__dirname}/../node_modules`,
+              ],
+            },
+          },
         ],
       },
       {
