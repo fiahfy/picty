@@ -25,7 +25,6 @@
 import { MDCTextfield } from '@material/textfield'
 
 export default {
-  name: 'mdc-textfield',
   props: {
     value: {
       type: String

@@ -12,7 +12,6 @@ import { remote } from 'electron'
 import { mapMutations, mapState } from 'vuex'
 
 export default {
-  name: 'viewer',
   data () {
     return {
       error: false

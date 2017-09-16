@@ -3,9 +3,3 @@
     <slot/>
   </thead>
 </template>
-
-<script>
-export default {
-  name: 'mdc-table-header'
-}
-</script>

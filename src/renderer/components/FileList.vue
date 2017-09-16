@@ -50,7 +50,6 @@ import MdcTableRow from '../components/MdcTableRow'
 import { isImage } from '../utils/file'
 
 export default {
-  name: 'file-list',
   components: {
     MdcIcon,
     MdcTable,

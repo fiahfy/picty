@@ -8,7 +8,6 @@
 import { MDCRipple } from '@material/ripple'
 
 export default {
-  name: 'mdc-button',
   mounted () {
     MDCRipple.attachTo(this.$el)
   },

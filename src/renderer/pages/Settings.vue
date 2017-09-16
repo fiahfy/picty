@@ -1,17 +1,21 @@
 <template>
   <div class="settings">
     <h4>Viewer</h4>
-    <mdc-checkbox label="View in full screen" v-model="fullScreen"/>
+    <mdc-form-field>
+      <mdc-checkbox id="full-screen" v-model="fullScreen"/>
+      <label for="full-screen">View in full screen</label>
+    </mdc-form-field>
   </div>
 </template>
 
 <script>
 import MdcCheckbox from '../components/MdcCheckbox'
+import MdcFormField from '../components/MdcFormField'
 
 export default {
-  name: 'settings',
   components: {
-    MdcCheckbox
+    MdcCheckbox,
+    MdcFormField
   },
   computed: {
     fullScreen: {
@@ -30,5 +34,6 @@ export default {
 .settings {
   margin: 15px;
   text-align: left;
+  user-select: none;
 }
 </style>

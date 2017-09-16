@@ -18,7 +18,6 @@ import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
 
 export default {
-  name: 'app',
   components: {
     ActivityBar,
     TitleBar,

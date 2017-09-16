@@ -11,7 +11,6 @@
 import { MDCIconToggle } from '@material/icon-toggle'
 
 export default {
-  name: 'mdc-icon-toggle',
   props: {
     icon: {
       type: String

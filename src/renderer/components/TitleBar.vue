@@ -2,12 +2,6 @@
   <div class="title-bar">Picty</div>
 </template>
 
-<script>
-export default {
-  name: 'title-bar'
-}
-</script>
-
 <style scoped lang="scss">
 @import "~@material/theme/_color_palette.scss";
 

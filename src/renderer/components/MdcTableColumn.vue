@@ -4,12 +4,6 @@
   </td>
 </template>
 
-<script>
-export default {
-  name: 'mdc-table-column'
-}
-</script>
-
 <style scoped lang="scss">
 .mdc-table-column {
   padding: 8px;

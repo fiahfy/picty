@@ -6,7 +6,6 @@
 
 <script>
 export default {
-  name: 'mdc-table-row',
   props: {
     selected: {
       type: Boolean

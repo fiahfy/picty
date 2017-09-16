@@ -39,7 +39,6 @@ import MdcIcon from '../components/MdcIcon'
 import MdcTextfield from '../components/MdcTextfield'
 
 export default {
-  name: 'menu-bar',
   components: {
     MdcButton,
     MdcIcon,

@@ -10,7 +10,6 @@ import MenuBar from '../components/MenuBar'
 import FileList from '../components/FileList'
 
 export default {
-  name: 'explorer',
   components: {
     MenuBar,
     FileList

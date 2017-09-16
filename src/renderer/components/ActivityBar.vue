@@ -17,7 +17,6 @@ import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 
 export default {
-  name: 'activity-bar',
   components: {
     MdcButton,
     MdcIcon
