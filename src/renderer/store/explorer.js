@@ -1,0 +1,54 @@
+import path from 'path'
+import { remote } from 'electron'
+import { listFiles } from '../utils/file'
+
+export default {
+  namespaced: true,
+  state: {
+    error: null,
+    directory: remote.app.getPath('home'),
+    files: [],
+    selectedFile: {}
+  },
+  actions: {
+    async loadFiles ({ commit }, dir) {
+      try {
+        const files = await listFiles(dir)
+        commit('setError', null)
+        commit('setFiles', files)
+      } catch (e) {
+        commit('setError', new Error('Invalid Directory'))
+        commit('setFiles', [])
+      }
+    },
+    async changeDirectory ({ commit, dispatch }, dir) {
+      commit('setDirectory', dir)
+      await dispatch('loadFiles', dir)
+    },
+    async changeChildDirectory ({ dispatch, state }, dirname) {
+      const child = path.join(state.directory, dirname)
+      await dispatch('changeDirectory', child)
+    },
+    async changeParentDirectory ({ dispatch, state }) {
+      const parent = path.dirname(state.directory)
+      await dispatch('changeDirectory', parent)
+    },
+    async refreshDirectory ({ dispatch, state }) {
+      await dispatch('loadFiles', state.directory)
+    }
+  },
+  mutations: {
+    setError (state, error) {
+      state.error = error
+    },
+    setDirectory (state, dir) {
+      state.directory = dir
+    },
+    setFiles (state, files) {
+      state.files = files
+    },
+    selectFile (state, file) {
+      state.selectedFile = file
+    }
+  }
+}

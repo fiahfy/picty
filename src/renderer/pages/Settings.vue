@@ -23,7 +23,7 @@ export default {
         return this.$store.state.settings.fullScreen
       },
       set (value) {
-        this.$store.commit('setFullScreen', value)
+        this.$store.commit('settings/setFullScreen', value)
       }
     }
   }

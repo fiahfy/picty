@@ -2,8 +2,9 @@ import path from 'path'
 import { listFiles, isImage } from '../utils/file'
 
 export default {
+  namespaced: true,
   state: {
-    error: false,
+    error: null,
     isViewing: false,
     files: [],
     currentFile: {}
@@ -21,31 +22,31 @@ export default {
           files = await listFiles(dir)
           files = files.filter((file) => isImage(file.path))
         }
-        commit('setViewerError', false)
-        commit('setViewerCurrentFile', file)
-        commit('setViewerFiles', files)
+        commit('setError', null)
+        commit('setCurrentFile', file)
+        commit('setFiles', files)
       } catch (e) {
-        commit('setViewerError', true)
-        commit('setViewerCurrentFile', {})
-        commit('setViewerFiles', [])
+        commit('setError', new Error('Invalid Image'))
+        commit('setCurrentFile', {})
+        commit('setFiles', [])
       }
-      commit('setViewerViewing', true)
+      commit('setViewing', true)
     },
     async showViewerWithSelectedFile ({ dispatch, rootState }) {
       await dispatch('showViewer', rootState.selectedFile)
     }
   },
   mutations: {
-    setViewerError (state, error) {
+    setError (state, error) {
       state.error = error
     },
-    setViewerViewing (state, isViewing) {
+    setViewing (state, isViewing) {
       state.isViewing = isViewing
     },
-    setViewerFiles (state, files) {
+    setFiles (state, files) {
       state.files = files
     },
-    setViewerCurrentFile (state, file) {
+    setCurrentFile (state, file) {
       state.currentFile = file
     },
     viewPreviousImage (state) {

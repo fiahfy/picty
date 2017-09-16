@@ -52,10 +52,10 @@ export default {
   computed: {
     directory: {
       get () {
-        return this.$store.state.directory
+        return this.$store.state.explorer.directory
       },
       set (value) {
-        this.$store.commit('setDirectory', value)
+        this.$store.commit('explorer/setDirectory', value)
       }
     }
   },
@@ -65,10 +65,12 @@ export default {
         this.changeDirectory(e.target.value)
       }
     },
-    ...mapActions([
+    ...mapActions('explorer', [
       'changeDirectory',
       'changeParentDirectory',
-      'refreshDirectory',
+      'refreshDirectory'
+    ]),
+    ...mapActions('viewer', [
       'showViewerWithSelectedFile'
     ])
   }
@@ -78,6 +80,9 @@ export default {
 <style scoped lang="scss">
 @import "~@material/theme/_color_palette.scss";
 
+.menu-bar {
+  user-select: none;
+}
 .menu-bar>div {
   border-bottom: 1px solid $material-color-grey-300;
   padding: 4px;

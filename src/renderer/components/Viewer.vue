@@ -1,9 +1,9 @@
 <template>
   <div class="viewer">
-    <div class="error" v-if="message">
-      <span>{{ message }}</span>
+    <div class="error" v-if="error">
+      <span>{{ error.message }}</span>
     </div>
-    <img v-else :src="viewer.currentFile.path" @error="loadError"/>
+    <img v-else :src="currentFile.path" @error="loadError"/>
   </div>
 </template>
 
@@ -14,26 +14,12 @@ import { mapMutations, mapState } from 'vuex'
 export default {
   data () {
     return {
-      error: false
+      hasLoadError: false
     }
-  },
-  computed: {
-    message () {
-      if (this.viewer.error || this.error) {
-        return 'Invalid Image'
-      } else if (!this.viewer.currentFile) {
-        return 'Not Found'
-      }
-      return ''
-    },
-    ...mapState([
-      'viewer',
-      'settings'
-    ])
   },
   created () {
     document.addEventListener('keyup', this.keyup)
-    if (this.settings.fullScreen) {
+    if (this.fullScreen) {
       const browserWindow = remote.getCurrentWindow()
       browserWindow.setFullScreen(true)
       browserWindow.setMenuBarVisibility(false)
@@ -45,31 +31,48 @@ export default {
     browserWindow.setFullScreen(false)
     browserWindow.setMenuBarVisibility(true)
   },
+  computed: {
+    ...mapState('viewer', {
+      error (state) {
+        if (state.error) {
+          return state.error
+        }
+        if (this.hasLoadError) {
+          return new Error('Image Load Failure')
+        }
+        return null
+      },
+      currentFile: 'currentFile'
+    }),
+    ...mapState('settings', [
+      'fullScreen'
+    ])
+  },
   methods: {
     keyup (e) {
       switch (e.keyCode) {
         case 27:
-          this.setViewerViewing(false)
+          this.setViewing(false)
           break
         case 37:
         case 48:
-          this.error = false
+          this.hasLoadError = false
           this.viewPreviousImage()
           break
         case 39:
         case 40:
-          this.error = false
+          this.hasLoadError = false
           this.viewNextImage()
           break
       }
     },
     loadError (e) {
-      this.error = true
+      this.hasLoadError = true
     },
-    ...mapMutations([
+    ...mapMutations('viewer', [
       'viewPreviousImage',
       'viewNextImage',
-      'setViewerViewing'
+      'setViewing'
     ])
   }
 }

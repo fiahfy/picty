@@ -1,7 +1,7 @@
 <template>
   <div class="file-list">
     <div class="error" v-if="error">
-      <span>Invalid Directory</span>
+      <span>{{ error.message }}</span>
     </div>
     <mdc-table v-else>
       <mdc-table-header>
@@ -59,7 +59,7 @@ export default {
     MdcTableHeaderColumn,
     MdcTableRow
   },
-  computed: mapState([
+  computed: mapState('explorer', [
     'error',
     'files',
     'selectedFile'
@@ -81,11 +81,13 @@ export default {
         this.showViewer(file)
       }
     },
-    ...mapMutations([
+    ...mapMutations('explorer', [
       'selectFile'
     ]),
-    ...mapActions([
-      'changeDirectory',
+    ...mapActions('explorer', [
+      'changeDirectory'
+    ]),
+    ...mapActions('viewer', [
       'showViewer'
     ])
   },
