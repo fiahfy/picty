@@ -13,7 +13,7 @@
 
 <script>
 import { remote } from 'electron'
-import { mapMutations, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 
 export default {
   data () {
@@ -22,7 +22,6 @@ export default {
     }
   },
   mounted () {
-    this.$el.focus()
     if (!this.fullScreen) {
       return
     }
@@ -59,7 +58,7 @@ export default {
     keydown (e) {
       switch (e.keyCode) {
         case 27:
-          this.setViewing(false)
+          this.dismissViewer()
           break
         case 37:
         case 38:
@@ -73,10 +72,12 @@ export default {
           break
       }
     },
+    ...mapActions('viewer', [
+      'dismissViewer'
+    ]),
     ...mapMutations('viewer', [
       'viewPreviousImage',
-      'viewNextImage',
-      'setViewing'
+      'viewNextImage'
     ])
   }
 }

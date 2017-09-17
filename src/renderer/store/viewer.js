@@ -35,6 +35,11 @@ export default {
         commit('setFiles', [])
       }
       commit('setViewing', true)
+      commit('focusSelector', '.viewer', { root: true })
+    },
+    dismissViewer ({ commit }) {
+      commit('setViewing', false)
+      commit('focusSelector', '.file-list', { root: true })
     },
     async showViewerWithSelectedFile ({ dispatch, rootState }) {
       await dispatch('showViewer', rootState.explorer.selectedFile)

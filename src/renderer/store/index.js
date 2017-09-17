@@ -9,15 +9,21 @@ import viewer from './viewer'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  mutations: {
+    changeRoute (state, name) {
+      router.push({ name })
+    },
+    focusSelector (state, selector) {
+      // wait dom updated
+      setTimeout(() => {
+        document.querySelector(selector).focus()
+      }, 0)
+    }
+  },
   modules: {
     explorer,
     settings,
     viewer
-  },
-  mutations: {
-    changeRoute (state, name) {
-      router.push({ name })
-    }
   },
   plugins: [
     createPersistedState({
