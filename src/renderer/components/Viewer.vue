@@ -1,15 +1,19 @@
 <template>
-  <div class="viewer">
+  <div
+    class="viewer"
+    tabindex="-1"
+    @keydown="keydown"
+  >
     <div class="error" v-if="error">
       <span>{{ error.message }}</span>
     </div>
-    <img v-else :src="currentFile.path" @error="loadError"/>
+    <img :src="currentFile.path" @error="loadError" v-else/>
   </div>
 </template>
 
 <script>
 import { remote } from 'electron'
-import { mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
 export default {
   data () {
@@ -17,7 +21,8 @@ export default {
       hasLoadError: false
     }
   },
-  created () {
+  mounted () {
+    this.$el.focus()
     if (!this.fullScreen) {
       return
     }
@@ -50,13 +55,36 @@ export default {
   methods: {
     loadError (e) {
       this.hasLoadError = true
-    }
+    },
+    keydown (e) {
+      switch (e.keyCode) {
+        case 27:
+          this.setViewing(false)
+          break
+        case 37:
+        case 38:
+          this.hasLoadError = false
+          this.viewPreviousImage()
+          break
+        case 39:
+        case 40:
+          this.hasLoadError = false
+          this.viewNextImage()
+          break
+      }
+    },
+    ...mapMutations('viewer', [
+      'viewPreviousImage',
+      'viewNextImage',
+      'setViewing'
+    ])
   }
 }
 </script>
 
 <style scoped lang="scss">
 .viewer {
+  outline: none;
   position:relative;
   user-select: none;
 }

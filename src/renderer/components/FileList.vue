@@ -1,5 +1,9 @@
 <template>
-  <mdc-table class="file-list">
+  <mdc-table
+    class="file-list"
+    tabindex="-1"
+    @keydown.native="keydown"
+  >
     <mdc-table-header>
       <mdc-table-row>
         <mdc-table-header-column
@@ -79,8 +83,25 @@ export default {
         this.showViewer(file)
       }
     },
+    keydown (e) {
+      if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+        return
+      }
+      switch (e.keyCode) {
+        case 38:
+          e.preventDefault()
+          this.selectPreviousFile()
+          break
+        case 40:
+          e.preventDefault()
+          this.selectNextFile()
+          break
+      }
+    },
     ...mapMutations('explorer', [
-      'selectFile'
+      'selectFile',
+      'selectPreviousFile',
+      'selectNextFile'
     ]),
     ...mapActions('explorer', [
       'changeDirectory',
@@ -90,9 +111,21 @@ export default {
       'showViewer'
     ])
   },
+  updated () {
+    const el = this.$el.querySelector('.selected')
+    if (!el) {
+      return
+    }
+    const parent = this.$el.parentNode
+    if (el.offsetTop - el.offsetHeight < parent.scrollTop) {
+      parent.scrollTop = el.offsetTop - el.offsetHeight
+    } else if (el.offsetTop + el.offsetHeight > parent.scrollTop + parent.offsetHeight) {
+      parent.scrollTop = el.offsetTop + el.offsetHeight - parent.offsetHeight
+    }
+  },
   watch: {
     files () {
-      this.$el.scrollTop = 0
+      this.$el.parentNode.scrollTop = 0
     }
   }
 }
@@ -100,6 +133,7 @@ export default {
 
 <style scoped lang="scss">
 .mdc-table {
+  outline: none;
   table-layout: fixed;
 }
 .mdc-table-row {

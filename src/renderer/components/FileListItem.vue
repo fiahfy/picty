@@ -1,10 +1,7 @@
 <template>
   <mdc-table-row class="file-list-item">
     <mdc-table-column class="name">
-      <mdc-icon
-        :icon="icon"
-        :class="icon"
-      />
+      <mdc-icon :icon="icon" :class="icon"/>
       {{ file.name }}
     </mdc-table-column>
     <mdc-table-column class="date-modified">

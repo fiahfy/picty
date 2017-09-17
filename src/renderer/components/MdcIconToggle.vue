@@ -4,7 +4,8 @@
     role="button"
     :aria-pressed="checked"
     :data-toggle-on="toggleOn"
-    :data-toggle-off="toggleOff"/>
+    :data-toggle-off="toggleOff"
+  />
 </template>
 
 <script>

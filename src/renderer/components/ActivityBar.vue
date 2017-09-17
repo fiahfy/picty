@@ -1,7 +1,7 @@
 <template>
   <div class="activity-bar">
     <ul>
-      <li v-for="item in items" :key="item.routeName">
+      <li :key="item.routeName" v-for="item in items">
         <mdc-button @click="changeRoute(item.name)">
           <mdc-icon :icon="item.icon" :class="item.classes" />
         </mdc-button>
