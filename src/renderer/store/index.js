@@ -16,7 +16,10 @@ export default new Vuex.Store({
     focusSelector (state, selector) {
       // wait dom updated
       setTimeout(() => {
-        document.querySelector(selector).focus()
+        const el = document.querySelector(selector)
+        if (el) {
+          el.focus()
+        }
       }, 0)
     }
   },

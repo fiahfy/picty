@@ -113,10 +113,10 @@ export default {
   },
   updated () {
     const el = this.$el.querySelector('.selected')
-    if (!el) {
+    const parent = this.$el.parentNode
+    if (!el || !parent) {
       return
     }
-    const parent = this.$el.parentNode
     if (el.offsetTop - el.offsetHeight < parent.scrollTop) {
       parent.scrollTop = el.offsetTop - el.offsetHeight
     } else if (el.offsetTop + el.offsetHeight > parent.scrollTop + parent.offsetHeight) {
