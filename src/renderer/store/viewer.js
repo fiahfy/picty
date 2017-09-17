@@ -17,6 +17,9 @@ export default {
           files = await listFiles(file.path)
           files = files.filter((file) => isImage(file.path))
           file = files[0]
+          if (!files.length) {
+            throw new Error('Image Not Found')
+          }
         } else {
           const dir = path.dirname(file.path)
           files = await listFiles(dir)
@@ -26,11 +29,17 @@ export default {
         commit('setCurrentFile', file)
         commit('setFiles', files)
       } catch (e) {
-        commit('setError', new Error('Invalid Image'))
+        let error = e.message === 'Image Not Found' ? e : new Error('Invalid Image')
+        commit('setError', error)
         commit('setCurrentFile', {})
         commit('setFiles', [])
       }
       commit('setViewing', true)
+      commit('focusSelector', '.viewer', { root: true })
+    },
+    dismissViewer ({ commit }) {
+      commit('setViewing', false)
+      commit('focusSelector', '.file-list', { root: true })
     },
     async showViewerWithSelectedFile ({ dispatch, rootState }) {
       await dispatch('showViewer', rootState.explorer.selectedFile)

@@ -1,15 +1,19 @@
 <template>
-  <div class="viewer">
+  <div
+    class="viewer"
+    tabindex="-1"
+    @keydown="keydown"
+  >
     <div class="error" v-if="error">
       <span>{{ error.message }}</span>
     </div>
-    <img v-else :src="currentFile.path" @error="loadError"/>
+    <img :src="currentFile.path" @error="loadError" v-else/>
   </div>
 </template>
 
 <script>
 import { remote } from 'electron'
-import { mapMutations, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 
 export default {
   data () {
@@ -17,16 +21,15 @@ export default {
       hasLoadError: false
     }
   },
-  created () {
-    document.addEventListener('keyup', this.keyup)
-    if (this.fullScreen) {
-      const browserWindow = remote.getCurrentWindow()
-      browserWindow.setFullScreen(true)
-      browserWindow.setMenuBarVisibility(false)
+  mounted () {
+    if (!this.fullScreen) {
+      return
     }
+    const browserWindow = remote.getCurrentWindow()
+    browserWindow.setFullScreen(true)
+    browserWindow.setMenuBarVisibility(false)
   },
   beforeDestroy () {
-    document.removeEventListener('keyup', this.keyup)
     const browserWindow = remote.getCurrentWindow()
     browserWindow.setFullScreen(false)
     browserWindow.setMenuBarVisibility(true)
@@ -49,13 +52,16 @@ export default {
     ])
   },
   methods: {
-    keyup (e) {
+    loadError (e) {
+      this.hasLoadError = true
+    },
+    keydown (e) {
       switch (e.keyCode) {
         case 27:
-          this.setViewing(false)
+          this.dismissViewer()
           break
         case 37:
-        case 48:
+        case 38:
           this.hasLoadError = false
           this.viewPreviousImage()
           break
@@ -66,13 +72,12 @@ export default {
           break
       }
     },
-    loadError (e) {
-      this.hasLoadError = true
-    },
+    ...mapActions('viewer', [
+      'dismissViewer'
+    ]),
     ...mapMutations('viewer', [
       'viewPreviousImage',
-      'viewNextImage',
-      'setViewing'
+      'viewNextImage'
     ])
   }
 }
@@ -80,6 +85,7 @@ export default {
 
 <style scoped lang="scss">
 .viewer {
+  outline: none;
   position:relative;
   user-select: none;
 }

@@ -73,6 +73,24 @@ export default {
     selectFile (state, file) {
       state.selectedFile = file
     },
+    selectPreviousFile (state) {
+      let index = state.files.findIndex((file) => {
+        return file.path === state.selectedFile.path
+      }) - 1
+      if (index < 0) {
+        return
+      }
+      state.selectedFile = state.files[index]
+    },
+    selectNextFile (state) {
+      let index = state.files.findIndex((file) => {
+        return file.path === state.selectedFile.path
+      }) + 1
+      if (index > state.files.length - 1) {
+        return
+      }
+      state.selectedFile = state.files[index]
+    },
     orderFile (state) {
       state.files = state.files.concat().sort((a, b) => {
         let result = true

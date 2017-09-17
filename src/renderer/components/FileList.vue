@@ -1,74 +1,62 @@
 <template>
-  <div class="file-list">
-    <div class="error" v-if="error">
-      <span>{{ error.message }}</span>
-    </div>
-    <mdc-table v-else>
-      <mdc-table-header>
-        <mdc-table-row>
-          <mdc-table-header-column
-            class="name"
-            @click.native="changeSort('name')"
-          >
-            <span>Name</span>
-            <mdc-icon
-              :icon="sortIcon"
-              v-if="sortKey === 'name'"
-            />
-          </mdc-table-header-column>
-          <mdc-table-header-column
-            class="date-modified"
-            @click.native="changeSort('date_modified')"
-          >
-            <span>Date Modified</span>
-            <mdc-icon
-              :icon="sortIcon"
-              v-if="sortKey === 'date_modified'"
-            />
-          </mdc-table-header-column>
-        </mdc-table-row>
-      </mdc-table-header>
-      <mdc-table-body>
-        <mdc-table-row
-          v-for="file in files"
-          :key="file.name"
-          :selected="isSelected(file)"
-          @click="selectFile(file)"
-          @dblclick.native="doubleClick(file)"
+  <mdc-table
+    class="file-list"
+    tabindex="-1"
+    @keydown.native="keydown"
+  >
+    <mdc-table-header>
+      <mdc-table-row>
+        <mdc-table-header-column
+          class="name"
+          @click.native="changeSort('name')"
         >
-          <mdc-table-column class="name">
-            <mdc-icon
-              :icon="icon(file)"
-              :class="icon(file)"
-            />
-            {{ file.name }}
-          </mdc-table-column>
-          <mdc-table-column class="date-modified">
-            {{ file.stats.mtime | date }}
-          </mdc-table-column>
-        </mdc-table-row>
-      </mdc-table-body>
-    </mdc-table>
-  </div>
+          <span>Name</span>
+          <mdc-icon
+            :icon="sortIcon"
+            v-if="sortKey === 'name'"
+          />
+        </mdc-table-header-column>
+        <mdc-table-header-column
+          class="date-modified"
+          @click.native="changeSort('date_modified')"
+        >
+          <span>Date Modified</span>
+          <mdc-icon
+            :icon="sortIcon"
+            v-if="sortKey === 'date_modified'"
+          />
+        </mdc-table-header-column>
+      </mdc-table-row>
+    </mdc-table-header>
+    <mdc-table-body>
+      <file-list-item
+        :file="file"
+        :key="file.name"
+        :class="{selected: isSelected(file)}"
+        @click.native="selectFile(file)"
+        @dblclick.native="doubleClick(file)"
+        v-for="file in files"
+      />
+    </mdc-table-body>
+  </mdc-table>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex'
+import FileListItem from '../components/FileListItem'
 import MdcIcon from '../components/MdcIcon'
 import MdcTable from '../components/MdcTable'
 import MdcTableBody from '../components/MdcTableBody'
-import MdcTableColumn from '../components/MdcTableColumn'
 import MdcTableHeader from '../components/MdcTableHeader'
 import MdcTableHeaderColumn from '../components/MdcTableHeaderColumn'
 import MdcTableRow from '../components/MdcTableRow'
-import { isImage } from '../utils/file'
 
 export default {
   components: {
+    FileListItem,
     MdcIcon,
     MdcTable,
     MdcTableBody,
-    MdcTableColumn,
     MdcTableHeader,
     MdcTableHeaderColumn,
     MdcTableRow
@@ -78,7 +66,6 @@ export default {
       return this.sortOrder === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState('explorer', [
-      'error',
       'files',
       'selectedFile',
       'sortKey',
@@ -86,12 +73,6 @@ export default {
     ])
   },
   methods: {
-    icon (file) {
-      if (file.stats.isDirectory()) {
-        return 'folder'
-      }
-      return isImage(file.path) ? 'photo' : 'note'
-    },
     isSelected (file) {
       return file.path === this.selectedFile.path
     },
@@ -102,8 +83,25 @@ export default {
         this.showViewer(file)
       }
     },
+    keydown (e) {
+      if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+        return
+      }
+      switch (e.keyCode) {
+        case 38:
+          e.preventDefault()
+          this.selectPreviousFile()
+          break
+        case 40:
+          e.preventDefault()
+          this.selectNextFile()
+          break
+      }
+    },
     ...mapMutations('explorer', [
-      'selectFile'
+      'selectFile',
+      'selectPreviousFile',
+      'selectNextFile'
     ]),
     ...mapActions('explorer', [
       'changeDirectory',
@@ -113,44 +111,29 @@ export default {
       'showViewer'
     ])
   },
-  watch: {
-    files () {
-      this.$el.scrollTop = 0
+  updated () {
+    const el = this.$el.querySelector('.selected')
+    const parent = this.$el.parentNode
+    if (!el || !parent) {
+      return
+    }
+    if (el.offsetTop - el.offsetHeight < parent.scrollTop) {
+      parent.scrollTop = el.offsetTop - el.offsetHeight
+    } else if (el.offsetTop + el.offsetHeight > parent.scrollTop + parent.offsetHeight) {
+      parent.scrollTop = el.offsetTop + el.offsetHeight - parent.offsetHeight
     }
   },
-  filters: {
-    date (value) {
-      const date = new Date(value)
-      const Y = date.getFullYear()
-      const m = String(date.getMonth() + 1).padStart(2, '0')
-      const d = String(date.getDate()).padStart(2, '0')
-      const H = String(date.getHours()).padStart(2, '0')
-      const i = String(date.getMinutes()).padStart(2, '0')
-      return `${Y}-${m}-${d} ${H}:${i}`
+  watch: {
+    files () {
+      this.$el.parentNode.scrollTop = 0
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color_palette.scss";
-
-.file-list {
-  height: 100%;
-  overflow-y: auto;
-}
-.error {
-  display: table;
-  height: 100%;
-  vertical-align: middle;
-  width: 100%;
-  span {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-  }
-}
 .mdc-table {
+  outline: none;
   table-layout: fixed;
 }
 .mdc-table-row {
@@ -165,28 +148,9 @@ export default {
   &.date-modified {
     width: 128px;
   }
-}
-.mdc-table-column {
-  font-size: smaller;
-  vertical-align: bottom;
-  white-space: nowrap;
-  &.name {
-    overflow: hidden;
-    text-align: left;
-    text-overflow: ellipsis;
-  }
-}
-.mdc-icon {
-  padding: 0;
-  vertical-align: bottom;
-  &.folder {
-    color: $material-color-blue-200;
-  }
-  &.photo {
-    color: $material-color-green-200;
-  }
-  &.note {
-    color: $material-color-grey-300;
+  .mdc-icon {
+    padding: 0;
+    vertical-align: bottom;
   }
 }
 .mdc-theme--dark {
