@@ -9,6 +9,9 @@ import viewer from './viewer'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  state: {
+    message: ''
+  },
   mutations: {
     changeRoute (state, name) {
       router.push({ name })
@@ -21,6 +24,9 @@ export default new Vuex.Store({
           el.focus()
         }
       }, 0)
+    },
+    setMessage (state, message) {
+      state.message = message
     }
   },
   modules: {

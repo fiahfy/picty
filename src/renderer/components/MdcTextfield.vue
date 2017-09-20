@@ -63,11 +63,6 @@ export default {
     keyup (e) {
       this.$emit('keyup', e)
     }
-  },
-  watch: {
-    defaultValue (value) {
-      this.value = value
-    }
   }
 }
 </script>

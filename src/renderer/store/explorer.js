@@ -1,6 +1,8 @@
 import path from 'path'
-import { remote } from 'electron'
+import { remote, shell } from 'electron'
 import { listFiles } from '../utils/file'
+
+const app = remote.app
 
 const orderDefaults = {
   name: 'asc',
@@ -11,7 +13,7 @@ export default {
   namespaced: true,
   state: {
     error: null,
-    directory: remote.app.getPath('home'),
+    directory: app.getPath('home'),
     files: [],
     selectedFile: {},
     sortKey: 'name',
@@ -52,6 +54,15 @@ export default {
       commit('setSortKey', sortKey)
       commit('setSortOrder', sortOrder)
       commit('orderFile')
+    },
+    openDirectory ({ commit, state }) {
+      shell.openItem(state.directory)
+      commit('setMessage', 'b', { root: true })
+      commit('setMessage', 'AAA', { root: true })
+      // setTimeout(() => {
+      //   commit('setMessage', '', { root: true })
+
+      // }, 3000)
     }
   },
   mutations: {

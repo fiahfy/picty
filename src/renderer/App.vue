@@ -8,18 +8,21 @@
       </div>
     </div>
     <viewer v-if="isViewing"/>
+    <mdc-snackbar :message="message" v-if="message"/>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
+import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
 
 export default {
   components: {
     ActivityBar,
+    MdcSnackbar,
     TitleBar,
     Viewer
   },
@@ -32,6 +35,9 @@ export default {
     hasTitleBar () {
       return process.platform !== 'win32'
     },
+    ...mapState([
+      'message'
+    ]),
     ...mapState('viewer', [
       'isViewing'
     ]),

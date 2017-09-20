@@ -28,6 +28,12 @@
       >
         <mdc-icon icon="photo" />
       </mdc-button>
+      <mdc-button
+        title="Open directory"
+        @click="openDirectory"
+      >
+        <mdc-icon icon="folder_open" />
+      </mdc-button>
     </div>
   </div>
 </template>
@@ -68,7 +74,8 @@ export default {
     ...mapActions('explorer', [
       'changeDirectory',
       'changeParentDirectory',
-      'refreshDirectory'
+      'refreshDirectory',
+      'openDirectory'
     ]),
     ...mapActions('viewer', [
       'showViewerWithSelectedFile'
