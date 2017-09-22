@@ -29,7 +29,7 @@
         <mdc-icon icon="photo" />
       </mdc-button>
       <mdc-button
-        title="Open directory"
+        title="Open current directory"
         @click="openDirectory"
       >
         <mdc-icon icon="folder_open" />
