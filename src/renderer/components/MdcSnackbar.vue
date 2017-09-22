@@ -5,9 +5,9 @@
     aria-atomic="true"
     aria-hidden="true"
   >
-    <div class="mdc-snackbar__text"></div>
+    <div class="mdc-snackbar__text"/>
     <div class="mdc-snackbar__action-wrapper">
-      <button type="button" class="mdc-snackbar__action-button"></button>
+      <button type="button" class="mdc-snackbar__action-button"/>
     </div>
   </div>
 </template>
@@ -31,7 +31,9 @@ export default {
         return
       }
       const dataObj = {
-        message: this.message
+        message: this.message,
+        actionText: 'Close',
+        actionHandler: () => {}
       }
       this.snackbar.show(dataObj)
     }
