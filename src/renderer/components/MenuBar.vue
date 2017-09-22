@@ -50,11 +50,6 @@ export default {
     MdcIcon,
     MdcTextfield
   },
-  data () {
-    return {
-      path: ''
-    }
-  },
   computed: {
     directoryInput: {
       get () {

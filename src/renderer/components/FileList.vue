@@ -30,9 +30,9 @@
     </mdc-table-header>
     <mdc-table-body>
       <file-list-item
-        :file="file"
         :key="file.name"
-        :class="{selected: isSelected(file)}"
+        :file="file"
+        :class="{ selected: isSelected(file) }"
         @click.native="selectFile(file)"
         @dblclick.native="doubleClick(file)"
         v-for="file in files"
@@ -66,6 +66,7 @@ export default {
       return this.sortOrder === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState('explorer', [
+      'explorerdirectory',
       'files',
       'selectedFile',
       'sortKey',
@@ -124,7 +125,7 @@ export default {
     }
   },
   watch: {
-    files () {
+    directory () {
       this.$el.parentNode.scrollTop = 0
     }
   }
@@ -148,10 +149,10 @@ export default {
   &.date-modified {
     width: 128px;
   }
-  .mdc-icon {
-    padding: 0;
-    vertical-align: bottom;
-  }
+}
+.mdc-icon {
+  padding: 0;
+  vertical-align: bottom;
 }
 .mdc-theme--dark {
   .mdc-table-header-column {

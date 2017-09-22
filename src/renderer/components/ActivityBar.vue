@@ -12,7 +12,6 @@
 
 <script>
 import { mapActions } from 'vuex'
-
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 
@@ -76,13 +75,13 @@ ul {
   line-height: initial;
   min-width: auto;
   padding: 0;
-  .mdc-icon {
-    &:not(.selected) {
-      color: $material-color-grey-400
-    }
-    &.selected {
-      color: $material-color-pink-400
-    }
+}
+.mdc-icon {
+  &:not(.selected) {
+    color: $material-color-grey-400
+  }
+  &.selected {
+    color: $material-color-pink-400
   }
 }
 .mdc-theme--dark {
