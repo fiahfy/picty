@@ -6,7 +6,7 @@
         label="Input path..."
         fullwidth
         @keyup="keyup"
-        v-model="directory"
+        v-model="directoryInput"
       />
     </div>
     <div class="buttons">
@@ -56,12 +56,12 @@ export default {
     }
   },
   computed: {
-    directory: {
+    directoryInput: {
       get () {
-        return this.$store.state.explorer.directory
+        return this.$store.state.explorer.directoryInput
       },
       set (value) {
-        this.$store.commit('explorer/setDirectory', value)
+        this.$store.commit('explorer/setDirectoryInput', value)
       }
     }
   },

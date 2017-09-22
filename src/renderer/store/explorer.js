@@ -14,6 +14,7 @@ export default {
   state: {
     error: null,
     directory: app.getPath('home'),
+    directoryInput: '',
     files: [],
     selectedFile: {},
     sortKey: 'name',
@@ -21,6 +22,8 @@ export default {
   },
   actions: {
     async loadFiles ({ commit }, dir) {
+      commit('setDirectory', dir)
+      commit('setDirectoryInput', dir)
       try {
         const files = await listFiles(dir)
         commit('setError', null)
@@ -32,7 +35,6 @@ export default {
       commit('orderFile')
     },
     async changeDirectory ({ commit, dispatch }, dir) {
-      commit('setDirectory', dir)
       await dispatch('loadFiles', dir)
     },
     async changeChildDirectory ({ dispatch, state }, dirname) {
@@ -43,7 +45,7 @@ export default {
       const parent = path.dirname(state.directory)
       await dispatch('changeDirectory', parent)
     },
-    async refreshDirectory ({ dispatch, state }) {
+    async refreshDirectory ({ commit, dispatch, state }) {
       await dispatch('loadFiles', state.directory)
     },
     changeSort ({ commit, state }, sortKey) {
@@ -56,16 +58,21 @@ export default {
       commit('orderFile')
     },
     openDirectory ({ dispatch, state }) {
-      shell.openItem(state.directory)
-      dispatch('showMessage', 'AAA', { root: true })
+      const result = shell.openItem(state.directory)
+      if (!result) {
+        dispatch('showMessage', `Invalid directory "${state.directory}"`, { root: true })
+      }
     }
   },
   mutations: {
     setError (state, error) {
       state.error = error
     },
-    setDirectory (state, dir) {
-      state.directory = dir
+    setDirectory (state, directory) {
+      state.directory = directory
+    },
+    setDirectoryInput (state, directory) {
+      state.directoryInput = directory
     },
     setFiles (state, files) {
       state.files = files
