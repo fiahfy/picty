@@ -1,13 +1,13 @@
 <template>
   <div id="app" :class="classes">
     <title-bar v-if="hasTitleBar"/>
-    <div class="container" v-show="!isViewing">
+    <div class="container">
       <activity-bar/>
       <div class="content">
         <router-view/>
       </div>
+      <viewer v-if="isViewing"/>
     </div>
-    <viewer v-if="isViewing"/>
     <mdc-snackbar :message="message"/>
   </div>
 </template>
@@ -65,6 +65,7 @@ export default {
   display: flex;
   flex: 1;
   overflow: hidden;
+  position: relative;
 }
 .content {
   flex: 1;

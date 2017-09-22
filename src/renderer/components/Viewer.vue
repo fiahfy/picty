@@ -85,8 +85,13 @@ export default {
 
 <style scoped lang="scss">
 .viewer {
+  background-color: #fff;
+  bottom:0;
+  left: 0;
   outline: none;
-  position:relative;
+  position: absolute;
+  right: 0;
+  top:0;
   user-select: none;
 }
 .error {
@@ -110,5 +115,10 @@ img {
   right: 0;
   top:0;
   vertical-align: middle;
+}
+.mdc-theme--dark {
+  .viewer {
+    background-color: #303030;
+  }
 }
 </style>
