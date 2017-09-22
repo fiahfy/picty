@@ -12,13 +12,13 @@
 
 <script>
 import { mapState } from 'vuex'
-import MenuBar from '../components/MenuBar'
 import FileList from '../components/FileList'
+import MenuBar from '../components/MenuBar'
 
 export default {
   components: {
-    MenuBar,
-    FileList
+    FileList,
+    MenuBar
   },
   async asyncData ({ store }) {
     await store.dispatch('explorer/refreshDirectory')

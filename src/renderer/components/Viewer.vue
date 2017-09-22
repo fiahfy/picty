@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import { remote } from 'electron'
 import { mapActions, mapMutations, mapState } from 'vuex'
 
 export default {
@@ -20,19 +19,6 @@ export default {
     return {
       hasLoadError: false
     }
-  },
-  mounted () {
-    if (!this.fullScreen) {
-      return
-    }
-    const browserWindow = remote.getCurrentWindow()
-    browserWindow.setFullScreen(true)
-    browserWindow.setMenuBarVisibility(false)
-  },
-  beforeDestroy () {
-    const browserWindow = remote.getCurrentWindow()
-    browserWindow.setFullScreen(false)
-    browserWindow.setMenuBarVisibility(true)
   },
   computed: {
     ...mapState('viewer', {
@@ -46,10 +32,7 @@ export default {
         return null
       },
       currentFile: 'currentFile'
-    }),
-    ...mapState('settings', [
-      'fullScreen'
-    ])
+    })
   },
   methods: {
     loadError (e) {

@@ -1,4 +1,5 @@
 import path from 'path'
+import { remote } from 'electron'
 import { listFiles, isImage } from '../utils/file'
 
 export default {
@@ -10,7 +11,7 @@ export default {
     currentFile: {}
   },
   actions: {
-    async showViewer ({ commit, dispatch }, file) {
+    async showViewer ({ commit, dispatch, rootState }, file) {
       try {
         let files
         if (file.stats.isDirectory()) {
@@ -36,10 +37,18 @@ export default {
       }
       commit('setViewing', true)
       dispatch('focusSelector', '.viewer', { root: true })
+      if (rootState.settings.fullScreen) {
+        const browserWindow = remote.getCurrentWindow()
+        browserWindow.setFullScreen(true)
+        browserWindow.setMenuBarVisibility(false)
+      }
     },
     dismissViewer ({ commit, dispatch }) {
       commit('setViewing', false)
       dispatch('focusSelector', '.file-list', { root: true })
+      const browserWindow = remote.getCurrentWindow()
+      browserWindow.setFullScreen(false)
+      browserWindow.setMenuBarVisibility(true)
     },
     async showViewerWithSelectedFile ({ dispatch, rootState }) {
       await dispatch('showViewer', rootState.explorer.selectedFile)

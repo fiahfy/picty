@@ -1,19 +1,20 @@
+import fs from 'fs'
 import path from 'path'
 import { remote, shell } from 'electron'
 import { listFiles } from '../utils/file'
-
-const app = remote.app
 
 const orderDefaults = {
   name: 'asc',
   date_modified: 'desc'
 }
 
+let watcher = null
+
 export default {
   namespaced: true,
   state: {
     error: null,
-    directory: app.getPath('home'),
+    directory: remote.app.getPath('home'),
     directoryInput: '',
     files: [],
     selectedFile: {},
@@ -21,7 +22,13 @@ export default {
     sortOrder: 'asc'
   },
   actions: {
-    async loadFiles ({ commit }, dir) {
+    async loadFiles ({ commit, dispatch }, dir) {
+      if (watcher) {
+        watcher.close()
+      }
+      watcher = fs.watch(dir, () => {
+        dispatch('refreshDirectory')
+      })
       commit('setDirectory', dir)
       commit('setDirectoryInput', dir)
       try {
