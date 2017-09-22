@@ -5,7 +5,7 @@
       {{ file.name }}
     </mdc-table-column>
     <mdc-table-column class="date-modified">
-      {{ file.stats.mtime | date }}
+      {{ file.stats.mtime | moment('YYYY-MM-DD HH:mm') }}
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -34,17 +34,6 @@ export default {
       }
       return isImage(this.file.path) ? 'photo' : 'note'
     }
-  },
-  filters: {
-    date (value) {
-      const date = new Date(value)
-      const Y = date.getFullYear()
-      const m = String(date.getMonth() + 1).padStart(2, '0')
-      const d = String(date.getDate()).padStart(2, '0')
-      const H = String(date.getHours()).padStart(2, '0')
-      const i = String(date.getMinutes()).padStart(2, '0')
-      return `${Y}-${m}-${d} ${H}:${i}`
-    }
   }
 }
 </script>
@@ -62,18 +51,18 @@ export default {
     text-align: left;
     text-overflow: ellipsis;
   }
-  .mdc-icon {
-    padding: 0;
-    vertical-align: bottom;
-    &.folder {
-      color: $material-color-blue-200;
-    }
-    &.photo {
-      color: $material-color-green-200;
-    }
-    &.note {
-      color: $material-color-grey-300;
-    }
+}
+.mdc-icon {
+  padding: 0;
+  vertical-align: bottom;
+  &.folder {
+    color: $material-color-blue-200;
+  }
+  &.photo {
+    color: $material-color-green-200;
+  }
+  &.note {
+    color: $material-color-grey-300;
   }
 }
 </style>

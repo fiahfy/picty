@@ -143,6 +143,7 @@ export default {
 .mdc-table-header-column {
   background-color: white;
   font-size: smaller;
+  line-height: 20px;
   position: sticky;
   top: 0;
   vertical-align: bottom;

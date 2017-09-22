@@ -1,6 +1,6 @@
 <template>
   <div class="menu-bar">
-    <div class="directory">
+    <div class="row directory">
       <mdc-icon icon="folder"/>
       <mdc-textfield
         label="Input path..."
@@ -9,18 +9,12 @@
         v-model="directoryInput"
       />
     </div>
-    <div class="buttons">
+    <div class="row buttons">
       <mdc-button
         title="Change parent drectory"
         @click="changeParentDirectory"
       >
         <mdc-icon icon="arrow_upward" />
-      </mdc-button>
-      <mdc-button
-        title="Refresh"
-        @click="refreshDirectory"
-      >
-        <mdc-icon icon="refresh" />
       </mdc-button>
       <mdc-button
         title="View"
@@ -85,7 +79,7 @@ export default {
 .menu-bar {
   user-select: none;
 }
-.menu-bar>div {
+.row {
   border-bottom-color: $material-color-grey-300;
   border-bottom-style: solid;
   border-bottom-width: 1px;
@@ -117,7 +111,7 @@ export default {
   padding: 0;
 }
 .mdc-theme--dark {
-  .menu-bar>div {
+  .row {
     border-bottom-color: $material-color-grey-600;
   }
 }
