@@ -12,11 +12,11 @@ export default new Vuex.Store({
   state: {
     message: ''
   },
-  mutations: {
-    changeRoute (state, name) {
+  actions: {
+    changeRoute (_, name) {
       router.push({ name })
     },
-    focusSelector (state, selector) {
+    focusSelector (_, selector) {
       // wait dom updated
       setTimeout(() => {
         const el = document.querySelector(selector)
@@ -25,6 +25,15 @@ export default new Vuex.Store({
         }
       }, 0)
     },
+    showMessage ({ commit }, message) {
+      commit('setMessage', message)
+      // wait dom updated
+      setTimeout(() => {
+        commit('setMessage', '')
+      })
+    }
+  },
+  mutations: {
     setMessage (state, message) {
       state.message = message
     }

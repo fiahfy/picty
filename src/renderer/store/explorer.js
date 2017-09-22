@@ -55,14 +55,9 @@ export default {
       commit('setSortOrder', sortOrder)
       commit('orderFile')
     },
-    openDirectory ({ commit, state }) {
+    openDirectory ({ dispatch, state }) {
       shell.openItem(state.directory)
-      commit('setMessage', 'b', { root: true })
-      commit('setMessage', 'AAA', { root: true })
-      // setTimeout(() => {
-      //   commit('setMessage', '', { root: true })
-
-      // }, 3000)
+      dispatch('showMessage', 'AAA', { root: true })
     }
   },
   mutations: {

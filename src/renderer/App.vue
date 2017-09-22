@@ -8,7 +8,7 @@
       </div>
     </div>
     <viewer v-if="isViewing"/>
-    <mdc-snackbar :message="message" v-if="message"/>
+    <mdc-snackbar :message="message"/>
   </div>
 </template>
 

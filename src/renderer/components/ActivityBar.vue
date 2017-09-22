@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapActions } from 'vuex'
 
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
@@ -43,7 +43,7 @@ export default {
         })
       ))
     },
-    ...mapMutations([
+    ...mapActions([
       'changeRoute'
     ])
   },

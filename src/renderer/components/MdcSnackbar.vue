@@ -18,23 +18,28 @@ import { MDCSnackbar } from '@material/snackbar'
 export default {
   props: {
     message: {
-      type: String,
-      required: true
+      type: String
     }
   },
   mounted () {
     this.snackbar = MDCSnackbar.attachTo(this.$el)
-    // const dataObj = {
-    //   message: this.message
-    // }
-    // this.snackbar.show(dataObj)
+    this.show()
   },
-  updated () {
-    console.log('updated')
-    const dataObj = {
-      message: this.message
+  methods: {
+    show () {
+      if (!this.message) {
+        return
+      }
+      const dataObj = {
+        message: this.message
+      }
+      this.snackbar.show(dataObj)
     }
-    this.snackbar.show(dataObj)
+  },
+  watch: {
+    message () {
+      this.show()
+    }
   }
 }
 </script>

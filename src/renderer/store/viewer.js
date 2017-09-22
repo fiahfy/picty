@@ -10,7 +10,7 @@ export default {
     currentFile: {}
   },
   actions: {
-    async showViewer ({ commit }, file) {
+    async showViewer ({ commit, dispatch }, file) {
       try {
         let files
         if (file.stats.isDirectory()) {
@@ -35,11 +35,11 @@ export default {
         commit('setFiles', [])
       }
       commit('setViewing', true)
-      commit('focusSelector', '.viewer', { root: true })
+      dispatch('focusSelector', '.viewer', { root: true })
     },
-    dismissViewer ({ commit }) {
+    dismissViewer ({ commit, dispatch }) {
       commit('setViewing', false)
-      commit('focusSelector', '.file-list', { root: true })
+      dispatch('focusSelector', '.file-list', { root: true })
     },
     async showViewerWithSelectedFile ({ dispatch, rootState }) {
       await dispatch('showViewer', rootState.explorer.selectedFile)
