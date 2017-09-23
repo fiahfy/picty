@@ -13,21 +13,6 @@ export default {
     rules: [
       ...config.module.rules,
       {
-        test: /\.s?css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: 'sass-loader',
-            options: {
-              includePaths: [
-                `${__dirname}/../node_modules`,
-              ],
-            },
-          },
-        ],
-      },
-      {
         test: /\.(jpg|gif|png|svg)$/,
         loader: 'url-loader',
         options: {

@@ -72,6 +72,11 @@ export default {
 </style>
 
 <style lang="scss">
+$mdc-theme-primary: #ff4081;
+
+@import '~material-components-web/material-components-web';
+@import '~material-design-icons/iconfont/material-icons.css';
+
 .mdc-theme--dark {
   color: white;
   &.mdc-theme--background, .mdc-theme--background {

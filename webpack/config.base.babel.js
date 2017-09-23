@@ -18,8 +18,9 @@ export default {
         loader: 'vue-loader',
         options: {
           loaders: {
+            scss: 'vue-style-loader!css-loader!sass-loader?' +
+              `{ "includePaths": ["${__dirname}/../node_modules"] }`
           },
-          // other vue-loader options go here
         },
       },
     ],

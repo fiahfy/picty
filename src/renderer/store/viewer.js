@@ -9,7 +9,8 @@ export default {
     isViewing: false,
     files: [],
     currentFile: {},
-    currentIndex: -1
+    currentIndex: -1,
+    fullScreen: false
   },
   actions: {
     async showViewer ({ commit, dispatch, rootState }, file) {
@@ -39,20 +40,28 @@ export default {
       commit('setViewing', true)
       dispatch('focusSelector', '.viewer', { root: true })
       if (rootState.settings.fullScreen) {
-        const browserWindow = remote.getCurrentWindow()
-        browserWindow.setFullScreen(true)
-        browserWindow.setMenuBarVisibility(false)
+        dispatch('enableFullScreen')
       }
     },
     dismissViewer ({ commit, dispatch }) {
       commit('setViewing', false)
       dispatch('focusSelector', '.file-list', { root: true })
-      const browserWindow = remote.getCurrentWindow()
-      browserWindow.setFullScreen(false)
-      browserWindow.setMenuBarVisibility(true)
+      dispatch('disableFullScreen')
     },
     async showViewerWithSelectedFile ({ dispatch, rootState }) {
       await dispatch('showViewer', rootState.explorer.selectedFile)
+    },
+    enableFullScreen ({ commit }) {
+      const browserWindow = remote.getCurrentWindow()
+      browserWindow.setFullScreen(true)
+      browserWindow.setMenuBarVisibility(false)
+      commit('setFullScreen', true)
+    },
+    disableFullScreen ({ commit }) {
+      const browserWindow = remote.getCurrentWindow()
+      browserWindow.setFullScreen(false)
+      browserWindow.setMenuBarVisibility(true)
+      commit('setFullScreen', false)
     }
   },
   mutations: {
@@ -74,6 +83,9 @@ export default {
     setCurrentIndex (state, index) {
       state.currentIndex = index
       state.currentFile = state.files[index]
+    },
+    setFullScreen (state, fullScreen) {
+      state.fullScreen = fullScreen
     },
     viewPreviousImage (state) {
       let index = state.currentIndex - 1

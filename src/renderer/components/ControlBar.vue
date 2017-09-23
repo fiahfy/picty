@@ -16,6 +16,20 @@
       </mdc-button>
       <mdc-slider v-model="page" :min="1" :max="maxPage"/>
       <div class="page">{{ page }} / {{ maxPage }}</div>
+      <mdc-button
+        title="Exit fullscreen"
+        @click="disableFullScreen"
+        v-if="fullScreen"
+      >
+        <mdc-icon icon="fullscreen_exit"/>
+      </mdc-button>
+      <mdc-button
+        title="Fullscreen"
+        @click="enableFullScreen"
+        v-else
+      >
+        <mdc-icon icon="fullscreen"/>
+      </mdc-button>
     </div>
   </div>
 </template>
@@ -42,12 +56,14 @@ export default {
       }
     },
     ...mapState('viewer', {
+      fullScreen: 'fullScreen',
       maxPage: state => state.files.length
     })
   },
   methods: {
     ...mapActions('viewer', [
-      'changeFullscreen'
+      'enableFullScreen',
+      'disableFullScreen'
     ]),
     ...mapMutations('viewer', [
       'viewPreviousImage',
@@ -93,7 +109,7 @@ export default {
   color: white;
   font-size: smaller;
   line-height: 48px;
-  margin: 0 16px;
+  margin-left: 16px;
   vertical-align: middle;
   white-space: nowrap;
   z-index: 1;

@@ -48,7 +48,6 @@ export default {
   mounted () {
     this.slider = new MDCSlider(this.$el)
     this.slider.listen('MDCSlider:input', () => {
-      console.log(this.slider.value)
       this.$emit('input', this.slider.value)
     })
   },
