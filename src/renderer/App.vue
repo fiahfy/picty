@@ -1,37 +1,44 @@
 <template>
   <div id="app" :class="classes">
     <title-bar v-if="hasTitleBar"/>
-    <div class="container" v-show="!isViewing">
+    <div class="container">
       <activity-bar/>
       <div class="content">
         <router-view/>
       </div>
+      <viewer v-if="isViewing"/>
     </div>
-    <viewer v-if="isViewing"/>
+    <mdc-snackbar :message="message"/>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
+import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
 
 export default {
   components: {
     ActivityBar,
+    MdcSnackbar,
     TitleBar,
     Viewer
   },
   computed: {
     classes () {
       return {
+        'mdc-theme--background': true,
         'mdc-theme--dark': this.darkTheme
       }
     },
     hasTitleBar () {
       return process.platform !== 'win32'
     },
+    ...mapState([
+      'message'
+    ]),
     ...mapState('viewer', [
       'isViewing'
     ]),
@@ -44,26 +51,36 @@ export default {
 
 <style scoped lang="scss">
 #app {
-  color: #2c3e50;
   display: flex;
   flex-direction: column;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   height: 100%;
   text-align: center;
-  &.mdc-theme--dark {
-    background-color: #303030;
-    color: white;
-  }
 }
 .container {
   display: flex;
   flex: 1;
   overflow: hidden;
+  position: relative;
 }
 .content {
   flex: 1;
 }
 .viewer {
   flex: 1;
+}
+</style>
+
+<style lang="scss">
+$mdc-theme-primary: #ff4081;
+
+@import '~material-components-web/material-components-web';
+@import '~material-design-icons/iconfont/material-icons.css';
+
+.mdc-theme--dark {
+  color: white;
+  &.mdc-theme--background, .mdc-theme--background {
+    background-color: #303030;
+  }
 }
 </style>

@@ -7,7 +7,7 @@
     <mdc-table-header>
       <mdc-table-row>
         <mdc-table-header-column
-          class="name"
+          class="name mdc-theme--background"
           @click.native="changeSort('name')"
         >
           <span>Name</span>
@@ -17,7 +17,7 @@
           />
         </mdc-table-header-column>
         <mdc-table-header-column
-          class="date-modified"
+          class="date-modified mdc-theme--background"
           @click.native="changeSort('date_modified')"
         >
           <span>Date Modified</span>
@@ -30,9 +30,9 @@
     </mdc-table-header>
     <mdc-table-body>
       <file-list-item
-        :file="file"
         :key="file.name"
-        :class="{selected: isSelected(file)}"
+        :file="file"
+        :class="{ selected: isSelected(file) }"
         @click.native="selectFile(file)"
         @dblclick.native="doubleClick(file)"
         v-for="file in files"
@@ -66,6 +66,7 @@ export default {
       return this.sortOrder === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState('explorer', [
+      'explorerdirectory',
       'files',
       'selectedFile',
       'sortKey',
@@ -124,7 +125,7 @@ export default {
     }
   },
   watch: {
-    files () {
+    directory () {
       this.$el.parentNode.scrollTop = 0
     }
   }
@@ -140,22 +141,17 @@ export default {
   cursor: pointer;
 }
 .mdc-table-header-column {
-  background-color: white;
   font-size: smaller;
+  line-height: 20px;
   position: sticky;
   top: 0;
   vertical-align: bottom;
   &.date-modified {
     width: 128px;
   }
-  .mdc-icon {
-    padding: 0;
-    vertical-align: bottom;
-  }
 }
-.mdc-theme--dark {
-  .mdc-table-header-column {
-    background-color: #303030;
-  }
+.mdc-icon {
+  padding: 0;
+  vertical-align: bottom;
 }
 </style>

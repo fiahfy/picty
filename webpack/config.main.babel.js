@@ -1,4 +1,4 @@
-import config from './config.base.babel';
+import config from './config.base.babel'
 
 export default {
   ...config,
@@ -7,10 +7,10 @@ export default {
   output: {
     path: `${__dirname}/../app/assets/`,
     publicPath: '/assets/',
-    filename: '../../main.js',
+    filename: '../../main.js'
   },
   node: {
     __dirname: false,
-    __filename: false,
-  },
-};
+    __filename: false
+  }
+}

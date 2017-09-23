@@ -1,15 +1,15 @@
 <template>
   <div class="menu-bar">
-    <div class="directory">
+    <div class="row directory">
       <mdc-icon icon="folder"/>
       <mdc-textfield
         label="Input path..."
         fullwidth
         @keyup="keyup"
-        v-model="directory"
+        v-model="directoryInput"
       />
     </div>
-    <div class="buttons">
+    <div class="row buttons">
       <mdc-button
         title="Change parent drectory"
         @click="changeParentDirectory"
@@ -17,16 +17,16 @@
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
-        title="Refresh"
-        @click="refreshDirectory"
-      >
-        <mdc-icon icon="refresh" />
-      </mdc-button>
-      <mdc-button
         title="View"
         @click="showViewerWithSelectedFile"
       >
         <mdc-icon icon="photo" />
+      </mdc-button>
+      <mdc-button
+        title="Open current directory"
+        @click="openDirectory"
+      >
+        <mdc-icon icon="folder_open" />
       </mdc-button>
     </div>
   </div>
@@ -44,18 +44,13 @@ export default {
     MdcIcon,
     MdcTextfield
   },
-  data () {
-    return {
-      path: ''
-    }
-  },
   computed: {
-    directory: {
+    directoryInput: {
       get () {
-        return this.$store.state.explorer.directory
+        return this.$store.state.explorer.directoryInput
       },
       set (value) {
-        this.$store.commit('explorer/setDirectory', value)
+        this.$store.commit('explorer/setDirectoryInput', value)
       }
     }
   },
@@ -68,7 +63,8 @@ export default {
     ...mapActions('explorer', [
       'changeDirectory',
       'changeParentDirectory',
-      'refreshDirectory'
+      'refreshDirectory',
+      'openDirectory'
     ]),
     ...mapActions('viewer', [
       'showViewerWithSelectedFile'
@@ -83,7 +79,7 @@ export default {
 .menu-bar {
   user-select: none;
 }
-.menu-bar>div {
+.row {
   border-bottom-color: $material-color-grey-300;
   border-bottom-style: solid;
   border-bottom-width: 1px;
@@ -115,7 +111,7 @@ export default {
   padding: 0;
 }
 .mdc-theme--dark {
-  .menu-bar>div {
+  .row {
     border-bottom-color: $material-color-grey-600;
   }
 }

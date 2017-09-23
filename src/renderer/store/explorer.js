@@ -1,5 +1,6 @@
+import fs from 'fs'
 import path from 'path'
-import { remote } from 'electron'
+import { remote, shell } from 'electron'
 import { listFiles } from '../utils/file'
 
 const orderDefaults = {
@@ -7,18 +8,29 @@ const orderDefaults = {
   date_modified: 'desc'
 }
 
+let watcher = null
+
 export default {
   namespaced: true,
   state: {
     error: null,
     directory: remote.app.getPath('home'),
+    directoryInput: '',
     files: [],
     selectedFile: {},
     sortKey: 'name',
     sortOrder: 'asc'
   },
   actions: {
-    async loadFiles ({ commit }, dir) {
+    async loadFiles ({ commit, dispatch }, dir) {
+      if (watcher) {
+        watcher.close()
+      }
+      watcher = fs.watch(dir, () => {
+        dispatch('refreshDirectory')
+      })
+      commit('setDirectory', dir)
+      commit('setDirectoryInput', dir)
       try {
         const files = await listFiles(dir)
         commit('setError', null)
@@ -30,7 +42,6 @@ export default {
       commit('orderFile')
     },
     async changeDirectory ({ commit, dispatch }, dir) {
-      commit('setDirectory', dir)
       await dispatch('loadFiles', dir)
     },
     async changeChildDirectory ({ dispatch, state }, dirname) {
@@ -41,7 +52,7 @@ export default {
       const parent = path.dirname(state.directory)
       await dispatch('changeDirectory', parent)
     },
-    async refreshDirectory ({ dispatch, state }) {
+    async refreshDirectory ({ commit, dispatch, state }) {
       await dispatch('loadFiles', state.directory)
     },
     changeSort ({ commit, state }, sortKey) {
@@ -52,14 +63,23 @@ export default {
       commit('setSortKey', sortKey)
       commit('setSortOrder', sortOrder)
       commit('orderFile')
+    },
+    openDirectory ({ dispatch, state }) {
+      const result = shell.openItem(state.directory)
+      if (!result) {
+        dispatch('showMessage', `Invalid directory "${state.directory}"`, { root: true })
+      }
     }
   },
   mutations: {
     setError (state, error) {
       state.error = error
     },
-    setDirectory (state, dir) {
-      state.directory = dir
+    setDirectory (state, directory) {
+      state.directory = directory
+    },
+    setDirectoryInput (state, directory) {
+      state.directoryInput = directory
     },
     setFiles (state, files) {
       state.files = files

@@ -11,8 +11,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
-
+import { mapActions } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 
@@ -24,8 +23,8 @@ export default {
   data () {
     return {
       items: [
-        { icon: 'list', name: 'explorer', classes: [] },
-        { icon: 'settings', name: 'settings', classes: [] }
+        { icon: 'list', name: 'explorer', classes: {} },
+        { icon: 'settings', name: 'settings', classes: {} }
       ]
     }
   },
@@ -38,12 +37,12 @@ export default {
         Object.assign({}, {
           ...item,
           classes: {
-            selected: item.name === name
+            'mdc-theme--primary': item.name === name
           }
         })
       ))
     },
-    ...mapMutations([
+    ...mapActions([
       'changeRoute'
     ])
   },
@@ -76,14 +75,6 @@ ul {
   line-height: initial;
   min-width: auto;
   padding: 0;
-  .mdc-icon {
-    &:not(.selected) {
-      color: $material-color-grey-400
-    }
-    &.selected {
-      color: $material-color-pink-400
-    }
-  }
 }
 .mdc-theme--dark {
   .activity-bar {
