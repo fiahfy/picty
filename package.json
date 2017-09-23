@@ -8,6 +8,7 @@
     "url": "http://fiahfy.blogspot.com/"
   },
   "dependencies": {
+    "electron": "^1.7.6",
     "electron-devtools-installer": "^2.2.0",
     "electron-window-state": "^4.1.1",
     "is-electron-renderer": "^2.0.1",
@@ -29,7 +30,6 @@
     "babel-preset-stage-0": "^6.24.1",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.4",
-    "electron": "^1.7.5",
     "electron-builder": "^19.22.1",
     "eslint": "^4.4.1",
     "eslint-config-standard": "^10.2.1",
