@@ -8,7 +8,7 @@
       <mdc-table-row>
         <mdc-table-header-column
           class="name mdc-theme--background"
-          @click.native="changeSort('name')"
+          @click.native="changeSortKey('name')"
         >
           <span>Name</span>
           <mdc-icon
@@ -18,7 +18,7 @@
         </mdc-table-header-column>
         <mdc-table-header-column
           class="date-modified mdc-theme--background"
-          @click.native="changeSort('date_modified')"
+          @click.native="changeSortKey('date_modified')"
         >
           <span>Date Modified</span>
           <mdc-icon
@@ -66,7 +66,7 @@ export default {
       return this.sortOrder === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState('explorer', [
-      'explorerdirectory',
+      'directory',
       'files',
       'selectedFile',
       'sortKey',
@@ -106,7 +106,7 @@ export default {
     ]),
     ...mapActions('explorer', [
       'changeDirectory',
-      'changeSort'
+      'changeSortKey'
     ]),
     ...mapActions('viewer', [
       'showViewer'

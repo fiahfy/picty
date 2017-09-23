@@ -18,6 +18,7 @@ export default {
     directoryInput: '',
     files: [],
     selectedFile: {},
+    selectedIndex: -1,
     sortKey: 'name',
     sortOrder: 'asc'
   },
@@ -39,7 +40,8 @@ export default {
         commit('setError', new Error('Invalid Directory'))
         commit('setFiles', [])
       }
-      commit('orderFile')
+      commit('selectFile', {})
+      commit('sortFile')
     },
     async changeDirectory ({ commit, dispatch }, dir) {
       await dispatch('loadFiles', dir)
@@ -55,14 +57,14 @@ export default {
     async refreshDirectory ({ commit, dispatch, state }) {
       await dispatch('loadFiles', state.directory)
     },
-    changeSort ({ commit, state }, sortKey) {
+    changeSortKey ({ commit, state }, sortKey) {
       let sortOrder = orderDefaults[sortKey]
       if (state.sortKey === sortKey) {
         sortOrder = state.sortOrder === 'asc' ? 'desc' : 'asc'
       }
       commit('setSortKey', sortKey)
       commit('setSortOrder', sortOrder)
-      commit('orderFile')
+      commit('sortFile')
     },
     openDirectory ({ dispatch, state }) {
       const result = shell.openItem(state.directory)
@@ -92,26 +94,27 @@ export default {
     },
     selectFile (state, file) {
       state.selectedFile = file
+      state.selectedIndex = state.files.findIndex((file) => {
+        return file.path === state.selectedFile.path
+      })
     },
     selectPreviousFile (state) {
-      let index = state.files.findIndex((file) => {
-        return file.path === state.selectedFile.path
-      }) - 1
+      let index = state.selectedIndex - 1
       if (index < 0) {
         return
       }
+      state.selectedIndex = index
       state.selectedFile = state.files[index]
     },
     selectNextFile (state) {
-      let index = state.files.findIndex((file) => {
-        return file.path === state.selectedFile.path
-      }) + 1
+      let index = state.selectedIndex + 1
       if (index > state.files.length - 1) {
         return
       }
+      state.selectedIndex = index
       state.selectedFile = state.files[index]
     },
-    orderFile (state) {
+    sortFile (state) {
       state.files = state.files.concat().sort((a, b) => {
         let result = true
         if (state.sortKey === 'date_modified') {
