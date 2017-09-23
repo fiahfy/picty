@@ -62,7 +62,7 @@ export default {
     color: $material-color-green-200;
   }
   &.note {
-    color: $material-color-grey-300;
+    color: $material-color-grey-400;
   }
 }
 </style>
