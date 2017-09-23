@@ -8,8 +8,9 @@ Simple Image Viewer based on Electron.
 * todos
 
 
-## Screenshot
-![screenshot](./build/screenshot.png?raw=true)
+## Screenshots
+![screenshot](./build/screenshot1.png?raw=true)
+![screenshot](./build/screenshot2.png?raw=true)
 
 
 ## Installation
