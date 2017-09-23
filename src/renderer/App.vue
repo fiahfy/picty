@@ -29,6 +29,7 @@ export default {
   computed: {
     classes () {
       return {
+        'mdc-theme--background': true,
         'mdc-theme--dark': this.darkTheme
       }
     },
@@ -50,16 +51,11 @@ export default {
 
 <style scoped lang="scss">
 #app {
-  color: #2c3e50;
   display: flex;
   flex-direction: column;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   height: 100%;
   text-align: center;
-  &.mdc-theme--dark {
-    background-color: #303030;
-    color: white;
-  }
 }
 .container {
   display: flex;
@@ -72,5 +68,14 @@ export default {
 }
 .viewer {
   flex: 1;
+}
+</style>
+
+<style lang="scss">
+.mdc-theme--dark {
+  color: white;
+  &.mdc-theme--background, .mdc-theme--background {
+    background-color: #303030;
+  }
 }
 </style>

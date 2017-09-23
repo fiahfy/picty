@@ -1,6 +1,6 @@
 <template>
   <div
-    class="viewer"
+    class="viewer mdc-theme--background"
     tabindex="-1"
     @keydown="keydown"
   >
@@ -8,13 +8,18 @@
       <span>{{ error.message }}</span>
     </div>
     <img :src="currentFile.path" @error="loadError" v-else/>
+    <control-bar/>
   </div>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex'
+import ControlBar from '../components/ControlBar'
 
 export default {
+  components: {
+    ControlBar
+  },
   data () {
     return {
       hasLoadError: false
@@ -68,7 +73,6 @@ export default {
 
 <style scoped lang="scss">
 .viewer {
-  background-color: #fff;
   bottom:0;
   left: 0;
   outline: none;
@@ -94,14 +98,15 @@ img {
   margin:auto;
   max-height: 100%;
   max-width: 100%;
-  position:absolute;
+  position: absolute;
   right: 0;
   top:0;
   vertical-align: middle;
 }
-.mdc-theme--dark {
-  .viewer {
-    background-color: #303030;
-  }
+.control-bar {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
 }
 </style>

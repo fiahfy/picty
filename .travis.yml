@@ -19,7 +19,7 @@ install:
   - yarn
 
 script:
-  # - yarn test
+  - yarn test
   - yarn release
 
 branches:

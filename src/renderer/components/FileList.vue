@@ -7,7 +7,7 @@
     <mdc-table-header>
       <mdc-table-row>
         <mdc-table-header-column
-          class="name"
+          class="name mdc-theme--background"
           @click.native="changeSort('name')"
         >
           <span>Name</span>
@@ -17,7 +17,7 @@
           />
         </mdc-table-header-column>
         <mdc-table-header-column
-          class="date-modified"
+          class="date-modified mdc-theme--background"
           @click.native="changeSort('date_modified')"
         >
           <span>Date Modified</span>
@@ -141,7 +141,6 @@ export default {
   cursor: pointer;
 }
 .mdc-table-header-column {
-  background-color: white;
   font-size: smaller;
   line-height: 20px;
   position: sticky;
@@ -154,10 +153,5 @@ export default {
 .mdc-icon {
   padding: 0;
   vertical-align: bottom;
-}
-.mdc-theme--dark {
-  .mdc-table-header-column {
-    background-color: #303030;
-  }
 }
 </style>
