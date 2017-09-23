@@ -14,8 +14,8 @@
       >
         <mdc-icon icon="skip_next"/>
       </mdc-button>
-      <mdc-slider :value="page" :minValue="1" :maxValue="maxPage"/>
-      <div class="page">{{ currentPage }} / {{ maxPage }}</div>
+      <mdc-slider v-model="page" :min="1" :max="maxPage"/>
+      <div class="page">{{ page }} / {{ maxPage }}</div>
     </div>
   </div>
 </template>
@@ -32,17 +32,17 @@ export default {
     MdcIcon,
     MdcSlider
   },
-  data () {
-    return {
-      page: 1
-    }
-  },
   computed: {
-    ...mapState('viewer', {
-      maxPage: state => state.files.length,
-      currentPage: state => {
-        return state.files.findIndex(file => file.path === state.currentFile.path) + 1
+    page: {
+      get () {
+        return this.$store.state.viewer.currentIndex + 1
+      },
+      set (value) {
+        this.$store.commit('viewer/setCurrentIndex', value - 1)
       }
+    },
+    ...mapState('viewer', {
+      maxPage: state => state.files.length
     })
   },
   methods: {
@@ -58,9 +58,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.control-bar {
-
-}
 .background {
   background-color: black;
   bottom: 0;
@@ -91,9 +88,6 @@ export default {
   &:nth-child(2) {
     margin-right: 16px;
   }
-}
-.mdc-slider {
-
 }
 .page {
   color: white;

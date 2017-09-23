@@ -8,7 +8,8 @@ export default {
     error: null,
     isViewing: false,
     files: [],
-    currentFile: {}
+    currentFile: {},
+    currentIndex: -1
   },
   actions: {
     async showViewer ({ commit, dispatch, rootState }, file) {
@@ -27,13 +28,13 @@ export default {
           files = files.filter((file) => isImage(file.path))
         }
         commit('setError', null)
-        commit('setCurrentFile', file)
         commit('setFiles', files)
+        commit('setCurrentFile', file)
       } catch (e) {
         let error = e.message === 'Image Not Found' ? e : new Error('Invalid Image')
         commit('setError', error)
-        commit('setCurrentFile', {})
         commit('setFiles', [])
+        commit('setCurrentFile', {})
       }
       commit('setViewing', true)
       dispatch('focusSelector', '.viewer', { root: true })
@@ -66,23 +67,28 @@ export default {
     },
     setCurrentFile (state, file) {
       state.currentFile = file
+      state.currentIndex = state.files.findIndex((file) => {
+        return file.path === state.currentFile.path
+      })
+    },
+    setCurrentIndex (state, index) {
+      state.currentIndex = index
+      state.currentFile = state.files[index]
     },
     viewPreviousImage (state) {
-      let index = state.files.findIndex((file) => {
-        return file.path === state.currentFile.path
-      }) - 1
+      let index = state.currentIndex - 1
       if (index < 0) {
         index = state.files.length - 1
       }
+      state.currentIndex = index
       state.currentFile = state.files[index]
     },
     viewNextImage (state) {
-      let index = state.files.findIndex((file) => {
-        return file.path === state.currentFile.path
-      }) + 1
+      let index = state.currentIndex + 1
       if (index > state.files.length - 1) {
         index = 0
       }
+      state.currentIndex = index
       state.currentFile = state.files[index]
     }
   }
