@@ -1,4 +1,4 @@
-import config from './config.base.babel';
+import config from './config.base.babel'
 
 export default {
   ...config,
@@ -7,7 +7,7 @@ export default {
   output: {
     path: `${__dirname}/../app/assets/`,
     publicPath: './assets/',
-    filename: 'js/renderer.js',
+    filename: 'js/renderer.js'
   },
   module: {
     rules: [
@@ -17,17 +17,17 @@ export default {
         loader: 'url-loader',
         options: {
           limit: '10000',
-          name: 'img/[name].[ext]',
-        },
+          name: 'img/[name].[ext]'
+        }
       },
       {
         test: /\.(woff|woff2|eot|ttf)$/,
         loader: 'url-loader',
         options: {
           limit: '10000',
-          name: 'font/[name].[ext]',
-        },
-      },
-    ],
-  },
-};
+          name: 'font/[name].[ext]'
+        }
+      }
+    ]
+  }
+}

@@ -1,21 +1,21 @@
-import webpack from 'webpack';
-import config from './config.renderer.babel';
+import webpack from 'webpack'
+import config from './config.renderer.babel'
 
 export default {
   ...config,
   output: {
     ...config.output,
-    publicPath: 'http://localhost:3000/assets/',
+    publicPath: 'http://localhost:3000/assets/'
   },
   plugins: [
     ...config.plugins,
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin()
   ],
   devServer: {
     port: 3000,
     inline: true,
-    hot: true,
-  },
-};
+    hot: true
+  }
+}
