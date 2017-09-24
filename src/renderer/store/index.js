@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
+import { remote } from 'electron'
 import router from '../router'
 import explorer from './explorer'
 import settings from './settings'
@@ -10,7 +11,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    message: ''
+    message: '',
+    fullScreen: false
   },
   actions: {
     changeRoute (_, name) {
@@ -31,11 +33,31 @@ export default new Vuex.Store({
       setTimeout(() => {
         commit('setMessage', '')
       })
+    },
+    enableFullScreen ({ commit }) {
+      const browserWindow = remote.getCurrentWindow()
+      browserWindow.setFullScreen(true)
+      browserWindow.setMenuBarVisibility(false)
+      commit('setFullScreen', true)
+    },
+    disableFullScreen ({ commit }) {
+      const browserWindow = remote.getCurrentWindow()
+      browserWindow.setFullScreen(false)
+      browserWindow.setMenuBarVisibility(true)
+      commit('setFullScreen', false)
     }
   },
   mutations: {
     setMessage (state, message) {
       state.message = message
+    },
+    setFullScreen (state, fullScreen) {
+      state.fullScreen = fullScreen
+    }
+  },
+  getters: {
+    hasTitleBar (state) {
+      return process.platform !== 'win32' && !state.fullScreen
     }
   },
   modules: {

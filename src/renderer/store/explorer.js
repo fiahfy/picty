@@ -40,7 +40,7 @@ export default {
         commit('setFiles', [])
       }
       commit('setSelectedFile', {})
-      dispatch('sortFile')
+      dispatch('sortFiles')
     },
     changeChildDirectory ({ dispatch, state }, dirname) {
       const child = path.join(state.directory, dirname)
@@ -60,9 +60,9 @@ export default {
       }
       commit('setSortKey', sortKey)
       commit('setSortOrder', sortOrder)
-      dispatch('sortFile')
+      dispatch('sortFiles')
     },
-    sortFile ({ commit, state }) {
+    sortFiles ({ commit, state }) {
       const files = state.files.concat().sort((a, b) => {
         let result = true
         if (state.sortKey === 'date_modified') {

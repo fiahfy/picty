@@ -51,7 +51,7 @@ export default {
     keydown (e) {
       switch (e.keyCode) {
         case 27:
-          this.dismissViewer()
+          this.dismiss()
           break
         case 37:
         case 40:
@@ -83,7 +83,7 @@ export default {
       }, 2000)
     },
     ...mapActions('viewer', [
-      'dismissViewer',
+      'dismiss',
       'viewPreviousImage',
       'viewNextImage'
     ])

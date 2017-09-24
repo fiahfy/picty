@@ -55,17 +55,21 @@ export default {
         this.$store.commit('viewer/setCurrentIndex', value - 1)
       }
     },
+    ...mapState('viewer', [
+      'fullScreen'
+    ]),
     ...mapState('viewer', {
-      fullScreen: 'fullScreen',
       maxPage: state => state.files.length
     })
   },
   methods: {
-    ...mapActions('viewer', [
-      'viewPreviousImage',
-      'viewNextImage',
+    ...mapActions([
       'enableFullScreen',
       'disableFullScreen'
+    ]),
+    ...mapActions('viewer', [
+      'viewPreviousImage',
+      'viewNextImage'
     ])
   }
 }

@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
 import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
@@ -38,17 +38,18 @@ export default {
         'mdc-theme--dark': this.darkTheme
       }
     },
-    hasTitleBar () {
-      return process.platform !== 'win32'
-    },
     ...mapState([
-      'message'
+      'message',
+      'fullScreen'
     ]),
     ...mapState('viewer', [
       'isViewing'
     ]),
     ...mapState('settings', [
       'darkTheme'
+    ]),
+    ...mapGetters([
+      'hasTitleBar'
     ])
   },
   methods: {
@@ -58,10 +59,10 @@ export default {
         return
       }
       const file = files[0]
-      this.showViewer(file.path)
+      this.show(file.path)
     },
     ...mapActions('viewer', [
-      'showViewer'
+      'show'
     ])
   }
 }

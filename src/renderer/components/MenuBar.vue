@@ -18,7 +18,7 @@
       </mdc-button>
       <mdc-button
         title="View"
-        @click="showViewerWithSelectedFile"
+        @click="showSelectedFile"
       >
         <mdc-icon icon="photo" />
       </mdc-button>
@@ -67,7 +67,7 @@ export default {
       'openDirectory'
     ]),
     ...mapActions('viewer', [
-      'showViewerWithSelectedFile'
+      'showSelectedFile'
     ])
   }
 }

@@ -1,5 +1,4 @@
 import path from 'path'
-import { remote } from 'electron'
 import { getFile, listFiles, isImage } from '../utils/file'
 
 export default {
@@ -8,11 +7,10 @@ export default {
     error: null,
     isViewing: false,
     files: [],
-    currentFile: {},
-    fullScreen: false
+    currentFile: {}
   },
   actions: {
-    showViewer ({ commit, dispatch, rootState }, filepath) {
+    show ({ commit, dispatch, rootState }, filepath) {
       try {
         let files
         let file = getFile(filepath)
@@ -24,9 +22,7 @@ export default {
             throw new Error('Image Not Found')
           }
         } else {
-          const dir = path.dirname(file.path)
-          files = listFiles(dir)
-          files = files.filter((file) => isImage(file.path))
+          files = [file]
         }
         commit('setError', null)
         commit('setFiles', files)
@@ -40,16 +36,16 @@ export default {
       commit('setViewing', true)
       dispatch('focusSelector', '.viewer', { root: true })
       if (rootState.settings.fullScreen) {
-        dispatch('enableFullScreen')
+        dispatch('enableFullScreen', null, { root: true })
       }
     },
-    showViewerWithSelectedFile ({ dispatch, rootState }) {
-      dispatch('showViewer', rootState.explorer.selectedFile.path)
+    showSelectedFile ({ dispatch, rootState }) {
+      dispatch('show', rootState.explorer.selectedFile.path)
     },
-    dismissViewer ({ commit, dispatch }) {
+    dismiss ({ commit, dispatch }) {
       commit('setViewing', false)
       dispatch('focusSelector', '.file-list', { root: true })
-      dispatch('disableFullScreen')
+      dispatch('disableFullScreen', null, { root: true })
     },
     viewPreviousImage ({ commit, getters, state }) {
       let index = getters.currentIndex - 1
@@ -64,18 +60,6 @@ export default {
         index = 0
       }
       commit('setCurrentFile', state.files[index])
-    },
-    enableFullScreen ({ commit }) {
-      const browserWindow = remote.getCurrentWindow()
-      browserWindow.setFullScreen(true)
-      browserWindow.setMenuBarVisibility(false)
-      commit('setFullScreen', true)
-    },
-    disableFullScreen ({ commit }) {
-      const browserWindow = remote.getCurrentWindow()
-      browserWindow.setFullScreen(false)
-      browserWindow.setMenuBarVisibility(true)
-      commit('setFullScreen', false)
     }
   },
   mutations: {
@@ -90,9 +74,6 @@ export default {
     },
     setCurrentFile (state, file) {
       state.currentFile = file
-    },
-    setFullScreen (state, fullScreen) {
-      state.fullScreen = fullScreen
     },
     setCurrentIndex (state, index) {
       state.currentFile = state.files[index]

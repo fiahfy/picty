@@ -81,7 +81,7 @@ export default {
       if (file.stats.isDirectory()) {
         this.changeDirectory(file.path)
       } else {
-        this.showViewer(file.path)
+        this.showSelectedFile()
       }
     },
     keydown (e) {
@@ -107,7 +107,7 @@ export default {
       'selectNextFile'
     ]),
     ...mapActions('viewer', [
-      'showViewer'
+      'showSelectedFile'
     ])
   },
   updated () {
