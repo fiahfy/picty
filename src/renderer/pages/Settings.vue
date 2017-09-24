@@ -8,7 +8,7 @@
     <h4>Viewer</h4>
     <mdc-form-field>
       <mdc-checkbox id="full-screen" v-model="fullScreen"/>
-      <label for="full-screen">View in full screen</label>
+      <label for="full-screen">View in full screen (Windows only)</label>
     </mdc-form-field>
   </div>
 </template>
