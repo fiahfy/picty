@@ -61,6 +61,11 @@ export default {
       const child = path.join(state.directory, dirname)
       dispatch('changeDirectory', child)
     },
+    changeSelectedDirectory ({ dispatch, state }) {
+      if (state.selectedFile && state.selectedFile.stats.isDirectory()) {
+        dispatch('changeDirectory', state.selectedFile.path)
+      }
+    },
     changeParentDirectory ({ dispatch, state }) {
       const parent = path.dirname(state.directory)
       dispatch('changeDirectory', parent)

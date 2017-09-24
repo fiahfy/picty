@@ -39,7 +39,9 @@ export default {
       }
     },
     showSelectedFile ({ dispatch, rootState }) {
-      dispatch('show', rootState.explorer.selectedFile.path)
+      if (rootState.explorer.selectedFile) {
+        dispatch('show', rootState.explorer.selectedFile.path)
+      }
     },
     dismiss ({ commit, dispatch, rootState }) {
       commit('setViewing', false)
