@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mdc-slider mdc-slider--discrete"
+    class="mdc-slider mdc-slider--discrete mdc-slider--display-markers"
     tabindex="0"
     role="slider"
     :aria-valuemin="min"
@@ -11,6 +11,7 @@
   >
     <div class="mdc-slider__track-container">
       <div class="mdc-slider__track"/>
+      <div class="mdc-slider__track-marker-container"/>
     </div>
     <div class="mdc-slider__thumb-container">
       <div class="mdc-slider__pin">
@@ -54,7 +55,19 @@ export default {
   watch: {
     value (value) {
       this.slider.layout()
-      this.slider.value = value
+      this.slider.value = this.value
+    },
+    min (value) {
+      this.slider.min = value
+      this.slider.value = this.value
+    },
+    max (value) {
+      this.slider.max = value
+      this.slider.value = this.value
+    },
+    step (value) {
+      this.slider.step = value
+      this.slider.value = this.value
     }
   }
 }
