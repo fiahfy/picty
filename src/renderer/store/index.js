@@ -34,17 +34,15 @@ export default new Vuex.Store({
         commit('setMessage', '')
       })
     },
-    enableFullScreen ({ commit }) {
+    enterFullScreen ({ commit }) {
       const browserWindow = remote.getCurrentWindow()
       browserWindow.setFullScreen(true)
       browserWindow.setMenuBarVisibility(false)
-      commit('setFullScreen', true)
     },
-    disableFullScreen ({ commit }) {
+    leaveFullScreen ({ commit }) {
       const browserWindow = remote.getCurrentWindow()
       browserWindow.setFullScreen(false)
       browserWindow.setMenuBarVisibility(true)
-      commit('setFullScreen', false)
     }
   },
   mutations: {

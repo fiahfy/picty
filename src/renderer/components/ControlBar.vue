@@ -18,17 +18,23 @@
       <div class="page">{{ page }} / {{ maxPage }}</div>
       <mdc-button
         title="Exit fullscreen"
-        @click="disableFullScreen"
+        @click="leaveFullScreen"
         v-if="fullScreen"
       >
         <mdc-icon icon="fullscreen_exit"/>
       </mdc-button>
       <mdc-button
         title="Fullscreen"
-        @click="enableFullScreen"
+        @click="enterFullScreen"
         v-else
       >
         <mdc-icon icon="fullscreen"/>
+      </mdc-button>
+      <mdc-button
+        title="Close"
+        @click="dismiss"
+      >
+        <mdc-icon icon="close"/>
       </mdc-button>
     </div>
   </div>
@@ -55,7 +61,7 @@ export default {
         this.$store.commit('viewer/setCurrentIndex', value - 1)
       }
     },
-    ...mapState('viewer', [
+    ...mapState([
       'fullScreen'
     ]),
     ...mapState('viewer', {
@@ -64,10 +70,11 @@ export default {
   },
   methods: {
     ...mapActions([
-      'enableFullScreen',
-      'disableFullScreen'
+      'enterFullScreen',
+      'leaveFullScreen'
     ]),
     ...mapActions('viewer', [
+      'dismiss',
       'viewPreviousImage',
       'viewNextImage'
     ])
@@ -100,18 +107,18 @@ export default {
   margin: 8px;
   min-width: 32px;
   padding: 0;
-  &:first-child {
-    margin-right: 0px;
+  &:not(:first-child) {
+    margin-left: 0px;
   }
-  &:nth-child(2) {
-    margin-right: 16px;
-  }
+}
+.mdc-slider {
+  margin-left: 16px;
 }
 .page {
   color: white;
   font-size: smaller;
   line-height: 48px;
-  margin-left: 16px;
+  margin: 0 16px;
   vertical-align: middle;
   white-space: nowrap;
   z-index: 1;

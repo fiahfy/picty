@@ -31,6 +31,9 @@ export default {
     TitleBar,
     Viewer
   },
+  async asyncData ({ store }) {
+    await store.dispatch('explorer/initDirectory')
+  },
   computed: {
     classes () {
       return {

@@ -35,16 +35,18 @@ export default {
       commit('setViewing', true)
       dispatch('focusSelector', '.viewer', { root: true })
       if (rootState.settings.fullScreen) {
-        dispatch('enableFullScreen', null, { root: true })
+        dispatch('enterFullScreen', null, { root: true })
       }
     },
     showSelectedFile ({ dispatch, rootState }) {
       dispatch('show', rootState.explorer.selectedFile.path)
     },
-    dismiss ({ commit, dispatch }) {
+    dismiss ({ commit, dispatch, rootState }) {
       commit('setViewing', false)
       dispatch('focusSelector', '.file-list', { root: true })
-      dispatch('disableFullScreen', null, { root: true })
+      if (rootState.settings.fullScreen) {
+        dispatch('leaveFullScreen', null, { root: true })
+      }
     },
     viewPreviousImage ({ commit, getters, state }) {
       let index = getters.currentIndex - 1
