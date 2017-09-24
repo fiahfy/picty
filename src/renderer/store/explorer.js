@@ -64,6 +64,9 @@ export default {
       const parent = path.dirname(state.directory)
       dispatch('changeDirectory', parent)
     },
+    changeHomeDirectory ({ dispatch }) {
+      dispatch('changeDirectory', remote.app.getPath('home'))
+    },
     refreshDirectory ({ dispatch, state }) {
       dispatch('loadDirectory', state.directory)
     },

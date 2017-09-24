@@ -31,6 +31,12 @@
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
+        title="Change home drectory"
+        @click="changeHomeDirectory"
+      >
+        <mdc-icon icon="home" />
+      </mdc-button>
+      <mdc-button
         title="View"
         :disabled="!selectedFile"
         @click="showSelectedFile"
@@ -85,6 +91,7 @@ export default {
     ...mapActions('explorer', [
       'changeDirectory',
       'changeParentDirectory',
+      'changeHomeDirectory',
       'refreshDirectory',
       'backDirectory',
       'forwardDirectory',
