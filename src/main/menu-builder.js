@@ -57,6 +57,8 @@ export default class MenuBuilder {
       {
         label: 'View',
         submenu: [
+          { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { this.showExplorer() } },
+          { type: 'separator' },
           { role: 'reload' },
           { role: 'forcereload' },
           { role: 'toggledevtools' },
@@ -88,6 +90,8 @@ export default class MenuBuilder {
         label: app.getName(),
         submenu: [
           { role: 'about' },
+          { type: 'separator' },
+          { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => { this.showSettings() } },
           { type: 'separator' },
           { role: 'services', submenu: [] },
           { type: 'separator' },
@@ -132,5 +136,11 @@ export default class MenuBuilder {
         this.window.webContents.send('open', { filepath })
       }
     )
+  }
+  showExplorer () {
+    this.window.webContents.send('showExplorer')
+  }
+  showSettings () {
+    this.window.webContents.send('showSettings')
   }
 }
