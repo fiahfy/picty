@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import ControlBar from '../components/ControlBar'
 
 export default {
@@ -83,9 +83,7 @@ export default {
       }, 2000)
     },
     ...mapActions('viewer', [
-      'dismissViewer'
-    ]),
-    ...mapMutations('viewer', [
+      'dismissViewer',
       'viewPreviousImage',
       'viewNextImage'
     ])

@@ -1,5 +1,10 @@
 <template>
-  <div id="app" :class="classes">
+  <div
+    id="app"
+    :class="classes"
+    @dragover.prevent
+    @drop.prevent="drop"
+  >
     <title-bar v-if="hasTitleBar"/>
     <div class="container">
       <activity-bar/>
@@ -13,7 +18,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
 import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
@@ -44,6 +49,19 @@ export default {
     ]),
     ...mapState('settings', [
       'darkTheme'
+    ])
+  },
+  methods: {
+    drop (e) {
+      const files = Array.from(e.dataTransfer.files)
+      if (!files.length) {
+        return
+      }
+      const file = files[0]
+      this.showViewer(file.path)
+    },
+    ...mapActions('viewer', [
+      'showViewer'
     ])
   }
 }

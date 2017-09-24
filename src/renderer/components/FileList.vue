@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import FileListItem from '../components/FileListItem'
 import MdcIcon from '../components/MdcIcon'
 import MdcTable from '../components/MdcTable'
@@ -81,7 +81,7 @@ export default {
       if (file.stats.isDirectory()) {
         this.changeDirectory(file.path)
       } else {
-        this.showViewer(file)
+        this.showViewer(file.path)
       }
     },
     keydown (e) {
@@ -99,14 +99,12 @@ export default {
           break
       }
     },
-    ...mapMutations('explorer', [
+    ...mapActions('explorer', [
+      'changeDirectory',
+      'changeSortKey',
       'selectFile',
       'selectPreviousFile',
       'selectNextFile'
-    ]),
-    ...mapActions('explorer', [
-      'changeDirectory',
-      'changeSortKey'
     ]),
     ...mapActions('viewer', [
       'showViewer'

@@ -1,6 +1,6 @@
 import path from 'path'
 import { remote } from 'electron'
-import { listFiles, isImage } from '../utils/file'
+import { getFile, listFiles, isImage } from '../utils/file'
 
 export default {
   namespaced: true,
@@ -9,15 +9,15 @@ export default {
     isViewing: false,
     files: [],
     currentFile: {},
-    currentIndex: -1,
     fullScreen: false
   },
   actions: {
-    async showViewer ({ commit, dispatch, rootState }, file) {
+    showViewer ({ commit, dispatch, rootState }, filepath) {
       try {
         let files
+        let file = getFile(filepath)
         if (file.stats.isDirectory()) {
-          files = await listFiles(file.path)
+          files = listFiles(file.path)
           files = files.filter((file) => isImage(file.path))
           file = files[0]
           if (!files.length) {
@@ -25,7 +25,7 @@ export default {
           }
         } else {
           const dir = path.dirname(file.path)
-          files = await listFiles(dir)
+          files = listFiles(dir)
           files = files.filter((file) => isImage(file.path))
         }
         commit('setError', null)
@@ -43,13 +43,27 @@ export default {
         dispatch('enableFullScreen')
       }
     },
+    showViewerWithSelectedFile ({ dispatch, rootState }) {
+      dispatch('showViewer', rootState.explorer.selectedFile.path)
+    },
     dismissViewer ({ commit, dispatch }) {
       commit('setViewing', false)
       dispatch('focusSelector', '.file-list', { root: true })
       dispatch('disableFullScreen')
     },
-    async showViewerWithSelectedFile ({ dispatch, rootState }) {
-      await dispatch('showViewer', rootState.explorer.selectedFile)
+    viewPreviousImage ({ commit, getters, state }) {
+      let index = getters.currentIndex - 1
+      if (index < 0) {
+        index = state.files.length - 1
+      }
+      commit('setCurrentFile', state.files[index])
+    },
+    viewNextImage ({ commit, getters, state }) {
+      let index = getters.currentIndex + 1
+      if (index > state.files.length - 1) {
+        index = 0
+      }
+      commit('setCurrentFile', state.files[index])
     },
     enableFullScreen ({ commit }) {
       const browserWindow = remote.getCurrentWindow()
@@ -76,32 +90,19 @@ export default {
     },
     setCurrentFile (state, file) {
       state.currentFile = file
-      state.currentIndex = state.files.findIndex((file) => {
-        return file.path === state.currentFile.path
-      })
-    },
-    setCurrentIndex (state, index) {
-      state.currentIndex = index
-      state.currentFile = state.files[index]
     },
     setFullScreen (state, fullScreen) {
       state.fullScreen = fullScreen
     },
-    viewPreviousImage (state) {
-      let index = state.currentIndex - 1
-      if (index < 0) {
-        index = state.files.length - 1
-      }
-      state.currentIndex = index
+    setCurrentIndex (state, index) {
       state.currentFile = state.files[index]
-    },
-    viewNextImage (state) {
-      let index = state.currentIndex + 1
-      if (index > state.files.length - 1) {
-        index = 0
-      }
-      state.currentIndex = index
-      state.currentFile = state.files[index]
+    }
+  },
+  getters: {
+    currentIndex (state) {
+      return state.files.findIndex((file) => {
+        return file.path === state.currentFile.path
+      })
     }
   }
 }

@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcSlider from '../components/MdcSlider'
@@ -49,7 +49,7 @@ export default {
   computed: {
     page: {
       get () {
-        return this.$store.state.viewer.currentIndex + 1
+        return this.$store.getters['viewer/currentIndex'] + 1
       },
       set (value) {
         this.$store.commit('viewer/setCurrentIndex', value - 1)
@@ -62,12 +62,10 @@ export default {
   },
   methods: {
     ...mapActions('viewer', [
+      'viewPreviousImage',
+      'viewNextImage',
       'enableFullScreen',
       'disableFullScreen'
-    ]),
-    ...mapMutations('viewer', [
-      'viewPreviousImage',
-      'viewNextImage'
     ])
   }
 }
