@@ -1,7 +1,7 @@
 <template>
   <mdc-table
     class="file-list"
-    tabindex="-1"
+    tabindex="0"
     @keydown.native="keydown"
   >
     <mdc-table-header>
