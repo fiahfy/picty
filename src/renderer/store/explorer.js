@@ -5,6 +5,7 @@ import { listFiles } from '../utils/file'
 
 const orderDefaults = {
   name: 'asc',
+  size: 'asc',
   date_modified: 'desc'
 }
 
@@ -93,14 +94,37 @@ export default {
     },
     sortFiles ({ commit, state }) {
       const files = state.files.concat().sort((a, b) => {
-        let result = true
-        if (state.sortKey === 'date_modified') {
-          result = a.stats.mtime > b.stats.mtime
-        } else {
-          result = a.name > b.name
+        let result = 0
+        switch (state.sortKey) {
+          case 'date_modified':
+            if (a.stats.mtime > b.stats.mtime) {
+              result = 1
+            } else if (a.stats.mtime < b.stats.mtime) {
+              result = -1
+            }
+            break
+          case 'size':
+            const size = (file) => {
+              if (file.stats.isDirectory()) {
+                return -1
+              }
+              return file.stats.size
+            }
+            if (size(a) > size(b)) {
+              result = 1
+            } else if (size(a) < size(b)) {
+              result = -1
+            }
+            break
         }
-        result = state.sortOrder === 'asc' ? result : !result
-        return result ? 1 : -1
+        if (result === 0) {
+          if (a.name > b.name) {
+            result = 1
+          } else if (a.name < b.name) {
+            result = -1
+          }
+        }
+        return state.sortOrder === 'asc' ? result : -1 * result
       })
       commit('setFiles', files)
     },

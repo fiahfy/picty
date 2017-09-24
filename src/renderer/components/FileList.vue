@@ -17,6 +17,16 @@
           />
         </mdc-table-header-column>
         <mdc-table-header-column
+          class="size mdc-theme--background"
+          @click.native="changeSortKey('size')"
+        >
+          <span>Size</span>
+          <mdc-icon
+            :icon="sortIcon"
+            v-if="sortKey === 'size'"
+          />
+        </mdc-table-header-column>
+        <mdc-table-header-column
           class="date-modified mdc-theme--background"
           @click.native="changeSortKey('date_modified')"
         >
@@ -146,6 +156,9 @@ export default {
   vertical-align: bottom;
   &.date-modified {
     width: 128px;
+  }
+  &.size {
+    width: 64px;
   }
 }
 .mdc-icon {
