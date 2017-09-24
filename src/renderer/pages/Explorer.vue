@@ -21,7 +21,7 @@ export default {
     MenuBar
   },
   async asyncData ({ store }) {
-    await store.dispatch('explorer/refreshDirectory')
+    await store.dispatch('explorer/initDirectory')
   },
   computed: mapState('explorer', [
     'error'

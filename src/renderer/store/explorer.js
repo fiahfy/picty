@@ -16,13 +16,15 @@ export default {
     error: null,
     directory: remote.app.getPath('home'),
     directoryInput: '',
+    histories: [],
+    historyIndex: -1,
     files: [],
     selectedFile: null,
     sortKey: 'name',
     sortOrder: 'asc'
   },
   actions: {
-    changeDirectory ({ commit, dispatch }, dir) {
+    loadDirectory ({ commit, dispatch }, dir) {
       if (watcher) {
         watcher.close()
       }
@@ -42,6 +44,18 @@ export default {
       commit('setSelectedFile', null)
       dispatch('sortFiles')
     },
+    initDirectory ({ commit, dispatch, state }) {
+      commit('setHistories', [state.directory])
+      commit('setHistoryIndex', 0)
+      dispatch('loadDirectory', state.directory)
+    },
+    changeDirectory ({ commit, dispatch, state }, dir) {
+      const index = state.historyIndex + 1
+      const histories = [...state.histories.slice(0, index), dir]
+      commit('setHistories', histories)
+      commit('setHistoryIndex', index)
+      dispatch('loadDirectory', dir)
+    },
     changeChildDirectory ({ dispatch, state }, dirname) {
       const child = path.join(state.directory, dirname)
       dispatch('changeDirectory', child)
@@ -51,7 +65,19 @@ export default {
       dispatch('changeDirectory', parent)
     },
     refreshDirectory ({ dispatch, state }) {
-      dispatch('changeDirectory', state.directory)
+      dispatch('loadDirectory', state.directory)
+    },
+    backDirectory ({ commit, dispatch, state }) {
+      const index = state.historyIndex - 1
+      const file = state.histories[index]
+      commit('setHistoryIndex', index)
+      dispatch('loadDirectory', file)
+    },
+    forwardDirectory ({ commit, dispatch, state }) {
+      const index = state.historyIndex + 1
+      const file = state.histories[index]
+      commit('setHistoryIndex', index)
+      dispatch('loadDirectory', file)
     },
     changeSortKey ({ commit, dispatch, state }, sortKey) {
       let sortOrder = orderDefaults[sortKey]
@@ -109,6 +135,12 @@ export default {
     setDirectoryInput (state, directory) {
       state.directoryInput = directory
     },
+    setHistories (state, histories) {
+      state.histories = histories
+    },
+    setHistoryIndex (state, index) {
+      state.historyIndex = index
+    },
     setFiles (state, files) {
       state.files = files
     },
@@ -127,6 +159,12 @@ export default {
       return state.files.findIndex((file) => {
         return state.selectedFile && file.path === state.selectedFile.path
       })
+    },
+    canBackDirectory (state) {
+      return Boolean(state.histories[state.historyIndex - 1])
+    },
+    canForwardDirectory (state) {
+      return Boolean(state.histories[state.historyIndex + 1])
     }
   }
 }

@@ -11,6 +11,20 @@
     </div>
     <div class="row buttons">
       <mdc-button
+        title="Back drectory"
+        :disabled="!canBackDirectory"
+        @click="backDirectory"
+      >
+        <mdc-icon icon="arrow_back" />
+      </mdc-button>
+      <mdc-button
+        title="Forward drectory"
+        :disabled="!canForwardDirectory"
+        @click="forwardDirectory"
+      >
+        <mdc-icon icon="arrow_forward" />
+      </mdc-button>
+      <mdc-button
         title="Change parent drectory"
         @click="changeParentDirectory"
       >
@@ -34,7 +48,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcTextfield from '../components/MdcTextfield'
@@ -56,6 +70,10 @@ export default {
     },
     ...mapState('explorer', [
       'selectedFile'
+    ]),
+    ...mapGetters('explorer', [
+      'canBackDirectory',
+      'canForwardDirectory'
     ])
   },
   methods: {
@@ -68,6 +86,8 @@ export default {
       'changeDirectory',
       'changeParentDirectory',
       'refreshDirectory',
+      'backDirectory',
+      'forwardDirectory',
       'openDirectory'
     ]),
     ...mapActions('viewer', [
