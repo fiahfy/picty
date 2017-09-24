@@ -13,6 +13,9 @@ export function getFile (file) {
 export function listFiles (dir) {
   const files = fs.readdirSync(dir)
   return files.map(file => {
+    if (file.match(/^\./)) {
+      return null
+    }
     try {
       return getFile(path.join(dir, file))
     } catch (e) {
