@@ -37,7 +37,8 @@ export default class MenuBuilder {
       {
         label: 'File',
         submenu: [
-          { label: 'Open...', accelerator: 'CmdOrCtrl+O', click: () => { this.open() } }
+          { label: 'Open...', accelerator: 'CmdOrCtrl+O', click: () => { this.open() } },
+          { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { this.openLocation() } }
         ]
       },
       {
@@ -136,6 +137,9 @@ export default class MenuBuilder {
         this.window.webContents.send('open', { filepath })
       }
     )
+  }
+  openLocation () {
+    this.window.webContents.send('openLocation')
   }
   showExplorer () {
     this.window.webContents.send('showExplorer')

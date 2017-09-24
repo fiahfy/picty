@@ -5,6 +5,7 @@
       <mdc-textfield
         label="Input path..."
         fullwidth
+        class="location"
         @keyup="keyup"
         v-model="directoryInput"
       />

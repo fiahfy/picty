@@ -4,6 +4,10 @@ export function setup (store) {
   ipcRenderer.on('open', (event, { filepath }) => {
     store.dispatch('viewer/show', filepath)
   })
+  ipcRenderer.on('openLocation', () => {
+    store.dispatch('changeRoute', 'explorer')
+    store.dispatch('focusSelector', '.location input')
+  })
   ipcRenderer.on('showExplorer', () => {
     store.dispatch('changeRoute', 'explorer')
   })
