@@ -1,4 +1,4 @@
-import { app, shell, Menu } from 'electron'
+import { app, dialog, shell, Menu } from 'electron'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
 export default class MenuBuilder {
@@ -32,9 +32,14 @@ export default class MenuBuilder {
         .popup(this.window)
     })
   }
-  /* eslint-disable */
-  buildTemplate() {
+  buildTemplate () {
     const template = [
+      {
+        label: 'File',
+        submenu: [
+          { label: 'Open...', accelerator: 'CmdOrCtrl+O', click: () => { this.open() } }
+        ]
+      },
       {
         label: 'Edit',
         submenu: [
@@ -46,8 +51,8 @@ export default class MenuBuilder {
           { role: 'paste' },
           // { role: 'pasteandmatchstyle' },
           { role: 'delete' },
-          { role: 'selectall' },
-        ],
+          { role: 'selectall' }
+        ]
       },
       {
         label: 'View',
@@ -60,23 +65,23 @@ export default class MenuBuilder {
           // { role: 'zoomin' },
           // { role: 'zoomout' },
           // { type: 'separator' },
-          { role: 'togglefullscreen' },
-        ],
+          { role: 'togglefullscreen' }
+        ]
       },
       {
         role: 'window',
         submenu: [
           { role: 'close' },
-          { role: 'minimize' },
-        ],
+          { role: 'minimize' }
+        ]
       },
       {
         role: 'help',
         submenu: [
-          { label: 'Learn More', click: () => { shell.openExternal('https://github.com/fiahfy/picty'); } },
-        ],
-      },
-    ];
+          { label: 'Learn More', click: () => { shell.openExternal('https://github.com/fiahfy/picty') } }
+        ]
+      }
+    ]
 
     if (process.platform === 'darwin') {
       template.unshift({
@@ -90,9 +95,9 @@ export default class MenuBuilder {
           { role: 'hideothers' },
           { role: 'unhide' },
           { type: 'separator' },
-          { role: 'quit' },
-        ],
-      });
+          { role: 'quit' }
+        ]
+      })
 
       // Edit menu
       template[2].submenu.push(
@@ -101,20 +106,31 @@ export default class MenuBuilder {
           label: 'Speech',
           submenu: [
             { role: 'startspeaking' },
-            { role: 'stopspeaking' },
-          ],
-        },
-      );
+            { role: 'stopspeaking' }
+          ]
+        }
+      )
 
       // Window menu
       template[4].submenu.push(
         { role: 'zoom' },
         { type: 'separator' },
-        { role: 'front' },
-      );
+        { role: 'front' }
+      )
     }
 
-    return template;
+    return template
   }
-  /* eslint-enable */
+  open () {
+    dialog.showOpenDialog(
+      { properties: ['openFile', 'openDirectory'] },
+      (filepathes) => {
+        if (!filepathes) {
+          return
+        }
+        const filepath = filepathes[0]
+        this.window.webContents.send('open', { filepath })
+      }
+    )
+  }
 }
