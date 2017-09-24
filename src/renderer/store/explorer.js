@@ -26,15 +26,15 @@ export default {
   },
   actions: {
     loadDirectory ({ commit, dispatch }, dir) {
-      if (watcher) {
-        watcher.close()
-      }
-      watcher = fs.watch(dir, () => {
-        dispatch('refreshDirectory')
-      })
       commit('setDirectory', dir)
       commit('setDirectoryInput', dir)
       try {
+        if (watcher) {
+          watcher.close()
+        }
+        watcher = fs.watch(dir, () => {
+          dispatch('refreshDirectory')
+        })
         const files = listFiles(dir)
         commit('setError', null)
         commit('setFiles', files)
