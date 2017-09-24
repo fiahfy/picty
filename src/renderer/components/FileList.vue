@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     isSelected (file) {
-      return file.path === this.selectedFile.path
+      return this.selectedFile && file.path === this.selectedFile.path
     },
     doubleClick (file) {
       if (file.stats.isDirectory()) {

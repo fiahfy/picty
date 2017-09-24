@@ -1,4 +1,3 @@
-import path from 'path'
 import { getFile, listFiles, isImage } from '../utils/file'
 
 export default {
@@ -7,7 +6,7 @@ export default {
     error: null,
     isViewing: false,
     files: [],
-    currentFile: {}
+    currentFile: null
   },
   actions: {
     show ({ commit, dispatch, rootState }, filepath) {
@@ -31,7 +30,7 @@ export default {
         let error = e.message === 'Image Not Found' ? e : new Error('Invalid Image')
         commit('setError', error)
         commit('setFiles', [])
-        commit('setCurrentFile', {})
+        commit('setCurrentFile', null)
       }
       commit('setViewing', true)
       dispatch('focusSelector', '.viewer', { root: true })
@@ -82,7 +81,7 @@ export default {
   getters: {
     currentIndex (state) {
       return state.files.findIndex((file) => {
-        return file.path === state.currentFile.path
+        return state.currentFile && file.path === state.currentFile.path
       })
     }
   }

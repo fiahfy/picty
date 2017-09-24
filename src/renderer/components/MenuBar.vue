@@ -18,6 +18,7 @@
       </mdc-button>
       <mdc-button
         title="View"
+        :disabled="!selectedFile"
         @click="showSelectedFile"
       >
         <mdc-icon icon="photo" />
@@ -33,7 +34,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcTextfield from '../components/MdcTextfield'
@@ -52,7 +53,10 @@ export default {
       set (value) {
         this.$store.commit('explorer/setDirectoryInput', value)
       }
-    }
+    },
+    ...mapState('explorer', [
+      'selectedFile'
+    ])
   },
   methods: {
     keyup (e) {

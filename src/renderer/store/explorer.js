@@ -17,7 +17,7 @@ export default {
     directory: remote.app.getPath('home'),
     directoryInput: '',
     files: [],
-    selectedFile: {},
+    selectedFile: null,
     sortKey: 'name',
     sortOrder: 'asc'
   },
@@ -39,7 +39,7 @@ export default {
         commit('setError', new Error('Invalid Directory'))
         commit('setFiles', [])
       }
-      commit('setSelectedFile', {})
+      commit('setSelectedFile', null)
       dispatch('sortFiles')
     },
     changeChildDirectory ({ dispatch, state }, dirname) {
@@ -125,7 +125,7 @@ export default {
   getters: {
     selectedIndex (state) {
       return state.files.findIndex((file) => {
-        return file.path === state.selectedFile.path
+        return state.selectedFile && file.path === state.selectedFile.path
       })
     }
   }
