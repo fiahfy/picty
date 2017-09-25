@@ -88,11 +88,7 @@ export default {
       return this.selectedFile && file.path === this.selectedFile.path
     },
     doubleClick (file) {
-      if (file.stats.isDirectory()) {
-        this.changeDirectory(file.path)
-      } else {
-        this.show(file.path)
-      }
+      this.action(file.path)
     },
     keydown (e) {
       if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
@@ -122,16 +118,15 @@ export default {
       }
     },
     ...mapActions('explorer', [
-      'changeDirectory',
       'changeParentDirectory',
       'changeSelectedDirectory',
       'changeSortKey',
       'selectFile',
       'selectPreviousFile',
-      'selectNextFile'
+      'selectNextFile',
+      'action'
     ]),
     ...mapActions('viewer', [
-      'show',
       'showSelectedFile'
     ])
   },

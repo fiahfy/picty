@@ -42,8 +42,7 @@ export default {
       }
     },
     ...mapState([
-      'message',
-      'fullScreen'
+      'message'
     ]),
     ...mapState('viewer', [
       'isViewing'
@@ -62,10 +61,10 @@ export default {
         return
       }
       const file = files[0]
-      this.show(file.path)
+      this.action(file.path)
     },
-    ...mapActions('viewer', [
-      'show'
+    ...mapActions('explorer', [
+      'action'
     ])
   }
 }

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { remote, shell } from 'electron'
-import { listFiles } from '../utils/file'
+import { getFile, listFiles } from '../utils/file'
 
 const orderDefaults = {
   name: 'asc',
@@ -149,6 +149,14 @@ export default {
         return
       }
       commit('setSelectedFile', state.files[index])
+    },
+    action ({ commit, dispatch, state }, filepath) {
+      const file = getFile(filepath)
+      if (file.stats.isDirectory()) {
+        dispatch('changeDirectory', filepath)
+      } else {
+        dispatch('viewer/show', filepath, { root: true })
+      }
     },
     openDirectory ({ dispatch, state }) {
       const result = shell.openItem(state.directory)
