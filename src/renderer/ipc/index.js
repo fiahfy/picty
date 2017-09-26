@@ -5,19 +5,19 @@ export function setup (store) {
     store.dispatch('explorer/action', filepath)
   })
   ipcRenderer.on('openLocation', () => {
-    store.dispatch('changeRoute', 'explorer')
-    store.dispatch('focusSelector', '.location input')
+    store.dispatch('changeRoute', { name: 'explorer' })
+    store.dispatch('focus', { selector: '.location input' })
   })
   ipcRenderer.on('showExplorer', () => {
-    store.dispatch('changeRoute', 'explorer')
+    store.dispatch('changeRoute', { name: 'explorer' })
   })
   ipcRenderer.on('showSettings', () => {
-    store.dispatch('changeRoute', 'settings')
+    store.dispatch('changeRoute', { name: 'settings' })
   })
   ipcRenderer.on('enterFullScreen', () => {
-    store.commit('setFullScreen', true)
+    store.commit('setFullScreen', { flag: true })
   })
   ipcRenderer.on('leaveFullScreen', () => {
-    store.commit('setFullScreen', false)
+    store.commit('setFullScreen', { flag: false })
   })
 }

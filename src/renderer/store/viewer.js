@@ -33,7 +33,7 @@ export default {
         commit('setCurrentFile', null)
       }
       commit('setViewing', true)
-      dispatch('focusSelector', '.viewer', { root: true })
+      dispatch('focus', { selector: '.viewer' }, { root: true })
       if (rootState.settings.fullScreen && process.platform === 'win32') {
         dispatch('enterFullScreen', null, { root: true })
       }
@@ -45,7 +45,7 @@ export default {
     },
     dismiss ({ commit, dispatch, rootState }) {
       commit('setViewing', false)
-      dispatch('focusSelector', '.file-list', { root: true })
+      dispatch('focus', { selector: '.file-list' }, { root: true })
       if (process.platform === 'win32') {
         dispatch('leaveFullScreen', null, { root: true })
       }

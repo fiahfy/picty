@@ -161,7 +161,7 @@ export default {
     openDirectory ({ dispatch, state }) {
       const result = shell.openItem(state.directory)
       if (!result) {
-        dispatch('showMessage', `Invalid directory "${state.directory}"`, { root: true })
+        dispatch('showMessage', { message: `Invalid directory "${state.directory}"` }, { root: true })
       }
     }
   },

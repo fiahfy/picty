@@ -5,7 +5,7 @@
     @dragover.prevent
     @drop.prevent="drop"
   >
-    <title-bar v-if="hasTitleBar"/>
+    <title-bar v-if="titleBar"/>
     <div class="container">
       <activity-bar/>
       <div class="content">
@@ -51,7 +51,7 @@ export default {
       'darkTheme'
     ]),
     ...mapGetters([
-      'hasTitleBar'
+      'titleBar'
     ])
   },
   methods: {

@@ -15,10 +15,10 @@ export default new Vuex.Store({
     fullScreen: false
   },
   actions: {
-    changeRoute (_, name) {
-      router.push({ name })
+    changeRoute (_, payload) {
+      router.push(payload)
     },
-    focusSelector (_, selector) {
+    focus (_, { selector }) {
       // wait dom updated
       setTimeout(() => {
         const el = document.querySelector(selector)
@@ -27,34 +27,34 @@ export default new Vuex.Store({
         }
       }, 0)
     },
-    showMessage ({ commit }, message) {
-      commit('setMessage', message)
+    showMessage ({ commit }, { message }) {
+      commit('setMessage', { message })
       // wait dom updated
       setTimeout(() => {
         commit('setMessage', '')
       })
     },
-    enterFullScreen ({ commit }) {
+    enterFullScreen () {
       const browserWindow = remote.getCurrentWindow()
       browserWindow.setFullScreen(true)
       browserWindow.setMenuBarVisibility(false)
     },
-    leaveFullScreen ({ commit }) {
+    leaveFullScreen () {
       const browserWindow = remote.getCurrentWindow()
       browserWindow.setFullScreen(false)
       browserWindow.setMenuBarVisibility(true)
     }
   },
   mutations: {
-    setMessage (state, message) {
+    setMessage (state, { message }) {
       state.message = message
     },
-    setFullScreen (state, fullScreen) {
-      state.fullScreen = fullScreen
+    setFullScreen (state, { flag }) {
+      state.fullScreen = flag
     }
   },
   getters: {
-    hasTitleBar (state) {
+    titleBar (state) {
       return process.platform !== 'win32' && !state.fullScreen
     }
   },
