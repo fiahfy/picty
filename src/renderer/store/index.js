@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
+import { remote } from 'electron'
 import router from '../router'
 import explorer from './explorer'
 import settings from './settings'
@@ -10,13 +11,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    message: ''
+    message: '',
+    fullScreen: false
   },
   actions: {
-    changeRoute (_, name) {
-      router.push({ name })
+    changeRoute (_, payload) {
+      router.push(payload)
     },
-    focusSelector (_, selector) {
+    focus (_, { selector }) {
       // wait dom updated
       setTimeout(() => {
         const el = document.querySelector(selector)
@@ -25,17 +27,35 @@ export default new Vuex.Store({
         }
       }, 0)
     },
-    showMessage ({ commit }, message) {
-      commit('setMessage', message)
+    showMessage ({ commit }, { message }) {
+      commit('setMessage', { message })
       // wait dom updated
       setTimeout(() => {
         commit('setMessage', '')
       })
+    },
+    enterFullScreen () {
+      const browserWindow = remote.getCurrentWindow()
+      browserWindow.setFullScreen(true)
+      browserWindow.setMenuBarVisibility(false)
+    },
+    leaveFullScreen () {
+      const browserWindow = remote.getCurrentWindow()
+      browserWindow.setFullScreen(false)
+      browserWindow.setMenuBarVisibility(true)
     }
   },
   mutations: {
-    setMessage (state, message) {
+    setMessage (state, { message }) {
       state.message = message
+    },
+    setFullScreen (state, { flag }) {
+      state.fullScreen = flag
+    }
+  },
+  getters: {
+    titleBar (state) {
+      return process.platform !== 'win32' && !state.fullScreen
     }
   },
   modules: {

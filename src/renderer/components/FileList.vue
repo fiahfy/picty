@@ -1,14 +1,14 @@
 <template>
   <mdc-table
     class="file-list"
-    tabindex="-1"
+    tabindex="0"
     @keydown.native="keydown"
   >
     <mdc-table-header>
       <mdc-table-row>
         <mdc-table-header-column
           class="name mdc-theme--background"
-          @click.native="changeSort('name')"
+          @click.native="changeSortKey({ key: 'name' })"
         >
           <span>Name</span>
           <mdc-icon
@@ -17,8 +17,18 @@
           />
         </mdc-table-header-column>
         <mdc-table-header-column
+          class="size mdc-theme--background"
+          @click.native="changeSortKey({ key: 'size' })"
+        >
+          <span>Size</span>
+          <mdc-icon
+            :icon="sortIcon"
+            v-if="sortKey === 'size'"
+          />
+        </mdc-table-header-column>
+        <mdc-table-header-column
           class="date-modified mdc-theme--background"
-          @click.native="changeSort('date_modified')"
+          @click.native="changeSortKey({ key: 'date_modified' })"
         >
           <span>Date Modified</span>
           <mdc-icon
@@ -33,7 +43,7 @@
         :key="file.name"
         :file="file"
         :class="{ selected: isSelected(file) }"
-        @click.native="selectFile(file)"
+        @click.native="selectFile({ file })"
         @dblclick.native="doubleClick(file)"
         v-for="file in files"
       />
@@ -42,7 +52,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import FileListItem from '../components/FileListItem'
 import MdcIcon from '../components/MdcIcon'
 import MdcTable from '../components/MdcTable'
@@ -66,7 +76,7 @@ export default {
       return this.sortOrder === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState('explorer', [
-      'explorerdirectory',
+      'directory',
       'files',
       'selectedFile',
       'sortKey',
@@ -75,23 +85,31 @@ export default {
   },
   methods: {
     isSelected (file) {
-      return file.path === this.selectedFile.path
+      return this.selectedFile && file.path === this.selectedFile.path
     },
     doubleClick (file) {
-      if (file.stats.isDirectory()) {
-        this.changeDirectory(file.path)
-      } else {
-        this.showViewer(file)
-      }
+      this.action({ filepath: file.path })
     },
     keydown (e) {
       if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
         return
       }
       switch (e.keyCode) {
+        case 13:
+          e.preventDefault()
+          this.showSelectedFile()
+          break
+        case 37:
+          e.preventDefault()
+          this.changeParentDirectory()
+          break
         case 38:
           e.preventDefault()
           this.selectPreviousFile()
+          break
+        case 39:
+          e.preventDefault()
+          this.changeSelectedDirectory()
           break
         case 40:
           e.preventDefault()
@@ -99,17 +117,17 @@ export default {
           break
       }
     },
-    ...mapMutations('explorer', [
+    ...mapActions('explorer', [
+      'changeParentDirectory',
+      'changeSelectedDirectory',
+      'changeSortKey',
       'selectFile',
       'selectPreviousFile',
-      'selectNextFile'
-    ]),
-    ...mapActions('explorer', [
-      'changeDirectory',
-      'changeSort'
+      'selectNextFile',
+      'action'
     ]),
     ...mapActions('viewer', [
-      'showViewer'
+      'showSelectedFile'
     ])
   },
   updated () {
@@ -148,6 +166,9 @@ export default {
   vertical-align: bottom;
   &.date-modified {
     width: 128px;
+  }
+  &.size {
+    width: 64px;
   }
 }
 .mdc-icon {

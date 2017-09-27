@@ -1,107 +1,95 @@
-import path from 'path'
-import { remote } from 'electron'
-import { listFiles, isImage } from '../utils/file'
+import { getFile, listFiles, isImage } from '../utils/file'
 
 export default {
   namespaced: true,
   state: {
     error: null,
-    isViewing: false,
+    display: false,
     files: [],
-    currentFile: {},
-    currentIndex: -1,
-    fullScreen: false
+    currentFile: null
   },
   actions: {
-    async showViewer ({ commit, dispatch, rootState }, file) {
+    show ({ commit, dispatch, rootState }, { filepath }) {
       try {
         let files
+        let file = getFile(filepath)
         if (file.stats.isDirectory()) {
-          files = await listFiles(file.path)
+          files = listFiles(file.path)
           files = files.filter((file) => isImage(file.path))
           file = files[0]
           if (!files.length) {
             throw new Error('Image Not Found')
           }
         } else {
-          const dir = path.dirname(file.path)
-          files = await listFiles(dir)
-          files = files.filter((file) => isImage(file.path))
+          files = [file]
         }
-        commit('setError', null)
-        commit('setFiles', files)
-        commit('setCurrentFile', file)
+        commit('setError', { error: null })
+        commit('setFiles', { files })
+        commit('setCurrentFile', { file })
       } catch (e) {
         let error = e.message === 'Image Not Found' ? e : new Error('Invalid Image')
-        commit('setError', error)
-        commit('setFiles', [])
-        commit('setCurrentFile', {})
+        commit('setError', { error })
+        commit('setFiles', { files: [] })
+        commit('setCurrentFile', { file: null })
       }
-      commit('setViewing', true)
-      dispatch('focusSelector', '.viewer', { root: true })
-      if (rootState.settings.fullScreen) {
-        dispatch('enableFullScreen')
+      commit('setDisplay', { flag: true })
+      dispatch('focus', { selector: '.viewer' }, { root: true })
+      if (rootState.settings.fullScreen && process.platform === 'win32') {
+        dispatch('enterFullScreen', null, { root: true })
       }
     },
-    dismissViewer ({ commit, dispatch }) {
-      commit('setViewing', false)
-      dispatch('focusSelector', '.file-list', { root: true })
-      dispatch('disableFullScreen')
+    showSelectedFile ({ dispatch, rootState }) {
+      if (rootState.explorer.selectedFile) {
+        const filepath = rootState.explorer.selectedFile.path
+        dispatch('show', { filepath })
+      }
     },
-    async showViewerWithSelectedFile ({ dispatch, rootState }) {
-      await dispatch('showViewer', rootState.explorer.selectedFile)
+    dismiss ({ commit, dispatch, rootState }) {
+      commit('setDisplay', { flag: false })
+      dispatch('focus', { selector: '.file-list' }, { root: true })
+      if (process.platform === 'win32') {
+        dispatch('leaveFullScreen', null, { root: true })
+      }
     },
-    enableFullScreen ({ commit }) {
-      const browserWindow = remote.getCurrentWindow()
-      browserWindow.setFullScreen(true)
-      browserWindow.setMenuBarVisibility(false)
-      commit('setFullScreen', true)
-    },
-    disableFullScreen ({ commit }) {
-      const browserWindow = remote.getCurrentWindow()
-      browserWindow.setFullScreen(false)
-      browserWindow.setMenuBarVisibility(true)
-      commit('setFullScreen', false)
-    }
-  },
-  mutations: {
-    setError (state, error) {
-      state.error = error
-    },
-    setViewing (state, isViewing) {
-      state.isViewing = isViewing
-    },
-    setFiles (state, files) {
-      state.files = files
-    },
-    setCurrentFile (state, file) {
-      state.currentFile = file
-      state.currentIndex = state.files.findIndex((file) => {
-        return file.path === state.currentFile.path
-      })
-    },
-    setCurrentIndex (state, index) {
-      state.currentIndex = index
-      state.currentFile = state.files[index]
-    },
-    setFullScreen (state, fullScreen) {
-      state.fullScreen = fullScreen
-    },
-    viewPreviousImage (state) {
-      let index = state.currentIndex - 1
+    viewPreviousImage ({ commit, getters, state }) {
+      let index = getters.currentIndex - 1
       if (index < 0) {
         index = state.files.length - 1
       }
-      state.currentIndex = index
-      state.currentFile = state.files[index]
+      const file = state.files[index]
+      commit('setCurrentFile', { file })
     },
-    viewNextImage (state) {
-      let index = state.currentIndex + 1
+    viewNextImage ({ commit, getters, state }) {
+      let index = getters.currentIndex + 1
       if (index > state.files.length - 1) {
         index = 0
       }
-      state.currentIndex = index
+      const file = state.files[index]
+      commit('setCurrentFile', { file })
+    }
+  },
+  mutations: {
+    setError (state, { error }) {
+      state.error = error
+    },
+    setDisplay (state, { flag }) {
+      state.display = flag
+    },
+    setFiles (state, { files }) {
+      state.files = files
+    },
+    setCurrentFile (state, { file }) {
+      state.currentFile = file
+    },
+    setCurrentIndex (state, { index }) {
       state.currentFile = state.files[index]
+    }
+  },
+  getters: {
+    currentIndex (state) {
+      return state.files.findIndex((file) => {
+        return state.currentFile && file.path === state.currentFile.path
+      })
     }
   }
 }

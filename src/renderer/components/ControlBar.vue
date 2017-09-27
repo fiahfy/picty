@@ -18,24 +18,30 @@
       <div class="page">{{ page }} / {{ maxPage }}</div>
       <mdc-button
         title="Exit fullscreen"
-        @click="disableFullScreen"
+        @click="leaveFullScreen"
         v-if="fullScreen"
       >
         <mdc-icon icon="fullscreen_exit"/>
       </mdc-button>
       <mdc-button
         title="Fullscreen"
-        @click="enableFullScreen"
+        @click="enterFullScreen"
         v-else
       >
         <mdc-icon icon="fullscreen"/>
+      </mdc-button>
+      <mdc-button
+        title="Close"
+        @click="dismiss"
+      >
+        <mdc-icon icon="close"/>
       </mdc-button>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcSlider from '../components/MdcSlider'
@@ -49,23 +55,26 @@ export default {
   computed: {
     page: {
       get () {
-        return this.$store.state.viewer.currentIndex + 1
+        return this.$store.getters['viewer/currentIndex'] + 1
       },
       set (value) {
-        this.$store.commit('viewer/setCurrentIndex', value - 1)
+        this.$store.commit('viewer/setCurrentIndex', { index: value - 1 })
       }
     },
+    ...mapState([
+      'fullScreen'
+    ]),
     ...mapState('viewer', {
-      fullScreen: 'fullScreen',
       maxPage: state => state.files.length
     })
   },
   methods: {
-    ...mapActions('viewer', [
-      'enableFullScreen',
-      'disableFullScreen'
+    ...mapActions([
+      'enterFullScreen',
+      'leaveFullScreen'
     ]),
-    ...mapMutations('viewer', [
+    ...mapActions('viewer', [
+      'dismiss',
       'viewPreviousImage',
       'viewNextImage'
     ])
@@ -98,18 +107,18 @@ export default {
   margin: 8px;
   min-width: 32px;
   padding: 0;
-  &:first-child {
-    margin-right: 0px;
+  &:not(:first-child) {
+    margin-left: 0px;
   }
-  &:nth-child(2) {
-    margin-right: 16px;
-  }
+}
+.mdc-slider {
+  margin-left: 16px;
 }
 .page {
   color: white;
   font-size: smaller;
   line-height: 48px;
-  margin-left: 16px;
+  margin: 0 16px;
   vertical-align: middle;
   white-space: nowrap;
   z-index: 1;

@@ -29,5 +29,11 @@ export default class Window {
       this.browserWindow = null
       this.application.removeWindow()
     })
+    this.browserWindow.on('enter-full-screen', () => {
+      this.browserWindow.webContents.send('enterFullScreen')
+    })
+    this.browserWindow.on('leave-full-screen', () => {
+      this.browserWindow.webContents.send('leaveFullScreen')
+    })
   }
 }

@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import ControlBar from '../components/ControlBar'
 
 export default {
@@ -51,7 +51,7 @@ export default {
     keydown (e) {
       switch (e.keyCode) {
         case 27:
-          this.dismissViewer()
+          this.dismiss()
           break
         case 37:
         case 40:
@@ -83,9 +83,7 @@ export default {
       }, 2000)
     },
     ...mapActions('viewer', [
-      'dismissViewer'
-    ]),
-    ...mapMutations('viewer', [
+      'dismiss',
       'viewPreviousImage',
       'viewNextImage'
     ])

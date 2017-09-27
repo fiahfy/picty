@@ -1,16 +1,23 @@
 import fs from 'fs'
 import path from 'path'
 
-export async function listFiles (dir) {
+export function getFile (file) {
+  const stats = fs.lstatSync(file)
+  return {
+    name: path.basename(file),
+    path: file,
+    stats
+  }
+}
+
+export function listFiles (dir) {
   const files = fs.readdirSync(dir)
   return files.map(file => {
+    if (file.match(/^\./)) {
+      return null
+    }
     try {
-      const stats = fs.lstatSync(path.join(dir, file))
-      return {
-        name: file,
-        path: path.join(dir, file),
-        stats
-      }
+      return getFile(path.join(dir, file))
     } catch (e) {
       return null
     }

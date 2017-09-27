@@ -5,11 +5,26 @@
       <mdc-textfield
         label="Input path..."
         fullwidth
+        class="location"
         @keyup="keyup"
         v-model="directoryInput"
       />
     </div>
     <div class="row buttons">
+      <mdc-button
+        title="Back drectory"
+        :disabled="!canBackDirectory"
+        @click="backDirectory"
+      >
+        <mdc-icon icon="arrow_back" />
+      </mdc-button>
+      <mdc-button
+        title="Forward drectory"
+        :disabled="!canForwardDirectory"
+        @click="forwardDirectory"
+      >
+        <mdc-icon icon="arrow_forward" />
+      </mdc-button>
       <mdc-button
         title="Change parent drectory"
         @click="changeParentDirectory"
@@ -17,8 +32,15 @@
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
+        title="Change home drectory"
+        @click="changeHomeDirectory"
+      >
+        <mdc-icon icon="home" />
+      </mdc-button>
+      <mdc-button
         title="View"
-        @click="showViewerWithSelectedFile"
+        :disabled="!selectedFile"
+        @click="showSelectedFile"
       >
         <mdc-icon icon="photo" />
       </mdc-button>
@@ -33,7 +55,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcTextfield from '../components/MdcTextfield'
@@ -49,25 +71,35 @@ export default {
       get () {
         return this.$store.state.explorer.directoryInput
       },
-      set (value) {
-        this.$store.commit('explorer/setDirectoryInput', value)
+      set (dir) {
+        this.$store.commit('explorer/setDirectoryInput', { dir })
       }
-    }
+    },
+    ...mapState('explorer', [
+      'selectedFile'
+    ]),
+    ...mapGetters('explorer', [
+      'canBackDirectory',
+      'canForwardDirectory'
+    ])
   },
   methods: {
     keyup (e) {
       if (event.keyCode === 13) {
-        this.changeDirectory(e.target.value)
+        this.changeDirectory({ dir: e.target.value })
       }
     },
     ...mapActions('explorer', [
       'changeDirectory',
       'changeParentDirectory',
+      'changeHomeDirectory',
       'refreshDirectory',
+      'backDirectory',
+      'forwardDirectory',
       'openDirectory'
     ]),
     ...mapActions('viewer', [
-      'showViewerWithSelectedFile'
+      'showSelectedFile'
     ])
   }
 }

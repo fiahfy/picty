@@ -2,7 +2,7 @@
   <div class="activity-bar">
     <ul>
       <li :key="item.routeName" v-for="item in items">
-        <mdc-button @click="changeRoute(item.name)">
+        <mdc-button @click="changeRoute({ name: item.name })" :title="item.title">
           <mdc-icon :icon="item.icon" :class="item.classes" />
         </mdc-button>
       </li>
@@ -14,6 +14,7 @@
 import { mapActions } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
+import { title } from '../utils/accelerator'
 
 export default {
   components: {
@@ -23,8 +24,8 @@ export default {
   data () {
     return {
       items: [
-        { icon: 'list', name: 'explorer', classes: {} },
-        { icon: 'settings', name: 'settings', classes: {} }
+        { icon: 'list', name: 'explorer', title: title('explorer', 'CmdOrCtrl+Shift+E') },
+        { icon: 'settings', name: 'settings', title: title('settings', 'CmdOrCtrl+,') }
       ]
     }
   },

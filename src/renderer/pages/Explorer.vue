@@ -20,9 +20,6 @@ export default {
     FileList,
     MenuBar
   },
-  async asyncData ({ store }) {
-    await store.dispatch('explorer/refreshDirectory')
-  },
   computed: mapState('explorer', [
     'error'
   ])

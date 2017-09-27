@@ -5,11 +5,11 @@ export default {
     fullScreen: false
   },
   mutations: {
-    setDarkTheme (state, darkTheme) {
-      state.darkTheme = darkTheme
+    setDarkTheme (state, { flag }) {
+      state.darkTheme = flag
     },
-    setFullScreen (state, fullScreen) {
-      state.fullScreen = fullScreen
+    setFullScreen (state, { flag }) {
+      state.fullScreen = flag
     }
   }
 }

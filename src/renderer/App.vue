@@ -1,19 +1,24 @@
 <template>
-  <div id="app" :class="classes">
-    <title-bar v-if="hasTitleBar"/>
+  <div
+    id="app"
+    :class="classes"
+    @dragover.prevent
+    @drop.prevent="drop"
+  >
+    <title-bar v-if="titleBar"/>
     <div class="container">
       <activity-bar/>
       <div class="content">
         <router-view/>
       </div>
-      <viewer v-if="isViewing"/>
+      <viewer v-if="display"/>
     </div>
     <mdc-snackbar :message="message"/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
 import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
@@ -26,6 +31,9 @@ export default {
     TitleBar,
     Viewer
   },
+  async asyncData ({ store }) {
+    await store.dispatch('explorer/initDirectory')
+  },
   computed: {
     classes () {
       return {
@@ -33,17 +41,30 @@ export default {
         'mdc-theme--dark': this.darkTheme
       }
     },
-    hasTitleBar () {
-      return process.platform !== 'win32'
-    },
     ...mapState([
       'message'
     ]),
     ...mapState('viewer', [
-      'isViewing'
+      'display'
     ]),
     ...mapState('settings', [
       'darkTheme'
+    ]),
+    ...mapGetters([
+      'titleBar'
+    ])
+  },
+  methods: {
+    drop (e) {
+      const files = Array.from(e.dataTransfer.files)
+      if (!files.length) {
+        return
+      }
+      const file = files[0]
+      this.action({ filepath: file.path })
+    },
+    ...mapActions('explorer', [
+      'action'
     ])
   }
 }

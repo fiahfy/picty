@@ -5,7 +5,9 @@ Simple Image Viewer based on Electron.
 
 
 ## Features
-* todos
+* View images easily
+* Viewer has paging controller
+* Change theme color (Light/Dark)
 
 
 ## Screenshots
