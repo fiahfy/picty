@@ -4,12 +4,12 @@ export default {
   namespaced: true,
   state: {
     error: null,
-    isViewing: false,
+    display: false,
     files: [],
     currentFile: null
   },
   actions: {
-    show ({ commit, dispatch, rootState }, filepath) {
+    show ({ commit, dispatch, rootState }, { filepath }) {
       try {
         let files
         let file = getFile(filepath)
@@ -23,16 +23,16 @@ export default {
         } else {
           files = [file]
         }
-        commit('setError', null)
-        commit('setFiles', files)
-        commit('setCurrentFile', file)
+        commit('setError', { error: null })
+        commit('setFiles', { files })
+        commit('setCurrentFile', { file })
       } catch (e) {
         let error = e.message === 'Image Not Found' ? e : new Error('Invalid Image')
-        commit('setError', error)
-        commit('setFiles', [])
-        commit('setCurrentFile', null)
+        commit('setError', { error })
+        commit('setFiles', { files: [] })
+        commit('setCurrentFile', { file: null })
       }
-      commit('setViewing', true)
+      commit('setDisplay', { flag: true })
       dispatch('focus', { selector: '.viewer' }, { root: true })
       if (rootState.settings.fullScreen && process.platform === 'win32') {
         dispatch('enterFullScreen', null, { root: true })
@@ -40,11 +40,12 @@ export default {
     },
     showSelectedFile ({ dispatch, rootState }) {
       if (rootState.explorer.selectedFile) {
-        dispatch('show', rootState.explorer.selectedFile.path)
+        const filepath = rootState.explorer.selectedFile.path
+        dispatch('show', { filepath })
       }
     },
     dismiss ({ commit, dispatch, rootState }) {
-      commit('setViewing', false)
+      commit('setDisplay', { flag: false })
       dispatch('focus', { selector: '.file-list' }, { root: true })
       if (process.platform === 'win32') {
         dispatch('leaveFullScreen', null, { root: true })
@@ -55,30 +56,32 @@ export default {
       if (index < 0) {
         index = state.files.length - 1
       }
-      commit('setCurrentFile', state.files[index])
+      const file = state.files[index]
+      commit('setCurrentFile', { file })
     },
     viewNextImage ({ commit, getters, state }) {
       let index = getters.currentIndex + 1
       if (index > state.files.length - 1) {
         index = 0
       }
-      commit('setCurrentFile', state.files[index])
+      const file = state.files[index]
+      commit('setCurrentFile', { file })
     }
   },
   mutations: {
-    setError (state, error) {
+    setError (state, { error }) {
       state.error = error
     },
-    setViewing (state, isViewing) {
-      state.isViewing = isViewing
+    setDisplay (state, { flag }) {
+      state.display = flag
     },
-    setFiles (state, files) {
+    setFiles (state, { files }) {
       state.files = files
     },
-    setCurrentFile (state, file) {
+    setCurrentFile (state, { file }) {
       state.currentFile = file
     },
-    setCurrentIndex (state, index) {
+    setCurrentIndex (state, { index }) {
       state.currentFile = state.files[index]
     }
   },

@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron'
 
 export function setup (store) {
   ipcRenderer.on('open', (event, { filepath }) => {
-    store.dispatch('explorer/action', filepath)
+    store.dispatch('explorer/action', { filepath })
   })
   ipcRenderer.on('openLocation', () => {
     store.dispatch('changeRoute', { name: 'explorer' })

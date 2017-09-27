@@ -27,16 +27,16 @@ export default {
       get () {
         return this.$store.state.settings.darkTheme
       },
-      set (value) {
-        this.$store.commit('settings/setDarkTheme', value)
+      set (flag) {
+        this.$store.commit('settings/setDarkTheme', { flag })
       }
     },
     fullScreen: {
       get () {
         return this.$store.state.settings.fullScreen
       },
-      set (value) {
-        this.$store.commit('settings/setFullScreen', value)
+      set (flag) {
+        this.$store.commit('settings/setFullScreen', { flag })
       }
     }
   }

@@ -8,7 +8,7 @@
       <mdc-table-row>
         <mdc-table-header-column
           class="name mdc-theme--background"
-          @click.native="changeSortKey('name')"
+          @click.native="changeSortKey({ key: 'name' })"
         >
           <span>Name</span>
           <mdc-icon
@@ -18,7 +18,7 @@
         </mdc-table-header-column>
         <mdc-table-header-column
           class="size mdc-theme--background"
-          @click.native="changeSortKey('size')"
+          @click.native="changeSortKey({ key: 'size' })"
         >
           <span>Size</span>
           <mdc-icon
@@ -28,7 +28,7 @@
         </mdc-table-header-column>
         <mdc-table-header-column
           class="date-modified mdc-theme--background"
-          @click.native="changeSortKey('date_modified')"
+          @click.native="changeSortKey({ key: 'date_modified' })"
         >
           <span>Date Modified</span>
           <mdc-icon
@@ -43,7 +43,7 @@
         :key="file.name"
         :file="file"
         :class="{ selected: isSelected(file) }"
-        @click.native="selectFile(file)"
+        @click.native="selectFile({ file })"
         @dblclick.native="doubleClick(file)"
         v-for="file in files"
       />
@@ -88,7 +88,7 @@ export default {
       return this.selectedFile && file.path === this.selectedFile.path
     },
     doubleClick (file) {
-      this.action(file.path)
+      this.action({ filepath: file.path })
     },
     keydown (e) {
       if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {

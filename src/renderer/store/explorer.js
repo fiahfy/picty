@@ -25,9 +25,9 @@ export default {
     sortOrder: 'asc'
   },
   actions: {
-    loadDirectory ({ commit, dispatch }, dir) {
-      commit('setDirectory', dir)
-      commit('setDirectoryInput', dir)
+    loadDirectory ({ commit, dispatch }, { dir }) {
+      commit('setDirectory', { dir })
+      commit('setDirectoryInput', { dir })
       try {
         if (watcher) {
           watcher.close()
@@ -36,66 +36,57 @@ export default {
           dispatch('refreshDirectory')
         })
         const files = listFiles(dir)
-        commit('setError', null)
-        commit('setFiles', files)
+        commit('setError', { error: null })
+        commit('setFiles', { files })
       } catch (e) {
-        commit('setError', new Error('Invalid Directory'))
-        commit('setFiles', [])
+        commit('setError', { error: new Error('Invalid Directory') })
+        commit('setFiles', { files: [] })
       }
-      commit('setSelectedFile', null)
+      commit('setSelectedFile', { file: null })
       dispatch('sortFiles')
     },
-    initDirectory ({ commit, dispatch, state }) {
-      commit('setHistories', [state.directory])
-      commit('setHistoryIndex', 0)
-      dispatch('loadDirectory', state.directory)
-    },
-    changeDirectory ({ commit, dispatch, state }, dir) {
+    changeDirectory ({ commit, dispatch, state }, { dir }) {
       const index = state.historyIndex + 1
       const histories = [...state.histories.slice(0, index), dir]
-      commit('setHistories', histories)
-      commit('setHistoryIndex', index)
-      dispatch('loadDirectory', dir)
+      commit('setHistories', { histories })
+      commit('setHistoryIndex', { index })
+      dispatch('loadDirectory', { dir })
     },
-    changeChildDirectory ({ dispatch, state }, dirname) {
-      const child = path.join(state.directory, dirname)
-      dispatch('changeDirectory', child)
+    changeParentDirectory ({ dispatch, state }) {
+      const dir = path.dirname(state.directory)
+      dispatch('changeDirectory', { dir })
     },
     changeSelectedDirectory ({ dispatch, state }) {
       if (state.selectedFile && state.selectedFile.stats.isDirectory()) {
-        dispatch('changeDirectory', state.selectedFile.path)
+        dispatch('changeDirectory', { dir: state.selectedFile.path })
       }
     },
-    changeParentDirectory ({ dispatch, state }) {
-      const parent = path.dirname(state.directory)
-      dispatch('changeDirectory', parent)
-    },
     changeHomeDirectory ({ dispatch }) {
-      dispatch('changeDirectory', remote.app.getPath('home'))
+      dispatch('changeDirectory', { dir: remote.app.getPath('home') })
+    },
+    initDirectory ({ dispatch, state }) {
+      dispatch('changeDirectory', { dir: state.directory })
     },
     refreshDirectory ({ dispatch, state }) {
-      dispatch('loadDirectory', state.directory)
+      dispatch('loadDirectory', { dir: state.directory })
     },
     backDirectory ({ commit, dispatch, state }) {
       const index = state.historyIndex - 1
-      const file = state.histories[index]
-      commit('setHistoryIndex', index)
-      dispatch('loadDirectory', file)
+      const dir = state.histories[index]
+      commit('setHistoryIndex', { index })
+      dispatch('loadDirectory', { dir })
     },
     forwardDirectory ({ commit, dispatch, state }) {
       const index = state.historyIndex + 1
-      const file = state.histories[index]
-      commit('setHistoryIndex', index)
-      dispatch('loadDirectory', file)
+      const dir = state.histories[index]
+      commit('setHistoryIndex', { index })
+      dispatch('loadDirectory', { dir })
     },
-    changeSortKey ({ commit, dispatch, state }, sortKey) {
-      let sortOrder = orderDefaults[sortKey]
-      if (state.sortKey === sortKey) {
-        sortOrder = state.sortOrder === 'asc' ? 'desc' : 'asc'
+    openDirectory ({ dispatch, state }) {
+      const result = shell.openItem(state.directory)
+      if (!result) {
+        dispatch('showMessage', { message: `Invalid directory "${state.directory}"` }, { root: true })
       }
-      commit('setSortKey', sortKey)
-      commit('setSortOrder', sortOrder)
-      dispatch('sortFiles')
     },
     sortFiles ({ commit, state }) {
       const files = state.files.concat().sort((a, b) => {
@@ -131,67 +122,72 @@ export default {
         }
         return state.sortOrder === 'asc' ? result : -1 * result
       })
-      commit('setFiles', files)
+      commit('setFiles', { files })
     },
-    selectFile ({ commit, state }, file) {
-      commit('setSelectedFile', file)
+    selectFile ({ commit }, { file }) {
+      commit('setSelectedFile', { file })
     },
     selectPreviousFile ({ commit, getters, state }) {
-      let index = getters.selectedIndex - 1
+      const index = getters.selectedIndex - 1
       if (index < 0) {
         return
       }
-      commit('setSelectedFile', state.files[index])
+      const file = state.files[index]
+      commit('setSelectedFile', { file })
     },
     selectNextFile ({ commit, getters, state }) {
-      let index = getters.selectedIndex + 1
+      const index = getters.selectedIndex + 1
       if (index > state.files.length - 1) {
         return
       }
-      commit('setSelectedFile', state.files[index])
+      const file = state.files[index]
+      commit('setSelectedFile', { file })
     },
-    action ({ commit, dispatch, state }, filepath) {
+    changeSortKey ({ commit, dispatch, state }, { key }) {
+      let order = orderDefaults[key]
+      if (state.sortKey === key) {
+        order = state.sortOrder === 'asc' ? 'desc' : 'asc'
+      }
+      commit('setSortKey', { key })
+      commit('setSortOrder', { order })
+      dispatch('sortFiles')
+    },
+    action ({ dispatch, state }, { filepath }) {
       const file = getFile(filepath)
       if (file.stats.isDirectory()) {
-        dispatch('changeDirectory', filepath)
+        dispatch('changeDirectory', { dir: filepath })
       } else {
-        dispatch('viewer/show', filepath, { root: true })
-      }
-    },
-    openDirectory ({ dispatch, state }) {
-      const result = shell.openItem(state.directory)
-      if (!result) {
-        dispatch('showMessage', { message: `Invalid directory "${state.directory}"` }, { root: true })
+        dispatch('viewer/show', { filepath }, { root: true })
       }
     }
   },
   mutations: {
-    setError (state, error) {
+    setError (state, { error }) {
       state.error = error
     },
-    setDirectory (state, directory) {
-      state.directory = directory
+    setDirectory (state, { dir }) {
+      state.directory = dir
     },
-    setDirectoryInput (state, directory) {
-      state.directoryInput = directory
+    setDirectoryInput (state, { dir }) {
+      state.directoryInput = dir
     },
-    setHistories (state, histories) {
+    setHistories (state, { histories }) {
       state.histories = histories
     },
-    setHistoryIndex (state, index) {
+    setHistoryIndex (state, { index }) {
       state.historyIndex = index
     },
-    setFiles (state, files) {
+    setFiles (state, { files }) {
       state.files = files
     },
-    setSelectedFile (state, file) {
+    setSelectedFile (state, { file }) {
       state.selectedFile = file
     },
-    setSortKey (state, sortKey) {
-      state.sortKey = sortKey
+    setSortKey (state, { key }) {
+      state.sortKey = key
     },
-    setSortOrder (state, sortOrder) {
-      state.sortOrder = sortOrder
+    setSortOrder (state, { order }) {
+      state.sortOrder = order
     }
   },
   getters: {
@@ -201,10 +197,10 @@ export default {
       })
     },
     canBackDirectory (state) {
-      return Boolean(state.histories[state.historyIndex - 1])
+      return !!state.histories[state.historyIndex - 1]
     },
     canForwardDirectory (state) {
-      return Boolean(state.histories[state.historyIndex + 1])
+      return !!state.histories[state.historyIndex + 1]
     }
   }
 }

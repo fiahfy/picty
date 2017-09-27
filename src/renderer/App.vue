@@ -11,7 +11,7 @@
       <div class="content">
         <router-view/>
       </div>
-      <viewer v-if="isViewing"/>
+      <viewer v-if="display"/>
     </div>
     <mdc-snackbar :message="message"/>
   </div>
@@ -45,7 +45,7 @@ export default {
       'message'
     ]),
     ...mapState('viewer', [
-      'isViewing'
+      'display'
     ]),
     ...mapState('settings', [
       'darkTheme'
@@ -61,7 +61,7 @@ export default {
         return
       }
       const file = files[0]
-      this.action(file.path)
+      this.action({ filepath: file.path })
     },
     ...mapActions('explorer', [
       'action'
