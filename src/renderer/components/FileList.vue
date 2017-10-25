@@ -38,7 +38,10 @@
         </mdc-table-header-column>
       </mdc-table-row>
     </mdc-table-header>
-    <mdc-virtual-table-body :items="files">
+    <mdc-virtual-table-body
+      :items="files"
+      :estimatedHeight="41"
+    >
       <file-list-item
         slot-scope="{ item }"
         :key="item.name"
