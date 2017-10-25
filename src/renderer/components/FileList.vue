@@ -38,16 +38,16 @@
         </mdc-table-header-column>
       </mdc-table-row>
     </mdc-table-header>
-    <mdc-table-body>
+    <mdc-virtual-table-body :items="files">
       <file-list-item
-        :key="file.name"
-        :file="file"
-        :class="{ selected: isSelected(file) }"
-        @click.native="selectFile({ file })"
-        @dblclick.native="doubleClick(file)"
-        v-for="file in files"
+        slot-scope="{ item }"
+        :key="item.name"
+        :file="item"
+        :class="{ selected: isSelected(item) }"
+        @click.native="selectFile({ file: item })"
+        @dblclick.native="doubleClick(item)"
       />
-    </mdc-table-body>
+    </mdc-virtual-table-body>
   </mdc-table>
 </template>
 
@@ -56,17 +56,17 @@ import { mapActions, mapState } from 'vuex'
 import FileListItem from '../components/FileListItem'
 import MdcIcon from '../components/MdcIcon'
 import MdcTable from '../components/MdcTable'
-import MdcTableBody from '../components/MdcTableBody'
 import MdcTableHeader from '../components/MdcTableHeader'
 import MdcTableHeaderColumn from '../components/MdcTableHeaderColumn'
 import MdcTableRow from '../components/MdcTableRow'
+import MdcVirtualTableBody from '../components/MdcVirtualTableBody'
 
 export default {
   components: {
     FileListItem,
     MdcIcon,
     MdcTable,
-    MdcTableBody,
+    MdcVirtualTableBody,
     MdcTableHeader,
     MdcTableHeaderColumn,
     MdcTableRow
