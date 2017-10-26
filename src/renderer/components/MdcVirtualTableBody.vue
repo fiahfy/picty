@@ -1,8 +1,8 @@
 <template>
   <mdc-table-body>
-    <mdc-table-row/>
-    <slot v-for="item in renderItems()" :item="item"/>
-    <mdc-table-row/>
+    <mdc-table-row :style="`height: ${offsetTop}px;`"/>
+    <slot v-for="item in renderItems" :item="item"/>
+    <mdc-table-row :style="`height: ${offsetBottom}px;`"/>
   </mdc-table-body>
 </template>
 
@@ -24,20 +24,30 @@ export default {
     MdcTableRow
   },
   mounted () {
-    this.$el.parentNode.parentNode.addEventListener('scroll', (e) => {
-      console.log(e.target.scrollTop, e.target.offsetHeight)
-    })
+    const container = this.$el.parentNode.parentNode
+    this.scrollHandler = () => {
+      if (this.timer) {
+        clearTimeout(this.timer)
+      }
+      this.timer = setTimeout(() => {
+        const top = container.scrollTop
+        const bottom = container.scrollTop + container.offsetHeight
+        const startIndex = Math.floor(top / this.estimatedHeight)
+        const endIndex = Math.ceil(bottom / this.estimatedHeight)
+        this.renderItems = this.items.slice(startIndex, endIndex)
+        this.offsetTop = startIndex * this.estimatedHeight
+        this.offsetBottom = (this.items.length - endIndex) * this.estimatedHeight
+        console.log(top, bottom, startIndex, endIndex, this.items.length, this.renderItems.length)
+      }, 500)
+    }
+    container.addEventListener('scroll', this.scrollHandler)
+    this.scrollHandler()
   },
   data () {
-    return {}
-  },
-  methods: {
-    m () {
-      return new Date()
-    },
-    renderItems () {
-      console.log(1)
-      return this.items
+    return {
+      offsetTop: 0,
+      offsetBottom: 0,
+      renderItems: []
     }
   }
 }
