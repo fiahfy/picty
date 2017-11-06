@@ -120,6 +120,26 @@ export default {
           break
       }
     },
+    scroll () {
+      this.$nextTick(() => {
+        const parent = this.$el.parentNode
+        if (!parent) {
+          return
+        }
+        const index = this.files.findIndex(this.isSelected) || 0
+        const rowHeight = 41
+        const offsetHeight = 41
+        const el = {
+          offsetTop: rowHeight * index + offsetHeight,
+          offsetHeight: rowHeight
+        }
+        if (el.offsetTop - el.offsetHeight < parent.scrollTop) {
+          parent.scrollTop = el.offsetTop - el.offsetHeight
+        } else if (el.offsetTop + el.offsetHeight > parent.scrollTop + parent.offsetHeight) {
+          parent.scrollTop = el.offsetTop + el.offsetHeight - parent.offsetHeight
+        }
+      })
+    },
     ...mapActions('explorer', [
       'changeParentDirectory',
       'changeSelectedDirectory',
@@ -133,21 +153,15 @@ export default {
       'showSelectedFile'
     ])
   },
-  updated () {
-    const el = this.$el.querySelector('.selected')
-    const parent = this.$el.parentNode
-    if (!el || !parent) {
-      return
-    }
-    if (el.offsetTop - el.offsetHeight < parent.scrollTop) {
-      parent.scrollTop = el.offsetTop - el.offsetHeight
-    } else if (el.offsetTop + el.offsetHeight > parent.scrollTop + parent.offsetHeight) {
-      parent.scrollTop = el.offsetTop + el.offsetHeight - parent.offsetHeight
-    }
-  },
   watch: {
     directory () {
       this.$el.parentNode.scrollTop = 0
+    },
+    files () {
+      this.scroll()
+    },
+    selectedFile () {
+      this.scroll()
     }
   }
 }

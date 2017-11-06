@@ -1,8 +1,8 @@
 <template>
   <mdc-table-body>
-    <mdc-table-row :style="`height: ${offsetTop}px;`"/>
+    <mdc-table-row class="pseudo" :style="`height: ${offsetTop}px;`"/>
     <slot v-for="item in renderItems" :item="item"/>
-    <mdc-table-row :style="`height: ${offsetBottom}px;`"/>
+    <mdc-table-row class="pseudo" :style="`height: ${offsetBottom}px;`"/>
   </mdc-table-body>
 </template>
 
@@ -25,23 +25,9 @@ export default {
   },
   mounted () {
     const container = this.$el.parentNode.parentNode
-    this.scrollHandler = () => {
-      if (this.timer) {
-        clearTimeout(this.timer)
-      }
-      this.timer = setTimeout(() => {
-        const top = container.scrollTop
-        const bottom = container.scrollTop + container.offsetHeight
-        const startIndex = Math.floor(top / this.estimatedHeight)
-        const endIndex = Math.ceil(bottom / this.estimatedHeight)
-        this.renderItems = this.items.slice(startIndex, endIndex)
-        this.offsetTop = startIndex * this.estimatedHeight
-        this.offsetBottom = (this.items.length - endIndex) * this.estimatedHeight
-        console.log(top, bottom, startIndex, endIndex, this.items.length, this.renderItems.length)
-      }, 500)
-    }
-    container.addEventListener('scroll', this.scrollHandler)
-    this.scrollHandler()
+    container.addEventListener('scroll', this.scroll)
+    window.addEventListener('resize', this.scroll)
+    this.scroll()
   },
   data () {
     return {
@@ -49,6 +35,34 @@ export default {
       offsetBottom: 0,
       renderItems: []
     }
+  },
+  methods: {
+    scroll () {
+      const container = this.$el.parentNode.parentNode
+      if (!container) {
+        return
+      }
+      const top = container.scrollTop
+      const offset = Math.ceil(container.offsetHeight / this.estimatedHeight)
+      const startIndex = Math.max(0, Math.floor(top / this.estimatedHeight))
+      const endIndex = Math.min(startIndex + offset, this.items.length)
+      this.renderItems = this.items.slice(startIndex, endIndex)
+      this.offsetTop = startIndex * this.estimatedHeight
+      this.offsetBottom = (this.items.length - endIndex) * this.estimatedHeight
+    }
+  },
+  watch: {
+    items () {
+      this.scroll()
+    }
   }
 }
 </script>
+
+<style scoped>
+.pseudo {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+</style>
