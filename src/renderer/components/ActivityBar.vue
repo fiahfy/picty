@@ -38,7 +38,7 @@ export default {
         Object.assign({}, {
           ...item,
           classes: {
-            'mdc-theme--primary': item.name === name
+            selected: item.name === name
           }
         })
       ))
@@ -77,9 +77,21 @@ ul {
   min-width: auto;
   padding: 0;
 }
+.mdc-icon:not(.selected) {
+  color: var(--mdc-theme-text-disabled-on-light, rgba(0, 0, 0, 0.38));
+  &:hover {
+    color: inherit;
+  }
+}
 .mdc-theme--dark {
   .activity-bar {
     border-right-color: $material-color-grey-600;
+  }
+  .mdc-icon:not(.selected) {
+    color: var(--mdc-theme-text-disabled-on-dark, rgba(255, 255, 255, 0.5));
+    &:hover {
+      color: inherit;
+    }
   }
 }
 </style>
