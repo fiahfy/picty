@@ -48,4 +48,33 @@ export default {
     vertical-align: middle;
   }
 }
+
+::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 7px;
+    }
+    ::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background-color: rgba(0,0,0,.5);
+        -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+    }
+
+/*スクロールバー全体*/
+// ::-webkit-scrollbar {
+//     // width: 10px;
+//   -webkit-overflow-scrolling: touch;
+// }
+
+/*スクロールバーの軌道*/
+// ::-webkit-scrollbar-track {
+//   border-radius: 10px;
+//   box-shadow: inset 0 0 6px rgba(0, 0, 0, .1);
+// }
+
+// /*スクロールバーの動く部分*/
+// ::-webkit-scrollbar-thumb {
+//   background-color: rgba(0, 0, 50, .5);
+//   border-radius: 10px;
+//   box-shadow:0 0 0 1px rgba(255, 255, 255, .3);
+// }
 </style>
