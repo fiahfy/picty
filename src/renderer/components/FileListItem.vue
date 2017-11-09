@@ -54,7 +54,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color_palette.scss";
+@import "~@material/theme/_color-palette.scss";
 
 .mdc-table-row {
   height: 41px;
