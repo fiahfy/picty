@@ -38,9 +38,11 @@
         </mdc-table-header-column>
       </mdc-table-row>
     </mdc-table-header>
+
     <mdc-virtual-table-body
       :items="files"
       :estimatedHeight="41"
+      v-if="improveRenderingPerformance"
     >
       <file-list-item
         slot-scope="{ item }"
@@ -51,6 +53,17 @@
         @dblclick.native="doubleClick(item)"
       />
     </mdc-virtual-table-body>
+    <mdc-table-body v-else>
+      <file-list-item
+        :key="item.name"
+        :file="item"
+        :class="{ selected: isSelected(item) }"
+        @click.native="selectFile({ file: item })"
+        @dblclick.native="doubleClick(item)"
+        v-for="item in files"
+      />
+    </mdc-table-body>
+
   </mdc-table>
 </template>
 
@@ -59,6 +72,7 @@ import { mapActions, mapState } from 'vuex'
 import FileListItem from '../components/FileListItem'
 import MdcIcon from '../components/MdcIcon'
 import MdcTable from '../components/MdcTable'
+import MdcTableBody from '../components/MdcTableBody'
 import MdcTableHeader from '../components/MdcTableHeader'
 import MdcTableHeaderColumn from '../components/MdcTableHeaderColumn'
 import MdcTableRow from '../components/MdcTableRow'
@@ -69,10 +83,11 @@ export default {
     FileListItem,
     MdcIcon,
     MdcTable,
-    MdcVirtualTableBody,
+    MdcTableBody,
     MdcTableHeader,
     MdcTableHeaderColumn,
-    MdcTableRow
+    MdcTableRow,
+    MdcVirtualTableBody
   },
   computed: {
     sortIcon () {
@@ -84,6 +99,9 @@ export default {
       'selectedFile',
       'sortKey',
       'sortOrder'
+    ]),
+    ...mapState('settings', [
+      'improveRenderingPerformance'
     ])
   },
   methods: {
