@@ -38,16 +38,32 @@
         </mdc-table-header-column>
       </mdc-table-row>
     </mdc-table-header>
-    <mdc-table-body>
+
+    <mdc-virtual-table-body
+      :items="files"
+      :estimatedHeight="41"
+      v-if="improveRenderingPerformance"
+    >
       <file-list-item
-        :key="file.name"
-        :file="file"
-        :class="{ selected: isSelected(file) }"
-        @click.native="selectFile({ file })"
-        @dblclick.native="doubleClick(file)"
-        v-for="file in files"
+        slot-scope="{ item }"
+        :key="item.name"
+        :file="item"
+        :class="{ selected: isSelected(item) }"
+        @click.native="selectFile({ file: item })"
+        @dblclick.native="doubleClick(item)"
+      />
+    </mdc-virtual-table-body>
+    <mdc-table-body v-else>
+      <file-list-item
+        :key="item.name"
+        :file="item"
+        :class="{ selected: isSelected(item) }"
+        @click.native="selectFile({ file: item })"
+        @dblclick.native="doubleClick(item)"
+        v-for="item in files"
       />
     </mdc-table-body>
+
   </mdc-table>
 </template>
 
@@ -60,6 +76,7 @@ import MdcTableBody from '../components/MdcTableBody'
 import MdcTableHeader from '../components/MdcTableHeader'
 import MdcTableHeaderColumn from '../components/MdcTableHeaderColumn'
 import MdcTableRow from '../components/MdcTableRow'
+import MdcVirtualTableBody from '../components/MdcVirtualTableBody'
 
 export default {
   components: {
@@ -69,7 +86,8 @@ export default {
     MdcTableBody,
     MdcTableHeader,
     MdcTableHeaderColumn,
-    MdcTableRow
+    MdcTableRow,
+    MdcVirtualTableBody
   },
   computed: {
     sortIcon () {
@@ -81,6 +99,9 @@ export default {
       'selectedFile',
       'sortKey',
       'sortOrder'
+    ]),
+    ...mapState('settings', [
+      'improveRenderingPerformance'
     ])
   },
   methods: {
@@ -117,6 +138,26 @@ export default {
           break
       }
     },
+    scroll () {
+      this.$nextTick(() => {
+        const parent = this.$el.parentNode
+        if (!parent) {
+          return
+        }
+        const index = this.files.findIndex(this.isSelected) || 0
+        const rowHeight = 41
+        const offsetHeight = 41
+        const el = {
+          offsetTop: rowHeight * index + offsetHeight,
+          offsetHeight: rowHeight
+        }
+        if (el.offsetTop - el.offsetHeight < parent.scrollTop) {
+          parent.scrollTop = el.offsetTop - el.offsetHeight
+        } else if (el.offsetTop + el.offsetHeight > parent.scrollTop + parent.offsetHeight) {
+          parent.scrollTop = el.offsetTop + el.offsetHeight - parent.offsetHeight
+        }
+      })
+    },
     ...mapActions('explorer', [
       'changeParentDirectory',
       'changeSelectedDirectory',
@@ -130,21 +171,15 @@ export default {
       'showSelectedFile'
     ])
   },
-  updated () {
-    const el = this.$el.querySelector('.selected')
-    const parent = this.$el.parentNode
-    if (!el || !parent) {
-      return
-    }
-    if (el.offsetTop - el.offsetHeight < parent.scrollTop) {
-      parent.scrollTop = el.offsetTop - el.offsetHeight
-    } else if (el.offsetTop + el.offsetHeight > parent.scrollTop + parent.offsetHeight) {
-      parent.scrollTop = el.offsetTop + el.offsetHeight - parent.offsetHeight
-    }
-  },
   watch: {
     directory () {
       this.$el.parentNode.scrollTop = 0
+    },
+    files () {
+      this.scroll()
+    },
+    selectedFile () {
+      this.scroll()
     }
   }
 }
