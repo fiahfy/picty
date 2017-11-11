@@ -97,11 +97,29 @@ $mdc-theme-primary: #ff4081;
 
 @import '~material-components-web/material-components-web';
 @import '~material-design-icons/iconfont/material-icons.css';
+@import "~@material/theme/_color-palette.scss";
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 12px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: $material-color-grey-300;
+  &:hover {
+    background-color: $material-color-grey-400;
+  }
+}
 
 .mdc-theme--dark {
   color: white;
   &.mdc-theme--background, .mdc-theme--background {
     background-color: #303030;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: $material-color-grey-600;
+    &:hover {
+      background-color: $material-color-grey-500;
+    }
   }
 }
 </style>
