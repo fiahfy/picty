@@ -3,7 +3,7 @@
 </template>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color_palette.scss";
+@import "~@material/theme/_color-palette.scss";
 
 .title-bar {
   border-bottom-color: $material-color-grey-300;
