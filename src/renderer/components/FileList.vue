@@ -192,6 +192,7 @@ export default {
 }
 .mdc-table-row {
   cursor: pointer;
+  height: 41px;
 }
 .mdc-table-header-column {
   font-size: smaller;

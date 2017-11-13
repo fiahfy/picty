@@ -101,12 +101,18 @@ $mdc-theme-primary: #ff4081;
 
 ::-webkit-scrollbar {
   -webkit-appearance: none;
+  border-left-color: $material-color-grey-300;
+  border-left-style: solid;
+  border-left-width: 1px;
   width: 12px;
 }
 ::-webkit-scrollbar-thumb {
   background-color: $material-color-grey-300;
   &:hover {
     background-color: $material-color-grey-400;
+  }
+  &:active {
+    background-color: $material-color-grey-500;
   }
 }
 
@@ -115,10 +121,16 @@ $mdc-theme-primary: #ff4081;
   &.mdc-theme--background, .mdc-theme--background {
     background-color: #303030;
   }
+  ::-webkit-scrollbar {
+    border-left-color: $material-color-grey-600;
+  }
   ::-webkit-scrollbar-thumb {
     background-color: $material-color-grey-600;
     &:hover {
       background-color: $material-color-grey-500;
+    }
+    &:active {
+      background-color: $material-color-grey-400;
     }
   }
 }

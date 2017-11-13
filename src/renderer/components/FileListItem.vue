@@ -56,9 +56,6 @@ export default {
 <style scoped lang="scss">
 @import "~@material/theme/_color-palette.scss";
 
-.mdc-table-row {
-  height: 41px;
-}
 .mdc-table-column {
   font-size: smaller;
   line-height: 20px;
