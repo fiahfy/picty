@@ -83,6 +83,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "~@material/button/mixins";
+@import "~@material/ripple/mixins";
+
 .background {
   background-color: black;
   bottom: 0;
@@ -97,7 +100,6 @@ export default {
   display: flex;
 }
 .mdc-icon {
-  color: white;
   padding: 4px;
 }
 .mdc-button {
@@ -110,6 +112,8 @@ export default {
   &:not(:first-child) {
     margin-left: 0px;
   }
+  @include mdc-button-ink-color(white);
+  @include mdc-ripple-color(white, $mdc-unfilled-button-ripple-opacity);
 }
 .mdc-slider {
   margin-left: 16px;
