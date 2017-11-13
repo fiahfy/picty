@@ -37,6 +37,7 @@
       >
         <mdc-icon icon="home" />
       </mdc-button>
+      <div class="separator" />
       <mdc-button
         title="View"
         :disabled="!selectedFile"
@@ -44,6 +45,7 @@
       >
         <mdc-icon icon="photo" />
       </mdc-button>
+      <div class="separator" />
       <mdc-button
         title="Open current directory"
         @click="openDirectory"
@@ -115,7 +117,19 @@ export default {
   border-bottom-color: $material-color-grey-300;
   border-bottom-style: solid;
   border-bottom-width: 1px;
-  padding: 4px;
+  height: 40px;
+}
+.row>* {
+  margin: 4px;
+  vertical-align: bottom;
+}
+.separator {
+  border-left-color: $material-color-grey-300;
+  border-left-style: solid;
+  border-left-width: 1px;
+  display: inline-block;
+  height: 100%;
+  margin: 0;
 }
 .directory {
   display: flex;
@@ -145,6 +159,9 @@ export default {
 .mdc-theme--dark {
   .row {
     border-bottom-color: $material-color-grey-600;
+  }
+  .separator {
+    border-left-color: $material-color-grey-600;
   }
 }
 </style>
