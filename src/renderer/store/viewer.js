@@ -34,7 +34,7 @@ export default {
       }
       commit('setDisplay', { flag: true })
       dispatch('focus', { selector: '.viewer' }, { root: true })
-      if (rootState.settings.fullScreen && process.platform === 'win32') {
+      if (rootState.settings.fullScreen && process.platform !== 'darwin') {
         dispatch('enterFullScreen', null, { root: true })
       }
     },
@@ -47,7 +47,7 @@ export default {
     dismiss ({ commit, dispatch, rootState }) {
       commit('setDisplay', { flag: false })
       dispatch('focus', { selector: '.file-list' }, { root: true })
-      if (process.platform === 'win32') {
+      if (process.platform !== 'darwin') {
         dispatch('leaveFullScreen', null, { root: true })
       }
     },
