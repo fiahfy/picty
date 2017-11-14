@@ -44,7 +44,7 @@ export default {
         dispatch('show', { filepath })
       }
     },
-    dismiss ({ commit, dispatch, rootState }) {
+    dismiss ({ commit, dispatch }) {
       commit('setDisplay', { flag: false })
       dispatch('focus', { selector: '.file-list' }, { root: true })
       if (process.platform !== 'darwin') {

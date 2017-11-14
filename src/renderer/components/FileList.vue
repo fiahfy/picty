@@ -1,70 +1,71 @@
 <template>
-  <mdc-table
-    class="file-list"
-    tabindex="0"
-    @keydown.native="keydown"
-  >
-    <mdc-table-header>
-      <mdc-table-row>
-        <mdc-table-header-column
-          class="name mdc-theme--background"
-          @click.native="changeSortKey({ key: 'name' })"
-        >
-          <span>Name</span>
-          <mdc-icon
-            :icon="sortIcon"
-            v-if="sortKey === 'name'"
-          />
-        </mdc-table-header-column>
-        <mdc-table-header-column
-          class="size mdc-theme--background"
-          @click.native="changeSortKey({ key: 'size' })"
-        >
-          <span>Size</span>
-          <mdc-icon
-            :icon="sortIcon"
-            v-if="sortKey === 'size'"
-          />
-        </mdc-table-header-column>
-        <mdc-table-header-column
-          class="date-modified mdc-theme--background"
-          @click.native="changeSortKey({ key: 'date_modified' })"
-        >
-          <span>Date Modified</span>
-          <mdc-icon
-            :icon="sortIcon"
-            v-if="sortKey === 'date_modified'"
-          />
-        </mdc-table-header-column>
-      </mdc-table-row>
-    </mdc-table-header>
-
-    <mdc-virtual-table-body
-      :items="files"
-      :estimatedHeight="41"
-      v-if="improveRenderingPerformance"
+  <div class="file-list">
+    <mdc-table
+      tabindex="0"
+      @keydown.native="keydown"
     >
-      <file-list-item
-        slot-scope="{ item }"
-        :key="item.name"
-        :file="item"
-        :class="{ selected: isSelected(item) }"
-        @click.native="selectFile({ file: item })"
-        @dblclick.native="doubleClick(item)"
-      />
-    </mdc-virtual-table-body>
-    <mdc-table-body v-else>
-      <file-list-item
-        :key="item.name"
-        :file="item"
-        :class="{ selected: isSelected(item) }"
-        @click.native="selectFile({ file: item })"
-        @dblclick.native="doubleClick(item)"
-        v-for="item in files"
-      />
-    </mdc-table-body>
+      <mdc-table-header>
+        <mdc-table-row>
+          <mdc-table-header-column
+            class="name mdc-theme--background"
+            @click.native="changeSortKey({ key: 'name' })"
+          >
+            <span>Name</span>
+            <mdc-icon
+              :icon="sortIcon"
+              v-if="sortKey === 'name'"
+            />
+          </mdc-table-header-column>
+          <mdc-table-header-column
+            class="size mdc-theme--background"
+            @click.native="changeSortKey({ key: 'size' })"
+          >
+            <span>Size</span>
+            <mdc-icon
+              :icon="sortIcon"
+              v-if="sortKey === 'size'"
+            />
+          </mdc-table-header-column>
+          <mdc-table-header-column
+            class="date-modified mdc-theme--background"
+            @click.native="changeSortKey({ key: 'date_modified' })"
+          >
+            <span>Date Modified</span>
+            <mdc-icon
+              :icon="sortIcon"
+              v-if="sortKey === 'date_modified'"
+            />
+          </mdc-table-header-column>
+        </mdc-table-row>
+      </mdc-table-header>
 
-  </mdc-table>
+      <mdc-virtual-table-body
+        :items="files"
+        :estimatedHeight="41"
+        v-if="improveRenderingPerformance"
+      >
+        <file-list-item
+          slot-scope="{ item }"
+          :key="item.name"
+          :file="item"
+          :class="{ selected: isSelected(item) }"
+          @click.native="selectFile({ file: item })"
+          @dblclick.native="doubleClick(item)"
+        />
+      </mdc-virtual-table-body>
+      <mdc-table-body v-else>
+        <file-list-item
+          :key="item.name"
+          :file="item"
+          :class="{ selected: isSelected(item) }"
+          @click.native="selectFile({ file: item })"
+          @dblclick.native="doubleClick(item)"
+          v-for="item in files"
+        />
+      </mdc-table-body>
+
+    </mdc-table>
+  </div>
 </template>
 
 <script>
@@ -88,6 +89,9 @@ export default {
     MdcTableHeaderColumn,
     MdcTableRow,
     MdcVirtualTableBody
+  },
+  mounted () {
+    this.$el.addEventListener('scroll', this.scroll)
   },
   computed: {
     sortIcon () {
@@ -139,11 +143,10 @@ export default {
       }
     },
     scroll () {
+      this.scroll()
+    },
+    fixScroll () {
       this.$nextTick(() => {
-        const parent = this.$el.parentNode
-        if (!parent) {
-          return
-        }
         const index = this.files.findIndex(this.isSelected) || 0
         const rowHeight = 41
         const offsetHeight = 41
@@ -151,10 +154,10 @@ export default {
           offsetTop: rowHeight * index + offsetHeight,
           offsetHeight: rowHeight
         }
-        if (el.offsetTop - el.offsetHeight < parent.scrollTop) {
-          parent.scrollTop = el.offsetTop - el.offsetHeight
-        } else if (el.offsetTop + el.offsetHeight > parent.scrollTop + parent.offsetHeight) {
-          parent.scrollTop = el.offsetTop + el.offsetHeight - parent.offsetHeight
+        if (el.offsetTop - el.offsetHeight < this.$el.scrollTop) {
+          this.$el.scrollTop = el.offsetTop - el.offsetHeight
+        } else if (el.offsetTop + el.offsetHeight > this.$el.scrollTop + this.$el.offsetHeight) {
+          this.$el.scrollTop = el.offsetTop + el.offsetHeight - this.$el.offsetHeight
         }
       })
     },
@@ -165,6 +168,7 @@ export default {
       'selectFile',
       'selectPreviousFile',
       'selectNextFile',
+      'scroll',
       'action'
     ]),
     ...mapActions('viewer', [
@@ -173,19 +177,23 @@ export default {
   },
   watch: {
     directory () {
-      this.$el.parentNode.scrollTop = 0
+      this.$el.scrollTop = 0
     },
     files () {
-      this.scroll()
+      this.fixScroll()
     },
     selectedFile () {
-      this.scroll()
+      this.fixScroll()
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+.file-list {
+  height: 100%;
+  overflow-y: auto;
+}
 .mdc-table {
   outline: none;
   table-layout: fixed;

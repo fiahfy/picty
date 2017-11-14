@@ -73,8 +73,8 @@ export default {
       get () {
         return this.$store.state.explorer.directoryInput
       },
-      set (dir) {
-        this.$store.commit('explorer/setDirectoryInput', { dir })
+      set (directoryInput) {
+        this.$store.commit('explorer/setDirectoryInput', { directoryInput })
       }
     },
     ...mapState('explorer', [
@@ -88,7 +88,7 @@ export default {
   methods: {
     keyup (e) {
       if (event.keyCode === 13) {
-        this.changeDirectory({ dir: e.target.value })
+        this.changeDirectory({ directory: e.target.value })
       }
     },
     ...mapActions('explorer', [
