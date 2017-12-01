@@ -52,13 +52,17 @@ export default {
         histories = [...state.histories.slice(0, state.historyIndex), {
           ...history,
           selectedFile: state.selectedFile,
-          scrollTop: state.scrollTop
+          scrollTop: state.scrollTop,
+          sortKey: state.sortKey,
+          sortOrder: state.sortOrder
         }]
       }
       histories = [...histories, {
         directory,
         selectedFile: null,
-        scrollTop: 0
+        scrollTop: 0,
+        sortKey: 'name',
+        sortOrder: 'asc'
       }]
       commit('setHistories', { histories })
       commit('setHistoryIndex', { historyIndex })
@@ -85,6 +89,8 @@ export default {
       commit('setDirectoryInput', { directoryInput: history.directory })
       commit('setSelectedFile', { selectedFile: history.selectedFile })
       commit('setScrollTop', { scrollTop: history.scrollTop })
+      commit('setSortKey', { sortKey: history.sortKey })
+      commit('setSortOrder', { sortOrder: history.sortOrder })
       dispatch('loadDirectory')
     },
     loadDirectory ({ commit, dispatch, state }) {
@@ -104,7 +110,6 @@ export default {
       }
       dispatch('sortFiles')
       dispatch('focus', { selector: '.file-list' }, { root: true })
-      // restore scroll top
     },
     openDirectory ({ dispatch, state }) {
       const result = shell.openItem(state.directory)
