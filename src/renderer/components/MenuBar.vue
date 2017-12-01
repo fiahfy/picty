@@ -2,7 +2,7 @@
   <div class="menu-bar">
     <div class="row directory">
       <mdc-icon icon="folder"/>
-      <mdc-textfield
+      <mdc-text-field
         label="Input path..."
         fullwidth
         class="location"
@@ -60,13 +60,13 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
-import MdcTextfield from '../components/MdcTextfield'
+import MdcTextField from '../components/MdcTextField'
 
 export default {
   components: {
     MdcButton,
     MdcIcon,
-    MdcTextfield
+    MdcTextField
   },
   computed: {
     directoryInput: {
@@ -140,7 +140,7 @@ export default {
 .buttons {
   text-align: left;
 }
-.mdc-textfield {
+.mdc-text-field {
   border: none;
   font-size: smaller;
   height: 32px;

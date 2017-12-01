@@ -1,11 +1,11 @@
 <template>
   <div
-    class="mdc-textfield"
+    class="mdc-text-field"
     :class="classes"
   >
     <input
       type="text"
-      class="mdc-textfield__input"
+      class="mdc-text-field__input"
       :id="id"
       :placeholder="placeholder"
       :aria-label="placeholder"
@@ -14,7 +14,7 @@
       @keyup="keyup"
     />
     <label
-      class="mdc-textfield__label"
+      class="mdc-text-field__label"
       :for="id"
       v-if="!fullwidth"
     >{{ label }}</label>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { MDCTextfield } from '@material/textfield'
+import { MDCTextField } from '@material/textfield'
 
 export default {
   props: {
@@ -43,13 +43,13 @@ export default {
     }
   },
   mounted () {
-    MDCTextfield.attachTo(this.$el)
+    MDCTextField.attachTo(this.$el)
     this.id = this._uid // eslint-disable-line no-underscore-dangle
   },
   computed: {
     classes () {
       return {
-        'mdc-textfield--fullwidth': this.fullwidth
+        'mdc-text-field--fullwidth': this.fullwidth
       }
     },
     placeholder () {
