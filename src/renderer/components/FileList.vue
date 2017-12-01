@@ -101,6 +101,7 @@ export default {
       'directory',
       'files',
       'selectedFile',
+      'scrollTop',
       'sortKey',
       'sortOrder'
     ]),
@@ -142,9 +143,6 @@ export default {
           break
       }
     },
-    scroll () {
-      this.scroll()
-    },
     fixScroll () {
       this.$nextTick(() => {
         const index = this.files.findIndex(this.isSelected) || 0
@@ -177,7 +175,9 @@ export default {
   },
   watch: {
     directory () {
-      this.$el.scrollTop = 0
+      this.$nextTick(() => {
+        this.$el.scrollTop = this.scrollTop
+      })
     },
     files () {
       this.fixScroll()
@@ -192,7 +192,7 @@ export default {
 <style scoped lang="scss">
 .file-list {
   height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 .mdc-table {
   outline: none;
