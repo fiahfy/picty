@@ -71,7 +71,6 @@ ul {
   padding: 0;
 }
 .mdc-button {
-  border-radius: 0;
   height: auto;
   line-height: initial;
   min-width: auto;
