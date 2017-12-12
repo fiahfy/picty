@@ -113,7 +113,7 @@ export default {
     margin-left: 0px;
   }
   @include mdc-button-ink-color(white);
-  @include mdc-ripple-color(white, $mdc-unfilled-button-ripple-opacity);
+  @include mdc-states(white);
 }
 .mdc-slider {
   margin-left: 16px;
