@@ -2,7 +2,7 @@
   <div class="activity-bar">
     <ul>
       <li :key="item.routeName" v-for="item in items">
-        <mdc-button @click="changeRoute({ name: item.name })" :title="item.title">
+        <mdc-button @click.native="changeRoute({ name: item.name })" :title="item.title">
           <mdc-icon :icon="item.icon" :class="item.classes" />
         </mdc-button>
       </li>

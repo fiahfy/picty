@@ -22,7 +22,8 @@ import { isImage } from '../utils/file'
 export default {
   props: {
     file: {
-      type: Object
+      type: Object,
+      required: true
     }
   },
   components: {

@@ -14,26 +14,26 @@
       <mdc-button
         title="Back drectory"
         :disabled="!canBackDirectory"
-        @click="backDirectory"
+        @click.native="backDirectory"
       >
         <mdc-icon icon="arrow_back" />
       </mdc-button>
       <mdc-button
         title="Forward drectory"
         :disabled="!canForwardDirectory"
-        @click="forwardDirectory"
+        @click.native="forwardDirectory"
       >
         <mdc-icon icon="arrow_forward" />
       </mdc-button>
       <mdc-button
         title="Change parent drectory"
-        @click="changeParentDirectory"
+        @click.native="changeParentDirectory"
       >
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
         title="Change home drectory"
-        @click="changeHomeDirectory"
+        @click.native="changeHomeDirectory"
       >
         <mdc-icon icon="home" />
       </mdc-button>
@@ -41,14 +41,14 @@
       <mdc-button
         title="View"
         :disabled="!selectedFile"
-        @click="showSelectedFile"
+        @click.native="showSelectedFile"
       >
         <mdc-icon icon="photo" />
       </mdc-button>
       <div class="separator" />
       <mdc-button
         title="Open current directory"
-        @click="openDirectory"
+        @click.native="openDirectory"
       >
         <mdc-icon icon="folder_open" />
       </mdc-button>

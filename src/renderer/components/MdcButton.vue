@@ -1,5 +1,5 @@
 <template>
-  <button class="mdc-button" v-on="$listeners">
+  <button class="mdc-button">
     <slot/>
   </button>
 </template>

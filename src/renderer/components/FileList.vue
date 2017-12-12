@@ -7,7 +7,7 @@
       <mdc-table-header>
         <mdc-table-row>
           <mdc-table-header-column
-            class="name mdc-theme--background"
+            class="mdc-theme--background name"
             @click.native="changeSortKey({ key: 'name' })"
           >
             <span>Name</span>
@@ -17,7 +17,7 @@
             />
           </mdc-table-header-column>
           <mdc-table-header-column
-            class="size mdc-theme--background"
+            class="mdc-theme--background size"
             @click.native="changeSortKey({ key: 'size' })"
           >
             <span>Size</span>
@@ -27,7 +27,7 @@
             />
           </mdc-table-header-column>
           <mdc-table-header-column
-            class="date-modified mdc-theme--background"
+            class="mdc-theme--background date-modified"
             @click.native="changeSortKey({ key: 'date_modified' })"
           >
             <span>Date Modified</span>
@@ -38,11 +38,9 @@
           </mdc-table-header-column>
         </mdc-table-row>
       </mdc-table-header>
-
       <mdc-virtual-table-body
         :items="files"
         :estimatedHeight="41"
-        v-if="improveRenderingPerformance"
       >
         <file-list-item
           slot-scope="{ item }"
@@ -53,17 +51,6 @@
           @dblclick.native="doubleClick(item)"
         />
       </mdc-virtual-table-body>
-      <mdc-table-body v-else>
-        <file-list-item
-          :key="item.name"
-          :file="item"
-          :class="{ selected: isSelected(item) }"
-          @click.native="selectFile({ file: item })"
-          @dblclick.native="doubleClick(item)"
-          v-for="item in files"
-        />
-      </mdc-table-body>
-
     </mdc-table>
   </div>
 </template>

@@ -4,13 +4,13 @@
     <div class="container">
       <mdc-button
         title="View previous image"
-        @click="viewPreviousImage"
+        @click.native="viewPreviousImage"
       >
         <mdc-icon icon="skip_previous"/>
       </mdc-button>
       <mdc-button
         title="View next image"
-        @click="viewNextImage"
+        @click.native="viewNextImage"
       >
         <mdc-icon icon="skip_next"/>
       </mdc-button>
@@ -18,21 +18,21 @@
       <div class="page">{{ page }} / {{ maxPage }}</div>
       <mdc-button
         title="Exit fullscreen"
-        @click="leaveFullScreen"
+        @click.native="leaveFullScreen"
         v-if="fullScreen"
       >
         <mdc-icon icon="fullscreen_exit"/>
       </mdc-button>
       <mdc-button
         title="Fullscreen"
-        @click="enterFullScreen"
+        @click.native="enterFullScreen"
         v-else
       >
         <mdc-icon icon="fullscreen"/>
       </mdc-button>
       <mdc-button
         title="Close"
-        @click="dismiss"
+        @click.native="dismiss"
       >
         <mdc-icon icon="close"/>
       </mdc-button>
