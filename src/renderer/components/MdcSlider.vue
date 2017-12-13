@@ -8,6 +8,7 @@
     :aria-valuenow="value"
     :data-step="step"
     aria-label="Select Value"
+    @MDCSlider:change="change"
   >
     <div class="mdc-slider__track-container">
       <div class="mdc-slider__track"/>
@@ -46,28 +47,33 @@ export default {
       default: 1
     }
   },
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   mounted () {
-    this.slider = new MDCSlider(this.$el)
-    this.slider.listen('MDCSlider:input', () => {
-      this.$emit('input', this.slider.value)
-    })
+    this.mdcSlider = MDCSlider.attachTo(this.$el)
+  },
+  beforeDestroy () {
+    this.mdcSlider.destroy()
   },
   watch: {
     value (value) {
-      this.slider.layout()
-      this.slider.value = this.value
+      this.mdcSlider.value = value
     },
     min (value) {
-      this.slider.min = value
-      this.slider.value = this.value
+      this.mdcSlider.min = value
     },
     max (value) {
-      this.slider.max = value
-      this.slider.value = this.value
+      this.mdcSlider.max = value
     },
     step (value) {
-      this.slider.step = value
-      this.slider.value = this.value
+      this.mdcSlider.step = value
+    }
+  },
+  methods: {
+    change (event) {
+      this.$emit('change', this.mdcSlider.value)
     }
   }
 }

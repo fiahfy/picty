@@ -46,7 +46,7 @@
           slot-scope="{ item }"
           :key="item.name"
           :file="item"
-          :class="{ selected: isSelected(item) }"
+          :selected="selected(item)"
           @click.native="selectFile({ file: item })"
           @dblclick.native="doubleClick(item)"
         />
@@ -97,7 +97,7 @@ export default {
     ])
   },
   methods: {
-    isSelected (file) {
+    selected (file) {
       return this.selectedFile && file.path === this.selectedFile.path
     },
     doubleClick (file) {
@@ -132,7 +132,7 @@ export default {
     },
     fixScroll () {
       this.$nextTick(() => {
-        const index = this.files.findIndex(this.isSelected) || 0
+        const index = this.files.findIndex(this.selected) || 0
         const rowHeight = 41
         const offsetHeight = 41
         const el = {

@@ -1,5 +1,5 @@
 <template>
-  <mdc-table-row class="file-list-item">
+  <mdc-table-row class="file-list-item" :selected="selected">
     <mdc-table-column class="name">
       <mdc-icon :icon="icon" :class="icon"/>
       {{ file.name }}
@@ -24,6 +24,10 @@ export default {
     file: {
       type: Object,
       required: true
+    },
+    selected: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
