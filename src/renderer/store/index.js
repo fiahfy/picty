@@ -49,8 +49,8 @@ export default new Vuex.Store({
     setMessage (state, { message }) {
       state.message = message
     },
-    setFullScreen (state, { flag }) {
-      state.fullScreen = flag
+    setFullScreen (state, { fullScreen }) {
+      state.fullScreen = fullScreen
     }
   },
   getters: {
