@@ -91,9 +91,6 @@ export default {
       'scrollTop',
       'sortKey',
       'sortOrder'
-    ]),
-    ...mapState('settings', [
-      'improveRenderingPerformance'
     ])
   },
   methods: {

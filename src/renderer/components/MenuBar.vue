@@ -73,8 +73,8 @@ export default {
       get () {
         return this.$store.state.explorer.directoryInput
       },
-      set (directoryInput) {
-        this.$store.commit('explorer/setDirectoryInput', { directoryInput })
+      set (value) {
+        this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
       }
     },
     ...mapState('explorer', [

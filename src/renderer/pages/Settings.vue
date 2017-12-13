@@ -11,12 +11,6 @@
       <mdc-checkbox id="full-screen" v-model="fullScreen" />
       <label for="full-screen">View in full screen (Windows only)</label>
     </mdc-form-field>
-
-    <h4>Experiment</h4>
-    <mdc-form-field>
-      <mdc-checkbox id="improve-rendering-perfomance" v-model="improveRenderingPerformance" />
-      <label for="improve-rendering-perfomance">Improve rendering performance</label>
-    </mdc-form-field>
   </div>
 </template>
 
@@ -34,24 +28,16 @@ export default {
       get () {
         return this.$store.state.settings.darkTheme
       },
-      set (flag) {
-        this.$store.commit('settings/setDarkTheme', { flag })
+      set (value) {
+        this.$store.commit('settings/setDarkTheme', { darkTheme: value })
       }
     },
     fullScreen: {
       get () {
         return this.$store.state.settings.fullScreen
       },
-      set (flag) {
-        this.$store.commit('settings/setFullScreen', { flag })
-      }
-    },
-    improveRenderingPerformance: {
-      get () {
-        return this.$store.state.settings.improveRenderingPerformance
-      },
-      set (flag) {
-        this.$store.commit('settings/setImproveRenderingPerformance', { flag })
+      set (value) {
+        this.$store.commit('settings/setFullScreen', { fullScreen: value })
       }
     }
   }
