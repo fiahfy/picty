@@ -1,7 +1,7 @@
 <template>
   <div class="menu-bar">
     <div class="row directory">
-      <mdc-icon icon="folder"/>
+      <mdc-icon icon="folder" />
       <mdc-text-field
         label="Input path..."
         fullwidth

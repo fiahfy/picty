@@ -1,6 +1,6 @@
 <template>
   <tr class="mdc-table-row" :class="classes">
-    <slot/>
+    <slot />
   </tr>
 </template>
 

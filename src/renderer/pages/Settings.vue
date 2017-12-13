@@ -2,19 +2,19 @@
   <div class="settings">
     <h4>General</h4>
     <mdc-form-field>
-      <mdc-checkbox id="dark-theme" v-model="darkTheme"/>
+      <mdc-checkbox id="dark-theme" v-model="darkTheme" />
       <label for="dark-theme">Use dark theme</label>
     </mdc-form-field>
 
     <h4>Viewer</h4>
     <mdc-form-field>
-      <mdc-checkbox id="full-screen" v-model="fullScreen"/>
+      <mdc-checkbox id="full-screen" v-model="fullScreen" />
       <label for="full-screen">View in full screen (Windows only)</label>
     </mdc-form-field>
 
     <h4>Experiment</h4>
     <mdc-form-field>
-      <mdc-checkbox id="improve-rendering-perfomance" v-model="improveRenderingPerformance"/>
+      <mdc-checkbox id="improve-rendering-perfomance" v-model="improveRenderingPerformance" />
       <label for="improve-rendering-perfomance">Improve rendering performance</label>
     </mdc-form-field>
   </div>

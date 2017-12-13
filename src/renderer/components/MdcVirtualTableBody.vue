@@ -1,8 +1,8 @@
 <template>
   <mdc-table-body>
-    <mdc-table-row :style="`height: ${offsetTop}px;`"/>
-    <slot v-for="item in renderItems" :item="item"/>
-    <mdc-table-row :style="`height: ${offsetBottom}px;`"/>
+    <mdc-table-row :style="`height: ${offsetTop}px;`" />
+    <slot v-for="item in renderItems" :item="item" />
+    <mdc-table-row :style="`height: ${offsetBottom}px;`" />
   </mdc-table-body>
 </template>
 

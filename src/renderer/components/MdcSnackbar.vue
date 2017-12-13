@@ -5,9 +5,9 @@
     aria-hidden="true"
     aria-live="assertive"
   >
-    <div class="mdc-snackbar__text"/>
+    <div class="mdc-snackbar__text" />
     <div class="mdc-snackbar__action-wrapper">
-      <button type="button" class="mdc-snackbar__action-button"/>
+      <button type="button" class="mdc-snackbar__action-button" />
     </div>
   </div>
 </template>

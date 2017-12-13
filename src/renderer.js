@@ -17,6 +17,6 @@ new Vue({ // eslint-disable-line no-new
   el: '#app',
   router,
   store,
-  template: '<App/>',
+  template: '<App />',
   components: { App }
 })

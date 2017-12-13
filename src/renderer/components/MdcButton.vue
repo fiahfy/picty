@@ -1,6 +1,6 @@
 <template>
   <button class="mdc-button">
-    <slot/>
+    <slot />
   </button>
 </template>
 

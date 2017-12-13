@@ -5,15 +5,15 @@
     @dragover.prevent
     @drop.prevent="drop"
   >
-    <title-bar v-if="titleBar"/>
+    <title-bar v-if="titleBar" />
     <div class="container">
-      <activity-bar/>
+      <activity-bar />
       <div class="content">
-        <router-view/>
+        <router-view />
       </div>
-      <viewer v-if="display"/>
+      <viewer v-if="display" />
     </div>
-    <mdc-snackbar :message="message"/>
+    <mdc-snackbar :message="message" />
   </div>
 </template>
 

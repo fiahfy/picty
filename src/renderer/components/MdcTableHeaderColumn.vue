@@ -1,6 +1,6 @@
 <template>
   <th class="mdc-table-header-column">
-    <slot/>
+    <slot />
   </th>
 </template>
 
