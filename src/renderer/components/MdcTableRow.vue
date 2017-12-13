@@ -1,6 +1,6 @@
 <template>
-  <tr class="mdc-table-row" :class="classes" @click="click">
-    <slot/>
+  <tr class="mdc-table-row" :class="classes">
+    <slot />
   </tr>
 </template>
 
@@ -8,7 +8,8 @@
 export default {
   props: {
     selected: {
-      type: Boolean
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -16,11 +17,6 @@ export default {
       return {
         selected: this.selected
       }
-    }
-  },
-  methods: {
-    click () {
-      this.$emit('click')
     }
   }
 }

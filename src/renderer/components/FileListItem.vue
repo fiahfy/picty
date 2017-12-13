@@ -1,11 +1,11 @@
 <template>
-  <mdc-table-row class="file-list-item">
+  <mdc-table-row class="file-list-item" :selected="selected">
     <mdc-table-column class="name">
-      <mdc-icon :icon="icon" :class="icon"/>
+      <mdc-icon :icon="icon" :class="icon" />
       {{ file.name }}
     </mdc-table-column>
     <mdc-table-column class="size">
-      {{ size }}
+      <template v-if="!directory">{{ this.file.stats.size | readableSize }}</template>
     </mdc-table-column>
     <mdc-table-column class="date-modified">
       {{ file.stats.mtime | moment('YYYY-MM-DD HH:mm') }}
@@ -22,7 +22,12 @@ import { isImage } from '../utils/file'
 export default {
   props: {
     file: {
-      type: Object
+      type: Object,
+      required: true
+    },
+    selected: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -31,23 +36,14 @@ export default {
     MdcTableRow
   },
   computed: {
+    directory () {
+      return this.file.stats.isDirectory()
+    },
     icon () {
-      if (this.file.stats.isDirectory()) {
+      if (this.directory) {
         return 'folder'
       }
       return isImage(this.file.path) ? 'photo' : 'note'
-    },
-    size () {
-      if (this.file.stats.isDirectory()) {
-        return ''
-      }
-      const bytes = this.file.stats.size
-      const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
-      if (bytes === 0) {
-        return '0 Byte'
-      }
-      const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
-      return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i]
     }
   }
 }

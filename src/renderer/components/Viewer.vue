@@ -8,8 +8,8 @@
     <div class="error" v-if="error">
       <span>{{ error.message }}</span>
     </div>
-    <img :src="currentFile.path" @error="loadError" v-else/>
-    <control-bar :class="classes"/>
+    <img :src="currentFile.path" @error="loadError" v-else />
+    <control-bar :class="classes" />
   </div>
 </template>
 

@@ -1,8 +1,8 @@
 <template>
   <mdc-table-body>
-    <mdc-table-row class="pseudo" :style="`height: ${offsetTop}px;`"/>
-    <slot v-for="item in renderItems" :item="item"/>
-    <mdc-table-row class="pseudo" :style="`height: ${offsetBottom}px;`"/>
+    <mdc-table-row :style="`height: ${offsetTop}px;`" />
+    <slot v-for="item in renderItems" :item="item" />
+    <mdc-table-row :style="`height: ${offsetBottom}px;`" />
   </mdc-table-body>
 </template>
 
@@ -60,7 +60,7 @@ export default {
 </script>
 
 <style scoped>
-.pseudo {
+.mdc-table-row {
   border: none;
   margin: 0;
   padding: 0;

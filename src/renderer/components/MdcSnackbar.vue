@@ -1,13 +1,13 @@
 <template>
   <div
     class="mdc-snackbar"
-    aria-live="assertive"
     aria-atomic="true"
     aria-hidden="true"
+    aria-live="assertive"
   >
-    <div class="mdc-snackbar__text"/>
+    <div class="mdc-snackbar__text" />
     <div class="mdc-snackbar__action-wrapper">
-      <button type="button" class="mdc-snackbar__action-button"/>
+      <button type="button" class="mdc-snackbar__action-button" />
     </div>
   </div>
 </template>
@@ -22,8 +22,11 @@ export default {
     }
   },
   mounted () {
-    this.snackbar = MDCSnackbar.attachTo(this.$el)
+    this.mdcSnackbar = MDCSnackbar.attachTo(this.$el)
     this.show()
+  },
+  beforeDestroy () {
+    this.mdcSnackbar.destroy()
   },
   methods: {
     show () {
@@ -35,7 +38,7 @@ export default {
         actionText: 'Close',
         actionHandler: () => {}
       }
-      this.snackbar.show(dataObj)
+      this.mdcSnackbar.show(dataObj)
     }
   },
   watch: {

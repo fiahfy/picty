@@ -1,6 +1,6 @@
 <template>
   <td class="mdc-table-column">
-    <slot/>
+    <slot />
   </td>
 </template>
 

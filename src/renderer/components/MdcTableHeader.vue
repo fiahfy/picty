@@ -1,5 +1,5 @@
 <template>
   <thead class="mdc-table-header">
-    <slot/>
+    <slot />
   </thead>
 </template>

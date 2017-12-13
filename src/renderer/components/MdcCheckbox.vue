@@ -3,10 +3,8 @@
     <input
       type="checkbox"
       class="mdc-checkbox__native-control"
-      :id="id"
-      :value="value"
-      :checked="value"
-      @change="updateValue"
+      v-bind="$attrs"
+      v-model="model"
     />
     <div class="mdc-checkbox__background">
       <svg
@@ -20,29 +18,40 @@
           d="M1.73,12.91 8.1,19.28 22.79,4.59"
         />
       </svg>
-      <div class="mdc-checkbox__mixedmark"/>
+      <div class="mdc-checkbox__mixedmark" />
     </div>
   </div>
 </template>
 
 <script>
-// import { MDCCheckbox } from '@material/checkbox'
+import { MDCCheckbox } from '@material/checkbox'
 
 export default {
   props: {
-    value: {
-      type: Boolean
-    },
-    id: {
-      type: String
+    checked: {
+      type: Boolean,
+      required: true
     }
   },
-  mounted () {
-    // MDCCheckbox.attachTo(document.querySelector('.mdc-checkbox'))
+  model: {
+    prop: 'checked',
+    event: 'change'
   },
-  methods: {
-    updateValue (e) {
-      this.$emit('input', e.target.checked)
+  inheritAttrs: false,
+  mounted () {
+    this.mdcCheckbox = MDCCheckbox.attachTo(this.$el)
+  },
+  beforeDestroy () {
+    this.mdcCheckbox.destroy()
+  },
+  computed: {
+    model: {
+      get () {
+        return this.checked
+      },
+      set (value) {
+        this.$emit('change', value)
+      }
     }
   }
 }
