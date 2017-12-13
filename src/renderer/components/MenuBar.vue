@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     keyup (e) {
-      if (event.keyCode === 13) {
+      if (e.keyCode === 13) {
         this.changeDirectory({ directory: e.target.value })
       }
     },

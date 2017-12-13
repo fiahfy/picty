@@ -10,7 +10,7 @@
       :placeholder="placeholder"
       :aria-label="placeholder"
       :value="value"
-      @input="updateValue"
+      @input="input"
       @keyup="keyup"
     />
     <label
@@ -43,8 +43,11 @@ export default {
     }
   },
   mounted () {
-    MDCTextField.attachTo(this.$el)
+    this.mdcTextField = MDCTextField.attachTo(this.$el)
     this.id = this._uid // eslint-disable-line no-underscore-dangle
+  },
+  beforeDestroy () {
+    this.mdcTextField.destroy()
   },
   computed: {
     classes () {
@@ -57,7 +60,7 @@ export default {
     }
   },
   methods: {
-    updateValue (e) {
+    input (e) {
       this.$emit('input', e.target.value)
     },
     keyup (e) {
