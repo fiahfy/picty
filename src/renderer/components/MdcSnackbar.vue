@@ -21,6 +21,11 @@ export default {
       type: String
     }
   },
+  date () {
+    return {
+      mdcSnackbar: null
+    }
+  },
   mounted () {
     this.mdcSnackbar = MDCSnackbar.attachTo(this.$el)
     this.show()

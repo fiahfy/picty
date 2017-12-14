@@ -51,6 +51,11 @@ export default {
     prop: 'value',
     event: 'change'
   },
+  date () {
+    return {
+      mdcSlider: null
+    }
+  },
   mounted () {
     this.mdcSlider = MDCSlider.attachTo(this.$el)
   },

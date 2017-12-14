@@ -39,6 +39,7 @@ export default {
   },
   data () {
     return {
+      mdcTextField: null,
       id: -1
     }
   },

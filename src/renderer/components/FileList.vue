@@ -43,10 +43,10 @@
         :estimatedHeight="41"
       >
         <file-list-item
-          slot-scope="{ item }"
+          slot-scope="{ item, index }"
           :key="item.name"
           :file="item"
-          :selected="selected(item)"
+          :selected="selected(index)"
           @click.native="selectFile({ file: item })"
           @dblclick.native="doubleClick(item)"
         />
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import FileListItem from '../components/FileListItem'
 import MdcIcon from '../components/MdcIcon'
 import MdcTable from '../components/MdcTable'
@@ -86,16 +86,18 @@ export default {
     },
     ...mapState('explorer', [
       'directory',
-      'files',
-      'selectedFile',
+      'files'
+    ]),
+    ...mapGetters('explorer', [
+      'selectedIndex',
       'scrollTop',
       'sortKey',
       'sortOrder'
     ])
   },
   methods: {
-    selected (file) {
-      return this.selectedFile && file.path === this.selectedFile.path
+    selected (index) {
+      return index === this.selectedIndex
     },
     doubleClick (file) {
       this.action({ filepath: file.path })
@@ -129,7 +131,10 @@ export default {
     },
     fixScroll () {
       this.$nextTick(() => {
-        const index = this.files.findIndex(this.selected) || 0
+        const index = this.selectedIndex
+        if (index === -1) {
+          return
+        }
         const rowHeight = 41
         const offsetHeight = 41
         const el = {
@@ -166,7 +171,7 @@ export default {
     files () {
       this.fixScroll()
     },
-    selectedFile () {
+    selectedIndex () {
       this.fixScroll()
     }
   }

@@ -8,6 +8,11 @@
 import { MDCRipple } from '@material/ripple'
 
 export default {
+  date () {
+    return {
+      mdcRipple: null
+    }
+  },
   mounted () {
     this.mdcRipple = MDCRipple.attachTo(this.$el)
   },
