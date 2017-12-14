@@ -1,3 +1,4 @@
+import path from 'path'
 import { getFile, listFiles, isImage } from '../utils/file'
 
 export default {
@@ -14,14 +15,15 @@ export default {
         let files
         let file = getFile(filepath)
         if (file.stats.isDirectory()) {
-          files = listFiles(file.path)
+          files = listFiles(file.path, { recursive: true })
           files = files.filter((file) => isImage(file.path))
           file = files[0]
-          if (!files.length) {
-            throw new Error('Image Not Found')
-          }
         } else {
-          files = [file]
+          files = listFiles(path.dirname(file.path))
+          files = files.filter((file) => isImage(file.path))
+        }
+        if (!files.length) {
+          throw new Error('Image Not Found')
         }
         commit('setError', { error: null })
         commit('setFiles', { files })
