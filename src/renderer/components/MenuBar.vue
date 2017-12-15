@@ -1,8 +1,8 @@
 <template>
   <div class="menu-bar">
     <div class="row directory">
-      <mdc-icon icon="folder"/>
-      <mdc-textfield
+      <mdc-icon icon="folder" />
+      <mdc-text-field
         label="Input path..."
         fullwidth
         class="location"
@@ -14,39 +14,41 @@
       <mdc-button
         title="Back drectory"
         :disabled="!canBackDirectory"
-        @click="backDirectory"
+        @click.native="backDirectory"
       >
         <mdc-icon icon="arrow_back" />
       </mdc-button>
       <mdc-button
         title="Forward drectory"
         :disabled="!canForwardDirectory"
-        @click="forwardDirectory"
+        @click.native="forwardDirectory"
       >
         <mdc-icon icon="arrow_forward" />
       </mdc-button>
       <mdc-button
         title="Change parent drectory"
-        @click="changeParentDirectory"
+        @click.native="changeParentDirectory"
       >
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
         title="Change home drectory"
-        @click="changeHomeDirectory"
+        @click.native="changeHomeDirectory"
       >
         <mdc-icon icon="home" />
       </mdc-button>
+      <div class="separator" />
       <mdc-button
         title="View"
         :disabled="!selectedFile"
-        @click="showSelectedFile"
+        @click.native="showSelectedFile"
       >
         <mdc-icon icon="photo" />
       </mdc-button>
+      <div class="separator" />
       <mdc-button
         title="Open current directory"
-        @click="openDirectory"
+        @click.native="openDirectory"
       >
         <mdc-icon icon="folder_open" />
       </mdc-button>
@@ -58,21 +60,21 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
-import MdcTextfield from '../components/MdcTextfield'
+import MdcTextField from '../components/MdcTextField'
 
 export default {
   components: {
     MdcButton,
     MdcIcon,
-    MdcTextfield
+    MdcTextField
   },
   computed: {
     directoryInput: {
       get () {
         return this.$store.state.explorer.directoryInput
       },
-      set (dir) {
-        this.$store.commit('explorer/setDirectoryInput', { dir })
+      set (value) {
+        this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
       }
     },
     ...mapState('explorer', [
@@ -85,8 +87,8 @@ export default {
   },
   methods: {
     keyup (e) {
-      if (event.keyCode === 13) {
-        this.changeDirectory({ dir: e.target.value })
+      if (e.keyCode === 13) {
+        this.changeDirectory({ directory: e.target.value })
       }
     },
     ...mapActions('explorer', [
@@ -115,7 +117,19 @@ export default {
   border-bottom-color: $material-color-grey-300;
   border-bottom-style: solid;
   border-bottom-width: 1px;
-  padding: 4px;
+  height: 40px;
+}
+.row>* {
+  margin: 4px;
+  vertical-align: bottom;
+}
+.separator {
+  border-left-color: $material-color-grey-300;
+  border-left-style: solid;
+  border-left-width: 1px;
+  display: inline-block;
+  height: 100%;
+  margin: 0;
 }
 .directory {
   display: flex;
@@ -126,7 +140,7 @@ export default {
 .buttons {
   text-align: left;
 }
-.mdc-textfield {
+.mdc-text-field {
   border: none;
   font-size: smaller;
   height: 32px;
@@ -145,6 +159,9 @@ export default {
 .mdc-theme--dark {
   .row {
     border-bottom-color: $material-color-grey-600;
+  }
+  .separator {
+    border-left-color: $material-color-grey-600;
   }
 }
 </style>

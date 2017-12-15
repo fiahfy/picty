@@ -3,7 +3,6 @@ import { sync } from 'vuex-router-sync'
 import App from './renderer/App'
 import router from './renderer/router'
 import store from './renderer/store'
-import './renderer/mixins'
 import './renderer/plugins'
 import { setup } from './renderer/ipc'
 
@@ -17,6 +16,6 @@ new Vue({ // eslint-disable-line no-new
   el: '#app',
   router,
   store,
-  template: '<App/>',
+  template: '<App />',
   components: { App }
 })

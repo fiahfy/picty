@@ -1,8 +1,8 @@
 <template>
   <mdc-table-body>
-    <mdc-table-row class="pseudo" :style="`height: ${offsetTop}px;`"/>
-    <slot v-for="item in renderItems" :item="item"/>
-    <mdc-table-row class="pseudo" :style="`height: ${offsetBottom}px;`"/>
+    <mdc-table-row :style="`height: ${offsetTop}px;`" />
+    <slot v-for="(item, index) in renderItems" :item="item" :index="index + offset" />
+    <mdc-table-row :style="`height: ${offsetBottom}px;`" />
   </mdc-table-body>
 </template>
 
@@ -24,13 +24,19 @@ export default {
     MdcTableRow
   },
   mounted () {
-    const container = this.$el.parentNode.parentNode
-    container.addEventListener('scroll', this.scroll)
+    this.container = this.$el.parentNode.parentNode
+    this.container.addEventListener('scroll', this.scroll)
     window.addEventListener('resize', this.scroll)
     this.scroll()
   },
+  beforeDestory () {
+    this.container.removeEventListener('scroll', this.scroll)
+    window.removeEventListener('resize', this.scroll)
+  },
   data () {
     return {
+      container: null,
+      offset: 0,
       offsetTop: 0,
       offsetBottom: 0,
       renderItems: []
@@ -38,17 +44,14 @@ export default {
   },
   methods: {
     scroll () {
-      const container = this.$el.parentNode.parentNode
-      if (!container) {
-        return
-      }
-      const top = container.scrollTop
-      const offset = Math.ceil(container.offsetHeight / this.estimatedHeight)
+      const top = this.container.scrollTop
+      const offset = Math.ceil(this.container.offsetHeight / this.estimatedHeight)
       const startIndex = Math.max(0, Math.floor(top / this.estimatedHeight))
       const endIndex = Math.min(startIndex + offset, this.items.length)
-      this.renderItems = this.items.slice(startIndex, endIndex)
+      this.offset = startIndex
       this.offsetTop = startIndex * this.estimatedHeight
       this.offsetBottom = (this.items.length - endIndex) * this.estimatedHeight
+      this.renderItems = this.items.slice(startIndex, endIndex)
     }
   },
   watch: {
@@ -60,7 +63,7 @@ export default {
 </script>
 
 <style scoped>
-.pseudo {
+.mdc-table-row {
   border: none;
   margin: 0;
   padding: 0;

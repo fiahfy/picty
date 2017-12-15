@@ -1,3 +1,4 @@
+import path from 'path'
 import { getFile, listFiles, isImage } from '../utils/file'
 
 export default {
@@ -14,14 +15,19 @@ export default {
         let files
         let file = getFile(filepath)
         if (file.stats.isDirectory()) {
-          files = listFiles(file.path)
+          files = listFiles(file.path, { recursive: true })
           files = files.filter((file) => isImage(file.path))
           file = files[0]
-          if (!files.length) {
-            throw new Error('Image Not Found')
-          }
         } else {
-          files = [file]
+          if (!isImage(file.path)) {
+            dispatch('showMessage', { message: 'Invalid Image' }, { root: true })
+            return
+          }
+          files = listFiles(path.dirname(file.path))
+          files = files.filter((file) => isImage(file.path))
+        }
+        if (!files.length) {
+          throw new Error('Image Not Found')
         }
         commit('setError', { error: null })
         commit('setFiles', { files })
@@ -34,7 +40,7 @@ export default {
       }
       commit('setDisplay', { flag: true })
       dispatch('focus', { selector: '.viewer' }, { root: true })
-      if (rootState.settings.fullScreen && process.platform === 'win32') {
+      if (rootState.settings.fullScreen && process.platform !== 'darwin') {
         dispatch('enterFullScreen', null, { root: true })
       }
     },
@@ -44,10 +50,10 @@ export default {
         dispatch('show', { filepath })
       }
     },
-    dismiss ({ commit, dispatch, rootState }) {
+    dismiss ({ commit, dispatch }) {
       commit('setDisplay', { flag: false })
       dispatch('focus', { selector: '.file-list' }, { root: true })
-      if (process.platform === 'win32') {
+      if (process.platform !== 'darwin') {
         dispatch('leaveFullScreen', null, { root: true })
       }
     },

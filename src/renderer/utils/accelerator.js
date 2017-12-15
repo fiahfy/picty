@@ -3,7 +3,7 @@ const orders = [
   'CmdOrCtrl'
 ]
 
-const win = process.platform === 'win32'
+const win = process.platform !== 'darwin'
 
 function sortKey (a, b) {
   a = orders.indexOf(a)

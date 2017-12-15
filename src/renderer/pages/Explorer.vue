@@ -1,11 +1,11 @@
 <template>
   <div class="explorer">
-    <menu-bar/>
+    <menu-bar />
     <div class="container">
       <div class="error" v-if="error">
         <span>{{ error.message }}</span>
       </div>
-      <file-list v-else/>
+      <file-list v-else />
     </div>
   </div>
 </template>

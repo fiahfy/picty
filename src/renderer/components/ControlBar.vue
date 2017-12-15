@@ -1,40 +1,40 @@
 <template>
   <div class="control-bar">
-    <div class="background"/>
+    <div class="background" />
     <div class="container">
       <mdc-button
         title="View previous image"
-        @click="viewPreviousImage"
+        @click.native="viewPreviousImage"
       >
-        <mdc-icon icon="skip_previous"/>
+        <mdc-icon icon="skip_previous" />
       </mdc-button>
       <mdc-button
         title="View next image"
-        @click="viewNextImage"
+        @click.native="viewNextImage"
       >
-        <mdc-icon icon="skip_next"/>
+        <mdc-icon icon="skip_next" />
       </mdc-button>
-      <mdc-slider v-model="page" :min="1" :max="maxPage"/>
+      <mdc-slider v-model="page" :min="1" :max="maxPage" />
       <div class="page">{{ page }} / {{ maxPage }}</div>
       <mdc-button
         title="Exit fullscreen"
-        @click="leaveFullScreen"
+        @click.native="leaveFullScreen"
         v-if="fullScreen"
       >
-        <mdc-icon icon="fullscreen_exit"/>
+        <mdc-icon icon="fullscreen_exit" />
       </mdc-button>
       <mdc-button
         title="Fullscreen"
-        @click="enterFullScreen"
+        @click.native="enterFullScreen"
         v-else
       >
-        <mdc-icon icon="fullscreen"/>
+        <mdc-icon icon="fullscreen" />
       </mdc-button>
       <mdc-button
         title="Close"
-        @click="dismiss"
+        @click.native="dismiss"
       >
-        <mdc-icon icon="close"/>
+        <mdc-icon icon="close" />
       </mdc-button>
     </div>
   </div>
@@ -83,6 +83,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "~@material/button/mixins";
+@import "~@material/ripple/mixins";
+
 .background {
   background-color: black;
   bottom: 0;
@@ -97,11 +100,9 @@ export default {
   display: flex;
 }
 .mdc-icon {
-  color: white;
   padding: 4px;
 }
 .mdc-button {
-  border-radius: 0;
   height: auto;
   line-height: initial;
   margin: 8px;
@@ -110,6 +111,8 @@ export default {
   &:not(:first-child) {
     margin-left: 0px;
   }
+  @include mdc-button-ink-color(white);
+  @include mdc-states(white);
 }
 .mdc-slider {
   margin-left: 16px;

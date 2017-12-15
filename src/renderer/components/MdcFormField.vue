@@ -1,5 +1,5 @@
 <template>
   <div class="mdc-form-field">
-    <slot/>
+    <slot />
   </div>
 </template>

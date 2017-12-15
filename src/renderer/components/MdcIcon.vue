@@ -1,6 +1,6 @@
 <template>
   <i class="mdc-icon material-icons">
-    {{ content }}
+    {{ icon }}
   </i>
 </template>
 
@@ -8,12 +8,8 @@
 export default {
   props: {
     icon: {
-      type: String
-    }
-  },
-  computed: {
-    content () {
-      return this.icon
+      type: String,
+      required: true
     }
   }
 }

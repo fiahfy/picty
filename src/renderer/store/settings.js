@@ -2,18 +2,14 @@ export default {
   namespaced: true,
   state: {
     darkTheme: false,
-    fullScreen: false,
-    improveRenderingPerformance: false
+    fullScreen: false
   },
   mutations: {
-    setDarkTheme (state, { flag }) {
-      state.darkTheme = flag
+    setDarkTheme (state, { darkTheme }) {
+      state.darkTheme = darkTheme
     },
-    setFullScreen (state, { flag }) {
-      state.fullScreen = flag
-    },
-    setImproveRenderingPerformance (state, { flag }) {
-      state.improveRenderingPerformance = flag
+    setFullScreen (state, { fullScreen }) {
+      state.fullScreen = fullScreen
     }
   }
 }

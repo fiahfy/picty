@@ -1,6 +1,6 @@
 <template>
-  <tr class="mdc-table-row" :class="classes" @click="click">
-    <slot/>
+  <tr class="mdc-table-row" :class="classes">
+    <slot />
   </tr>
 </template>
 
@@ -8,7 +8,8 @@
 export default {
   props: {
     selected: {
-      type: Boolean
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -16,11 +17,6 @@ export default {
       return {
         selected: this.selected
       }
-    }
-  },
-  methods: {
-    click () {
-      this.$emit('click')
     }
   }
 }
@@ -30,23 +26,29 @@ export default {
 @import "~@material/theme/_color-palette.scss";
 
 .mdc-table-row {
-  border-bottom-color: $material-color-grey-300;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  &:hover {
+  & /deep/ .mdc-table-header-column,
+  & /deep/ .mdc-table-column {
+    border-bottom-color: $material-color-grey-300;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+  }
+  &:hover /deep/ .mdc-table-column {
     background-color: $material-color-grey-100;
   }
-  &.selected {
+  &.selected /deep/ .mdc-table-column {
     background-color: $material-color-grey-300;
   }
 }
 .mdc-theme--dark {
   .mdc-table-row {
-    border-bottom-color: $material-color-grey-600;
-    &:hover {
+    & /deep/ .mdc-table-header-column,
+    & /deep/ .mdc-table-column {
+      border-bottom-color: $material-color-grey-600;
+    }
+    &:hover /deep/ .mdc-table-column {
       background-color: $material-color-grey-800;
     }
-    &.selected {
+    &.selected /deep/ .mdc-table-column {
       background-color: $material-color-grey-600;
     }
   }

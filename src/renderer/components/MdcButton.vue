@@ -1,6 +1,6 @@
 <template>
-  <button class="mdc-button" @click="click">
-    <slot/>
+  <button class="mdc-button">
+    <slot />
   </button>
 </template>
 
@@ -8,13 +8,16 @@
 import { MDCRipple } from '@material/ripple'
 
 export default {
-  mounted () {
-    MDCRipple.attachTo(this.$el)
-  },
-  methods: {
-    click () {
-      this.$emit('click')
+  data () {
+    return {
+      mdcRipple: null
     }
+  },
+  mounted () {
+    this.mdcRipple = MDCRipple.attachTo(this.$el)
+  },
+  beforeDestroy () {
+    this.mdcRipple.destroy()
   }
 }
 </script>

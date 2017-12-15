@@ -1,20 +1,20 @@
 <template>
   <div
-    class="mdc-textfield"
+    class="mdc-text-field"
     :class="classes"
   >
     <input
       type="text"
-      class="mdc-textfield__input"
+      class="mdc-text-field__input"
       :id="id"
       :placeholder="placeholder"
       :aria-label="placeholder"
       :value="value"
-      @input="updateValue"
+      @input="input"
       @keyup="keyup"
     />
     <label
-      class="mdc-textfield__label"
+      class="mdc-text-field__label"
       :for="id"
       v-if="!fullwidth"
     >{{ label }}</label>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { MDCTextfield } from '@material/textfield'
+import { MDCTextField } from '@material/textfield'
 
 export default {
   props: {
@@ -39,17 +39,21 @@ export default {
   },
   data () {
     return {
+      mdcTextField: null,
       id: -1
     }
   },
   mounted () {
-    MDCTextfield.attachTo(this.$el)
+    this.mdcTextField = MDCTextField.attachTo(this.$el)
     this.id = this._uid // eslint-disable-line no-underscore-dangle
+  },
+  beforeDestroy () {
+    this.mdcTextField.destroy()
   },
   computed: {
     classes () {
       return {
-        'mdc-textfield--fullwidth': this.fullwidth
+        'mdc-text-field--fullwidth': this.fullwidth
       }
     },
     placeholder () {
@@ -57,7 +61,7 @@ export default {
     }
   },
   methods: {
-    updateValue (e) {
+    input (e) {
       this.$emit('input', e.target.value)
     },
     keyup (e) {
