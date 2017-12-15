@@ -38,6 +38,11 @@ export default {
     event: 'change'
   },
   inheritAttrs: false,
+  data () {
+    return {
+      mdcCheckbox: null
+    }
+  },
   mounted () {
     this.mdcCheckbox = MDCCheckbox.attachTo(this.$el)
   },

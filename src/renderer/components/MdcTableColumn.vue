@@ -1,5 +1,5 @@
 <template>
-  <td class="mdc-table-column">
+  <td class="mdc-table-column mdc-theme--background">
     <slot />
   </td>
 </template>

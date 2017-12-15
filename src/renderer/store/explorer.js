@@ -20,10 +20,7 @@ export default {
     historyIndex: -1,
     directory: remote.app.getPath('home'),
     directoryInput: '',
-    selectedFile: null,
-    scrollTop: 0,
-    sortKey: 'name',
-    sortOrder: 'asc'
+    selectedFile: null
   },
   actions: {
     initDirectory ({ dispatch, state }) {
@@ -34,32 +31,20 @@ export default {
       const directory = path.dirname(state.directory)
       dispatch('changeDirectory', { directory })
     },
+    changeHomeDirectory ({ dispatch }) {
+      const directory = remote.app.getPath('home')
+      dispatch('changeDirectory', { directory })
+    },
     changeSelectedDirectory ({ dispatch, state }) {
       if (state.selectedFile && state.selectedFile.stats.isDirectory()) {
         const directory = state.selectedFile.path
         dispatch('changeDirectory', { directory })
       }
     },
-    changeHomeDirectory ({ dispatch }) {
-      const directory = remote.app.getPath('home')
-      dispatch('changeDirectory', { directory })
-    },
     changeDirectory ({ commit, dispatch, state }, { directory }) {
       const historyIndex = state.historyIndex + 1
-      const history = state.histories[state.historyIndex]
-      let histories = []
-      if (history) {
-        histories = [...state.histories.slice(0, state.historyIndex), {
-          ...history,
-          selectedFile: state.selectedFile,
-          scrollTop: state.scrollTop,
-          sortKey: state.sortKey,
-          sortOrder: state.sortOrder
-        }]
-      }
-      histories = [...histories, {
+      const histories = [...state.histories.slice(0, historyIndex), {
         directory,
-        selectedFile: null,
         scrollTop: 0,
         sortKey: 'name',
         sortOrder: 'asc'
@@ -87,10 +72,7 @@ export default {
 
       commit('setDirectory', { directory: history.directory })
       commit('setDirectoryInput', { directoryInput: history.directory })
-      commit('setSelectedFile', { selectedFile: history.selectedFile })
-      commit('setScrollTop', { scrollTop: history.scrollTop })
-      commit('setSortKey', { sortKey: history.sortKey })
-      commit('setSortOrder', { sortOrder: history.sortOrder })
+      commit('setSelectedFile', { selectedFile: null })
       dispatch('loadDirectory')
     },
     loadDirectory ({ commit, dispatch, state }) {
@@ -136,19 +118,27 @@ export default {
       const selectedFile = state.files[index]
       commit('setSelectedFile', { selectedFile })
     },
-    scroll ({ commit }) {
+    scroll ({ commit, state }) {
       const node = document.querySelector('.file-list')
       if (node) {
-        commit('setScrollTop', { scrollTop: node.scrollTop })
+        const history = {
+          ...state.histories[state.historyIndex],
+          scrollTop: node.scrollTop
+        }
+        commit('setHistory', { history, index: state.historyIndex })
       }
     },
-    changeSortKey ({ commit, dispatch, state }, { key }) {
+    changeSortKey ({ commit, dispatch, getters, state }, { key }) {
       let order = orderDefaults[key]
-      if (state.sortKey === key) {
-        order = state.sortOrder === 'asc' ? 'desc' : 'asc'
+      if (getters.sortKey === key) {
+        order = getters.sortOrder === 'asc' ? 'desc' : 'asc'
       }
-      commit('setSortKey', { sortKey: key })
-      commit('setSortOrder', { sortOrder: order })
+      const history = {
+        ...state.histories[state.historyIndex],
+        sortKey: key,
+        sortOrder: order
+      }
+      commit('setHistory', { history, index: state.historyIndex })
       dispatch('sortFiles')
     },
     action ({ dispatch, state }, { filepath }) {
@@ -159,10 +149,10 @@ export default {
         dispatch('viewer/show', { filepath }, { root: true })
       }
     },
-    sortFiles ({ commit, state }) {
+    sortFiles ({ commit, getters, state }) {
       const files = state.files.concat().sort((a, b) => {
         let result = 0
-        switch (state.sortKey) {
+        switch (getters.sortKey) {
           case 'date_modified':
             if (a.stats.mtime > b.stats.mtime) {
               result = 1
@@ -191,7 +181,7 @@ export default {
             result = -1
           }
         }
-        return state.sortOrder === 'asc' ? result : -1 * result
+        return getters.sortOrder === 'asc' ? result : -1 * result
       })
       commit('setFiles', { files })
     }
@@ -202,6 +192,13 @@ export default {
     },
     setFiles (state, { files }) {
       state.files = files
+    },
+    setHistory (state, { history, index }) {
+      state.histories = [
+        ...state.histories.slice(0, index),
+        history,
+        ...state.histories.slice(index + 1, state.histories.length)
+      ]
     },
     setHistories (state, { histories }) {
       state.histories = histories
@@ -217,15 +214,6 @@ export default {
     },
     setSelectedFile (state, { selectedFile }) {
       state.selectedFile = selectedFile
-    },
-    setScrollTop (state, { scrollTop }) {
-      state.scrollTop = scrollTop
-    },
-    setSortKey (state, { sortKey }) {
-      state.sortKey = sortKey
-    },
-    setSortOrder (state, { sortOrder }) {
-      state.sortOrder = sortOrder
     }
   },
   getters: {
@@ -239,6 +227,15 @@ export default {
     },
     canForwardDirectory (state) {
       return !!state.histories[state.historyIndex + 1]
+    },
+    scrollTop (state) {
+      return state.histories[state.historyIndex].scrollTop
+    },
+    sortKey (state) {
+      return state.histories[state.historyIndex].sortKey
+    },
+    sortOrder (state) {
+      return state.histories[state.historyIndex].sortOrder
     }
   }
 }

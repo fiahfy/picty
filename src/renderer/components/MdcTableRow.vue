@@ -26,23 +26,29 @@ export default {
 @import "~@material/theme/_color-palette.scss";
 
 .mdc-table-row {
-  border-bottom-color: $material-color-grey-300;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  &:hover {
+  & /deep/ .mdc-table-header-column,
+  & /deep/ .mdc-table-column {
+    border-bottom-color: $material-color-grey-300;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+  }
+  &:hover /deep/ .mdc-table-column {
     background-color: $material-color-grey-100;
   }
-  &.selected {
+  &.selected /deep/ .mdc-table-column {
     background-color: $material-color-grey-300;
   }
 }
 .mdc-theme--dark {
   .mdc-table-row {
-    border-bottom-color: $material-color-grey-600;
-    &:hover {
+    & /deep/ .mdc-table-header-column,
+    & /deep/ .mdc-table-column {
+      border-bottom-color: $material-color-grey-600;
+    }
+    &:hover /deep/ .mdc-table-column {
       background-color: $material-color-grey-800;
     }
-    &.selected {
+    &.selected /deep/ .mdc-table-column {
       background-color: $material-color-grey-600;
     }
   }

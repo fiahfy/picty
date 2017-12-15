@@ -7,7 +7,8 @@
       <mdc-table-header>
         <mdc-table-row>
           <mdc-table-header-column
-            class="mdc-theme--background name"
+            class="name"
+            :sticky="true"
             @click.native="changeSortKey({ key: 'name' })"
           >
             <span>Name</span>
@@ -17,7 +18,8 @@
             />
           </mdc-table-header-column>
           <mdc-table-header-column
-            class="mdc-theme--background size"
+            class="size"
+            :sticky="true"
             @click.native="changeSortKey({ key: 'size' })"
           >
             <span>Size</span>
@@ -27,7 +29,8 @@
             />
           </mdc-table-header-column>
           <mdc-table-header-column
-            class="mdc-theme--background date-modified"
+            class="date-modified"
+            :sticky="true"
             @click.native="changeSortKey({ key: 'date_modified' })"
           >
             <span>Date Modified</span>
@@ -43,10 +46,10 @@
         :estimatedHeight="41"
       >
         <file-list-item
-          slot-scope="{ item }"
+          slot-scope="{ item, index }"
           :key="item.name"
           :file="item"
-          :selected="selected(item)"
+          :selected="selected(index)"
           @click.native="selectFile({ file: item })"
           @dblclick.native="doubleClick(item)"
         />
@@ -56,7 +59,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import FileListItem from '../components/FileListItem'
 import MdcIcon from '../components/MdcIcon'
 import MdcTable from '../components/MdcTable'
@@ -86,16 +89,18 @@ export default {
     },
     ...mapState('explorer', [
       'directory',
-      'files',
-      'selectedFile',
+      'files'
+    ]),
+    ...mapGetters('explorer', [
+      'selectedIndex',
       'scrollTop',
       'sortKey',
       'sortOrder'
     ])
   },
   methods: {
-    selected (file) {
-      return this.selectedFile && file.path === this.selectedFile.path
+    selected (index) {
+      return index === this.selectedIndex
     },
     doubleClick (file) {
       this.action({ filepath: file.path })
@@ -129,7 +134,10 @@ export default {
     },
     fixScroll () {
       this.$nextTick(() => {
-        const index = this.files.findIndex(this.selected) || 0
+        const index = this.selectedIndex
+        if (index === -1) {
+          return
+        }
         const rowHeight = 41
         const offsetHeight = 41
         const el = {
@@ -166,7 +174,7 @@ export default {
     files () {
       this.fixScroll()
     },
-    selectedFile () {
+    selectedIndex () {
       this.fixScroll()
     }
   }
@@ -189,9 +197,8 @@ export default {
 .mdc-table-header-column {
   font-size: smaller;
   line-height: 20px;
-  position: sticky;
-  top: 0;
   vertical-align: bottom;
+  white-space: nowrap;
   &.date-modified {
     width: 128px;
   }

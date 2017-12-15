@@ -15,9 +15,9 @@ export function setup (store) {
     store.dispatch('changeRoute', { name: 'settings' })
   })
   ipcRenderer.on('enterFullScreen', () => {
-    store.commit('setFullScreen', { flag: true })
+    store.commit('setFullScreen', { fullScreen: true })
   })
   ipcRenderer.on('leaveFullScreen', () => {
-    store.commit('setFullScreen', { flag: false })
+    store.commit('setFullScreen', { fullScreen: false })
   })
 }

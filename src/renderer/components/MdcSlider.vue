@@ -8,7 +8,7 @@
     :aria-valuenow="value"
     :data-step="step"
     aria-label="Select Value"
-    @MDCSlider:change="change"
+    @MDCSlider:input="input"
   >
     <div class="mdc-slider__track-container">
       <div class="mdc-slider__track" />
@@ -49,7 +49,12 @@ export default {
   },
   model: {
     prop: 'value',
-    event: 'change'
+    event: 'input'
+  },
+  data () {
+    return {
+      mdcSlider: null
+    }
   },
   mounted () {
     this.mdcSlider = MDCSlider.attachTo(this.$el)
@@ -72,8 +77,8 @@ export default {
     }
   },
   methods: {
-    change (event) {
-      this.$emit('change', this.mdcSlider.value)
+    input (event) {
+      this.$emit('input', this.mdcSlider.value)
     }
   }
 }

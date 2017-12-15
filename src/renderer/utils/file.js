@@ -1,27 +1,32 @@
 import fs from 'fs'
 import path from 'path'
 
-export function getFile (file) {
-  const stats = fs.lstatSync(file)
+export function getFile (filepath) {
+  const stats = fs.lstatSync(filepath)
   return {
-    name: path.basename(file),
-    path: file,
+    name: path.basename(filepath),
+    path: filepath,
     stats
   }
 }
 
-export function listFiles (dir) {
-  const files = fs.readdirSync(dir)
-  return files.map(file => {
-    if (file.match(/^\./)) {
-      return null
-    }
+export function listFiles (dirpath, options = { recursive: false }) {
+  const filepathes = fs.readdirSync(dirpath)
+  return filepathes.reduce((carry, filename) => {
     try {
-      return getFile(path.join(dir, file))
+      if (filename.match(/^\./)) {
+        return carry
+      }
+      const file = getFile(path.join(dirpath, filename))
+      if (!options.recursive || !file.stats.isDirectory()) {
+        return [...carry, file]
+      }
+      const files = listFiles(file.path, options)
+      return [...carry, file, ...files]
     } catch (e) {
-      return null
+      return carry
     }
-  }).filter(file => file)
+  }, [])
 }
 
 export function isImage (file) {
