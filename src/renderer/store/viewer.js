@@ -19,6 +19,10 @@ export default {
           files = files.filter((file) => isImage(file.path))
           file = files[0]
         } else {
+          if (!isImage(file.path)) {
+            dispatch('showMessage', { message: 'Invalid Image' }, { root: true })
+            return
+          }
           files = listFiles(path.dirname(file.path))
           files = files.filter((file) => isImage(file.path))
         }
