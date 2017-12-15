@@ -7,7 +7,8 @@
       <mdc-table-header>
         <mdc-table-row>
           <mdc-table-header-column
-            class="mdc-theme--background name"
+            class="name"
+            :sticky="true"
             @click.native="changeSortKey({ key: 'name' })"
           >
             <span>Name</span>
@@ -17,7 +18,8 @@
             />
           </mdc-table-header-column>
           <mdc-table-header-column
-            class="mdc-theme--background size"
+            class="size"
+            :sticky="true"
             @click.native="changeSortKey({ key: 'size' })"
           >
             <span>Size</span>
@@ -27,7 +29,8 @@
             />
           </mdc-table-header-column>
           <mdc-table-header-column
-            class="mdc-theme--background date-modified"
+            class="date-modified"
+            :sticky="true"
             @click.native="changeSortKey({ key: 'date_modified' })"
           >
             <span>Date Modified</span>
@@ -194,9 +197,8 @@ export default {
 .mdc-table-header-column {
   font-size: smaller;
   line-height: 20px;
-  position: sticky;
-  top: 0;
   vertical-align: bottom;
+  white-space: nowrap;
   &.date-modified {
     width: 128px;
   }

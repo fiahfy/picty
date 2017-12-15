@@ -51,7 +51,7 @@ export default {
     prop: 'value',
     event: 'change'
   },
-  date () {
+  data () {
     return {
       mdcSlider: null
     }

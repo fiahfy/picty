@@ -38,7 +38,7 @@ export default {
     event: 'change'
   },
   inheritAttrs: false,
-  date () {
+  data () {
     return {
       mdcCheckbox: null
     }

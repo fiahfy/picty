@@ -21,7 +21,7 @@ export default {
       type: String
     }
   },
-  date () {
+  data () {
     return {
       mdcSnackbar: null
     }

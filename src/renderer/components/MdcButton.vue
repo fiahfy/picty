@@ -8,7 +8,7 @@
 import { MDCRipple } from '@material/ripple'
 
 export default {
-  date () {
+  data () {
     return {
       mdcRipple: null
     }
