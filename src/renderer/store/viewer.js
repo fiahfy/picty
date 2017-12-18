@@ -31,12 +31,12 @@ export default {
         }
         commit('setError', { error: null })
         commit('setFiles', { files })
-        commit('setCurrentFile', { file })
+        commit('setCurrentFile', { currentFile: file })
       } catch (e) {
         let error = e.message === 'Image Not Found' ? e : new Error('Invalid Image')
         commit('setError', { error })
         commit('setFiles', { files: [] })
-        commit('setCurrentFile', { file: null })
+        commit('setCurrentFile', { currentFile: null })
       }
       commit('setDisplay', { flag: true })
       dispatch('focus', { selector: '.viewer' }, { root: true })
@@ -52,7 +52,7 @@ export default {
     },
     dismiss ({ commit, dispatch }) {
       commit('setDisplay', { flag: false })
-      dispatch('focus', { selector: '.file-list' }, { root: true })
+      dispatch('focus', { selector: '.file-list table' }, { root: true })
       if (process.platform !== 'darwin') {
         dispatch('leaveFullScreen', null, { root: true })
       }
@@ -63,7 +63,7 @@ export default {
         index = state.files.length - 1
       }
       const file = state.files[index]
-      commit('setCurrentFile', { file })
+      commit('setCurrentFile', { currentFile: file })
     },
     viewNextImage ({ commit, getters, state }) {
       let index = getters.currentIndex + 1
@@ -71,7 +71,7 @@ export default {
         index = 0
       }
       const file = state.files[index]
-      commit('setCurrentFile', { file })
+      commit('setCurrentFile', { currentFile: file })
     }
   },
   mutations: {
@@ -84,11 +84,11 @@ export default {
     setFiles (state, { files }) {
       state.files = files
     },
-    setCurrentFile (state, { file }) {
-      state.currentFile = file
+    setCurrentFile (state, { currentFile }) {
+      state.currentFile = currentFile
     },
-    setCurrentIndex (state, { index }) {
-      state.currentFile = state.files[index]
+    setCurrentIndex (state, { currentIndex }) {
+      state.currentFile = state.files[currentIndex]
     }
   },
   getters: {
