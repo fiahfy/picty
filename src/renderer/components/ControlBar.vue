@@ -58,7 +58,7 @@ export default {
         return this.$store.getters['viewer/currentIndex'] + 1
       },
       set (value) {
-        this.$store.commit('viewer/setCurrentIndex', { index: value - 1 })
+        this.$store.commit('viewer/setCurrentIndex', { currentIndex: value - 1 })
       }
     },
     ...mapState([
