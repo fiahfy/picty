@@ -26,7 +26,7 @@
             @mouseup.native="mouseup(index)"
             v-for="(directory, index) in backDirectories"
           >
-            <p>{{ directory }}</p>
+            {{ directory }}
           </mdc-list-item>
         </mdc-simple-menu>
       </mdc-menu-anchor>
@@ -45,7 +45,7 @@
             @mouseup.native="mouseup(index)"
             v-for="(directory, index) in forwardDirectories"
           >
-            <p>{{ directory }}</p>
+            {{ directory }}
           </mdc-list-item>
         </mdc-simple-menu>
       </mdc-menu-anchor>
@@ -209,19 +209,10 @@ export default {
 .buttons {
   text-align: left;
 }
-.mdc-simple-menu {
-  max-height: calc(100vh - 96px);
-  max-width: calc(100vw - 64px);
-}
 .mdc-list-item {
   box-sizing: border-box;
   font-size: smaller;
   height: 41px;
-  p {
-    width: 100%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
 }
 .mdc-text-field {
   border: none;

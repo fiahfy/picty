@@ -1,5 +1,11 @@
 <template>
-  <div class="mdc-simple-menu" tabindex="-1" @MDCSimpleMenu:cancel="cancel" @MDCSimpleMenu:selected="select">
+  <div
+    class="mdc-simple-menu"
+    tabindex="-1"
+    :style="styles"
+    @MDCSimpleMenu:cancel="cancel"
+    @MDCSimpleMenu:selected="select"
+  >
     <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
       <slot />
     </ul>
@@ -21,14 +27,26 @@ export default {
   },
   data () {
     return {
-      mdcSimpleMenu: null
+      mdcSimpleMenu: null,
+      parentOffset: {}
     }
   },
   mounted () {
     this.mdcSimpleMenu = MDCSimpleMenu.attachTo(this.$el)
+    this.parentOffset = this.$el.parentNode.getBoundingClientRect()
   },
   beforeDestroy () {
     this.mdcSimpleMenu.destroy()
+  },
+  computed: {
+    styles () {
+      const top = 4 + (this.parentOffset.top || 0)
+      const left = 4 + (this.parentOffset.left || 0)
+      return {
+        'max-height': `calc(100vh - ${top}px)`,
+        'max-width': `calc(100vw - ${left}px)`
+      }
+    }
   },
   watch: {
     value (value) {
