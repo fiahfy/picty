@@ -58,12 +58,12 @@ export default {
       const historyIndex = state.historyIndex
       dispatch('restoreDirectory', { historyIndex })
     },
-    backDirectory ({ dispatch, state }) {
-      const historyIndex = state.historyIndex - 1
+    backDirectory ({ dispatch, state }, { offset = 0 }) {
+      const historyIndex = state.historyIndex - 1 - offset
       dispatch('restoreDirectory', { historyIndex })
     },
-    forwardDirectory ({ dispatch, state }) {
-      const historyIndex = state.historyIndex + 1
+    forwardDirectory ({ dispatch, state }, { offset = 0 }) {
+      const historyIndex = state.historyIndex + 1 + offset
       dispatch('restoreDirectory', { historyIndex })
     },
     restoreDirectory ({ commit, dispatch, state }, { historyIndex }) {
@@ -221,6 +221,12 @@ export default {
       return state.files.findIndex((file) => {
         return state.selectedFile && file.path === state.selectedFile.path
       })
+    },
+    backDirectories (state) {
+      return state.histories.slice(0, state.historyIndex).reverse().map(history => history.directory)
+    },
+    forwardDirectories (state) {
+      return state.histories.slice(state.historyIndex + 1, state.histories.length).map(history => history.directory)
     },
     canBackDirectory (state) {
       return !!state.histories[state.historyIndex - 1]

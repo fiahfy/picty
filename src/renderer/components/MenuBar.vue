@@ -11,20 +11,44 @@
       />
     </div>
     <div class="row buttons">
-      <mdc-button
-        title="Back drectory"
-        :disabled="!canBackDirectory"
-        @click.native="backDirectory"
-      >
-        <mdc-icon icon="arrow_back" />
-      </mdc-button>
-      <mdc-button
-        title="Forward drectory"
-        :disabled="!canForwardDirectory"
-        @click.native="forwardDirectory"
-      >
-        <mdc-icon icon="arrow_forward" />
-      </mdc-button>
+      <mdc-menu-anchor>
+        <mdc-button
+          title="Back drectory"
+          :disabled="!canBackDirectory"
+          @click.native="backDirectory"
+          v-long-press="(e) => mouseLongPress(e, 'back')"
+        >
+          <mdc-icon icon="arrow_back" />
+        </mdc-button>
+        <mdc-simple-menu ref="backMenu" v-model="backSelected">
+          <mdc-list-item
+            :key="directory"
+            @mouseup.native="mouseup(index)"
+            v-for="(directory, index) in backDirectories"
+          >
+            <p>{{ directory }}</p>
+          </mdc-list-item>
+        </mdc-simple-menu>
+      </mdc-menu-anchor>
+      <mdc-menu-anchor>
+        <mdc-button
+          title="Forward drectory"
+          :disabled="!canForwardDirectory"
+          @click.native="forwardDirectory"
+          v-long-press="(e) => mouseLongPress(e, 'forward')"
+        >
+          <mdc-icon icon="arrow_forward" />
+        </mdc-button>
+        <mdc-simple-menu ref="forwardMenu" v-model="forwardSelected">
+          <mdc-list-item
+            :key="directory"
+            @mouseup.native="mouseup(index)"
+            v-for="(directory, index) in forwardDirectories"
+          >
+            <p>{{ directory }}</p>
+          </mdc-list-item>
+        </mdc-simple-menu>
+      </mdc-menu-anchor>
       <mdc-button
         title="Change parent drectory"
         @click.native="changeParentDirectory"
@@ -60,13 +84,25 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
+import MdcListItem from '../components/MdcListItem'
+import MdcMenuAnchor from '../components/MdcMenuAnchor'
+import MdcSimpleMenu from '../components/MdcSimpleMenu'
 import MdcTextField from '../components/MdcTextField'
 
 export default {
   components: {
     MdcButton,
     MdcIcon,
+    MdcListItem,
+    MdcMenuAnchor,
+    MdcSimpleMenu,
     MdcTextField
+  },
+  data () {
+    return {
+      backSelected: null,
+      forwardSelected: null
+    }
   },
   computed: {
     directoryInput: {
@@ -81,6 +117,8 @@ export default {
       'selectedFile'
     ]),
     ...mapGetters('explorer', [
+      'backDirectories',
+      'forwardDirectories',
       'canBackDirectory',
       'canForwardDirectory'
     ])
@@ -90,6 +128,22 @@ export default {
       if (e.keyCode === 13) {
         this.changeDirectory({ directory: e.target.value })
       }
+    },
+    mouseLongPress (e, direction) {
+      e.target.parentNode.blur()
+      // TODO: Remove remained ripple classes
+      e.target.parentNode.classList.remove('mdc-ripple-upgraded--background-active-fill')
+      e.target.parentNode.classList.remove('mdc-ripple-upgraded--foreground-activation')
+      if (direction === 'back') {
+        this.$refs.backMenu.show()
+        this.$refs.forwardMenu.hide()
+      } else {
+        this.$refs.backMenu.hide()
+        this.$refs.forwardMenu.show()
+      }
+    },
+    mouseup (index) {
+      // this.click(index)
     },
     ...mapActions('explorer', [
       'changeDirectory',
@@ -103,6 +157,20 @@ export default {
     ...mapActions('viewer', [
       'showSelectedFile'
     ])
+  },
+  watch: {
+    backSelected (value) {
+      if (value !== null) {
+        this.backDirectory({ offset: value })
+      }
+      this.backSelected = null
+    },
+    forwardSelected (value) {
+      if (value !== null) {
+        this.forwardDirectory({ offset: value })
+      }
+      this.forwardSelected = null
+    }
   }
 }
 </script>
@@ -120,6 +188,7 @@ export default {
   height: 40px;
 }
 .row>* {
+  display: inline-block;
   margin: 4px;
   vertical-align: bottom;
 }
@@ -139,6 +208,20 @@ export default {
 }
 .buttons {
   text-align: left;
+}
+.mdc-simple-menu {
+  max-height: calc(100vh - 96px);
+  max-width: calc(100vw - 64px);
+}
+.mdc-list-item {
+  box-sizing: border-box;
+  font-size: smaller;
+  height: 41px;
+  p {
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 }
 .mdc-text-field {
   border: none;

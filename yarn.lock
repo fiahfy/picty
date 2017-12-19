@@ -6550,6 +6550,10 @@ vue-loader@^13.0.5:
     vue-style-loader "^3.0.0"
     vue-template-es2015-compiler "^1.6.0"
 
+vue-long-press-directive@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/vue-long-press-directive/-/vue-long-press-directive-1.0.1.tgz#86f4e99f426e4ead29d97b424d901616218335cd"
+
 vue-moment@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/vue-moment/-/vue-moment-3.1.0.tgz#93ec4cc5909ca1e55b81d672dd7b6f2f103c939d"
