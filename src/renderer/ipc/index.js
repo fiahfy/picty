@@ -7,6 +7,7 @@ export function setup (store) {
   ipcRenderer.on('openLocation', () => {
     store.dispatch('changeRoute', { name: 'explorer' })
     store.dispatch('focus', { selector: '.location input' })
+    store.dispatch('select', { selector: '.location input' })
   })
   ipcRenderer.on('showExplorer', () => {
     store.dispatch('changeRoute', { name: 'explorer' })

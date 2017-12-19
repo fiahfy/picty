@@ -27,6 +27,15 @@ export default new Vuex.Store({
         }
       }, 0)
     },
+    select (_, { selector }) {
+      // wait dom updated
+      setTimeout(() => {
+        const el = document.querySelector(selector)
+        if (el) {
+          el.select()
+        }
+      }, 0)
+    },
     showMessage ({ commit }, { message }) {
       commit('setMessage', { message })
       // wait dom updated
