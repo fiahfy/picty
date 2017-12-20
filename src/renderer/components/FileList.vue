@@ -82,6 +82,10 @@ export default {
   },
   mounted () {
     this.$el.addEventListener('scroll', this.scroll)
+    this.restoreScroll()
+  },
+  beforeDestroy () {
+    this.$el.removeEventListener('scroll', this.scroll)
   },
   computed: {
     sortIcon () {
@@ -143,6 +147,11 @@ export default {
         }
       })
     },
+    restoreScroll () {
+      this.$nextTick(() => {
+        this.$el.scrollTop = this.scrollTop
+      })
+    },
     ...mapActions('explorer', [
       'changeSortKey',
       'selectFile',
@@ -157,9 +166,7 @@ export default {
   },
   watch: {
     directory () {
-      this.$nextTick(() => {
-        this.$el.scrollTop = this.scrollTop
-      })
+      this.restoreScroll()
     },
     files () {
       this.fixScroll()
