@@ -15,14 +15,14 @@ export default {
         const filepath = rootState.explorer.selectedFile.path
         const file = getFile(filepath)
         if (file.stats.isDirectory()) {
-          dispatch('showDirectory', { dirpath: filepath })
+          dispatch('showDirectory', { dirpath: filepath, recursive: true })
         } else {
           dispatch('showDirectory', { dirpath: path.dirname(filepath), currentFile: file })
         }
       }
     },
-    showDirectory ({ commit, dispatch }, { dirpath, currentFile }) {
-      const files = listFiles(dirpath, { recursive: true })
+    showDirectory ({ commit, dispatch }, { dirpath, currentFile, recursive = false }) {
+      const files = listFiles(dirpath, { recursive })
       dispatch('show', { files, currentFile })
     },
     show ({ commit, dispatch, rootState }, { files, currentFile }) {
