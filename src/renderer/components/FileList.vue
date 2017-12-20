@@ -114,17 +114,9 @@ export default {
           e.preventDefault()
           this.showSelectedFile()
           break
-        case 37:
-          e.preventDefault()
-          this.changeParentDirectory()
-          break
         case 38:
           e.preventDefault()
           this.selectPreviousFile()
-          break
-        case 39:
-          e.preventDefault()
-          this.changeSelectedDirectory()
           break
         case 40:
           e.preventDefault()
@@ -152,8 +144,6 @@ export default {
       })
     },
     ...mapActions('explorer', [
-      'changeParentDirectory',
-      'changeSelectedDirectory',
       'changeSortKey',
       'selectFile',
       'selectPreviousFile',

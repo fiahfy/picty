@@ -60,11 +60,11 @@ export default {
       if (!files.length) {
         return
       }
-      const file = files[0]
-      this.action({ filepath: file.path })
+      const filepathes = files.map(file => file.path)
+      this.open({ filepathes })
     },
-    ...mapActions('explorer', [
-      'action'
+    ...mapActions([
+      'open'
     ])
   }
 }

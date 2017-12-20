@@ -6,6 +6,7 @@ import router from '../router'
 import explorer from './explorer'
 import settings from './settings'
 import viewer from './viewer'
+import { getFile } from '../utils/file'
 
 Vue.use(Vuex)
 
@@ -15,27 +16,6 @@ export default new Vuex.Store({
     fullScreen: false
   },
   actions: {
-    changeRoute (_, payload) {
-      router.push(payload)
-    },
-    focus (_, { selector }) {
-      // wait dom updated
-      setTimeout(() => {
-        const el = document.querySelector(selector)
-        if (el) {
-          el.focus()
-        }
-      }, 0)
-    },
-    select (_, { selector }) {
-      // wait dom updated
-      setTimeout(() => {
-        const el = document.querySelector(selector)
-        if (el) {
-          el.select()
-        }
-      }, 0)
-    },
     showMessage ({ commit }, { message }) {
       commit('setMessage', { message })
       // wait dom updated
@@ -52,6 +32,39 @@ export default new Vuex.Store({
       const browserWindow = remote.getCurrentWindow()
       browserWindow.setFullScreen(false)
       browserWindow.setMenuBarVisibility(true)
+    },
+    changeRoute (_, payload) {
+      router.push(payload)
+    },
+    focus (_, { selector }) {
+      // wait dom updated
+      setTimeout(() => {
+        const el = document.querySelector(selector)
+        if (el) {
+          el.focus()
+        }
+      })
+    },
+    select (_, { selector }) {
+      // wait dom updated
+      setTimeout(() => {
+        const el = document.querySelector(selector)
+        if (el) {
+          el.select()
+        }
+      })
+    },
+    open ({ dispatch }, { filepathes }) {
+      if (filepathes.length === 1) {
+        const filepath = filepathes[0]
+        const file = getFile(filepath)
+        if (file.stats.isDirectory()) {
+          dispatch('explorer/changeDirectory', { dirpath: filepath })
+          return
+        }
+      }
+      const files = filepathes.map(filepath => getFile(filepath))
+      dispatch('viewer/show', { files })
     }
   },
   mutations: {
@@ -76,8 +89,6 @@ export default new Vuex.Store({
     createPersistedState({
       paths: [
         'explorer.directory',
-        'explorer.sortKey',
-        'explorer.sortOrder',
         'settings'
       ]
     })
