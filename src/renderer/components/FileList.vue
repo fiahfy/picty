@@ -2,14 +2,14 @@
   <div class="file-list">
     <mdc-table
       tabindex="0"
-      @keydown.native="keydown"
+      @keydown="keydown"
     >
       <mdc-table-header>
         <mdc-table-row>
           <mdc-table-header-column
             class="name"
             :sticky="true"
-            @click.native="changeSortKey({ key: 'name' })"
+            @click="changeSortKey({ key: 'name' })"
           >
             <span>Name</span>
             <mdc-icon
@@ -20,7 +20,7 @@
           <mdc-table-header-column
             class="size"
             :sticky="true"
-            @click.native="changeSortKey({ key: 'size' })"
+            @click="changeSortKey({ key: 'size' })"
           >
             <span>Size</span>
             <mdc-icon
@@ -31,7 +31,7 @@
           <mdc-table-header-column
             class="date-modified"
             :sticky="true"
-            @click.native="changeSortKey({ key: 'date_modified' })"
+            @click="changeSortKey({ key: 'date_modified' })"
           >
             <span>Date Modified</span>
             <mdc-icon
@@ -50,8 +50,8 @@
           :key="item.name"
           :file="item"
           :selected="selected(index)"
-          @click.native="selectFile({ file: item })"
-          @dblclick.native="doubleClick(item)"
+          @click="selectFile({ file: item })"
+          @dblclick="doubleClick(item)"
         />
       </mdc-virtual-table-body>
     </mdc-table>
@@ -82,6 +82,10 @@ export default {
   },
   mounted () {
     this.$el.addEventListener('scroll', this.scroll)
+    this.restoreScroll()
+  },
+  beforeDestroy () {
+    this.$el.removeEventListener('scroll', this.scroll)
   },
   computed: {
     sortIcon () {
@@ -114,17 +118,9 @@ export default {
           e.preventDefault()
           this.showSelectedFile()
           break
-        case 37:
-          e.preventDefault()
-          this.changeParentDirectory()
-          break
         case 38:
           e.preventDefault()
           this.selectPreviousFile()
-          break
-        case 39:
-          e.preventDefault()
-          this.changeSelectedDirectory()
           break
         case 40:
           e.preventDefault()
@@ -151,9 +147,12 @@ export default {
         }
       })
     },
+    restoreScroll () {
+      this.$nextTick(() => {
+        this.$el.scrollTop = this.scrollTop
+      })
+    },
     ...mapActions('explorer', [
-      'changeParentDirectory',
-      'changeSelectedDirectory',
       'changeSortKey',
       'selectFile',
       'selectPreviousFile',
@@ -167,9 +166,7 @@ export default {
   },
   watch: {
     directory () {
-      this.$nextTick(() => {
-        this.$el.scrollTop = this.scrollTop
-      })
+      this.restoreScroll()
     },
     files () {
       this.fixScroll()

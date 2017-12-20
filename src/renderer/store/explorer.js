@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { remote, shell } from 'electron'
-import { getFile, listFiles } from '../utils/file'
+import { getFile, listFiles, isImage } from '../utils/file'
 
 const orderDefaults = {
   name: 'asc',
@@ -16,35 +16,35 @@ export default {
   state: {
     error: null,
     files: [],
+    selectedFile: null,
     histories: [],
     historyIndex: -1,
     directory: remote.app.getPath('home'),
-    directoryInput: '',
-    selectedFile: null
+    directoryInput: ''
   },
   actions: {
     initDirectory ({ dispatch, state }) {
-      const directory = state.directory
-      dispatch('changeDirectory', { directory })
+      const dirpath = state.directory
+      dispatch('changeDirectory', { dirpath })
     },
     changeParentDirectory ({ dispatch, state }) {
-      const directory = path.dirname(state.directory)
-      dispatch('changeDirectory', { directory })
+      const dirpath = path.dirname(state.directory)
+      dispatch('changeDirectory', { dirpath })
     },
     changeHomeDirectory ({ dispatch }) {
-      const directory = remote.app.getPath('home')
-      dispatch('changeDirectory', { directory })
+      const dirpath = remote.app.getPath('home')
+      dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
       if (state.selectedFile && state.selectedFile.stats.isDirectory()) {
-        const directory = state.selectedFile.path
-        dispatch('changeDirectory', { directory })
+        const dirpath = state.selectedFile.path
+        dispatch('changeDirectory', { dirpath })
       }
     },
-    changeDirectory ({ commit, dispatch, state }, { directory }) {
+    changeDirectory ({ commit, dispatch, state }, { dirpath }) {
       const historyIndex = state.historyIndex + 1
       const histories = [...state.histories.slice(0, historyIndex), {
-        directory,
+        directory: dirpath,
         scrollTop: 0,
         sortKey: 'name',
         sortOrder: 'asc'
@@ -58,12 +58,12 @@ export default {
       const historyIndex = state.historyIndex
       dispatch('restoreDirectory', { historyIndex })
     },
-    backDirectory ({ dispatch, state }) {
-      const historyIndex = state.historyIndex - 1
+    backDirectory ({ dispatch, state }, { offset = 0 }) {
+      const historyIndex = state.historyIndex - 1 - offset
       dispatch('restoreDirectory', { historyIndex })
     },
-    forwardDirectory ({ dispatch, state }) {
-      const historyIndex = state.historyIndex + 1
+    forwardDirectory ({ dispatch, state }, { offset = 0 }) {
+      const historyIndex = state.historyIndex + 1 + offset
       dispatch('restoreDirectory', { historyIndex })
     },
     restoreDirectory ({ commit, dispatch, state }, { historyIndex }) {
@@ -141,12 +141,12 @@ export default {
       commit('setHistory', { history, index: state.historyIndex })
       dispatch('sortFiles')
     },
-    action ({ dispatch, state }, { filepath }) {
+    action ({ commit, dispatch, state }, { filepath }) {
       const file = getFile(filepath)
       if (file.stats.isDirectory()) {
-        dispatch('changeDirectory', { directory: filepath })
+        dispatch('changeDirectory', { dirpath: filepath })
       } else {
-        dispatch('viewer/show', { filepath }, { root: true })
+        dispatch('viewer/showDirectory', { dirpath: path.dirname(filepath), currentFile: file }, { root: true })
       }
     },
     sortFiles ({ commit, getters, state }) {
@@ -193,6 +193,9 @@ export default {
     setFiles (state, { files }) {
       state.files = files
     },
+    setSelectedFile (state, { selectedFile }) {
+      state.selectedFile = selectedFile
+    },
     setHistory (state, { history, index }) {
       state.histories = [
         ...state.histories.slice(0, index),
@@ -211,9 +214,6 @@ export default {
     },
     setDirectoryInput (state, { directoryInput }) {
       state.directoryInput = directoryInput
-    },
-    setSelectedFile (state, { selectedFile }) {
-      state.selectedFile = selectedFile
     }
   },
   getters: {
@@ -222,11 +222,26 @@ export default {
         return state.selectedFile && file.path === state.selectedFile.path
       })
     },
+    backDirectories (state) {
+      return state.histories.slice(0, state.historyIndex).reverse().map(history => history.directory)
+    },
+    forwardDirectories (state) {
+      return state.histories.slice(state.historyIndex + 1, state.histories.length).map(history => history.directory)
+    },
     canBackDirectory (state) {
       return !!state.histories[state.historyIndex - 1]
     },
     canForwardDirectory (state) {
       return !!state.histories[state.historyIndex + 1]
+    },
+    canView (state) {
+      if (!state.selectedFile) {
+        return false
+      }
+      if (state.selectedFile.stats.isDirectory()) {
+        return true
+      }
+      return isImage(state.selectedFile.path)
     },
     scrollTop (state) {
       return state.histories[state.historyIndex].scrollTop

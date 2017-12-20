@@ -60,11 +60,11 @@ export default {
       if (!files.length) {
         return
       }
-      const file = files[0]
-      this.action({ filepath: file.path })
+      const filepathes = files.map(file => file.path)
+      this.open({ filepathes })
     },
-    ...mapActions('explorer', [
-      'action'
+    ...mapActions([
+      'open'
     ])
   }
 }
@@ -104,7 +104,7 @@ $mdc-theme-primary: #ff4081;
   border-left-color: $material-color-grey-300;
   border-left-style: solid;
   border-left-width: 1px;
-  width: 12px;
+  width: 14px;
 }
 ::-webkit-scrollbar-thumb {
   background-color: $material-color-grey-300;

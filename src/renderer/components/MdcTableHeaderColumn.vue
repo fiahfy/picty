@@ -1,5 +1,5 @@
 <template>
-  <th class="mdc-table-header-column mdc-theme--background" :class="classes">
+  <th class="mdc-table-header-column mdc-theme--background" :class="classes" v-bind="$attrs" v-on="$listeners">
     <slot />
   </th>
 </template>

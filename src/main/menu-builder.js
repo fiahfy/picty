@@ -128,13 +128,12 @@ export default class MenuBuilder {
   }
   open () {
     dialog.showOpenDialog(
-      { properties: ['openFile', 'openDirectory'] },
+      { properties: ['openFile', 'openDirectory', 'multiSelections'] },
       (filepathes) => {
         if (!filepathes) {
           return
         }
-        const filepath = filepathes[0]
-        this.window.webContents.send('open', { filepath })
+        this.window.webContents.send('open', { filepathes })
       }
     )
   }

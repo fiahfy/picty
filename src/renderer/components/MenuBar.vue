@@ -7,48 +7,73 @@
         fullwidth
         class="location"
         @keyup="keyup"
+        @contextmenu="contextmenu"
         v-model="directoryInput"
       />
     </div>
     <div class="row buttons">
-      <mdc-button
-        title="Back drectory"
-        :disabled="!canBackDirectory"
-        @click.native="backDirectory"
-      >
-        <mdc-icon icon="arrow_back" />
-      </mdc-button>
-      <mdc-button
-        title="Forward drectory"
-        :disabled="!canForwardDirectory"
-        @click.native="forwardDirectory"
-      >
-        <mdc-icon icon="arrow_forward" />
-      </mdc-button>
+      <mdc-menu-anchor>
+        <mdc-button
+          title="Back drectory"
+          :disabled="!canBackDirectory"
+          @click="backDirectory"
+          v-long-press="(e) => mouseLongPress(e, 'back')"
+        >
+          <mdc-icon icon="arrow_back" />
+        </mdc-button>
+        <mdc-simple-menu ref="backMenu" v-model="backSelected">
+          <mdc-list-item
+            :key="index"
+            @mouseup="mouseup"
+            v-for="(directory, index) in backDirectories"
+          >
+            {{ directory }}
+          </mdc-list-item>
+        </mdc-simple-menu>
+      </mdc-menu-anchor>
+      <mdc-menu-anchor>
+        <mdc-button
+          title="Forward drectory"
+          :disabled="!canForwardDirectory"
+          @click="forwardDirectory"
+          v-long-press="(e) => mouseLongPress(e, 'forward')"
+        >
+          <mdc-icon icon="arrow_forward" />
+        </mdc-button>
+        <mdc-simple-menu ref="forwardMenu" v-model="forwardSelected">
+          <mdc-list-item
+            :key="index"
+            @mouseup="mouseup"
+            v-for="(directory, index) in forwardDirectories"
+          >
+            {{ directory }}
+          </mdc-list-item>
+        </mdc-simple-menu>
+      </mdc-menu-anchor>
       <mdc-button
         title="Change parent drectory"
-        @click.native="changeParentDirectory"
+        @click="changeParentDirectory"
       >
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
         title="Change home drectory"
-        @click.native="changeHomeDirectory"
+        @click="changeHomeDirectory"
       >
         <mdc-icon icon="home" />
       </mdc-button>
       <div class="separator" />
       <mdc-button
         title="View"
-        :disabled="!selectedFile"
-        @click.native="showSelectedFile"
+        :disabled="!canView"
+        @click="showSelectedFile"
       >
         <mdc-icon icon="photo" />
       </mdc-button>
       <div class="separator" />
       <mdc-button
         title="Open current directory"
-        @click.native="openDirectory"
+        @click="openDirectory"
       >
         <mdc-icon icon="folder_open" />
       </mdc-button>
@@ -60,13 +85,26 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
+import MdcListItem from '../components/MdcListItem'
+import MdcMenuAnchor from '../components/MdcMenuAnchor'
+import MdcSimpleMenu from '../components/MdcSimpleMenu'
 import MdcTextField from '../components/MdcTextField'
+import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
     MdcButton,
     MdcIcon,
+    MdcListItem,
+    MdcMenuAnchor,
+    MdcSimpleMenu,
     MdcTextField
+  },
+  data () {
+    return {
+      backSelected: null,
+      forwardSelected: null
+    }
   },
   computed: {
     directoryInput: {
@@ -81,15 +119,41 @@ export default {
       'selectedFile'
     ]),
     ...mapGetters('explorer', [
+      'backDirectories',
+      'forwardDirectories',
       'canBackDirectory',
-      'canForwardDirectory'
+      'canForwardDirectory',
+      'canView'
     ])
   },
   methods: {
     keyup (e) {
       if (e.keyCode === 13) {
-        this.changeDirectory({ directory: e.target.value })
+        this.changeDirectory({ dirpath: e.target.value })
       }
+    },
+    contextmenu (e) {
+      ContextMenu.show(e, [
+        { label: ContextMenu.LABEL_CUT },
+        { label: ContextMenu.LABEL_COPY },
+        { label: ContextMenu.LABEL_PASTE }
+      ])
+    },
+    mouseLongPress (e, direction) {
+      e.target.parentNode.blur()
+      // TODO: Remove remained ripple classes
+      e.target.parentNode.classList.remove('mdc-ripple-upgraded--background-active-fill')
+      e.target.parentNode.classList.remove('mdc-ripple-upgraded--foreground-activation')
+      if (direction === 'back') {
+        this.$refs.backMenu.show()
+        this.$refs.forwardMenu.hide()
+      } else {
+        this.$refs.backMenu.hide()
+        this.$refs.forwardMenu.show()
+      }
+    },
+    mouseup (e) {
+      e.target.click()
     },
     ...mapActions('explorer', [
       'changeDirectory',
@@ -103,6 +167,20 @@ export default {
     ...mapActions('viewer', [
       'showSelectedFile'
     ])
+  },
+  watch: {
+    backSelected (value) {
+      if (value !== null) {
+        this.backDirectory({ offset: value })
+      }
+      this.backSelected = null
+    },
+    forwardSelected (value) {
+      if (value !== null) {
+        this.forwardDirectory({ offset: value })
+      }
+      this.forwardSelected = null
+    }
   }
 }
 </script>
@@ -120,6 +198,7 @@ export default {
   height: 40px;
 }
 .row>* {
+  display: inline-block;
   margin: 4px;
   vertical-align: bottom;
 }
@@ -139,6 +218,11 @@ export default {
 }
 .buttons {
   text-align: left;
+}
+.mdc-list-item {
+  box-sizing: border-box;
+  font-size: smaller;
+  height: 41px;
 }
 .mdc-text-field {
   border: none;
