@@ -23,9 +23,9 @@
         </mdc-button>
         <mdc-simple-menu ref="backMenu" v-model="backSelected">
           <mdc-list-item
-            :key="directory"
+            :key="index"
             @mouseup="mouseup"
-            v-for="directory in backDirectories"
+            v-for="(directory, index) in backDirectories"
           >
             {{ directory }}
           </mdc-list-item>
@@ -42,9 +42,9 @@
         </mdc-button>
         <mdc-simple-menu ref="forwardMenu" v-model="forwardSelected">
           <mdc-list-item
-            :key="directory"
+            :key="index"
             @mouseup="mouseup"
-            v-for="directory in forwardDirectories"
+            v-for="(directory, index) in forwardDirectories"
           >
             {{ directory }}
           </mdc-list-item>
