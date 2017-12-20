@@ -23,8 +23,8 @@
         <mdc-simple-menu ref="backMenu" v-model="backSelected">
           <mdc-list-item
             :key="directory"
-            @mouseup.native="mouseup(index)"
-            v-for="(directory, index) in backDirectories"
+            @mouseup.native="mouseup"
+            v-for="directory in backDirectories"
           >
             {{ directory }}
           </mdc-list-item>
@@ -42,8 +42,8 @@
         <mdc-simple-menu ref="forwardMenu" v-model="forwardSelected">
           <mdc-list-item
             :key="directory"
-            @mouseup.native="mouseup(index)"
-            v-for="(directory, index) in forwardDirectories"
+            @mouseup.native="mouseup"
+            v-for="directory in forwardDirectories"
           >
             {{ directory }}
           </mdc-list-item>
@@ -142,8 +142,8 @@ export default {
         this.$refs.forwardMenu.show()
       }
     },
-    mouseup (index) {
-      // this.click(index)
+    mouseup (e) {
+      e.target.click()
     },
     ...mapActions('explorer', [
       'changeDirectory',
