@@ -16,7 +16,7 @@
         <mdc-button
           title="Back drectory"
           :disabled="!canBackDirectory"
-          @click.native="backDirectory"
+          @click="backDirectory"
           v-long-press="(e) => mouseLongPress(e, 'back')"
         >
           <mdc-icon icon="arrow_back" />
@@ -24,7 +24,7 @@
         <mdc-simple-menu ref="backMenu" v-model="backSelected">
           <mdc-list-item
             :key="directory"
-            @mouseup.native="mouseup"
+            @mouseup="mouseup"
             v-for="directory in backDirectories"
           >
             {{ directory }}
@@ -35,7 +35,7 @@
         <mdc-button
           title="Forward drectory"
           :disabled="!canForwardDirectory"
-          @click.native="forwardDirectory"
+          @click="forwardDirectory"
           v-long-press="(e) => mouseLongPress(e, 'forward')"
         >
           <mdc-icon icon="arrow_forward" />
@@ -43,7 +43,7 @@
         <mdc-simple-menu ref="forwardMenu" v-model="forwardSelected">
           <mdc-list-item
             :key="directory"
-            @mouseup.native="mouseup"
+            @mouseup="mouseup"
             v-for="directory in forwardDirectories"
           >
             {{ directory }}
@@ -52,13 +52,13 @@
       </mdc-menu-anchor>
       <mdc-button
         title="Change parent drectory"
-        @click.native="changeParentDirectory"
+        @click="changeParentDirectory"
       >
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
         title="Change home drectory"
-        @click.native="changeHomeDirectory"
+        @click="changeHomeDirectory"
       >
         <mdc-icon icon="home" />
       </mdc-button>
@@ -66,14 +66,14 @@
       <mdc-button
         title="View"
         :disabled="!canView"
-        @click.native="showSelectedFile"
+        @click="showSelectedFile"
       >
         <mdc-icon icon="photo" />
       </mdc-button>
       <div class="separator" />
       <mdc-button
         title="Open current directory"
-        @click.native="openDirectory"
+        @click="openDirectory"
       >
         <mdc-icon icon="folder_open" />
       </mdc-button>

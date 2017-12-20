@@ -1,5 +1,5 @@
 <template>
-  <mdc-table-row class="file-list-item" :selected="selected">
+  <mdc-table-row class="file-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
     <mdc-table-column class="name">
       <mdc-icon :icon="icon" :class="icon" />
       {{ file.name }}

@@ -2,14 +2,14 @@
   <div class="file-list">
     <mdc-table
       tabindex="0"
-      @keydown.native="keydown"
+      @keydown="keydown"
     >
       <mdc-table-header>
         <mdc-table-row>
           <mdc-table-header-column
             class="name"
             :sticky="true"
-            @click.native="changeSortKey({ key: 'name' })"
+            @click="changeSortKey({ key: 'name' })"
           >
             <span>Name</span>
             <mdc-icon
@@ -20,7 +20,7 @@
           <mdc-table-header-column
             class="size"
             :sticky="true"
-            @click.native="changeSortKey({ key: 'size' })"
+            @click="changeSortKey({ key: 'size' })"
           >
             <span>Size</span>
             <mdc-icon
@@ -31,7 +31,7 @@
           <mdc-table-header-column
             class="date-modified"
             :sticky="true"
-            @click.native="changeSortKey({ key: 'date_modified' })"
+            @click="changeSortKey({ key: 'date_modified' })"
           >
             <span>Date Modified</span>
             <mdc-icon
@@ -50,8 +50,8 @@
           :key="item.name"
           :file="item"
           :selected="selected(index)"
-          @click.native="selectFile({ file: item })"
-          @dblclick.native="doubleClick(item)"
+          @click="selectFile({ file: item })"
+          @dblclick="doubleClick(item)"
         />
       </mdc-virtual-table-body>
     </mdc-table>

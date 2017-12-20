@@ -11,6 +11,7 @@
       :aria-label="placeholder"
       :value="value"
       @input="input"
+      v-bind="$attrs"
       v-on="listeners"
     />
     <label
