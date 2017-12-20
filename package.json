@@ -1,7 +1,7 @@
 {
   "name": "picty",
   "description": "Simple Image Viewer based on Electron",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
