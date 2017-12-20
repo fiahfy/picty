@@ -49,7 +49,7 @@ export default {
   },
   model: {
     prop: 'value',
-    event: 'input'
+    event: 'change'
   },
   data () {
     return {
@@ -65,6 +65,7 @@ export default {
   watch: {
     value (value) {
       this.mdcSlider.value = value
+      this.mdcSlider.layout()
     },
     min (value) {
       this.mdcSlider.min = value
@@ -77,8 +78,8 @@ export default {
     }
   },
   methods: {
-    input (event) {
-      this.$emit('input', this.mdcSlider.value)
+    input () {
+      this.$emit('change', this.mdcSlider.value)
     }
   }
 }

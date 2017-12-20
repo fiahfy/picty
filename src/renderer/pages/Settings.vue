@@ -6,15 +6,18 @@
       <label for="dark-theme">Use dark theme</label>
     </mdc-form-field>
 
-    <h4>Viewer</h4>
-    <mdc-form-field>
-      <mdc-checkbox id="full-screen" v-model="fullScreen" />
-      <label for="full-screen">View in full screen (Windows only)</label>
-    </mdc-form-field>
+    <template v-if="fullScreenAvailable">
+      <h4>Viewer</h4>
+      <mdc-form-field>
+        <mdc-checkbox id="full-screen" v-model="fullScreen" />
+        <label for="full-screen">View in full screen</label>
+      </mdc-form-field>
+    </template>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import MdcCheckbox from '../components/MdcCheckbox'
 import MdcFormField from '../components/MdcFormField'
 
@@ -39,7 +42,10 @@ export default {
       set (value) {
         this.$store.commit('settings/setFullScreen', { fullScreen: value })
       }
-    }
+    },
+    ...mapGetters([
+      'fullScreenAvailable'
+    ])
   }
 }
 </script>

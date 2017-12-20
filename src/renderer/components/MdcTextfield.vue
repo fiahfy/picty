@@ -9,9 +9,9 @@
       :id="id"
       :placeholder="placeholder"
       :aria-label="placeholder"
-      :value="value"
-      @input="input"
-      @keyup="keyup"
+      v-model="model"
+      v-bind="$attrs"
+      v-on="listeners"
     />
     <label
       class="mdc-text-field__label"
@@ -37,6 +37,10 @@ export default {
       default: false
     }
   },
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   data () {
     return {
       mdcTextField: null,
@@ -51,6 +55,11 @@ export default {
     this.mdcTextField.destroy()
   },
   computed: {
+    listeners () {
+      const listeners = this.$listeners
+      delete listeners.change
+      return listeners
+    },
     classes () {
       return {
         'mdc-text-field--fullwidth': this.fullwidth
@@ -58,14 +67,14 @@ export default {
     },
     placeholder () {
       return this.fullwidth ? this.label : null
-    }
-  },
-  methods: {
-    input (e) {
-      this.$emit('input', e.target.value)
     },
-    keyup (e) {
-      this.$emit('keyup', e)
+    model: {
+      get () {
+        return this.value
+      },
+      set (value) {
+        this.$emit('change', value)
+      }
     }
   }
 }

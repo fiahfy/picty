@@ -4,35 +4,37 @@
     <div class="container">
       <mdc-button
         title="View previous image"
-        @click.native="viewPreviousImage"
+        @click="viewPreviousImage"
       >
         <mdc-icon icon="skip_previous" />
       </mdc-button>
       <mdc-button
         title="View next image"
-        @click.native="viewNextImage"
+        @click="viewNextImage"
       >
         <mdc-icon icon="skip_next" />
       </mdc-button>
       <mdc-slider v-model="page" :min="1" :max="maxPage" />
       <div class="page">{{ page }} / {{ maxPage }}</div>
-      <mdc-button
-        title="Exit fullscreen"
-        @click.native="leaveFullScreen"
-        v-if="fullScreen"
-      >
-        <mdc-icon icon="fullscreen_exit" />
-      </mdc-button>
-      <mdc-button
-        title="Fullscreen"
-        @click.native="enterFullScreen"
-        v-else
-      >
-        <mdc-icon icon="fullscreen" />
-      </mdc-button>
+      <template v-if="fullScreenAvailable">
+        <mdc-button
+          title="Exit fullscreen"
+          @click="leaveFullScreen"
+          v-if="fullScreen"
+        >
+          <mdc-icon icon="fullscreen_exit" />
+        </mdc-button>
+        <mdc-button
+          title="Fullscreen"
+          @click="enterFullScreen"
+          v-else
+        >
+          <mdc-icon icon="fullscreen" />
+        </mdc-button>
+      </template>
       <mdc-button
         title="Close"
-        @click.native="dismiss"
+        @click="dismiss"
       >
         <mdc-icon icon="close" />
       </mdc-button>
@@ -62,7 +64,8 @@ export default {
       }
     },
     ...mapState([
-      'fullScreen'
+      'fullScreen',
+      'fullScreenAvailable'
     ]),
     ...mapState('viewer', {
       maxPage: state => state.files.length
