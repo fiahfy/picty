@@ -64,7 +64,7 @@
       <div class="separator" />
       <mdc-button
         title="View"
-        :disabled="!selectedFile"
+        :disabled="!canView"
         @click.native="showSelectedFile"
       >
         <mdc-icon icon="photo" />
@@ -120,7 +120,8 @@ export default {
       'backDirectories',
       'forwardDirectories',
       'canBackDirectory',
-      'canForwardDirectory'
+      'canForwardDirectory',
+      'canView'
     ])
   },
   methods: {

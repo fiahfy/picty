@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { remote, shell } from 'electron'
-import { getFile, listFiles } from '../utils/file'
+import { getFile, listFiles, isImage } from '../utils/file'
 
 const orderDefaults = {
   name: 'asc',
@@ -233,6 +233,15 @@ export default {
     },
     canForwardDirectory (state) {
       return !!state.histories[state.historyIndex + 1]
+    },
+    canView (state) {
+      if (!state.selectedFile) {
+        return false
+      }
+      if (state.selectedFile.stats.isDirectory()) {
+        return true
+      }
+      return isImage(state.selectedFile.path)
     },
     scrollTop (state) {
       return state.histories[state.historyIndex].scrollTop
