@@ -78,6 +78,9 @@ export default new Vuex.Store({
   getters: {
     titleBar (state) {
       return process.platform === 'darwin' && !state.fullScreen
+    },
+    fullScreenAvailable (state) {
+      return process.platform !== 'darwin'
     }
   },
   modules: {

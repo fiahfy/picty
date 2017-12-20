@@ -25,7 +25,7 @@ export default {
       const files = listFiles(dirpath, { recursive })
       dispatch('show', { files, currentFile })
     },
-    show ({ commit, dispatch, rootState }, { files, currentFile }) {
+    show ({ commit, dispatch, rootGetters, rootState }, { files, currentFile }) {
       try {
         files = files.filter((file) => isImage(file.path))
         if (!files.length) {
@@ -43,14 +43,14 @@ export default {
       }
       commit('setDisplay', { display: true })
       dispatch('focus', { selector: '.viewer' }, { root: true })
-      if (rootState.settings.fullScreen && process.platform !== 'darwin') {
+      if (rootState.settings.fullScreen && rootGetters.fullScreenAvailable) {
         dispatch('enterFullScreen', null, { root: true })
       }
     },
-    dismiss ({ commit, dispatch }) {
+    dismiss ({ commit, dispatch, rootGetters }) {
       commit('setDisplay', { display: false })
       dispatch('focus', { selector: '.file-list table' }, { root: true })
-      if (process.platform !== 'darwin') {
+      if (rootGetters.fullScreenAvailable) {
         dispatch('leaveFullScreen', null, { root: true })
       }
     },

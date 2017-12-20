@@ -5,7 +5,7 @@
       class="mdc-checkbox__native-control"
       v-model="model"
       v-bind="$attrs"
-      v-on="$listeners"
+      v-on="listeners"
     />
     <div class="mdc-checkbox__background">
       <svg
@@ -51,6 +51,11 @@ export default {
     this.mdcCheckbox.destroy()
   },
   computed: {
+    listeners () {
+      const listeners = this.$listeners
+      delete listeners.change
+      return listeners
+    },
     model: {
       get () {
         return this.checked

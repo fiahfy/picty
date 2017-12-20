@@ -9,8 +9,7 @@
       :id="id"
       :placeholder="placeholder"
       :aria-label="placeholder"
-      :value="value"
-      @input="input"
+      v-model="model"
       v-bind="$attrs"
       v-on="listeners"
     />
@@ -38,6 +37,10 @@ export default {
       default: false
     }
   },
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   data () {
     return {
       mdcTextField: null,
@@ -54,7 +57,7 @@ export default {
   computed: {
     listeners () {
       const listeners = this.$listeners
-      delete listeners.input
+      delete listeners.change
       return listeners
     },
     classes () {
@@ -64,11 +67,14 @@ export default {
     },
     placeholder () {
       return this.fullwidth ? this.label : null
-    }
-  },
-  methods: {
-    input (e) {
-      this.$emit('input', e.target.value)
+    },
+    model: {
+      get () {
+        return this.value
+      },
+      set (value) {
+        this.$emit('change', value)
+      }
     }
   }
 }
