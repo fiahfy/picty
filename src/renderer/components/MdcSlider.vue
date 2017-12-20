@@ -65,6 +65,7 @@ export default {
   watch: {
     value (value) {
       this.mdcSlider.value = value
+      this.mdcSlider.layout()
     },
     min (value) {
       this.mdcSlider.min = value
