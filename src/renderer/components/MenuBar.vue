@@ -7,6 +7,7 @@
         fullwidth
         class="location"
         @keyup="keyup"
+        @contextmenu="contextmenu"
         v-model="directoryInput"
       />
     </div>
@@ -88,6 +89,7 @@ import MdcListItem from '../components/MdcListItem'
 import MdcMenuAnchor from '../components/MdcMenuAnchor'
 import MdcSimpleMenu from '../components/MdcSimpleMenu'
 import MdcTextField from '../components/MdcTextField'
+import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
@@ -127,8 +129,15 @@ export default {
   methods: {
     keyup (e) {
       if (e.keyCode === 13) {
-        this.changeDirectory({ directory: e.target.value })
+        this.changeDirectory({ dirpath: e.target.value })
       }
+    },
+    contextmenu (e) {
+      ContextMenu.show(e, [
+        { label: ContextMenu.LABEL_CUT },
+        { label: ContextMenu.LABEL_COPY },
+        { label: ContextMenu.LABEL_PASTE }
+      ])
     },
     mouseLongPress (e, direction) {
       e.target.parentNode.blur()

@@ -11,7 +11,7 @@
       :aria-label="placeholder"
       :value="value"
       @input="input"
-      @keyup="keyup"
+      v-on="listeners"
     />
     <label
       class="mdc-text-field__label"
@@ -51,6 +51,11 @@ export default {
     this.mdcTextField.destroy()
   },
   computed: {
+    listeners () {
+      const listeners = this.$listeners
+      delete listeners.input
+      return listeners
+    },
     classes () {
       return {
         'mdc-text-field--fullwidth': this.fullwidth
@@ -63,9 +68,6 @@ export default {
   methods: {
     input (e) {
       this.$emit('input', e.target.value)
-    },
-    keyup (e) {
-      this.$emit('keyup', e)
     }
   }
 }
