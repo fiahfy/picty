@@ -75,7 +75,7 @@ export default {
   display: flex;
   flex-direction: column;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  font-size: smaller;
+  font-size: small;
   height: 100%;
   text-align: center;
 }

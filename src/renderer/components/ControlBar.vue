@@ -104,9 +104,6 @@ export default {
 .container {
   display: flex;
 }
-.mdc-icon {
-  padding: 4px;
-}
 .mdc-button {
   height: auto;
   line-height: initial;

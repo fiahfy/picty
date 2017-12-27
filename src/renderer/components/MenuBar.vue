@@ -227,9 +227,6 @@ export default {
   border: none;
   height: 32px;
 }
-.mdc-icon {
-  padding: 4px;
-}
 .mdc-button {
   border-radius: 0;
   height: auto;
