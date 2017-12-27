@@ -199,9 +199,7 @@ export default {
   height: 40px;
 }
 .row>* {
-  display: inline-block;
   margin: 4px;
-  vertical-align: bottom;
 }
 .separator {
   border-left-color: $material-color-grey-300;
