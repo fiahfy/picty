@@ -3,7 +3,7 @@ import path from 'path'
 import { remote, shell } from 'electron'
 import { getFile, listFiles, isImage } from '../utils/file'
 
-const orderDefaults = {
+const sortOrderDefaults = {
   name: 'asc',
   size: 'asc',
   date_modified: 'desc'
@@ -20,7 +20,8 @@ export default {
     histories: [],
     historyIndex: -1,
     directory: remote.app.getPath('home'),
-    directoryInput: ''
+    directoryInput: '',
+    sortOptions: {}
   },
   actions: {
     initDirectory ({ dispatch, state }) {
@@ -45,9 +46,7 @@ export default {
       const historyIndex = state.historyIndex + 1
       const histories = [...state.histories.slice(0, historyIndex), {
         directory: dirpath,
-        scrollTop: 0,
-        sortKey: 'name',
-        sortOrder: 'asc'
+        scrollTop: 0
       }]
       commit('setHistories', { histories })
       commit('setHistoryIndex', { historyIndex })
@@ -132,17 +131,13 @@ export default {
         commit('setHistory', { history, index: state.historyIndex })
       }
     },
-    changeSortKey ({ commit, dispatch, getters, state }, { key }) {
-      let order = orderDefaults[key]
-      if (getters.sortKey === key) {
-        order = getters.sortOrder === 'asc' ? 'desc' : 'asc'
+    changeSortKey ({ commit, dispatch, getters, state }, { sortKey }) {
+      let sortOrder = sortOrderDefaults[sortKey]
+      if (getters.sortOption.key === sortKey) {
+        sortOrder = getters.sortOption.order === 'asc' ? 'desc' : 'asc'
       }
-      const history = {
-        ...state.histories[state.historyIndex],
-        sortKey: key,
-        sortOrder: order
-      }
-      commit('setHistory', { history, index: state.historyIndex })
+      const sortOption = { key: sortKey, order: sortOrder }
+      commit('setSortOption', { sortOption, key: state.directory })
       dispatch('sortFiles')
     },
     action ({ commit, dispatch, state }, { filepath }) {
@@ -156,7 +151,7 @@ export default {
     sortFiles ({ commit, getters, state }) {
       const files = state.files.concat().sort((a, b) => {
         let result = 0
-        switch (getters.sortKey) {
+        switch (getters.sortOption.key) {
           case 'date_modified':
             if (a.stats.mtime > b.stats.mtime) {
               result = 1
@@ -185,7 +180,7 @@ export default {
             result = -1
           }
         }
-        return getters.sortOrder === 'asc' ? result : -1 * result
+        return getters.sortOption.order === 'asc' ? result : -1 * result
       })
       commit('setFiles', { files })
     }
@@ -218,6 +213,12 @@ export default {
     },
     setDirectoryInput (state, { directoryInput }) {
       state.directoryInput = directoryInput
+    },
+    setSortOption (state, { sortOption, key }) {
+      state.sortOptions = {
+        ...state.sortOptions,
+        [key]: sortOption
+      }
     }
   },
   getters: {
@@ -250,11 +251,11 @@ export default {
     scrollTop (state) {
       return state.histories[state.historyIndex].scrollTop
     },
-    sortKey (state) {
-      return state.histories[state.historyIndex].sortKey
-    },
-    sortOrder (state) {
-      return state.histories[state.historyIndex].sortOrder
+    sortOption (state) {
+      return state.sortOptions[state.directory] || {
+        key: 'name',
+        order: 'asc'
+      }
     }
   }
 }

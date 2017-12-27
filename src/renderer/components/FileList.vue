@@ -9,34 +9,34 @@
           <mdc-table-header-column
             class="name"
             :sticky="true"
-            @click="changeSortKey({ key: 'name' })"
+            @click="changeSortKey({ sortKey: 'name' })"
           >
             <span>Name</span>
             <mdc-icon
               :icon="sortIcon"
-              v-if="sortKey === 'name'"
+              v-if="sortOption.key === 'name'"
             />
           </mdc-table-header-column>
           <mdc-table-header-column
             class="size"
             :sticky="true"
-            @click="changeSortKey({ key: 'size' })"
+            @click="changeSortKey({ sortKey: 'size' })"
           >
             <span>Size</span>
             <mdc-icon
               :icon="sortIcon"
-              v-if="sortKey === 'size'"
+              v-if="sortOption.key === 'size'"
             />
           </mdc-table-header-column>
           <mdc-table-header-column
             class="date-modified"
             :sticky="true"
-            @click="changeSortKey({ key: 'date_modified' })"
+            @click="changeSortKey({ sortKey: 'date_modified' })"
           >
             <span>Date Modified</span>
             <mdc-icon
               :icon="sortIcon"
-              v-if="sortKey === 'date_modified'"
+              v-if="sortOption.key === 'date_modified'"
             />
           </mdc-table-header-column>
         </mdc-table-row>
@@ -89,7 +89,7 @@ export default {
   },
   computed: {
     sortIcon () {
-      return this.sortOrder === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
+      return this.sortOption.order === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState('explorer', [
       'directory',
@@ -98,8 +98,7 @@ export default {
     ...mapGetters('explorer', [
       'selectedIndex',
       'scrollTop',
-      'sortKey',
-      'sortOrder'
+      'sortOption'
     ])
   },
   methods: {
