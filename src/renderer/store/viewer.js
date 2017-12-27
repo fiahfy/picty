@@ -36,7 +36,7 @@ export default {
         currentFile = currentFile || files[0]
         commit('setCurrentFile', { currentFile })
       } catch (e) {
-        let error = e.message === 'Image Not Found' ? e : new Error('Invalid Image')
+        const error = e.message === 'Image Not Found' ? e : new Error('Invalid Image')
         commit('setError', { error })
         commit('setFiles', { files: [] })
         commit('setCurrentFile', { currentFile: null })

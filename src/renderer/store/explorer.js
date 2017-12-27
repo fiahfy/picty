@@ -83,11 +83,15 @@ export default {
         watcher = fs.watch(state.directory, () => {
           dispatch('refreshDirectory')
         })
-        const files = listFiles(state.directory)
+        const files = listFiles(state.directory).filter((file) => file.stats.isDirectory() || isImage(file.path))
+        if (!files.length) {
+          throw new Error('No Images')
+        }
         commit('setError', { error: null })
         commit('setFiles', { files })
       } catch (e) {
-        commit('setError', { error: new Error('Invalid Directory') })
+        const error = e.message === 'No Images' ? e : new Error('Invalid Directory')
+        commit('setError', { error })
         commit('setFiles', { files: [] })
       }
       dispatch('sortFiles')
