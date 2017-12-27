@@ -1,21 +1,27 @@
 <template>
   <div class="settings">
     <h4>General</h4>
-    <mdc-form-field>
-      <mdc-checkbox id="dark-theme" v-model="darkTheme" />
-      <label for="dark-theme">Use dark theme</label>
-    </mdc-form-field>
+    <div>
+      <mdc-form-field>
+        <mdc-checkbox id="dark-theme" v-model="darkTheme" />
+        <label for="dark-theme">Use dark theme</label>
+      </mdc-form-field>
+    </div>
 
     <h4>Viewer</h4>
-    <mdc-form-field>
-      <mdc-checkbox id="image-expanded" v-model="imageExpanded" />
-      <label for="image-expanded">Expand image</label>
-    </mdc-form-field>
-    <template v-if="fullScreenAvailable">
+    <div>
       <mdc-form-field>
-        <mdc-checkbox id="full-screen" v-model="fullScreen" />
-        <label for="full-screen">View in full screen</label>
+        <mdc-checkbox id="image-expanded" v-model="imageExpanded" />
+        <label for="image-expanded">Expand image</label>
       </mdc-form-field>
+    </div>
+    <template v-if="fullScreenAvailable">
+      <div>
+        <mdc-form-field>
+          <mdc-checkbox id="full-screen" v-model="fullScreen" />
+          <label for="full-screen">View in full screen</label>
+        </mdc-form-field>
+      </div>
     </template>
   </div>
 </template>
@@ -67,5 +73,8 @@ export default {
   margin: 15px;
   text-align: left;
   user-select: none;
+}
+.settings>div {
+  margin-top: 16px;
 }
 </style>
