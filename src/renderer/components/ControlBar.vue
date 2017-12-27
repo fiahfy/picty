@@ -124,7 +124,6 @@ export default {
 }
 .page {
   color: white;
-  font-size: smaller;
   line-height: 48px;
   margin: 0 16px;
   vertical-align: middle;

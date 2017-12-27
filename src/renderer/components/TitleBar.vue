@@ -10,7 +10,7 @@
   border-bottom-style: solid;
   border-bottom-width: 1px;
   box-sizing: border-box;
-  font-size: small;
+  font-size: smaller;
   height: 24px;
   line-height: 24px;
   overflow: hidden;
