@@ -69,3 +69,11 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.mdc-simple-menu {
+  .mdc-list, .mdc-list-item {
+    font-size: inherit;
+  }
+}
+</style>
