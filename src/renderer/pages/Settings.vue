@@ -6,8 +6,12 @@
       <label for="dark-theme">Use dark theme</label>
     </mdc-form-field>
 
+    <h4>Viewer</h4>
+    <mdc-form-field>
+      <mdc-checkbox id="image-expanded" v-model="imageExpanded" />
+      <label for="image-expanded">Expand image</label>
+    </mdc-form-field>
     <template v-if="fullScreenAvailable">
-      <h4>Viewer</h4>
       <mdc-form-field>
         <mdc-checkbox id="full-screen" v-model="fullScreen" />
         <label for="full-screen">View in full screen</label>
@@ -33,6 +37,14 @@ export default {
       },
       set (value) {
         this.$store.commit('settings/setDarkTheme', { darkTheme: value })
+      }
+    },
+    imageExpanded: {
+      get () {
+        return this.$store.state.settings.imageExpanded
+      },
+      set (value) {
+        this.$store.commit('settings/setImageExpanded', { imageExpanded: value })
       }
     },
     fullScreen: {
