@@ -192,7 +192,6 @@ export default {
   height: 41px;
 }
 .mdc-table-header-column {
-  font-size: smaller;
   line-height: 20px;
   vertical-align: bottom;
   white-space: nowrap;

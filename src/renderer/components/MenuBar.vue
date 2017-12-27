@@ -221,16 +221,11 @@ export default {
 }
 .mdc-list-item {
   box-sizing: border-box;
-  font-size: smaller;
   height: 41px;
 }
 .mdc-text-field {
   border: none;
-  font-size: smaller;
   height: 32px;
-}
-.mdc-icon {
-  padding: 4px;
 }
 .mdc-button {
   border-radius: 0;

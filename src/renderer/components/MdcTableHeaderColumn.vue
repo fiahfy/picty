@@ -23,12 +23,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "~@material/theme/_color-palette.scss";
+
 .mdc-table-header-column {
+  color: $material-color-grey-600;
+  font-size: smaller;
+  font-weight: normal;
   padding: 8px;
   user-select: none;
   &.sticky {
     position: sticky;
     top: 0;
+  }
+}
+.mdc-theme--dark {
+  .mdc-table-header-column {
+    color: $material-color-grey-300;
   }
 }
 </style>

@@ -53,7 +53,6 @@ export default {
 @import "~@material/theme/_color-palette.scss";
 
 .mdc-table-column {
-  font-size: smaller;
   line-height: 20px;
   vertical-align: bottom;
   white-space: nowrap;

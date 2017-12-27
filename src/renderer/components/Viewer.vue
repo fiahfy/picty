@@ -8,8 +8,8 @@
     <div class="error" v-if="error">
       <span>{{ error.message }}</span>
     </div>
-    <img :src="currentFile.path" @error="loadError" v-else />
-    <control-bar :class="classes" />
+    <img :src="currentFile.path" :class="imageClasses" @error="loadError" v-else />
+    <control-bar :class="controlBarClasses" />
   </div>
 </template>
 
@@ -24,13 +24,18 @@ export default {
   data () {
     return {
       hasLoadError: false,
-      classes: {}
+      controlBarClasses: {}
     }
   },
   mounted () {
     this.showControlBar()
   },
   computed: {
+    imageClasses () {
+      return {
+        expand: this.imageExpanded
+      }
+    },
     ...mapState('viewer', {
       error (state) {
         if (state.error) {
@@ -42,7 +47,10 @@ export default {
         return null
       },
       currentFile: 'currentFile'
-    })
+    }),
+    ...mapState('settings', [
+      'imageExpanded'
+    ])
   },
   methods: {
     loadError (e) {
@@ -71,7 +79,7 @@ export default {
       this.showControlBar()
     },
     showControlBar () {
-      this.classes = ['fade-in']
+      this.controlBarClasses = ['fade-in']
       if (this.timer) {
         clearTimeout(this.timer)
       }
@@ -79,7 +87,7 @@ export default {
         return
       }
       this.timer = setTimeout(() => {
-        this.classes = ['fade-out']
+        this.controlBarClasses = ['fade-out']
       }, 2000)
     },
     ...mapActions('viewer', [
@@ -157,6 +165,11 @@ img {
   right: 0;
   top:0;
   vertical-align: middle;
+  &.expand {
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+  }
 }
 .control-bar {
   bottom: 0;

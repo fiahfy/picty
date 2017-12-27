@@ -75,11 +75,14 @@ ul {
   line-height: initial;
   min-width: auto;
   padding: 0;
-}
-.mdc-icon:not(.selected) {
-  color: var(--mdc-theme-text-disabled-on-light, rgba(0, 0, 0, 0.38));
-  &:hover {
-    color: inherit;
+  .mdc-icon {
+    padding: 12px;
+    &:not(.selected) {
+      color: var(--mdc-theme-text-disabled-on-light, rgba(0, 0, 0, 0.38));
+      &:hover {
+        color: inherit;
+      }
+    }
   }
 }
 .mdc-theme--dark {

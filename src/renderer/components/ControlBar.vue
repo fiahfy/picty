@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcSlider from '../components/MdcSlider'
@@ -64,12 +64,14 @@ export default {
       }
     },
     ...mapState([
-      'fullScreen',
-      'fullScreenAvailable'
+      'fullScreen'
     ]),
     ...mapState('viewer', {
       maxPage: state => state.files.length
-    })
+    }),
+    ...mapGetters([
+      'fullScreenAvailable'
+    ])
   },
   methods: {
     ...mapActions([
@@ -102,9 +104,6 @@ export default {
 .container {
   display: flex;
 }
-.mdc-icon {
-  padding: 4px;
-}
 .mdc-button {
   height: auto;
   line-height: initial;
@@ -122,7 +121,6 @@ export default {
 }
 .page {
   color: white;
-  font-size: smaller;
   line-height: 48px;
   margin: 0 16px;
   vertical-align: middle;
