@@ -105,6 +105,7 @@ export default {
   display: flex;
 }
 .mdc-button {
+  border-radius: 0;
   height: auto;
   line-height: initial;
   margin: 8px;
