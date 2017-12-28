@@ -10,18 +10,21 @@ export default {
     currentFile: null
   },
   actions: {
-    showSelectedFile ({ commit, dispatch, rootState }) {
+    showSelectedFile ({ dispatch, rootState }) {
       if (rootState.explorer.selectedFile) {
         const filepath = rootState.explorer.selectedFile.path
-        const file = getFile(filepath)
-        if (file.stats.isDirectory()) {
-          dispatch('showDirectory', { dirpath: filepath, recursive: true })
-        } else {
-          dispatch('showDirectory', { dirpath: path.dirname(filepath), currentFile: file })
-        }
+        dispatch('showFile', { filepath })
       }
     },
-    showDirectory ({ commit, dispatch }, { dirpath, currentFile, recursive = false }) {
+    showFile ({ dispatch }, { filepath }) {
+      const file = getFile(filepath)
+      if (file.stats.isDirectory()) {
+        dispatch('showDirectory', { dirpath: filepath, recursive: true })
+      } else {
+        dispatch('showDirectory', { dirpath: path.dirname(filepath), currentFile: file })
+      }
+    },
+    showDirectory ({ dispatch }, { dirpath, currentFile, recursive = false }) {
       const files = listFiles(dirpath, { recursive })
       dispatch('show', { files, currentFile })
     },

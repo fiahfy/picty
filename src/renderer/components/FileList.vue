@@ -51,7 +51,8 @@
           :file="item"
           :selected="selected(index)"
           @click="selectFile({ file: item })"
-          @dblclick="doubleClick(item)"
+          @dblclick="action({ file: item })"
+          @contextmenu="e => contextmenu(e, item)"
         />
       </mdc-virtual-table-body>
     </mdc-table>
@@ -68,6 +69,7 @@ import MdcTableHeader from '../components/MdcTableHeader'
 import MdcTableHeaderColumn from '../components/MdcTableHeaderColumn'
 import MdcTableRow from '../components/MdcTableRow'
 import MdcVirtualTableBody from '../components/MdcVirtualTableBody'
+import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
@@ -105,8 +107,14 @@ export default {
     selected (index) {
       return index === this.selectedIndex
     },
-    doubleClick (file) {
-      this.action({ filepath: file.path })
+    contextmenu (e, file) {
+      ContextMenu.show(e, [{
+        label: 'View',
+        click: () => {
+          this.showFile({ filepath: file.path })
+        },
+        accelerator: 'Enter'
+      }])
     },
     keydown (e) {
       if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
@@ -160,7 +168,8 @@ export default {
       'action'
     ]),
     ...mapActions('viewer', [
-      'showSelectedFile'
+      'showSelectedFile',
+      'showFile'
     ])
   },
   watch: {

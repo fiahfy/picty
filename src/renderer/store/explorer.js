@@ -140,12 +140,11 @@ export default {
       commit('setSortOption', { sortOption, key: state.directory })
       dispatch('sortFiles')
     },
-    action ({ commit, dispatch, state }, { filepath }) {
-      const file = getFile(filepath)
+    action ({ commit, dispatch, state }, { file }) {
       if (file.stats.isDirectory()) {
-        dispatch('changeDirectory', { dirpath: filepath })
+        dispatch('changeDirectory', { dirpath: file.path })
       } else {
-        dispatch('viewer/showDirectory', { dirpath: path.dirname(filepath), currentFile: file }, { root: true })
+        dispatch('viewer/showDirectory', { dirpath: path.dirname(file.path), currentFile: file }, { root: true })
       }
     },
     sortFiles ({ commit, getters, state }) {
