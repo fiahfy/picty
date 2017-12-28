@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { remote, shell } from 'electron'
-import { getFile, listFiles, isImage } from '../utils/file'
+import { listFiles, isImage } from '../utils/file'
 
 const sortOrderDefaults = {
   name: 'asc',
