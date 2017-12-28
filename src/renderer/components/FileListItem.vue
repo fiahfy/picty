@@ -17,7 +17,6 @@
 import MdcIcon from '../components/MdcIcon'
 import MdcTableColumn from '../components/MdcTableColumn'
 import MdcTableRow from '../components/MdcTableRow'
-import { isImage } from '../utils/file'
 
 export default {
   props: {
@@ -40,10 +39,7 @@ export default {
       return this.file.stats.isDirectory()
     },
     icon () {
-      if (this.directory) {
-        return 'folder'
-      }
-      return isImage(this.file.path) ? 'photo' : 'note'
+      return this.directory ? 'folder' : 'photo'
     }
   }
 }
