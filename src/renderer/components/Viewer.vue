@@ -33,7 +33,7 @@ export default {
   computed: {
     imageClasses () {
       return {
-        expand: this.imageExpanded
+        stretched: this.imageStretched
       }
     },
     ...mapState('viewer', {
@@ -49,7 +49,7 @@ export default {
       currentFile: 'currentFile'
     }),
     ...mapState('settings', [
-      'imageExpanded'
+      'imageStretched'
     ])
   },
   methods: {
@@ -165,7 +165,7 @@ img {
   right: 0;
   top:0;
   vertical-align: middle;
-  &.expand {
+  &.stretched {
     height: 100%;
     object-fit: contain;
     width: 100%;
