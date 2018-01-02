@@ -65,7 +65,6 @@
       <div class="separator" />
       <mdc-button
         title="View"
-        :disabled="!canView"
         @click="showSelectedFile"
       >
         <mdc-icon icon="photo" />
@@ -122,8 +121,7 @@ export default {
       'backDirectories',
       'forwardDirectories',
       'canBackDirectory',
-      'canForwardDirectory',
-      'canView'
+      'canForwardDirectory'
     ])
   },
   methods: {
@@ -195,12 +193,11 @@ export default {
   border-bottom-color: $material-color-grey-300;
   border-bottom-style: solid;
   border-bottom-width: 1px;
+  display: flex;
   height: 40px;
 }
 .row>* {
-  display: inline-block;
   margin: 4px;
-  vertical-align: bottom;
 }
 .separator {
   border-left-color: $material-color-grey-300;
@@ -211,7 +208,6 @@ export default {
   margin: 0;
 }
 .directory {
-  display: flex;
   .mdc-icon {
     color: $material-color-blue-200;
   }
@@ -231,8 +227,7 @@ export default {
   border-radius: 0;
   height: auto;
   line-height: initial;
-  margin-right: auto;
-  min-width: auto;
+  min-width: 32px;
   padding: 0;
 }
 .mdc-theme--dark {

@@ -5,7 +5,7 @@
       <div class="error" v-if="error">
         <span>{{ error.message }}</span>
       </div>
-      <file-list v-else />
+      <file-list />
     </div>
   </div>
 </template>
@@ -36,10 +36,16 @@ export default {
   flex: 1;
   height: 100%;
   overflow-y: auto;
+  position: relative;
 }
 .error {
+  bottom: 0;
   display: table;
   height: 100%;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
   vertical-align: middle;
   width: 100%;
   span {

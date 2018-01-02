@@ -11,8 +11,8 @@
     <h4>Viewer</h4>
     <div>
       <mdc-form-field>
-        <mdc-checkbox id="image-expanded" v-model="imageExpanded" />
-        <label for="image-expanded">Expand image</label>
+        <mdc-checkbox id="image-stretched" v-model="imageStretched" />
+        <label for="image-stretched">Stretch image</label>
       </mdc-form-field>
     </div>
     <template v-if="fullScreenAvailable">
@@ -45,12 +45,12 @@ export default {
         this.$store.commit('settings/setDarkTheme', { darkTheme: value })
       }
     },
-    imageExpanded: {
+    imageStretched: {
       get () {
-        return this.$store.state.settings.imageExpanded
+        return this.$store.state.settings.imageStretched
       },
       set (value) {
-        this.$store.commit('settings/setImageExpanded', { imageExpanded: value })
+        this.$store.commit('settings/setImageStretched', { imageStretched: value })
       }
     },
     fullScreen: {

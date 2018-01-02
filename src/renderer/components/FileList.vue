@@ -9,34 +9,34 @@
           <mdc-table-header-column
             class="name"
             :sticky="true"
-            @click="changeSortKey({ key: 'name' })"
+            @click="e => click('name')"
           >
             <span>Name</span>
             <mdc-icon
               :icon="sortIcon"
-              v-if="sortKey === 'name'"
+              v-if="sortOption.key === 'name'"
             />
           </mdc-table-header-column>
           <mdc-table-header-column
             class="size"
             :sticky="true"
-            @click="changeSortKey({ key: 'size' })"
+            @click="e => click('size')"
           >
             <span>Size</span>
             <mdc-icon
               :icon="sortIcon"
-              v-if="sortKey === 'size'"
+              v-if="sortOption.key === 'size'"
             />
           </mdc-table-header-column>
           <mdc-table-header-column
             class="date-modified"
             :sticky="true"
-            @click="changeSortKey({ key: 'date_modified' })"
+            @click="e => click('date_modified')"
           >
             <span>Date Modified</span>
             <mdc-icon
               :icon="sortIcon"
-              v-if="sortKey === 'date_modified'"
+              v-if="sortOption.key === 'date_modified'"
             />
           </mdc-table-header-column>
         </mdc-table-row>
@@ -51,7 +51,8 @@
           :file="item"
           :selected="selected(index)"
           @click="selectFile({ file: item })"
-          @dblclick="doubleClick(item)"
+          @dblclick="action({ file: item })"
+          @contextmenu="e => contextmenu(e, item)"
         />
       </mdc-virtual-table-body>
     </mdc-table>
@@ -68,6 +69,7 @@ import MdcTableHeader from '../components/MdcTableHeader'
 import MdcTableHeaderColumn from '../components/MdcTableHeaderColumn'
 import MdcTableRow from '../components/MdcTableRow'
 import MdcVirtualTableBody from '../components/MdcVirtualTableBody'
+import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
@@ -82,32 +84,31 @@ export default {
   },
   mounted () {
     this.$el.addEventListener('scroll', this.scroll)
-    this.restoreScroll()
+    this.$nextTick(() => {
+      this.$el.scrollTop = this.scrollTop
+    })
   },
   beforeDestroy () {
     this.$el.removeEventListener('scroll', this.scroll)
   },
   computed: {
     sortIcon () {
-      return this.sortOrder === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
+      return this.sortOption.order === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState('explorer', [
       'directory',
-      'files'
+      'files',
+      'selectedFile'
     ]),
     ...mapGetters('explorer', [
       'selectedIndex',
       'scrollTop',
-      'sortKey',
-      'sortOrder'
+      'sortOption'
     ])
   },
   methods: {
     selected (index) {
       return index === this.selectedIndex
-    },
-    doubleClick (file) {
-      this.action({ filepath: file.path })
     },
     keydown (e) {
       if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
@@ -128,7 +129,41 @@ export default {
           break
       }
     },
-    fixScroll () {
+    click (e, sortKey) {
+      this.changeSortKey({ sortKey })
+      this.$nextTick(() => {
+        this.$el.scrollTop = 0
+      })
+    },
+    contextmenu (e, file) {
+      ContextMenu.show(e, [{
+        label: 'View',
+        click: () => {
+          this.showFile({ filepath: file.path })
+        },
+        accelerator: 'Enter'
+      }])
+    },
+    ...mapActions('explorer', [
+      'changeSortKey',
+      'selectFile',
+      'selectPreviousFile',
+      'selectNextFile',
+      'scroll',
+      'action'
+    ]),
+    ...mapActions('viewer', [
+      'showSelectedFile',
+      'showFile'
+    ])
+  },
+  watch: {
+    directory () {
+      this.$nextTick(() => {
+        this.$el.scrollTop = this.scrollTop
+      })
+    },
+    selectedFile () {
       this.$nextTick(() => {
         const index = this.selectedIndex
         if (index === -1) {
@@ -146,33 +181,6 @@ export default {
           this.$el.scrollTop = el.offsetTop + el.offsetHeight - this.$el.offsetHeight
         }
       })
-    },
-    restoreScroll () {
-      this.$nextTick(() => {
-        this.$el.scrollTop = this.scrollTop
-      })
-    },
-    ...mapActions('explorer', [
-      'changeSortKey',
-      'selectFile',
-      'selectPreviousFile',
-      'selectNextFile',
-      'scroll',
-      'action'
-    ]),
-    ...mapActions('viewer', [
-      'showSelectedFile'
-    ])
-  },
-  watch: {
-    directory () {
-      this.restoreScroll()
-    },
-    files () {
-      this.fixScroll()
-    },
-    selectedIndex () {
-      this.fixScroll()
     }
   }
 }
