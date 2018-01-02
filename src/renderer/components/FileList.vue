@@ -9,7 +9,7 @@
           <mdc-table-header-column
             class="name"
             :sticky="true"
-            @click="changeSortKey({ sortKey: 'name' })"
+            @click="e => click('name')"
           >
             <span>Name</span>
             <mdc-icon
@@ -20,7 +20,7 @@
           <mdc-table-header-column
             class="size"
             :sticky="true"
-            @click="changeSortKey({ sortKey: 'size' })"
+            @click="e => click('size')"
           >
             <span>Size</span>
             <mdc-icon
@@ -31,7 +31,7 @@
           <mdc-table-header-column
             class="date-modified"
             :sticky="true"
-            @click="changeSortKey({ sortKey: 'date_modified' })"
+            @click="e => click('date_modified')"
           >
             <span>Date Modified</span>
             <mdc-icon
@@ -84,7 +84,9 @@ export default {
   },
   mounted () {
     this.$el.addEventListener('scroll', this.scroll)
-    this.restoreScroll()
+    this.$nextTick(() => {
+      this.$el.scrollTop = this.scrollTop
+    })
   },
   beforeDestroy () {
     this.$el.removeEventListener('scroll', this.scroll)
@@ -95,7 +97,8 @@ export default {
     },
     ...mapState('explorer', [
       'directory',
-      'files'
+      'files',
+      'selectedFile'
     ]),
     ...mapGetters('explorer', [
       'selectedIndex',
@@ -106,15 +109,6 @@ export default {
   methods: {
     selected (index) {
       return index === this.selectedIndex
-    },
-    contextmenu (e, file) {
-      ContextMenu.show(e, [{
-        label: 'View',
-        click: () => {
-          this.showFile({ filepath: file.path })
-        },
-        accelerator: 'Enter'
-      }])
     },
     keydown (e) {
       if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
@@ -135,7 +129,41 @@ export default {
           break
       }
     },
-    fixScroll () {
+    click (e, sortKey) {
+      this.changeSortKey({ sortKey })
+      this.$nextTick(() => {
+        this.$el.scrollTop = 0
+      })
+    },
+    contextmenu (e, file) {
+      ContextMenu.show(e, [{
+        label: 'View',
+        click: () => {
+          this.showFile({ filepath: file.path })
+        },
+        accelerator: 'Enter'
+      }])
+    },
+    ...mapActions('explorer', [
+      'changeSortKey',
+      'selectFile',
+      'selectPreviousFile',
+      'selectNextFile',
+      'scroll',
+      'action'
+    ]),
+    ...mapActions('viewer', [
+      'showSelectedFile',
+      'showFile'
+    ])
+  },
+  watch: {
+    directory () {
+      this.$nextTick(() => {
+        this.$el.scrollTop = this.scrollTop
+      })
+    },
+    selectedFile () {
       this.$nextTick(() => {
         const index = this.selectedIndex
         if (index === -1) {
@@ -153,34 +181,6 @@ export default {
           this.$el.scrollTop = el.offsetTop + el.offsetHeight - this.$el.offsetHeight
         }
       })
-    },
-    restoreScroll () {
-      this.$nextTick(() => {
-        this.$el.scrollTop = this.scrollTop
-      })
-    },
-    ...mapActions('explorer', [
-      'changeSortKey',
-      'selectFile',
-      'selectPreviousFile',
-      'selectNextFile',
-      'scroll',
-      'action'
-    ]),
-    ...mapActions('viewer', [
-      'showSelectedFile',
-      'showFile'
-    ])
-  },
-  watch: {
-    directory () {
-      this.restoreScroll()
-    },
-    files () {
-      this.fixScroll()
-    },
-    selectedIndex () {
-      this.fixScroll()
     }
   }
 }
