@@ -9,7 +9,7 @@
           <mdc-table-header-column
             class="name"
             :sticky="true"
-            @click="e => click('name')"
+            @click="e => click(e, 'name')"
           >
             <span>Name</span>
             <mdc-icon
@@ -20,7 +20,7 @@
           <mdc-table-header-column
             class="size"
             :sticky="true"
-            @click="e => click('size')"
+            @click="e => click(e, 'size')"
           >
             <span>Size</span>
             <mdc-icon
@@ -31,7 +31,7 @@
           <mdc-table-header-column
             class="date-modified"
             :sticky="true"
-            @click="e => click('date_modified')"
+            @click="e => click(e, 'date_modified')"
           >
             <span>Date Modified</span>
             <mdc-icon
