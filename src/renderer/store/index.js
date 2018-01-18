@@ -20,7 +20,7 @@ export default new Vuex.Store({
       commit('setMessage', { message })
       // wait dom updated
       setTimeout(() => {
-        commit('setMessage', '')
+        commit('setMessage', { message: '' })
       })
     },
     enterFullScreen () {

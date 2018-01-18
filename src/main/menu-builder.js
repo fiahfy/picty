@@ -127,15 +127,11 @@ export default class MenuBuilder {
     return template
   }
   open () {
-    dialog.showOpenDialog(
-      { properties: ['openFile', 'openDirectory', 'multiSelections'] },
-      (filepathes) => {
-        if (!filepathes) {
-          return
-        }
-        this.window.webContents.send('open', { filepathes })
-      }
-    )
+    const filepathes = dialog.showOpenDialog({ properties: ['openFile', 'openDirectory', 'multiSelections'] })
+    if (!filepathes) {
+      return
+    }
+    this.window.webContents.send('open', { filepathes })
   }
   openLocation () {
     this.window.webContents.send('openLocation')
