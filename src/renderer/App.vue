@@ -95,6 +95,7 @@ export default {
 
 <style lang="scss">
 $mdc-theme-primary: #ff4081;
+$mdc-theme-secondary: #ff4081;
 
 @import '~material-components-web/material-components-web';
 @import '~material-design-icons/iconfont/material-icons.css';

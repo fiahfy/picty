@@ -2,7 +2,7 @@
   <div class="activity-bar">
     <ul>
       <li :key="item.routeName" v-for="item in items">
-        <mdc-button @click="changeRoute({ name: item.name })" :title="item.title">
+        <mdc-button :title="item.title" @click="changeRoute({ name: item.name })">
           <mdc-icon :icon="item.icon" :class="item.classes" />
         </mdc-button>
       </li>
@@ -71,6 +71,7 @@ ul {
   padding: 0;
 }
 .mdc-button {
+  border-radius: 0;
   height: auto;
   line-height: initial;
   min-width: auto;
