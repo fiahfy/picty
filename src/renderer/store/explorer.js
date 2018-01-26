@@ -32,8 +32,11 @@ export default {
       const dirpath = path.dirname(state.directory)
       dispatch('changeDirectory', { dirpath })
     },
-    changeHomeDirectory ({ dispatch }) {
+    changeHomeDirectory ({ dispatch, state }) {
       const dirpath = remote.app.getPath('home')
+      if (dirpath === state.directory) {
+        return
+      }
       dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
