@@ -8,7 +8,9 @@
     <div class="error" v-if="error">
       <span>{{ error.message }}</span>
     </div>
-    <img :src="currentFile.path" :class="imageClasses" @error="loadError" v-else />
+    <div class="wrapper" v-else>
+      <img :src="currentFile.path" :class="imageClasses" @error="loadError" />
+    </div>
     <control-bar :class="controlBarClasses" />
   </div>
 </template>
@@ -155,21 +157,29 @@ export default {
     vertical-align: middle;
   }
 }
+.wrapper {
+  bottom:0;
+  left: 0;
+  overflow: auto;
+  position: absolute;
+  right: 0;
+  top:0;
+}
 img {
   bottom:0;
   left: 0;
-  margin:auto;
-  max-height: 100%;
-  max-width: 100%;
+  // margin:auto;
+  // max-height: 100%;
+  // max-width: 100%;
   position: absolute;
   right: 0;
   top:0;
   vertical-align: middle;
-  &.stretched {
-    height: 100%;
-    object-fit: contain;
-    width: 100%;
-  }
+  // &.stretched {
+  //   height: 100%;
+  //   object-fit: contain;
+  //   width: 100%;
+  // }
 }
 .control-bar {
   bottom: 0;

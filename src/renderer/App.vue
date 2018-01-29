@@ -99,41 +99,4 @@ $mdc-theme-secondary: #ff4081;
 
 @import '~material-components-web/material-components-web';
 @import '~material-design-icons/iconfont/material-icons.css';
-@import "~@material/theme/_color-palette.scss";
-
-::-webkit-scrollbar {
-  -webkit-appearance: none;
-  border-left-color: $material-color-grey-300;
-  border-left-style: solid;
-  border-left-width: 1px;
-  width: 14px;
-}
-::-webkit-scrollbar-thumb {
-  background-color: $material-color-grey-300;
-  &:hover {
-    background-color: $material-color-grey-400;
-  }
-  &:active {
-    background-color: $material-color-grey-500;
-  }
-}
-
-.mdc-theme--dark {
-  color: white;
-  &.mdc-theme--background, .mdc-theme--background {
-    background-color: #303030;
-  }
-  ::-webkit-scrollbar {
-    border-left-color: $material-color-grey-600;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: $material-color-grey-600;
-    &:hover {
-      background-color: $material-color-grey-500;
-    }
-    &:active {
-      background-color: $material-color-grey-400;
-    }
-  }
-}
 </style>
