@@ -9,7 +9,7 @@
       <span>{{ error.message }}</span>
     </div>
     <div class="wrapper" v-else>
-      <img :src="currentFile.path" :class="imageClasses" @error="loadError" />
+      <img :src="currentFile.path" :class="imageClasses" :style="styles" @load="load" @error="loadError" />
     </div>
     <control-bar :class="controlBarClasses" />
   </div>
@@ -26,16 +26,26 @@ export default {
   data () {
     return {
       hasLoadError: false,
-      controlBarClasses: {}
+      controlBarClasses: {},
+      width: 0,
+      height: 0
     }
   },
   mounted () {
     this.showControlBar()
+    this.height = this.$el.clientHeight
+    this.width = this.$el.clientWidth
   },
   computed: {
     imageClasses () {
       return {
         stretched: this.imageStretched
+      }
+    },
+    styles () {
+      return {
+        height: this.height + 'px',
+        width: this.width + 'px'
       }
     },
     ...mapState('viewer', {
@@ -55,6 +65,10 @@ export default {
     ])
   },
   methods: {
+    load (e) {
+      this.height = e.target.naturalHeight
+      this.width = e.target.naturalWidth
+    },
     loadError (e) {
       this.hasLoadError = true
     },
@@ -168,7 +182,7 @@ export default {
 img {
   bottom:0;
   left: 0;
-  // margin:auto;
+  margin: auto;
   // max-height: 100%;
   // max-width: 100%;
   position: absolute;
