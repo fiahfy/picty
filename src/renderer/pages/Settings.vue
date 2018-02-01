@@ -12,7 +12,7 @@
     <div>
       <mdc-form-field>
         <mdc-checkbox id="image-stretched" v-model="imageStretched" />
-        <label for="image-stretched">Stretch image</label>
+        <label for="image-stretched">Stretch small image</label>
       </mdc-form-field>
     </div>
     <template v-if="fullScreenAvailable">

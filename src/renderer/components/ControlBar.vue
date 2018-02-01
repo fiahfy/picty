@@ -15,7 +15,20 @@
         <mdc-icon icon="skip_next" />
       </mdc-button>
       <mdc-slider v-model="page" :min="1" :max="maxPage" />
-      <div class="page">{{ page }} / {{ maxPage }}</div>
+      <div>{{ page }} / {{ maxPage }}</div>
+      <mdc-button
+        title="Close"
+        @click="dismiss"
+      >
+        <mdc-icon icon="zoom_in" />
+      </mdc-button>
+      <div>100%</div>
+      <mdc-button
+        title="Close"
+        @click="dismiss"
+      >
+        <mdc-icon icon="zoom_out" />
+      </mdc-button>
       <template v-if="fullScreenAvailable">
         <mdc-button
           title="Exit fullscreen"
@@ -120,7 +133,7 @@ export default {
 .mdc-slider {
   margin-left: 16px;
 }
-.page {
+.container>div {
   color: white;
   line-height: 48px;
   margin: 0 16px;

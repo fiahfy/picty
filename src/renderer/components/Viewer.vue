@@ -9,7 +9,13 @@
       <span>{{ error.message }}</span>
     </div>
     <div class="wrapper" v-else>
-      <img :src="currentFile.path" :class="imageClasses" :style="styles" @load="load" @error="loadError" />
+      <img
+        :src="currentFile.path"
+        :class="imageClasses"
+        :style="styles"
+        @load="load"
+        @error="loadError"
+      />
     </div>
     <control-bar :class="controlBarClasses" />
   </div>
@@ -33,19 +39,20 @@ export default {
   },
   mounted () {
     this.showControlBar()
-    this.height = this.$el.clientHeight
-    this.width = this.$el.clientWidth
+    // this.height = this.$el.clientHeight
+    // this.width = this.$el.clientWidth
   },
   computed: {
-    imageClasses () {
-      return {
-        stretched: this.imageStretched
-      }
-    },
     styles () {
       return {
-        height: this.height + 'px',
-        width: this.width + 'px'
+        // height: this.height + 'px',
+        // width: this.width + 'px'
+      }
+    },
+    imageClasses () {
+      return {
+        reset: true,
+        stretched: this.imageStretched
       }
     },
     ...mapState('viewer', {
@@ -66,8 +73,21 @@ export default {
   },
   methods: {
     load (e) {
-      this.height = e.target.naturalHeight
-      this.width = e.target.naturalWidth
+      const maxHeight = this.$el.clientHeight
+      const maxWidth = this.$el.clientWidth
+      const imageHeight = e.target.naturalHeight
+      const imageWidth = e.target.naturalWidth
+      const scaleY = maxHeight / imageHeight
+      const scaleX = maxWidth / imageWidth
+      const scale = scaleX < scaleY ? scaleX : scaleY
+console.log(scale, this.imageStretched)
+      if (scale < 1 || this.imageStretched) {
+        this.height = imageHeight * scale
+        this.width = imageWidth * scale
+      } else {
+        this.height = imageHeight
+        this.width = imageWidth
+      }
     },
     loadError (e) {
       this.hasLoadError = true
@@ -115,6 +135,8 @@ export default {
   watch: {
     currentFile () {
       this.hasLoadError = false
+      this.height = 0
+      this.width = 0
     }
   }
 }
@@ -182,23 +204,29 @@ export default {
 img {
   bottom:0;
   left: 0;
-  margin: auto;
-  // max-height: 100%;
-  // max-width: 100%;
   position: absolute;
   right: 0;
   top:0;
   vertical-align: middle;
-  // &.stretched {
-  //   height: 100%;
-  //   object-fit: contain;
-  //   width: 100%;
-  // }
+  &.reset {
+    margin: auto;
+    max-height: 100%;
+    max-width: 100%;
+  }
+  &.stretched {
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+  }
+
 }
 .control-bar {
   bottom: 0;
   left: 0;
   position: absolute;
   right: 0;
+}
+::-webkit-scrollbar {
+  display: none;
 }
 </style>
