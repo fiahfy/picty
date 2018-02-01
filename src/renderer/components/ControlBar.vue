@@ -4,12 +4,14 @@
     <div class="container">
       <mdc-button
         title="View previous image"
+        class="previous"
         @click="viewPreviousImage"
       >
         <mdc-icon icon="skip_previous" />
       </mdc-button>
       <mdc-button
         title="View next image"
+        class="next"
         @click="viewNextImage"
       >
         <mdc-icon icon="skip_next" />
@@ -22,7 +24,7 @@
       >
         <mdc-icon icon="zoom_in" />
       </mdc-button>
-      <div>100%</div>
+      <div class="scale">100%</div>
       <mdc-button
         title="Close"
         @click="dismiss"
@@ -117,28 +119,28 @@ export default {
 .container {
   display: flex;
 }
-.mdc-button {
+.container>.mdc-button {
   border-radius: 0;
   height: auto;
   line-height: initial;
   margin: 8px;
   min-width: 32px;
   padding: 0;
-  &:not(:first-child) {
-    margin-left: 0px;
-  }
   @include mdc-button-ink-color(white);
   @include mdc-states(white);
-}
-.mdc-slider {
-  margin-left: 16px;
 }
 .container>div {
   color: white;
   line-height: 48px;
-  margin: 0 16px;
+  margin: 0 8px;
   vertical-align: middle;
   white-space: nowrap;
   z-index: 1;
+}
+.container>.previous {
+  margin-right: 0;
+}
+.container>.scale {
+  margin: 0;
 }
 </style>
