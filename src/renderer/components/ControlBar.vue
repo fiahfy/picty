@@ -19,17 +19,10 @@
       <mdc-slider v-model="page" :min="1" :max="maxPage" />
       <div>{{ page }} / {{ maxPage }}</div>
       <mdc-button
-        title="Close"
-        @click="dismiss"
+        title="Zoom"
+        @click="toggleZoomMenu"
       >
         <mdc-icon icon="zoom_in" />
-      </mdc-button>
-      <div class="scale">100%</div>
-      <mdc-button
-        title="Close"
-        @click="dismiss"
-      >
-        <mdc-icon icon="zoom_out" />
       </mdc-button>
       <template v-if="fullScreenAvailable">
         <mdc-button
@@ -54,6 +47,24 @@
         <mdc-icon icon="close" />
       </mdc-button>
     </div>
+    <div class="zoom-menu" :class="zoomMenuClasses">
+      <div class="background" />
+      <div class="container">
+        <mdc-button
+          title="Zoom in"
+          @click="zoomIn"
+        >
+          <mdc-icon icon="zoom_in" />
+        </mdc-button>
+        <div class="scale">{{ scale }}%</div>
+        <mdc-button
+          title="Zoom out"
+          @click="zoomOut"
+        >
+          <mdc-icon icon="zoom_out" />
+        </mdc-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -69,6 +80,11 @@ export default {
     MdcIcon,
     MdcSlider
   },
+  data () {
+    return {
+      zoomMenuHidden: true
+    }
+  },
   computed: {
     page: {
       get () {
@@ -78,17 +94,27 @@ export default {
         this.$store.commit('viewer/setCurrentIndex', { currentIndex: value - 1 })
       }
     },
+    zoomMenuClasses () {
+      return {
+        'fade-in': !this.zoomMenuHidden,
+        'fade-out': this.zoomMenuHidden
+      }
+    },
     ...mapState([
       'fullScreen'
     ]),
     ...mapState('viewer', {
-      maxPage: state => state.files.length
+      maxPage: state => state.files.length,
+      scale: state => state.scale
     }),
     ...mapGetters([
       'fullScreenAvailable'
     ])
   },
   methods: {
+    toggleZoomMenu () {
+      this.zoomMenuHidden = !this.zoomMenuHidden
+    },
     ...mapActions([
       'enterFullScreen',
       'leaveFullScreen'
@@ -96,15 +122,39 @@ export default {
     ...mapActions('viewer', [
       'dismiss',
       'viewPreviousImage',
-      'viewNextImage'
+      'viewNextImage',
+      'zoomIn',
+      'zoomOut'
     ])
   }
 }
 </script>
 
 <style scoped lang="scss">
+@import "~@material/animation/functions";
 @import "~@material/button/mixins";
 @import "~@material/ripple/mixins";
+
+@keyframes fade-in {
+  0% {
+    visibility: hidden;
+    opacity: 0;
+  }
+  100% {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+@keyframes fade-out {
+  0% {
+    visibility: visible;
+    opacity: 1;
+  }
+  100% {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
 
 .background {
   background-color: black;
@@ -142,5 +192,16 @@ export default {
 }
 .container>.scale {
   margin: 0;
+}
+.zoom-menu {
+  bottom: 56px;
+  position:absolute;
+  right: 8px;
+}
+.fade-in {
+  animation: mdc-animation-enter(fade-in, 350ms) forwards;
+}
+.fade-out {
+  animation: mdc-animation-enter(fade-out, 350ms) forwards;
 }
 </style>

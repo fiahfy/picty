@@ -7,7 +7,8 @@ export default {
     error: null,
     display: false,
     files: [],
-    currentFile: null
+    currentFile: null,
+    scale: 0
   },
   actions: {
     showSelectedFile ({ dispatch, rootState }) {
@@ -72,6 +73,20 @@ export default {
       }
       const currentFile = state.files[index]
       commit('setCurrentFile', { currentFile })
+    },
+    zoomIn ({ commit, state }) {
+      const zooms = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
+      const scale = zooms.find((zoom) => {
+        return zoom > state.scale
+      }) || state.scale
+      commit('setScale', { scale })
+    },
+    zoomOut ({ commit, state }) {
+      const zooms = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
+      const scale = zooms.reverse().find((zoom) => {
+        return zoom < state.scale
+      }) || state.scale
+      commit('setScale', { scale })
     }
   },
   mutations: {
@@ -89,6 +104,9 @@ export default {
     },
     setCurrentIndex (state, { currentIndex }) {
       state.currentFile = state.files[currentIndex]
+    },
+    setScale (state, { scale }) {
+      state.scale = scale
     }
   },
   getters: {

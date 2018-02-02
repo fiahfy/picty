@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 import ControlBar from '../components/ControlBar'
 
 export default {
@@ -79,15 +79,19 @@ export default {
       const imageWidth = e.target.naturalWidth
       const scaleY = maxHeight / imageHeight
       const scaleX = maxWidth / imageWidth
-      const scale = scaleX < scaleY ? scaleX : scaleY
-console.log(scale, this.imageStretched)
+      let scale = scaleX < scaleY ? scaleX : scaleY
+// console.log(scale, this.imageStretched)
       if (scale < 1 || this.imageStretched) {
-        this.height = imageHeight * scale
-        this.width = imageWidth * scale
+        // this.setScale(scale)
+        // this.height = imageHeight * scale
+        // this.width = imageWidth * scale
       } else {
-        this.height = imageHeight
-        this.width = imageWidth
+        // this.setScale(scale)
+        // this.height = imageHeight
+        // this.width = imageWidth
+        scale = 1
       }
+      this.setScale({ scale })
     },
     loadError (e) {
       this.hasLoadError = true
@@ -123,9 +127,12 @@ console.log(scale, this.imageStretched)
         return
       }
       this.timer = setTimeout(() => {
-        this.controlBarClasses = ['fade-out']
+        // this.controlBarClasses = ['fade-out']
       }, 2000)
     },
+    ...mapMutations('viewer', [
+      'setScale'
+    ]),
     ...mapActions('viewer', [
       'dismiss',
       'viewPreviousImage',
