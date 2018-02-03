@@ -3,15 +3,15 @@
     <div class="background" />
     <div class="container">
       <mdc-button
+        class="icon previous"
         title="View previous image"
-        class="previous"
         @click="viewPreviousImage"
       >
         <mdc-icon icon="skip_previous" />
       </mdc-button>
       <mdc-button
+        class="icon next"
         title="View next image"
-        class="next"
         @click="viewNextImage"
       >
         <mdc-icon icon="skip_next" />
@@ -19,6 +19,7 @@
       <mdc-slider v-model="page" :min="1" :max="maxPage" />
       <div>{{ page }} / {{ maxPage }}</div>
       <mdc-button
+        class="icon"
         title="Zoom"
         @click="toggleZoomMenu"
       >
@@ -26,6 +27,7 @@
       </mdc-button>
       <template v-if="fullScreenAvailable">
         <mdc-button
+          class="icon"
           title="Exit fullscreen"
           @click="leaveFullScreen"
           v-if="fullScreen"
@@ -33,6 +35,7 @@
           <mdc-icon icon="fullscreen_exit" />
         </mdc-button>
         <mdc-button
+          class="icon"
           title="Fullscreen"
           @click="enterFullScreen"
           v-else
@@ -41,23 +44,26 @@
         </mdc-button>
       </template>
       <mdc-button
+        class="icon"
         title="Close"
         @click="dismiss"
       >
         <mdc-icon icon="close" />
       </mdc-button>
     </div>
-    <div class="zoom-menu" :class="zoomMenuClasses">
+    <div class="menu" :class="zoomMenuClasses">
       <div class="background" />
       <div class="container">
         <mdc-button
+          class="icon"
           title="Zoom in"
           @click="zoomIn"
         >
           <mdc-icon icon="zoom_in" />
         </mdc-button>
-        <div class="scale">{{ scale }}%</div>
+        <div class="scale">{{ zoom }}%</div>
         <mdc-button
+          class="icon"
           title="Zoom out"
           @click="zoomOut"
         >
@@ -103,32 +109,31 @@ export default {
         'fade-out': this.zoomMenuHidden
       }
     },
-    ...mapState([
-      'fullScreen'
-    ]),
-    ...mapState('viewer', {
-      maxPage: state => state.files.length,
-      scale: state => state.scale
+    zoom () {
+      return Math.floor(this.scale * 100)
+    },
+    ...mapState({
+      fullScreen: state => state.fullScreen,
+      maxPage: state => state.viewer.files.length,
+      scale: state => state.viewer.scale
     }),
-    ...mapGetters([
-      'fullScreenAvailable'
-    ])
+    ...mapGetters({
+      fullScreenAvailable: 'fullScreenAvailable'
+    })
   },
   methods: {
     toggleZoomMenu () {
       this.zoomMenuHidden = !this.zoomMenuHidden
     },
-    ...mapActions([
-      'enterFullScreen',
-      'leaveFullScreen'
-    ]),
-    ...mapActions('viewer', [
-      'dismiss',
-      'viewPreviousImage',
-      'viewNextImage',
-      'zoomIn',
-      'zoomOut'
-    ])
+    ...mapActions({
+      enterFullScreen: 'enterFullScreen',
+      leaveFullScreen: 'leaveFullScreen',
+      dismiss: 'viewer/dismiss',
+      viewPreviousImage: 'viewer/viewPreviousImage',
+      viewNextImage: 'viewer/viewNextImage',
+      zoomIn: 'viewer/zoomIn',
+      zoomOut: 'viewer/zoomOut'
+    })
   }
 }
 </script>
@@ -159,6 +164,13 @@ export default {
   }
 }
 
+.fade-in {
+  animation: mdc-animation-enter(fade-in, 350ms) forwards;
+}
+.fade-out {
+  animation: mdc-animation-enter(fade-out, 350ms) forwards;
+}
+
 .background {
   background-color: black;
   bottom: 0;
@@ -172,39 +184,30 @@ export default {
 .container {
   display: flex;
 }
-.container>.mdc-button {
-  border-radius: 0;
-  height: auto;
-  line-height: initial;
-  margin: 8px;
-  min-width: 32px;
-  padding: 0;
-  @include mdc-button-ink-color(white);
-  @include mdc-states(white);
-}
 .container>div {
   color: white;
   line-height: 48px;
-  margin: 0 8px;
-  vertical-align: middle;
+  margin: 0 12px;
+  vertical-align: bottom;
   white-space: nowrap;
   z-index: 1;
 }
-.container>.previous {
-  margin-right: 0;
-}
 .container>.scale {
-  margin: 0;
+  margin-left: 0;
+  text-align: center;
+  width: 35px;
 }
-.zoom-menu {
+.mdc-button {
+  margin: 6px 8px;
+  @include mdc-button-ink-color(white);
+  @include mdc-states(white);
+}
+.mdc-button:not(:first-child) {
+  margin-left: 0;
+}
+.menu {
   bottom: 56px;
   position:absolute;
   right: 8px;
-}
-.fade-in {
-  animation: mdc-animation-enter(fade-in, 350ms) forwards;
-}
-.fade-out {
-  animation: mdc-animation-enter(fade-out, 350ms) forwards;
 }
 </style>
