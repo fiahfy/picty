@@ -63,6 +63,9 @@
         >
           <mdc-icon icon="zoom_out" />
         </mdc-button>
+        <mdc-button>
+          Reset
+        </mdc-button>
       </div>
     </div>
   </div>

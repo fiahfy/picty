@@ -1,6 +1,7 @@
 <template>
   <div
     id="app"
+    class="mdc-theme--background"
     :class="classes"
     @dragover.prevent
     @drop.prevent="drop"
@@ -10,8 +11,8 @@
       <activity-bar />
       <div class="content">
         <router-view />
+        <viewer v-if="display" />
       </div>
-      <viewer v-if="display" />
     </div>
     <mdc-snackbar :message="message" />
   </div>
@@ -37,22 +38,17 @@ export default {
   computed: {
     classes () {
       return {
-        'mdc-theme--background': true,
         'mdc-theme--dark': this.darkTheme
       }
     },
-    ...mapState([
-      'message'
-    ]),
-    ...mapState('viewer', [
-      'display'
-    ]),
-    ...mapState('settings', [
-      'darkTheme'
-    ]),
-    ...mapGetters([
-      'titleBar'
-    ])
+    ...mapState({
+      message: state => state.message,
+      display: state => state.viewer.display,
+      darkTheme: state => state.settings.darkTheme
+    }),
+    ...mapGetters({
+      titleBar: 'titleBar'
+    })
   },
   methods: {
     drop (e) {
@@ -63,9 +59,9 @@ export default {
       const filepathes = files.map(file => file.path)
       this.open({ filepathes })
     },
-    ...mapActions([
-      'open'
-    ])
+    ...mapActions({
+      open: 'open'
+    })
   }
 }
 </script>
@@ -77,7 +73,6 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   font-size: small;
   height: 100%;
-  text-align: center;
 }
 .container {
   display: flex;
@@ -86,9 +81,6 @@ export default {
   position: relative;
 }
 .content {
-  flex: 1;
-}
-.viewer {
   flex: 1;
 }
 </style>

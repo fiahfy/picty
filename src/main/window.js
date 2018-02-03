@@ -3,8 +3,8 @@ import windowStateKeeper from 'electron-window-state'
 import MenuBuilder from './menu-builder'
 
 export default class Window {
-  constructor (application) {
-    this.application = application
+  constructor (app) {
+    this.app = app
   }
   open () {
     const windowState = windowStateKeeper({
@@ -22,12 +22,12 @@ export default class Window {
     const builder = new MenuBuilder(this.browserWindow)
     builder.build()
 
-    this.handleEvents()
+    this.addEventListeners()
   }
-  handleEvents () {
+  addEventListeners () {
     this.browserWindow.on('closed', () => {
       this.browserWindow = null
-      this.application.removeWindow()
+      this.app.removeWindow()
     })
     this.browserWindow.on('enter-full-screen', () => {
       this.browserWindow.webContents.send('enterFullScreen')

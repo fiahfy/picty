@@ -6,7 +6,7 @@
     @mousemove="mousemove"
   >
     <div class="error" v-if="error">
-      <span>{{ error.message }}</span>
+      {{ error.message }}
     </div>
     <div class="wrapper" v-else>
       <img
@@ -55,21 +55,19 @@ export default {
         stretched: this.imageStretched
       }
     },
-    ...mapState('viewer', {
-      error (state) {
-        if (state.error) {
-          return state.error
+    ...mapState({
+      error: function (state) {
+        if (state.viewer.error) {
+          return state.viewer.error
         }
         if (this.hasLoadError) {
           return new Error('Image Load Failure')
         }
         return null
       },
-      currentFile: 'currentFile'
-    }),
-    ...mapState('settings', [
-      'imageStretched'
-    ])
+      currentFile: state => state.viewer.currentFile,
+      imageStretched: state => state.settings.imageStretched
+    })
   },
   methods: {
     load (e) {
@@ -130,14 +128,14 @@ export default {
         // this.controlBarClasses = ['fade-out']
       }, 2000)
     },
-    ...mapMutations('viewer', [
-      'setScale'
-    ]),
-    ...mapActions('viewer', [
-      'dismiss',
-      'viewPreviousImage',
-      'viewNextImage'
-    ])
+    ...mapMutations({
+      setScale: 'viewer/setScale'
+    }),
+    ...mapActions({
+      dismiss: 'viewer/dismiss',
+      viewPreviousImage: 'viewer/viewPreviousImage',
+      viewNextImage: 'viewer/viewNextImage'
+    })
   },
   watch: {
     currentFile () {
@@ -190,15 +188,11 @@ export default {
   user-select: none;
 }
 .error {
-  display: table;
+  align-items: center;
+  display: flex;
   height: 100%;
-  vertical-align: middle;
+  justify-content: center;
   width: 100%;
-  span {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-  }
 }
 .wrapper {
   bottom:0;

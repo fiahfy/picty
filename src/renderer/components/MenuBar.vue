@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcListItem from '../components/MdcListItem'
@@ -114,15 +114,12 @@ export default {
         this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
       }
     },
-    ...mapState('explorer', [
-      'selectedFile'
-    ]),
-    ...mapGetters('explorer', [
-      'backDirectories',
-      'forwardDirectories',
-      'canBackDirectory',
-      'canForwardDirectory'
-    ])
+    ...mapGetters({
+      backDirectories: 'explorer/backDirectories',
+      forwardDirectories: 'explorer/forwardDirectories',
+      canBackDirectory: 'explorer/canBackDirectory',
+      canForwardDirectory: 'explorer/canForwardDirectory'
+    })
   },
   methods: {
     keyup (e) {
@@ -153,18 +150,15 @@ export default {
     mouseup (e) {
       e.target.click()
     },
-    ...mapActions('explorer', [
-      'changeDirectory',
-      'changeParentDirectory',
-      'changeHomeDirectory',
-      'refreshDirectory',
-      'backDirectory',
-      'forwardDirectory',
-      'openDirectory'
-    ]),
-    ...mapActions('viewer', [
-      'showSelectedFile'
-    ])
+    ...mapActions({
+      changeDirectory: 'explorer/changeDirectory',
+      changeParentDirectory: 'explorer/changeParentDirectory',
+      changeHomeDirectory: 'explorer/changeHomeDirectory',
+      backDirectory: 'explorer/backDirectory',
+      forwardDirectory: 'explorer/forwardDirectory',
+      openDirectory: 'explorer/openDirectory',
+      showSelectedFile: 'viewer/showSelectedFile'
+    })
   },
   watch: {
     backSelected (value) {

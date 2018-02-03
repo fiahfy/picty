@@ -13,7 +13,7 @@
           >
             <span>Name</span>
             <mdc-icon
-              :icon="sortIcon"
+              :icon="icon"
               v-if="sortOption.key === 'name'"
             />
           </mdc-table-header-column>
@@ -24,7 +24,7 @@
           >
             <span>Size</span>
             <mdc-icon
-              :icon="sortIcon"
+              :icon="icon"
               v-if="sortOption.key === 'size'"
             />
           </mdc-table-header-column>
@@ -35,7 +35,7 @@
           >
             <span>Date Modified</span>
             <mdc-icon
-              :icon="sortIcon"
+              :icon="icon"
               v-if="sortOption.key === 'date_modified'"
             />
           </mdc-table-header-column>
@@ -92,19 +92,19 @@ export default {
     this.$el.removeEventListener('scroll', this.scroll)
   },
   computed: {
-    sortIcon () {
+    icon () {
       return this.sortOption.order === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
-    ...mapState('explorer', [
-      'directory',
-      'files',
-      'selectedFile'
-    ]),
-    ...mapGetters('explorer', [
-      'selectedIndex',
-      'scrollTop',
-      'sortOption'
-    ])
+    ...mapState({
+      directory: state => state.explorer.directory,
+      files: state => state.explorer.files,
+      selectedFile: state => state.explorer.selectedFile
+    }),
+    ...mapGetters({
+      selectedIndex: 'explorer/selectedIndex',
+      scrollTop: 'explorer/scrollTop',
+      sortOption: 'explorer/sortOption'
+    })
   },
   methods: {
     selected (index) {
@@ -144,18 +144,16 @@ export default {
         accelerator: 'Enter'
       }])
     },
-    ...mapActions('explorer', [
-      'changeSortKey',
-      'selectFile',
-      'selectPreviousFile',
-      'selectNextFile',
-      'scroll',
-      'action'
-    ]),
-    ...mapActions('viewer', [
-      'showSelectedFile',
-      'showFile'
-    ])
+    ...mapActions({
+      changeSortKey: 'explorer/changeSortKey',
+      selectFile: 'explorer/selectFile',
+      selectPreviousFile: 'explorer/selectPreviousFile',
+      selectNextFile: 'explorer/selectNextFile',
+      scroll: 'explorer/scroll',
+      action: 'explorer/action',
+      showSelectedFile: 'viewer/showSelectedFile',
+      showFile: 'viewer/showFile'
+    })
   },
   watch: {
     directory () {

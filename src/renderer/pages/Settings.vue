@@ -61,9 +61,9 @@ export default {
         this.$store.commit('settings/setFullScreen', { fullScreen: value })
       }
     },
-    ...mapGetters([
-      'fullScreenAvailable'
-    ])
+    ...mapGetters({
+      fullScreenAvailable: 'fullScreenAvailable'
+    })
   }
 }
 </script>
@@ -71,10 +71,6 @@ export default {
 <style scoped lang="scss">
 .settings {
   margin: 15px;
-  text-align: left;
   user-select: none;
-}
-.settings>div {
-  margin-top: 16px;
 }
 </style>
