@@ -2,14 +2,18 @@
   <div
     class="viewer mdc-theme--background"
     tabindex="-1"
+    :class="classes"
     @keydown="keydown"
     @mousemove="mousemove"
+    @mousedown="mousedown"
+    @mouseup="mouseup"
   >
     <div class="error" v-if="error">
       {{ error.message }}
     </div>
-    <div class="wrapper" v-else>
+    <div class="wrapper" ref="wrapper" v-else>
       <img
+        draggable="false"
         :src="currentFile.path"
         :class="imageClasses"
         :style="styles"
@@ -22,7 +26,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import ControlBar from '../components/ControlBar'
 
 export default {
@@ -32,28 +36,30 @@ export default {
   data () {
     return {
       hasLoadError: false,
+      classes: {
+        hidden: false
+      },
+      imageClasses: {
+        contain: true,
+        scaling: false,
+        stretched: this.imageStretched
+      },
       controlBarClasses: {},
-      width: 0,
-      height: 0
+      originalSize: {
+        width: 0,
+        height: 0
+      }
     }
   },
   mounted () {
     this.showControlBar()
-    // this.height = this.$el.clientHeight
-    // this.width = this.$el.clientWidth
   },
   computed: {
     styles () {
-      return {
-        // height: this.height + 'px',
-        // width: this.width + 'px'
-      }
-    },
-    imageClasses () {
-      return {
-        reset: true,
-        stretched: this.imageStretched
-      }
+      return this.scaling ? {
+        height: this.originalSize.height * this.scale + 'px',
+        width: this.originalSize.width * this.scale + 'px'
+      } : {}
     },
     ...mapState({
       error: function (state) {
@@ -66,6 +72,8 @@ export default {
         return null
       },
       currentFile: state => state.viewer.currentFile,
+      scale: state => state.viewer.scale,
+      scaling: state => state.viewer.scaling,
       imageStretched: state => state.settings.imageStretched
     })
   },
@@ -78,18 +86,14 @@ export default {
       const scaleY = maxHeight / imageHeight
       const scaleX = maxWidth / imageWidth
       let scale = scaleX < scaleY ? scaleX : scaleY
-// console.log(scale, this.imageStretched)
-      if (scale < 1 || this.imageStretched) {
-        // this.setScale(scale)
-        // this.height = imageHeight * scale
-        // this.width = imageWidth * scale
-      } else {
-        // this.setScale(scale)
-        // this.height = imageHeight
-        // this.width = imageWidth
+      if (scale >= 1 && !this.imageStretched) {
         scale = 1
       }
-      this.setScale({ scale })
+      this.originalSize = {
+        height: imageHeight,
+        width: imageWidth
+      }
+      this.initZoom({ scale })
     },
     loadError (e) {
       this.hasLoadError = true
@@ -113,10 +117,28 @@ export default {
           break
       }
     },
-    mousemove () {
+    mousedown (e) {
+      this.scrolling = true
+      this.classes.scrolling = true
+    },
+    mouseup (e) {
+      this.scrolling = false
+      this.classes.scrolling = false
+      this.pos = null
+    },
+    mousemove (e) {
+      if (this.scrolling) {
+        const pos = {x: e.clientX, y: e.clientY}
+        if (this.pos) {
+          this.$refs.wrapper.scrollTop += this.pos.y - e.clientY
+          this.$refs.wrapper.scrollLeft += this.pos.x - e.clientX
+        }
+        this.pos = pos
+      }
       this.showControlBar()
     },
     showControlBar () {
+      this.classes.hidden = false
       this.controlBarClasses = ['fade-in']
       if (this.timer) {
         clearTimeout(this.timer)
@@ -125,16 +147,15 @@ export default {
         return
       }
       this.timer = setTimeout(() => {
-        // this.controlBarClasses = ['fade-out']
+        this.classes.hidden = true
+        this.controlBarClasses = ['fade-out']
       }, 2000)
     },
-    ...mapMutations({
-      setScale: 'viewer/setScale'
-    }),
     ...mapActions({
       dismiss: 'viewer/dismiss',
       viewPreviousImage: 'viewer/viewPreviousImage',
-      viewNextImage: 'viewer/viewNextImage'
+      viewNextImage: 'viewer/viewNextImage',
+      initZoom: 'viewer/initZoom'
     })
   },
   watch: {
@@ -142,6 +163,18 @@ export default {
       this.hasLoadError = false
       this.height = 0
       this.width = 0
+    },
+    scaling (value) {
+      this.imageClasses = {
+        ...this.imageClasses,
+        scaling: value
+      }
+    },
+    scale (value) {
+      this.imageClasses = {
+        ...this.imageClasses,
+        contain: this.$el.clientHeight > this.originalSize.height * value
+      }
     }
   }
 }
@@ -179,13 +212,20 @@ export default {
 }
 
 .viewer {
-  bottom:0;
+  bottom: 0;
+  cursor: pointer;
   left: 0;
   outline: none;
   position: absolute;
   right: 0;
   top:0;
   user-select: none;
+  &.hidden {
+    cursor: none;
+  }
+  &.scrolling {
+    cursor: move;
+  }
 }
 .error {
   align-items: center;
@@ -208,18 +248,18 @@ img {
   position: absolute;
   right: 0;
   top:0;
-  vertical-align: middle;
-  &.reset {
-    margin: auto;
+  &.contain {
+    margin: auto
+  }
+  &:not(.scaling) {
     max-height: 100%;
     max-width: 100%;
+    &.stretched {
+      height: 100%;
+      object-fit: contain;
+      width: 100%;
+    }
   }
-  &.stretched {
-    height: 100%;
-    object-fit: contain;
-    width: 100%;
-  }
-
 }
 .control-bar {
   bottom: 0;

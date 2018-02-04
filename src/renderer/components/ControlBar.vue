@@ -61,7 +61,7 @@
         >
           <mdc-icon icon="zoom_in" />
         </mdc-button>
-        <div class="scale">{{ zoom }}%</div>
+        <div class="scale">{{ scale }}%</div>
         <mdc-button
           class="icon"
           title="Zoom out"
@@ -69,7 +69,10 @@
         >
           <mdc-icon icon="zoom_out" />
         </mdc-button>
-        <mdc-button>
+        <mdc-button
+          title="Reset"
+          @click="resetZoom"
+        >
           Reset
         </mdc-button>
       </div>
@@ -109,13 +112,10 @@ export default {
         'fade-out': this.zoomMenuHidden
       }
     },
-    zoom () {
-      return Math.floor(this.scale * 100)
-    },
     ...mapState({
       fullScreen: state => state.fullScreen,
       maxPage: state => state.viewer.files.length,
-      scale: state => state.viewer.scale
+      scale: state => Math.floor(state.viewer.scale * 100)
     }),
     ...mapGetters({
       fullScreenAvailable: 'fullScreenAvailable'
@@ -132,7 +132,8 @@ export default {
       viewPreviousImage: 'viewer/viewPreviousImage',
       viewNextImage: 'viewer/viewNextImage',
       zoomIn: 'viewer/zoomIn',
-      zoomOut: 'viewer/zoomOut'
+      zoomOut: 'viewer/zoomOut',
+      resetZoom: 'viewer/resetZoom'
     })
   }
 }

@@ -1,6 +1,8 @@
 import path from 'path'
 import { getFile, listFiles, isImage } from '../utils/file'
 
+const scales = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
+
 export default {
   namespaced: true,
   state: {
@@ -8,7 +10,9 @@ export default {
     display: false,
     files: [],
     currentFile: null,
-    scale: 0
+    originalScale: 0,
+    scale: 0,
+    scaling: false
   },
   actions: {
     showSelectedFile ({ dispatch, rootState }) {
@@ -74,19 +78,28 @@ export default {
       const currentFile = state.files[index]
       commit('setCurrentFile', { currentFile })
     },
+    initZoom ({ commit, state }, { scale }) {
+      commit('setScale', { scale })
+      commit('setOriginalScale', { originalScale: scale })
+      commit('setScaling', { scaling: false })
+    },
     zoomIn ({ commit, state }) {
-      const zooms = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
-      const scale = zooms.find((zoom) => {
-        return zoom > state.scale
+      const scale = scales.find((scale) => {
+        return scale > state.scale
       }) || state.scale
       commit('setScale', { scale })
+      commit('setScaling', { scaling: true })
     },
     zoomOut ({ commit, state }) {
-      const zooms = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
-      const scale = zooms.reverse().find((zoom) => {
-        return zoom < state.scale
+      const scale = scales.concat().reverse().find((scale) => {
+        return scale < state.scale
       }) || state.scale
       commit('setScale', { scale })
+      commit('setScaling', { scaling: true })
+    },
+    resetZoom ({ commit, state }) {
+      commit('setScale', { scale: state.originalScale })
+      commit('setScaling', { scaling: false })
     }
   },
   mutations: {
@@ -105,8 +118,14 @@ export default {
     setCurrentIndex (state, { currentIndex }) {
       state.currentFile = state.files[currentIndex]
     },
+    setOriginalScale (state, { originalScale }) {
+      state.originalScale = originalScale
+    },
     setScale (state, { scale }) {
       state.scale = scale
+    },
+    setScaling (state, { scaling }) {
+      state.scaling = scaling
     }
   },
   getters: {
