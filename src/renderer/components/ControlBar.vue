@@ -146,22 +146,22 @@ export default {
 
 @keyframes fade-in {
   0% {
-    visibility: hidden;
     opacity: 0;
+    visibility: hidden;
   }
   100% {
-    visibility: visible;
     opacity: 1;
+    visibility: visible;
   }
 }
 @keyframes fade-out {
   0% {
-    visibility: visible;
     opacity: 1;
+    visibility: visible;
   }
   100% {
-    visibility: hidden;
     opacity: 0;
+    visibility: hidden;
   }
 }
 

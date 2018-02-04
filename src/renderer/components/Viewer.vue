@@ -36,15 +36,10 @@ export default {
   data () {
     return {
       hasLoadError: false,
-      classes: {
-        hidden: false
-      },
-      imageClasses: {
-        contain: true,
-        scaling: false,
-        stretched: this.imageStretched
-      },
-      controlBarClasses: {},
+      scrolling: false,
+      controlBarHidden: false,
+      horizontalCentered: true,
+      verticalCentered: true,
       originalSize: {
         width: 0,
         height: 0
@@ -57,9 +52,29 @@ export default {
   computed: {
     styles () {
       return this.scaling ? {
-        height: this.originalSize.height * this.scale + 'px',
-        width: this.originalSize.width * this.scale + 'px'
+        width: this.originalSize.width * this.scale + 'px',
+        height: this.originalSize.height * this.scale + 'px'
       } : {}
+    },
+    classes () {
+      return {
+        hidden: this.controlBarHidden,
+        scrolling: this.scrolling
+      }
+    },
+    controlBarClasses () {
+      return {
+        'fade-in': !this.controlBarHidden,
+        'fade-out': this.controlBarHidden
+      }
+    },
+    imageClasses () {
+      return {
+        'horizontal-center': this.horizontalCentered,
+        'vertical-center': this.verticalCentered,
+        scaling: this.scaling,
+        stretched: this.imageStretched
+      }
     },
     ...mapState({
       error: function (state) {
@@ -79,19 +94,19 @@ export default {
   },
   methods: {
     load (e) {
-      const maxHeight = this.$el.clientHeight
       const maxWidth = this.$el.clientWidth
-      const imageHeight = e.target.naturalHeight
+      const maxHeight = this.$el.clientHeight
       const imageWidth = e.target.naturalWidth
-      const scaleY = maxHeight / imageHeight
+      const imageHeight = e.target.naturalHeight
       const scaleX = maxWidth / imageWidth
+      const scaleY = maxHeight / imageHeight
       let scale = scaleX < scaleY ? scaleX : scaleY
       if (scale >= 1 && !this.imageStretched) {
         scale = 1
       }
       this.originalSize = {
-        height: imageHeight,
-        width: imageWidth
+        width: imageWidth,
+        height: imageHeight
       }
       this.initZoom({ scale })
     },
@@ -119,27 +134,24 @@ export default {
     },
     mousedown (e) {
       this.scrolling = true
-      this.classes.scrolling = true
     },
     mouseup (e) {
       this.scrolling = false
-      this.classes.scrolling = false
-      this.pos = null
+      this.scrollPosition = null
     },
     mousemove (e) {
       if (this.scrolling) {
-        const pos = {x: e.clientX, y: e.clientY}
-        if (this.pos) {
-          this.$refs.wrapper.scrollTop += this.pos.y - e.clientY
-          this.$refs.wrapper.scrollLeft += this.pos.x - e.clientX
+        const position = { x: e.clientX, y: e.clientY }
+        if (this.scrollPosition) {
+          this.$refs.wrapper.scrollLeft += this.scrollPosition.x - position.x
+          this.$refs.wrapper.scrollTop += this.scrollPosition.y - position.y
         }
-        this.pos = pos
+        this.scrollPosition = position
       }
       this.showControlBar()
     },
     showControlBar () {
-      this.classes.hidden = false
-      this.controlBarClasses = ['fade-in']
+      this.controlBarHidden = false
       if (this.timer) {
         clearTimeout(this.timer)
       }
@@ -147,8 +159,7 @@ export default {
         return
       }
       this.timer = setTimeout(() => {
-        this.classes.hidden = true
-        this.controlBarClasses = ['fade-out']
+        this.controlBarHidden = true
       }, 2000)
     },
     ...mapActions({
@@ -161,20 +172,24 @@ export default {
   watch: {
     currentFile () {
       this.hasLoadError = false
-      this.height = 0
-      this.width = 0
     },
-    scaling (value) {
-      this.imageClasses = {
-        ...this.imageClasses,
-        scaling: value
-      }
-    },
-    scale (value) {
-      this.imageClasses = {
-        ...this.imageClasses,
-        contain: this.$el.clientHeight > this.originalSize.height * value
-      }
+    scale (newValue, oldValue) {
+      this.$nextTick(() => {
+        var offsetX = 0
+        if (newValue > oldValue && this.$el.clientWidth > this.originalSize.width * oldValue) {
+          offsetX = (this.$el.clientWidth - this.originalSize.width * oldValue) / 2
+        }
+        var offsetY = 0
+        if (newValue > oldValue && this.$el.clientHeight > this.originalSize.height * oldValue) {
+          offsetY = (this.$el.clientHeight - this.originalSize.height * oldValue) / 2
+        }
+
+        this.$refs.wrapper.scrollLeft += (newValue - oldValue) * this.originalSize.width / 2 - offsetX
+        this.$refs.wrapper.scrollTop += (newValue - oldValue) * this.originalSize.height / 2 - offsetY
+
+        this.horizontalCentered = this.$el.clientWidth >= this.originalSize.width * newValue
+        this.verticalCentered = this.$el.clientHeight >= this.originalSize.height * newValue
+      })
     }
   }
 }
@@ -185,22 +200,22 @@ export default {
 
 @keyframes fade-in {
   from {
-    transform: translateY(48px);
     opacity: 0;
+    transform: translateY(48px);
   }
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateY(0);
   }
 }
 @keyframes fade-out {
   from {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateY(0);
   }
   to {
-    transform: translateY(48px);
     opacity: 0;
+    transform: translateY(48px);
   }
 }
 
@@ -248,8 +263,13 @@ img {
   position: absolute;
   right: 0;
   top:0;
-  &.contain {
-    margin: auto
+  &.horizontal-center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  &.vertical-center {
+    margin-bottom: auto;
+    margin-top: auto;
   }
   &:not(.scaling) {
     max-height: 100%;
