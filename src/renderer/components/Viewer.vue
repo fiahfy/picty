@@ -36,7 +36,7 @@ export default {
   data () {
     return {
       hasLoadError: false,
-      scrolling: false,
+      dragging: false,
       horizontalCentered: true,
       verticalCentered: true,
       originalSize: {
@@ -59,7 +59,7 @@ export default {
     classes () {
       return {
         hidden: this.controlBarHidden === true,
-        scrolling: this.scrolling
+        dragging: this.dragging
       }
     },
     controlBarClasses () {
@@ -133,14 +133,18 @@ export default {
       }
     },
     mousedown (e) {
-      this.scrolling = true
+      this.dragging = true
     },
     mouseup (e) {
-      this.scrolling = false
+      this.dragging = false
       this.scrollPosition = null
     },
     mousemove (e) {
-      if (this.scrolling) {
+      this.showControlBar()
+      if (this.error) {
+        return
+      }
+      if (this.dragging) {
         const position = { x: e.clientX, y: e.clientY }
         if (this.scrollPosition) {
           this.$refs.wrapper.scrollLeft += this.scrollPosition.x - position.x
@@ -148,7 +152,6 @@ export default {
         }
         this.scrollPosition = position
       }
-      this.showControlBar()
     },
     showControlBar () {
       if (this.controlBarHidden === true) {
@@ -176,6 +179,9 @@ export default {
       this.hasLoadError = false
     },
     scale (newValue, oldValue) {
+      if (this.error) {
+        return
+      }
       this.$nextTick(() => {
         var offsetX = 0
         if (newValue > oldValue && this.$el.clientWidth > this.originalSize.width * oldValue) {
@@ -230,18 +236,17 @@ export default {
 
 .viewer {
   bottom: 0;
-  cursor: pointer;
   left: 0;
   outline: none;
   position: absolute;
   right: 0;
   top:0;
   user-select: none;
-  &.hidden {
+  &.hidden .wrapper {
     cursor: none;
   }
-  &.scrolling {
-    cursor: move;
+  &.dragging .wrapper {
+    cursor: -webkit-grabbing;
   }
 }
 .error {
@@ -253,6 +258,7 @@ export default {
 }
 .wrapper {
   bottom:0;
+  cursor: -webkit-grab;
   left: 0;
   overflow: auto;
   position: absolute;
