@@ -14,26 +14,26 @@ export default class Window {
 
     const options = { ...windowState, titleBarStyle: 'hidden' }
 
-    this.browserWindow = new BrowserWindow(options)
-    this.browserWindow.loadURL(`file://${__dirname}/app/index.html`)
+    this.win = new BrowserWindow(options)
+    this.win.loadURL(`file://${__dirname}/app/index.html`)
 
-    windowState.manage(this.browserWindow)
+    windowState.manage(this.win)
 
-    const builder = new MenuBuilder(this.browserWindow)
+    const builder = new MenuBuilder(this.win)
     builder.build()
 
     this.addEventListeners()
   }
   addEventListeners () {
-    this.browserWindow.on('closed', () => {
-      this.browserWindow = null
+    this.win.on('closed', () => {
+      this.win = null
       this.app.removeWindow()
     })
-    this.browserWindow.on('enter-full-screen', () => {
-      this.browserWindow.webContents.send('enterFullScreen')
+    this.win.on('enter-full-screen', () => {
+      this.win.webContents.send('enterFullScreen')
     })
-    this.browserWindow.on('leave-full-screen', () => {
-      this.browserWindow.webContents.send('leaveFullScreen')
+    this.win.on('leave-full-screen', () => {
+      this.win.webContents.send('leaveFullScreen')
     })
   }
 }
