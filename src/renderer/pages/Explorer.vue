@@ -3,7 +3,7 @@
     <menu-bar />
     <div class="container">
       <div class="error" v-if="error">
-        <span>{{ error.message }}</span>
+        {{ error.message }}
       </div>
       <file-list />
     </div>
@@ -20,9 +20,9 @@ export default {
     FileList,
     MenuBar
   },
-  computed: mapState('explorer', [
-    'error'
-  ])
+  computed: mapState({
+    error: state => state.explorer.error
+  })
 }
 </script>
 
@@ -39,19 +39,13 @@ export default {
   position: relative;
 }
 .error {
+  align-items: center;
   bottom: 0;
-  display: table;
-  height: 100%;
+  display: flex;
+  justify-content: center;
   left: 0;
   position: absolute;
   right: 0;
   top: 0;
-  vertical-align: middle;
-  width: 100%;
-  span {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-  }
 }
 </style>

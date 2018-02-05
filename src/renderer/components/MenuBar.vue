@@ -14,6 +14,7 @@
     <div class="row buttons">
       <mdc-menu-anchor>
         <mdc-button
+          class="icon"
           title="Back drectory"
           :disabled="!canBackDirectory"
           @click="backDirectory"
@@ -33,6 +34,7 @@
       </mdc-menu-anchor>
       <mdc-menu-anchor>
         <mdc-button
+          class="icon"
           title="Forward drectory"
           :disabled="!canForwardDirectory"
           @click="forwardDirectory"
@@ -51,12 +53,14 @@
         </mdc-simple-menu>
       </mdc-menu-anchor>
       <mdc-button
+        class="icon"
         title="Change parent drectory"
         @click="changeParentDirectory"
       >
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
+        class="icon"
         title="Change home drectory"
         @click="changeHomeDirectory"
       >
@@ -64,6 +68,7 @@
       </mdc-button>
       <div class="separator" />
       <mdc-button
+        class="icon"
         title="View"
         @click="showSelectedFile"
       >
@@ -71,6 +76,7 @@
       </mdc-button>
       <div class="separator" />
       <mdc-button
+        class="icon"
         title="Open current directory"
         @click="openDirectory"
       >
@@ -81,7 +87,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcListItem from '../components/MdcListItem'
@@ -114,15 +120,12 @@ export default {
         this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
       }
     },
-    ...mapState('explorer', [
-      'selectedFile'
-    ]),
-    ...mapGetters('explorer', [
-      'backDirectories',
-      'forwardDirectories',
-      'canBackDirectory',
-      'canForwardDirectory'
-    ])
+    ...mapGetters({
+      backDirectories: 'explorer/backDirectories',
+      forwardDirectories: 'explorer/forwardDirectories',
+      canBackDirectory: 'explorer/canBackDirectory',
+      canForwardDirectory: 'explorer/canForwardDirectory'
+    })
   },
   methods: {
     keyup (e) {
@@ -153,18 +156,15 @@ export default {
     mouseup (e) {
       e.target.click()
     },
-    ...mapActions('explorer', [
-      'changeDirectory',
-      'changeParentDirectory',
-      'changeHomeDirectory',
-      'refreshDirectory',
-      'backDirectory',
-      'forwardDirectory',
-      'openDirectory'
-    ]),
-    ...mapActions('viewer', [
-      'showSelectedFile'
-    ])
+    ...mapActions({
+      changeDirectory: 'explorer/changeDirectory',
+      changeParentDirectory: 'explorer/changeParentDirectory',
+      changeHomeDirectory: 'explorer/changeHomeDirectory',
+      backDirectory: 'explorer/backDirectory',
+      forwardDirectory: 'explorer/forwardDirectory',
+      openDirectory: 'explorer/openDirectory',
+      showSelectedFile: 'viewer/showSelectedFile'
+    })
   },
   watch: {
     backSelected (value) {
@@ -196,8 +196,19 @@ export default {
   display: flex;
   height: 40px;
 }
-.row>* {
+.directory {
+  .mdc-icon {
+    color: $material-color-blue-200;
+  }
+}
+.directory>* {
   margin: 4px;
+}
+.buttons {
+  text-align: left;
+}
+.buttons>* {
+  margin: 2px;
 }
 .separator {
   border-left-color: $material-color-grey-300;
@@ -207,14 +218,6 @@ export default {
   height: 100%;
   margin: 0;
 }
-.directory {
-  .mdc-icon {
-    color: $material-color-blue-200;
-  }
-}
-.buttons {
-  text-align: left;
-}
 .mdc-list-item {
   box-sizing: border-box;
   height: 41px;
@@ -222,13 +225,6 @@ export default {
 .mdc-text-field {
   border: none;
   height: 32px;
-}
-.mdc-button {
-  border-radius: 0;
-  height: auto;
-  line-height: initial;
-  min-width: 32px;
-  padding: 0;
 }
 .mdc-theme--dark {
   .row {

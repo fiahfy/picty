@@ -1,7 +1,7 @@
 <template>
   <div class="activity-bar">
     <ul>
-      <li :key="item.routeName" v-for="item in items">
+      <li :key="item.name" v-for="item in items">
         <mdc-button :title="item.title" @click="changeRoute({ name: item.name })">
           <mdc-icon :icon="item.icon" :class="item.classes" />
         </mdc-button>
@@ -24,8 +24,8 @@ export default {
   data () {
     return {
       items: [
-        { icon: 'list', name: 'explorer', title: title('explorer', 'CmdOrCtrl+Shift+E') },
-        { icon: 'settings', name: 'settings', title: title('settings', 'CmdOrCtrl+,') }
+        { name: 'explorer', icon: 'list', title: title('explorer', 'CmdOrCtrl+Shift+E') },
+        { name: 'settings', icon: 'settings', title: title('settings', 'CmdOrCtrl+,') }
       ]
     }
   },
@@ -34,18 +34,16 @@ export default {
   },
   methods: {
     updateItems (name) {
-      this.items = this.items.map(item => (
-        Object.assign({}, {
-          ...item,
-          classes: {
-            selected: item.name === name
-          }
-        })
-      ))
+      this.items = this.items.map(item => ({
+        ...item,
+        classes: {
+          selected: item.name === name
+        }
+      }))
     },
-    ...mapActions([
-      'changeRoute'
-    ])
+    ...mapActions({
+      changeRoute: 'changeRoute'
+    })
   },
   watch: {
     '$route' (to) { // eslint-disable-line object-shorthand

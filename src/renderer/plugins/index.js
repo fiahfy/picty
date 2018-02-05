@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import vueMoment from 'vue-moment'
 import vueLongPress from 'vue-long-press-directive'
+import vueMoment from 'vue-moment'
 
 Vue.use(vueMoment)
 

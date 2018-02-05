@@ -3,21 +3,31 @@
     <div class="background" />
     <div class="container">
       <mdc-button
+        class="icon previous"
         title="View previous image"
         @click="viewPreviousImage"
       >
         <mdc-icon icon="skip_previous" />
       </mdc-button>
       <mdc-button
+        class="icon next"
         title="View next image"
         @click="viewNextImage"
       >
         <mdc-icon icon="skip_next" />
       </mdc-button>
       <mdc-slider v-model="page" :min="1" :max="maxPage" />
-      <div class="page">{{ page }} / {{ maxPage }}</div>
+      <div>{{ page }} / {{ maxPage }}</div>
+      <mdc-button
+        class="icon"
+        title="Zoom"
+        @click="toggleZoomMenu"
+      >
+        <mdc-icon icon="zoom_in" />
+      </mdc-button>
       <template v-if="fullScreenAvailable">
         <mdc-button
+          class="icon"
           title="Exit fullscreen"
           @click="leaveFullScreen"
           v-if="fullScreen"
@@ -25,6 +35,7 @@
           <mdc-icon icon="fullscreen_exit" />
         </mdc-button>
         <mdc-button
+          class="icon"
           title="Fullscreen"
           @click="enterFullScreen"
           v-else
@@ -33,11 +44,38 @@
         </mdc-button>
       </template>
       <mdc-button
+        class="icon"
         title="Close"
         @click="dismiss"
       >
         <mdc-icon icon="close" />
       </mdc-button>
+    </div>
+    <div class="menu" :class="zoomMenuClasses">
+      <div class="background" />
+      <div class="container">
+        <mdc-button
+          class="icon"
+          title="Zoom in"
+          @click="zoomIn"
+        >
+          <mdc-icon icon="zoom_in" />
+        </mdc-button>
+        <div class="scale">{{ scale }}%</div>
+        <mdc-button
+          class="icon"
+          title="Zoom out"
+          @click="zoomOut"
+        >
+          <mdc-icon icon="zoom_out" />
+        </mdc-button>
+        <mdc-button
+          title="Reset"
+          @click="resetZoom"
+        >
+          Reset
+        </mdc-button>
+      </div>
     </div>
   </div>
 </template>
@@ -54,6 +92,11 @@ export default {
     MdcIcon,
     MdcSlider
   },
+  data () {
+    return {
+      zoomMenuHidden: null
+    }
+  },
   computed: {
     page: {
       get () {
@@ -63,33 +106,71 @@ export default {
         this.$store.commit('viewer/setCurrentIndex', { currentIndex: value - 1 })
       }
     },
-    ...mapState([
-      'fullScreen'
-    ]),
-    ...mapState('viewer', {
-      maxPage: state => state.files.length
+    zoomMenuClasses () {
+      return {
+        'fade-in': this.zoomMenuHidden === false,
+        'fade-out': this.zoomMenuHidden === true
+      }
+    },
+    ...mapState({
+      fullScreen: state => state.fullScreen,
+      maxPage: state => state.viewer.files.length,
+      scale: state => Math.floor(state.viewer.scale * 100)
     }),
-    ...mapGetters([
-      'fullScreenAvailable'
-    ])
+    ...mapGetters({
+      fullScreenAvailable: 'fullScreenAvailable'
+    })
   },
   methods: {
-    ...mapActions([
-      'enterFullScreen',
-      'leaveFullScreen'
-    ]),
-    ...mapActions('viewer', [
-      'dismiss',
-      'viewPreviousImage',
-      'viewNextImage'
-    ])
+    toggleZoomMenu () {
+      this.zoomMenuHidden = this.zoomMenuHidden === null ? false : !this.zoomMenuHidden
+    },
+    ...mapActions({
+      enterFullScreen: 'enterFullScreen',
+      leaveFullScreen: 'leaveFullScreen',
+      dismiss: 'viewer/dismiss',
+      viewPreviousImage: 'viewer/viewPreviousImage',
+      viewNextImage: 'viewer/viewNextImage',
+      zoomIn: 'viewer/zoomIn',
+      zoomOut: 'viewer/zoomOut',
+      resetZoom: 'viewer/resetZoom'
+    })
   }
 }
 </script>
 
 <style scoped lang="scss">
+@import "~@material/animation/functions";
 @import "~@material/button/mixins";
 @import "~@material/ripple/mixins";
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.fade-in {
+  animation: mdc-animation-enter(fade-in, 350ms) forwards;
+}
+.fade-out {
+  animation: mdc-animation-enter(fade-out, 350ms) forwards;
+}
 
 .background {
   background-color: black;
@@ -104,28 +185,32 @@ export default {
 .container {
   display: flex;
 }
+.container>div {
+  color: white;
+  line-height: 48px;
+  margin: 0 12px;
+  vertical-align: bottom;
+  white-space: nowrap;
+  z-index: 1;
+}
+.container>.scale {
+  margin-left: 0;
+  text-align: center;
+  width: 35px;
+}
 .mdc-button {
-  border-radius: 0;
-  height: auto;
-  line-height: initial;
-  margin: 8px;
-  min-width: 32px;
-  padding: 0;
-  &:not(:first-child) {
-    margin-left: 0px;
-  }
+  margin: 6px 8px;
   @include mdc-button-ink-color(white);
   @include mdc-states(white);
 }
-.mdc-slider {
-  margin-left: 16px;
+.mdc-button:not(:first-child) {
+  margin-left: 0;
 }
-.page {
-  color: white;
-  line-height: 48px;
-  margin: 0 16px;
-  vertical-align: middle;
-  white-space: nowrap;
-  z-index: 1;
+.menu {
+  bottom: 56px;
+  opacity: 0;
+  position:absolute;
+  right: 8px;
+  visibility: hidden;
 }
 </style>
