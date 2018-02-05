@@ -94,7 +94,7 @@ export default {
   },
   data () {
     return {
-      zoomMenuHidden: true
+      zoomMenuHidden: null
     }
   },
   computed: {
@@ -108,8 +108,8 @@ export default {
     },
     zoomMenuClasses () {
       return {
-        'fade-in': !this.zoomMenuHidden,
-        'fade-out': this.zoomMenuHidden
+        'fade-in': this.zoomMenuHidden === false,
+        'fade-out': this.zoomMenuHidden === true
       }
     },
     ...mapState({
@@ -123,7 +123,7 @@ export default {
   },
   methods: {
     toggleZoomMenu () {
-      this.zoomMenuHidden = !this.zoomMenuHidden
+      this.zoomMenuHidden = this.zoomMenuHidden === null ? false : !this.zoomMenuHidden
     },
     ...mapActions({
       enterFullScreen: 'enterFullScreen',
@@ -208,7 +208,9 @@ export default {
 }
 .menu {
   bottom: 56px;
+  opacity: 0;
   position:absolute;
   right: 8px;
+  visibility: hidden;
 }
 </style>

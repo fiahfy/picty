@@ -37,13 +37,13 @@ export default {
     return {
       hasLoadError: false,
       scrolling: false,
-      controlBarHidden: false,
       horizontalCentered: true,
       verticalCentered: true,
       originalSize: {
         width: 0,
         height: 0
-      }
+      },
+      controlBarHidden: null
     }
   },
   mounted () {
@@ -58,14 +58,14 @@ export default {
     },
     classes () {
       return {
-        hidden: this.controlBarHidden,
+        hidden: this.controlBarHidden === true,
         scrolling: this.scrolling
       }
     },
     controlBarClasses () {
       return {
-        'fade-in': !this.controlBarHidden,
-        'fade-out': this.controlBarHidden
+        'fade-in': this.controlBarHidden === false,
+        'fade-out': this.controlBarHidden === true
       }
     },
     imageClasses () {
@@ -151,7 +151,9 @@ export default {
       this.showControlBar()
     },
     showControlBar () {
-      this.controlBarHidden = false
+      if (this.controlBarHidden === true) {
+        this.controlBarHidden = false
+      }
       if (this.timer) {
         clearTimeout(this.timer)
       }
