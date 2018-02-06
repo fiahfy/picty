@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
 
-export function addIpcRendererListeners (store) {
+export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('open', (event, { filepathes }) => {
     store.dispatch('open', { filepathes })
   })

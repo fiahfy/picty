@@ -5,7 +5,7 @@ const orders = [
 
 const win = process.platform !== 'darwin'
 
-function sortKey (a, b) {
+const sortKey = (a, b) => {
   a = orders.indexOf(a)
   b = orders.indexOf(b)
   a = a === -1 ? Infinity : a
@@ -19,7 +19,7 @@ function sortKey (a, b) {
   }
 }
 
-export function title (text, accelerator = '') {
+export const title = (text, accelerator = '') => {
   const keys = accelerator.split('+')
   if (!keys.length) {
     return text

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-export function getFile (filepath) {
+export const getFile = (filepath) => {
   const stats = fs.lstatSync(filepath)
   return {
     name: path.basename(filepath),
@@ -10,7 +10,7 @@ export function getFile (filepath) {
   }
 }
 
-export function listFiles (dirpath, options = { recursive: false }) {
+export const listFiles = (dirpath, options = { recursive: false }) => {
   const filepathes = fs.readdirSync(dirpath)
   return filepathes.reduce((carry, filename) => {
     try {
@@ -29,7 +29,7 @@ export function listFiles (dirpath, options = { recursive: false }) {
   }, [])
 }
 
-export function isImage (file) {
+export const isImage = (file) => {
   const extensions = [
     '.jpeg',
     '.jpg',
