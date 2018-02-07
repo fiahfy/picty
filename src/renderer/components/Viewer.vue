@@ -5,20 +5,25 @@
     :class="classes"
     @keydown="keydown"
     @mousemove="mousemove"
-    @mousedown="mousedown"
-    @mouseup="mouseup"
   >
     <div class="error" v-if="error">
       {{ error.message }}
     </div>
-    <div class="wrapper" ref="wrapper" v-else>
+    <div
+      class="wrapper"
+      ref="wrapper"
+      @mousemove="imageMousemove"
+      @mousedown="imageMousedown"
+      @mouseup="imageMouseup"
+      v-else
+    >
       <img
         draggable="false"
         :src="currentFile.path"
         :class="imageClasses"
         :style="styles"
-        @load="load"
-        @error="loadError"
+        @load="imageLoad"
+        @error="imageError"
       />
     </div>
     <control-bar :class="controlBarClasses" />
@@ -93,26 +98,6 @@ export default {
     })
   },
   methods: {
-    load (e) {
-      const maxWidth = this.$el.clientWidth
-      const maxHeight = this.$el.clientHeight
-      const imageWidth = e.target.naturalWidth
-      const imageHeight = e.target.naturalHeight
-      const scaleX = maxWidth / imageWidth
-      const scaleY = maxHeight / imageHeight
-      let scale = scaleX < scaleY ? scaleX : scaleY
-      if (scale >= 1 && !this.imageStretched) {
-        scale = 1
-      }
-      this.originalSize = {
-        width: imageWidth,
-        height: imageHeight
-      }
-      this.initZoom({ scale })
-    },
-    loadError (e) {
-      this.hasLoadError = true
-    },
     keydown (e) {
       switch (e.keyCode) {
         case 27:
@@ -132,15 +117,17 @@ export default {
           break
       }
     },
-    mousedown (e) {
+    mousemove (e) {
+      this.showControlBar()
+    },
+    imageMousedown (e) {
       this.dragging = true
     },
-    mouseup (e) {
+    imageMouseup (e) {
       this.dragging = false
       this.scrollPosition = null
     },
-    mousemove (e) {
-      this.showControlBar()
+    imageMousemove (e) {
       if (this.error) {
         return
       }
@@ -152,6 +139,26 @@ export default {
         }
         this.scrollPosition = position
       }
+    },
+    imageLoad (e) {
+      const maxWidth = this.$el.clientWidth
+      const maxHeight = this.$el.clientHeight
+      const imageWidth = e.target.naturalWidth
+      const imageHeight = e.target.naturalHeight
+      const scaleX = maxWidth / imageWidth
+      const scaleY = maxHeight / imageHeight
+      let scale = scaleX < scaleY ? scaleX : scaleY
+      if (scale >= 1 && !this.imageStretched) {
+        scale = 1
+      }
+      this.originalSize = {
+        width: imageWidth,
+        height: imageHeight
+      }
+      this.initZoom({ scale })
+    },
+    imageError (e) {
+      this.hasLoadError = true
     },
     showControlBar () {
       if (this.controlBarHidden === true) {
