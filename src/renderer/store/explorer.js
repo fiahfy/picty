@@ -148,7 +148,7 @@ export default {
       if (file.isDirectory()) {
         dispatch('changeDirectory', { dirpath: file.path })
       } else {
-        dispatch('viewer/showDirectory', { dirpath: file.parent.path, currentFile: file }, { root: true })
+        dispatch('viewer/showDirectory', { dirpath: file.parent.path, currentFilepath: file.path }, { root: true })
       }
     },
     sortFiles ({ commit, getters, state }) {
