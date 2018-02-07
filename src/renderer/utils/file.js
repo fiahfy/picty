@@ -10,7 +10,7 @@ export default class File {
     this.mtime = this.stats.mtime
   }
   get parent () {
-    return new File(path.direname(this.path))
+    return new File(path.dirname(this.path))
   }
   isDirectory () {
     return this.stats.isDirectory()
