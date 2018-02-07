@@ -38,7 +38,7 @@ export default class MenuBuilder {
         label: 'File',
         submenu: [
           { label: 'Open...', accelerator: 'CmdOrCtrl+O', click: () => { this.open() } },
-          { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { this.openLocation() } }
+          { label: 'Open Images...', accelerator: 'CmdOrCtrl+Shift+O', click: () => { this.openImages() } }
         ]
       },
       {
@@ -69,6 +69,12 @@ export default class MenuBuilder {
           // { role: 'zoomout' },
           // { type: 'separator' },
           { role: 'togglefullscreen' }
+        ]
+      },
+      {
+        label: 'Explorer',
+        submenu: [
+          { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { this.openLocation() } }
         ]
       },
       {
@@ -117,7 +123,7 @@ export default class MenuBuilder {
       )
 
       // Window menu
-      template[4].submenu.push(
+      template[5].submenu.push(
         { role: 'zoom' },
         { type: 'separator' },
         { role: 'front' }
@@ -127,19 +133,26 @@ export default class MenuBuilder {
     return template
   }
   open () {
-    const filepathes = dialog.showOpenDialog({ properties: ['openFile', 'openDirectory', 'multiSelections'] })
+    const filepathes = dialog.showOpenDialog({ properties: ['openDirectory'] })
     if (!filepathes) {
       return
     }
-    this.window.webContents.send('open', { filepathes })
+    this.window.webContents.send('openDirectory', { dirpath: filepathes[0] })
   }
-  openLocation () {
-    this.window.webContents.send('openLocation')
+  openImages () {
+    const filepathes = dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
+    if (!filepathes) {
+      return
+    }
+    this.window.webContents.send('openImages', { filepathes })
   }
   showExplorer () {
     this.window.webContents.send('showExplorer')
   }
   showSettings () {
     this.window.webContents.send('showSettings')
+  }
+  openLocation () {
+    this.window.webContents.send('openLocation')
   }
 }

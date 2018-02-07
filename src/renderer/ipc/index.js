@@ -1,14 +1,11 @@
 import { ipcRenderer } from 'electron'
 
 export const addIpcRendererListeners = (store) => {
-  ipcRenderer.on('open', (event, { filepathes }) => {
-    store.dispatch('open', { filepathes })
+  ipcRenderer.on('openDirectory', (event, { dirpath }) => {
+    store.dispatch('openDirectory', { dirpath })
   })
-  ipcRenderer.on('openLocation', () => {
-    store.dispatch('changeRoute', { name: 'explorer' })
-    const selector = '.location input'
-    store.dispatch('focus', { selector })
-    store.dispatch('select', { selector })
+  ipcRenderer.on('openImages', (event, { filepathes }) => {
+    store.dispatch('openImages', { filepathes })
   })
   ipcRenderer.on('showExplorer', () => {
     store.dispatch('changeRoute', { name: 'explorer' })
@@ -21,5 +18,11 @@ export const addIpcRendererListeners = (store) => {
   })
   ipcRenderer.on('leaveFullScreen', () => {
     store.commit('setFullScreen', { fullScreen: false })
+  })
+  ipcRenderer.on('openLocation', () => {
+    store.dispatch('changeRoute', { name: 'explorer' })
+    const selector = '.location input'
+    store.dispatch('focus', { selector })
+    store.dispatch('select', { selector })
   })
 }

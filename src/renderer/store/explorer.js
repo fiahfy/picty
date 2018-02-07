@@ -1,7 +1,6 @@
 import fs from 'fs'
-import path from 'path'
 import { remote, shell } from 'electron'
-import { listFiles, isImage } from '../utils/file'
+import File from '../utils/file'
 
 const sortOrderDefaults = {
   name: 'asc',
@@ -29,7 +28,7 @@ export default {
       dispatch('changeDirectory', { dirpath })
     },
     changeParentDirectory ({ dispatch, state }) {
-      const dirpath = path.dirname(state.directory)
+      const dirpath = (new File(state.directory)).parent.path
       dispatch('changeDirectory', { dirpath })
     },
     changeHomeDirectory ({ dispatch, state }) {
@@ -40,7 +39,7 @@ export default {
       dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
-      if (state.selectedFile && state.selectedFile.stats.isDirectory()) {
+      if (state.selectedFile && state.selectedFile.isDirectory()) {
         const dirpath = state.selectedFile.path
         dispatch('changeDirectory', { dirpath })
       }
@@ -85,7 +84,7 @@ export default {
         watcher = fs.watch(state.directory, () => {
           dispatch('refreshDirectory')
         })
-        const files = listFiles(state.directory).filter((file) => file.stats.isDirectory() || isImage(file.path))
+        const files = File.listFiles(state.directory).filter((file) => file.isDirectory() || file.isImage())
         if (!files.length) {
           throw new Error('No Images')
         }
@@ -105,7 +104,8 @@ export default {
         dispatch('showMessage', { message: `Invalid directory "${state.directory}"` }, { root: true })
       }
     },
-    selectFile ({ commit }, { file }) {
+    selectFile ({ commit }, { filepath }) {
+      const file = new File(filepath)
       commit('setSelectedFile', { selectedFile: file })
     },
     selectPreviousFile ({ commit, getters, state }) {
@@ -143,11 +143,12 @@ export default {
       commit('setSortOption', { sortOption, key: state.directory })
       dispatch('sortFiles')
     },
-    action ({ commit, dispatch, state }, { file }) {
-      if (file.stats.isDirectory()) {
+    action ({ commit, dispatch, state }, { filepath }) {
+      const file = new File(filepath)
+      if (file.isDirectory()) {
         dispatch('changeDirectory', { dirpath: file.path })
       } else {
-        dispatch('viewer/showDirectory', { dirpath: path.dirname(file.path), currentFile: file }, { root: true })
+        dispatch('viewer/showDirectory', { dirpath: file.parent.path, currentFile: file }, { root: true })
       }
     },
     sortFiles ({ commit, getters, state }) {
@@ -155,18 +156,18 @@ export default {
         let result = 0
         switch (getters.sortOption.key) {
           case 'date_modified':
-            if (a.stats.mtime > b.stats.mtime) {
+            if (a.mtime > b.mtime) {
               result = 1
-            } else if (a.stats.mtime < b.stats.mtime) {
+            } else if (a.mtime < b.mtime) {
               result = -1
             }
             break
           case 'size':
             const size = (file) => {
-              if (file.stats.isDirectory()) {
+              if (file.isDirectory()) {
                 return -1
               }
-              return file.stats.size
+              return file.size
             }
             if (size(a) > size(b)) {
               result = 1

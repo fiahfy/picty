@@ -6,7 +6,7 @@ import router from '../router'
 import explorer from './explorer'
 import settings from './settings'
 import viewer from './viewer'
-import { getFile } from '../utils/file'
+import File from '../utils/file'
 
 Vue.use(Vuex)
 
@@ -55,16 +55,18 @@ export default new Vuex.Store({
       })
     },
     open ({ dispatch }, { filepathes }) {
-      if (filepathes.length === 1) {
-        const filepath = filepathes[0]
-        const file = getFile(filepath)
-        if (file.stats.isDirectory()) {
-          dispatch('explorer/changeDirectory', { dirpath: filepath })
-          return
-        }
+      const file = new File(filepathes[0])
+      if (filepathes.length === 1 && file.isDirectory()) {
+        dispatch('openDirectory', { dirpath: file.path })
+      } else {
+        dispatch('openImages', { filepathes })
       }
-      const files = filepathes.map(filepath => getFile(filepath))
-      dispatch('viewer/show', { files })
+    },
+    openDirectory ({ dispatch }, { dirpath }) {
+      dispatch('explorer/changeDirectory', { dirpath })
+    },
+    openImages ({ dispatch }, { filepathes }) {
+      dispatch('viewer/show', { filepathes })
     }
   },
   mutations: {

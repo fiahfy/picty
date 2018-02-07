@@ -50,8 +50,8 @@
           :key="item.name"
           :file="item"
           :selected="selected(index)"
-          @click="selectFile({ file: item })"
-          @dblclick="action({ file: item })"
+          @click="selectFile({ filepath: item.path })"
+          @dblclick="action({ filepath: item.path })"
           @contextmenu="e => contextmenu(e, item)"
         />
       </mdc-virtual-table-body>
