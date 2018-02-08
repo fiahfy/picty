@@ -25,24 +25,22 @@
       >
         <mdc-icon icon="zoom_in" />
       </mdc-button>
-      <template v-if="fullScreenAvailable">
-        <mdc-button
-          class="icon"
-          title="Exit fullscreen"
-          @click="leaveFullScreen"
-          v-if="fullScreen"
-        >
-          <mdc-icon icon="fullscreen_exit" />
-        </mdc-button>
-        <mdc-button
-          class="icon"
-          title="Fullscreen"
-          @click="enterFullScreen"
-          v-else
-        >
-          <mdc-icon icon="fullscreen" />
-        </mdc-button>
-      </template>
+      <mdc-button
+        class="icon"
+        title="Exit fullscreen"
+        @click="leaveFullScreen"
+        v-if="fullScreen"
+      >
+        <mdc-icon icon="fullscreen_exit" />
+      </mdc-button>
+      <mdc-button
+        class="icon"
+        title="Fullscreen"
+        @click="enterFullScreen"
+        v-else
+      >
+        <mdc-icon icon="fullscreen" />
+      </mdc-button>
       <mdc-button
         class="icon"
         :title="'Close'|accelerator('Esc')"
@@ -81,7 +79,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcSlider from '../components/MdcSlider'
@@ -116,9 +114,6 @@ export default {
       fullScreen: state => state.fullScreen,
       maxPage: state => state.viewer.files.length,
       scale: state => Math.floor(state.viewer.scale * 100)
-    }),
-    ...mapGetters({
-      fullScreenAvailable: 'fullScreenAvailable'
     })
   },
   methods: {
