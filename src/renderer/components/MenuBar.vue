@@ -15,7 +15,7 @@
       <mdc-menu-anchor>
         <mdc-button
           class="icon"
-          title="Back directory"
+          :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
           :disabled="!canBackDirectory"
           @click="backDirectory"
           v-long-press="(e) => mouseLongPress(e, 'back')"
@@ -35,7 +35,7 @@
       <mdc-menu-anchor>
         <mdc-button
           class="icon"
-          title="Forward directory"
+          :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
           :disabled="!canForwardDirectory"
           @click="forwardDirectory"
           v-long-press="(e) => mouseLongPress(e, 'forward')"
@@ -54,14 +54,14 @@
       </mdc-menu-anchor>
       <mdc-button
         class="icon"
-        title="Change parent directory"
+        :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
         @click="changeParentDirectory"
       >
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
         class="icon"
-        title="Change home directory"
+        :title="'Change home directory'|accelerator('CmdOrCtrl+Shift+H')"
         @click="changeHomeDirectory"
       >
         <mdc-icon icon="home" />
@@ -69,7 +69,7 @@
       <div class="separator" />
       <mdc-button
         class="icon"
-        title="View"
+        :title="'View'|accelerator('Enter')"
         @click="showSelectedFile"
       >
         <mdc-icon icon="photo" />

@@ -37,6 +37,9 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('changeHomeDirectory', () => {
     store.dispatch('explorer/changeHomeDirectory')
   })
+  ipcRenderer.on('openCurrentDirectory', () => {
+    store.dispatch('explorer/openDirectory')
+  })
   ipcRenderer.on('zoomIn', () => {
     store.dispatch('viewer/zoomIn')
   })
