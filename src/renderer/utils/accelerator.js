@@ -3,7 +3,7 @@ const orders = [
   'CmdOrCtrl'
 ]
 
-const win = process.platform !== 'darwin'
+const darwin = process.platform === 'darwin'
 
 const sortKey = (a, b) => {
   a = orders.indexOf(a)
@@ -21,17 +21,17 @@ const sortKey = (a, b) => {
 
 export const buildText = (accelerator) => {
   const keys = accelerator.split('+')
-  const seperator = win ? '+' : ''
+  const seperator = darwin ? '' : '+'
   return keys.sort(sortKey).map(key => {
     switch (key) {
-      case 'Shift': return win ? key : '⇧'
-      case 'CmdOrCtrl': return win ? 'Ctrl' : '⌘'
-      case 'Up': return win ? key : '↑'
-      case 'Down': return win ? key : '↓'
-      case 'Left': return win ? key : '←'
-      case 'Right': return win ? key : '→'
-      case 'Enter': return win ? key : '↩'
-      case 'Esc': return win ? key : '⎋'
+      case 'Shift': return darwin ? '⇧' : key
+      case 'CmdOrCtrl': return darwin ? '⌘' : 'Ctrl'
+      case 'Up': return darwin ? '↑' : key
+      case 'Down': return darwin ? '↓' : key
+      case 'Left': return darwin ? '←' : key
+      case 'Right': return darwin ? '→' : key
+      case 'Enter': return darwin ? '↩' : key
+      case 'Esc': return darwin ? '⎋' : key
       case 'Plus': return '+'
       default:
         return key
