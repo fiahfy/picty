@@ -25,7 +25,7 @@ export default {
   actions: {
     initDirectory ({ dispatch, state }) {
       const dirpath = state.directory
-      dispatch('changeDirectory', { dirpath })
+      dispatch('changeDirectory', { dirpath, force: true })
     },
     changeParentDirectory ({ dispatch, state }) {
       const dirpath = (new File(state.directory)).parent.path
@@ -33,9 +33,6 @@ export default {
     },
     changeHomeDirectory ({ dispatch, state }) {
       const dirpath = remote.app.getPath('home')
-      if (dirpath === state.directory) {
-        return
-      }
       dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
@@ -44,7 +41,10 @@ export default {
         dispatch('changeDirectory', { dirpath })
       }
     },
-    changeDirectory ({ commit, dispatch, state }, { dirpath }) {
+    changeDirectory ({ commit, dispatch, state }, { dirpath, force = false }) {
+      if (dirpath === state.directory && !force) {
+        return
+      }
       const historyIndex = state.historyIndex + 1
       const histories = [...state.histories.slice(0, historyIndex), {
         directory: dirpath,
@@ -53,10 +53,6 @@ export default {
       commit('setHistories', { histories })
       commit('setHistoryIndex', { historyIndex })
 
-      dispatch('restoreDirectory', { historyIndex })
-    },
-    refreshDirectory ({ dispatch, state }) {
-      const historyIndex = state.historyIndex
       dispatch('restoreDirectory', { historyIndex })
     },
     backDirectory ({ getters, dispatch, state }, { offset = 0 } = {}) {
@@ -80,6 +76,7 @@ export default {
       commit('setDirectory', { directory: history.directory })
       commit('setDirectoryInput', { directoryInput: history.directory })
       commit('setSelectedFile', { selectedFile: null })
+
       dispatch('loadDirectory')
     },
     loadDirectory ({ commit, dispatch, state }) {
@@ -88,7 +85,7 @@ export default {
           watcher.close()
         }
         watcher = fs.watch(state.directory, () => {
-          dispatch('refreshDirectory')
+          dispatch('loadDirectory')
         })
         const files = File.listFiles(state.directory).filter((file) => file.isDirectory() || file.isImage())
         if (!files.length) {

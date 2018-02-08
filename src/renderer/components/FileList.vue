@@ -136,6 +136,7 @@ export default {
       })
     },
     contextmenu (e, file) {
+      this.selectFile({ filepath: file.path })
       ContextMenu.show(e, [{
         label: 'View',
         click: () => {

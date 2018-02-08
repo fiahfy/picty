@@ -35,14 +35,14 @@ export default {
       try {
         const files = filepathes.map(filepath => new File(filepath)).filter((file) => file.isImage())
         if (!files.length) {
-          throw new Error('Image Not Found')
+          throw new Error('No Images')
         }
         const currentFile = currentFilepath ? new File(currentFilepath) : files[0]
         commit('setError', { error: null })
         commit('setFiles', { files })
         commit('setCurrentFile', { currentFile })
       } catch (e) {
-        const error = e.message === 'Image Not Found' ? e : new Error('Invalid Image')
+        const error = e.message === 'No Images' ? e : new Error('Invalid Image')
         commit('setError', { error })
         commit('setFiles', { files: [] })
         commit('setCurrentFile', { currentFile: null })
