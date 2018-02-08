@@ -25,6 +25,18 @@ export const addIpcRendererListeners = (store) => {
     store.dispatch('focus', { selector })
     store.dispatch('select', { selector })
   })
+  ipcRenderer.on('backDirectory', () => {
+    store.dispatch('explorer/backDirectory')
+  })
+  ipcRenderer.on('forwardDirectory', () => {
+    store.dispatch('explorer/forwardDirectory')
+  })
+  ipcRenderer.on('changeParentDirectory', () => {
+    store.dispatch('explorer/changeParentDirectory')
+  })
+  ipcRenderer.on('changeHomeDirectory', () => {
+    store.dispatch('explorer/changeHomeDirectory')
+  })
   ipcRenderer.on('zoomIn', () => {
     store.dispatch('viewer/zoomIn')
   })

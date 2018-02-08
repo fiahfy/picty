@@ -59,11 +59,17 @@ export default {
       const historyIndex = state.historyIndex
       dispatch('restoreDirectory', { historyIndex })
     },
-    backDirectory ({ dispatch, state }, { offset = 0 }) {
+    backDirectory ({ getters, dispatch, state }, { offset = 0 } = {}) {
+      if (!getters.canBackDirectory) {
+        return
+      }
       const historyIndex = state.historyIndex - 1 - offset
       dispatch('restoreDirectory', { historyIndex })
     },
-    forwardDirectory ({ dispatch, state }, { offset = 0 }) {
+    forwardDirectory ({ getters, dispatch, state }, { offset = 0 } = {}) {
+      if (!getters.canForwardDirectory) {
+        return
+      }
       const historyIndex = state.historyIndex + 1 + offset
       dispatch('restoreDirectory', { historyIndex })
     },
@@ -237,10 +243,10 @@ export default {
       return state.histories.slice(state.historyIndex + 1, state.histories.length).map(history => history.directory)
     },
     canBackDirectory (state) {
-      return !!state.histories[state.historyIndex - 1]
+      return state.historyIndex > 0
     },
     canForwardDirectory (state) {
-      return !!state.histories[state.historyIndex + 1]
+      return state.historyIndex < state.histories.length - 1
     },
     scrollTop (state) {
       return state.histories[state.historyIndex].scrollTop

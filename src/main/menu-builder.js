@@ -74,7 +74,12 @@ export default class MenuBuilder {
       {
         label: 'Explorer',
         submenu: [
-          { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { this.openLocation() } }
+          { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { this.openLocation() } },
+          { type: 'separator' },
+          { label: 'Back Directory', accelerator: 'CmdOrCtrl+Left', click: () => { this.backDirectory() } },
+          { label: 'Forward Directory', accelerator: 'CmdOrCtrl+Right', click: () => { this.forwardDirectory() } },
+          { label: 'Change Parent Directory', accelerator: 'CmdOrCtrl+Shift+P', click: () => { this.changeParentDirectory() } },
+          { label: 'Change Home Directory', accelerator: 'CmdOrCtrl+Shift+H', click: () => { this.changeHomeDirectory() } }
         ]
       },
       {
@@ -162,6 +167,18 @@ export default class MenuBuilder {
   }
   openLocation () {
     this.window.webContents.send('openLocation')
+  }
+  backDirectory () {
+    this.window.webContents.send('backDirectory')
+  }
+  forwardDirectory () {
+    this.window.webContents.send('forwardDirectory')
+  }
+  changeParentDirectory () {
+    this.window.webContents.send('changeParentDirectory')
+  }
+  changeHomeDirectory () {
+    this.window.webContents.send('changeHomeDirectory')
   }
   zoomIn () {
     this.window.webContents.send('zoomIn')
