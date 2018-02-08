@@ -56,7 +56,7 @@
       <div class="container">
         <mdc-button
           class="icon"
-          title="Zoom in"
+          :title="'Zoom in'|accelerator('CmdOrCtrl+Plus')"
           @click="zoomIn"
         >
           <mdc-icon icon="zoom_in" />
@@ -64,13 +64,13 @@
         <div class="scale">{{ scale }}%</div>
         <mdc-button
           class="icon"
-          title="Zoom out"
+          :title="'Zoom out'|accelerator('CmdOrCtrl+-')"
           @click="zoomOut"
         >
           <mdc-icon icon="zoom_out" />
         </mdc-button>
         <mdc-button
-          title="Reset"
+          :title="'Reset'|accelerator('CmdOrCtrl+0')"
           @click="resetZoom"
         >
           Reset

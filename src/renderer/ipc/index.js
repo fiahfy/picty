@@ -1,11 +1,11 @@
 import { ipcRenderer } from 'electron'
 
 export const addIpcRendererListeners = (store) => {
-  ipcRenderer.on('openDirectory', (event, { dirpath }) => {
-    store.dispatch('openDirectory', { dirpath })
+  ipcRenderer.on('enterFullScreen', () => {
+    store.commit('setFullScreen', { fullScreen: true })
   })
-  ipcRenderer.on('openImages', (event, { filepathes }) => {
-    store.dispatch('openImages', { filepathes })
+  ipcRenderer.on('leaveFullScreen', () => {
+    store.commit('setFullScreen', { fullScreen: false })
   })
   ipcRenderer.on('showExplorer', () => {
     store.dispatch('changeRoute', { name: 'explorer' })
@@ -13,16 +13,25 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('showSettings', () => {
     store.dispatch('changeRoute', { name: 'settings' })
   })
-  ipcRenderer.on('enterFullScreen', () => {
-    store.commit('setFullScreen', { fullScreen: true })
+  ipcRenderer.on('openDirectory', (event, { dirpath }) => {
+    store.dispatch('openDirectory', { dirpath })
   })
-  ipcRenderer.on('leaveFullScreen', () => {
-    store.commit('setFullScreen', { fullScreen: false })
+  ipcRenderer.on('openImages', (event, { filepathes }) => {
+    store.dispatch('openImages', { filepathes })
   })
   ipcRenderer.on('openLocation', () => {
     store.dispatch('changeRoute', { name: 'explorer' })
     const selector = '.location input'
     store.dispatch('focus', { selector })
     store.dispatch('select', { selector })
+  })
+  ipcRenderer.on('zoomIn', () => {
+    store.dispatch('viewer/zoomIn')
+  })
+  ipcRenderer.on('zoomOut', () => {
+    store.dispatch('viewer/zoomOut')
+  })
+  ipcRenderer.on('resetZoom', () => {
+    store.dispatch('viewer/resetZoom')
   })
 }

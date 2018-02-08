@@ -78,6 +78,14 @@ export default class MenuBuilder {
         ]
       },
       {
+        label: 'Viewer',
+        submenu: [
+          { label: 'Zoom In', accelerator: 'CmdOrCtrl+Plus', click: () => { this.zoomIn() } },
+          { label: 'Zoom Out', accelerator: 'CmdOrCtrl+-', click: () => { this.zoomOut() } },
+          { label: 'Reset Zoom', accelerator: 'CmdOrCtrl+0', click: () => { this.resetZoom() } }
+        ]
+      },
+      {
         role: 'window',
         submenu: [
           { role: 'close' },
@@ -123,7 +131,7 @@ export default class MenuBuilder {
       )
 
       // Window menu
-      template[5].submenu.push(
+      template[6].submenu.push(
         { role: 'zoom' },
         { type: 'separator' },
         { role: 'front' }
@@ -154,5 +162,14 @@ export default class MenuBuilder {
   }
   openLocation () {
     this.window.webContents.send('openLocation')
+  }
+  zoomIn () {
+    this.window.webContents.send('zoomIn')
+  }
+  zoomOut () {
+    this.window.webContents.send('zoomOut')
+  }
+  resetZoom () {
+    this.window.webContents.send('resetZoom')
   }
 }

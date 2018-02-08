@@ -32,6 +32,7 @@ export const buildText = (accelerator) => {
       case 'Right': return win ? key : '→'
       case 'Enter': return win ? key : '↩'
       case 'Esc': return win ? key : '⎋'
+      case 'Plus': return '+'
       default:
         return key
     }
