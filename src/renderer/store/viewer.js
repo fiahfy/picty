@@ -6,7 +6,6 @@ export default {
   namespaced: true,
   state: {
     error: null,
-    display: false,
     files: [],
     currentFile: null,
     originalScale: 0,
@@ -48,18 +47,10 @@ export default {
         commit('setFiles', { files: [] })
         commit('setCurrentFile', { currentFile: null })
       }
-      commit('setDisplay', { display: true })
-      dispatch('focus', { selector: '.viewer' }, { root: true })
-      if (rootState.settings.fullScreen) {
-        dispatch('enterFullScreen', null, { root: true })
-      }
+      dispatch('showViewer', null, { root: true })
     },
     dismiss ({ commit, dispatch, rootState }) {
-      commit('setDisplay', { display: false })
-      dispatch('focus', { selector: '.file-list table' }, { root: true })
-      if (rootState.settings.fullScreen || process.platform !== 'darwin') {
-        dispatch('leaveFullScreen', null, { root: true })
-      }
+      dispatch('dismissViewer', null, { root: true })
     },
     viewPreviousImage ({ commit, getters, state }) {
       let index = getters.currentIndex - 1
@@ -104,9 +95,6 @@ export default {
   mutations: {
     setError (state, { error }) {
       state.error = error
-    },
-    setDisplay (state, { display }) {
-      state.display = display
     },
     setFiles (state, { files }) {
       state.files = files

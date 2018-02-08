@@ -11,7 +11,7 @@
       <activity-bar />
       <div class="content">
         <router-view />
-        <viewer v-if="display" />
+        <viewer v-if="viewing" />
       </div>
     </div>
     <mdc-snackbar :message="message" />
@@ -43,7 +43,7 @@ export default {
     },
     ...mapState({
       message: state => state.message,
-      display: state => state.viewer.display,
+      viewing: state => state.viewing,
       darkTheme: state => state.settings.darkTheme
     }),
     ...mapGetters({
