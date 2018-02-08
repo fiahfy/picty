@@ -4,14 +4,14 @@
     <div class="container">
       <mdc-button
         class="icon previous"
-        title="View previous image"
+        :title="'View previous image'|accelerator('Left')"
         @click="viewPreviousImage"
       >
         <mdc-icon icon="skip_previous" />
       </mdc-button>
       <mdc-button
         class="icon next"
-        title="View next image"
+        :title="'View next image'|accelerator('Right')"
         @click="viewNextImage"
       >
         <mdc-icon icon="skip_next" />
@@ -45,7 +45,7 @@
       </template>
       <mdc-button
         class="icon"
-        title="Close"
+        :title="'Close'|accelerator('Esc')"
         @click="dismiss"
       >
         <mdc-icon icon="close" />

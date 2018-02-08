@@ -19,13 +19,10 @@ const sortKey = (a, b) => {
   }
 }
 
-export const title = (text, accelerator = '') => {
+export const buildText = (accelerator) => {
   const keys = accelerator.split('+')
-  if (!keys.length) {
-    return text
-  }
   const seperator = win ? '+' : ''
-  const suffix = keys.sort(sortKey).map(key => {
+  return keys.sort(sortKey).map(key => {
     switch (key) {
       case 'Shift': return win ? key : '⇧'
       case 'CmdOrCtrl': return win ? 'Ctrl' : '⌘'
@@ -34,9 +31,9 @@ export const title = (text, accelerator = '') => {
       case 'Left': return win ? key : '←'
       case 'Right': return win ? key : '→'
       case 'Enter': return win ? key : '↩'
+      case 'Esc': return win ? key : '⎋'
       default:
         return key
     }
   }).join(seperator)
-  return `${text} (${suffix})`
 }
