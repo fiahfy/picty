@@ -15,7 +15,7 @@
       <mdc-menu-anchor>
         <mdc-button
           class="icon"
-          title="Back drectory"
+          title="Back directory"
           :disabled="!canBackDirectory"
           @click="backDirectory"
           v-long-press="(e) => mouseLongPress(e, 'back')"
@@ -35,7 +35,7 @@
       <mdc-menu-anchor>
         <mdc-button
           class="icon"
-          title="Forward drectory"
+          title="Forward directory"
           :disabled="!canForwardDirectory"
           @click="forwardDirectory"
           v-long-press="(e) => mouseLongPress(e, 'forward')"
@@ -54,14 +54,14 @@
       </mdc-menu-anchor>
       <mdc-button
         class="icon"
-        title="Change parent drectory"
+        title="Change parent directory"
         @click="changeParentDirectory"
       >
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
         class="icon"
-        title="Change home drectory"
+        title="Change home directory"
         @click="changeHomeDirectory"
       >
         <mdc-icon icon="home" />
