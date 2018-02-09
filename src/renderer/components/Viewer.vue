@@ -6,8 +6,8 @@
     @keydown="keydown"
     @mousemove="mousemove"
   >
-    <div class="error" v-if="error">
-      {{ error.message }}
+    <div class="message" v-if="message">
+      {{ message }}
     </div>
     <div
       class="wrapper"
@@ -55,6 +55,9 @@ export default {
     this.showControlBar()
   },
   computed: {
+    message () {
+      return this.error ? this.error.message : ''
+    },
     styles () {
       return this.scaling ? {
         width: this.originalSize.width * this.scale + 'px',
@@ -256,7 +259,7 @@ export default {
     cursor: -webkit-grabbing;
   }
 }
-.error {
+.message {
   align-items: center;
   display: flex;
   height: 100%;

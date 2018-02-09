@@ -2,8 +2,8 @@
   <div class="explorer">
     <menu-bar />
     <div class="container">
-      <div class="error" v-if="error">
-        {{ error.message }}
+      <div class="message" v-if="message">
+        {{ message }}
       </div>
       <file-list />
     </div>
@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import FileList from '../components/FileList'
 import MenuBar from '../components/MenuBar'
 
@@ -20,9 +20,23 @@ export default {
     FileList,
     MenuBar
   },
-  computed: mapState({
-    error: state => state.explorer.error
-  })
+  computed: {
+    message () {
+      if (this.error) {
+        return this.error.message
+      }
+      if (!this.files.length) {
+        return 'No Results'
+      }
+      return ''
+    },
+    ...mapState({
+      error: state => state.explorer.error
+    }),
+    ...mapGetters({
+      files: 'explorer/filteredFiles'
+    })
+  }
 }
 </script>
 
@@ -38,7 +52,7 @@ export default {
   overflow-y: auto;
   position: relative;
 }
-.error {
+.message {
   align-items: center;
   bottom: 0;
   display: flex;
