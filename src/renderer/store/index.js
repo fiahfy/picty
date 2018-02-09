@@ -6,23 +6,17 @@ import router from '../router'
 import explorer from './explorer'
 import settings from './settings'
 import viewer from './viewer'
-import { getFile } from '../utils/file'
+import File from '../utils/file'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     message: '',
+    viewing: false,
     fullScreen: false
   },
   actions: {
-    showMessage ({ commit }, { message }) {
-      commit('setMessage', { message })
-      // wait dom updated
-      setTimeout(() => {
-        commit('setMessage', '')
-      })
-    },
     enterFullScreen () {
       const browserWindow = remote.getCurrentWindow()
       browserWindow.setFullScreen(true)
@@ -54,22 +48,48 @@ export default new Vuex.Store({
         }
       })
     },
+    showMessage ({ commit }, { message }) {
+      commit('setMessage', { message })
+      // wait dom updated
+      setTimeout(() => {
+        commit('setMessage', { message: '' })
+      })
+    },
     open ({ dispatch }, { filepathes }) {
-      if (filepathes.length === 1) {
-        const filepath = filepathes[0]
-        const file = getFile(filepath)
-        if (file.stats.isDirectory()) {
-          dispatch('explorer/changeDirectory', { dirpath: filepath })
-          return
-        }
+      const file = new File(filepathes[0])
+      if (filepathes.length === 1 && file.isDirectory()) {
+        dispatch('openDirectory', { dirpath: file.path })
+      } else {
+        dispatch('openImages', { filepathes })
       }
-      const files = filepathes.map(filepath => getFile(filepath))
-      dispatch('viewer/show', { files })
+    },
+    openDirectory ({ dispatch }, { dirpath }) {
+      dispatch('explorer/changeDirectory', { dirpath })
+    },
+    openImages ({ dispatch }, { filepathes }) {
+      dispatch('viewer/show', { filepathes })
+    },
+    showViewer ({ commit, dispatch, state }) {
+      commit('setViewing', { viewing: true })
+      dispatch('focus', { selector: '.viewer' })
+      if (state.settings.fullScreen) {
+        dispatch('enterFullScreen')
+      }
+    },
+    dismissViewer ({ commit, dispatch, state }) {
+      commit('setViewing', { viewing: false })
+      dispatch('focus', { selector: '.file-list table' })
+      if (state.settings.fullScreen || process.platform !== 'darwin') {
+        dispatch('leaveFullScreen')
+      }
     }
   },
   mutations: {
     setMessage (state, { message }) {
       state.message = message
+    },
+    setViewing (state, { viewing }) {
+      state.viewing = viewing
     },
     setFullScreen (state, { fullScreen }) {
       state.fullScreen = fullScreen
@@ -78,9 +98,6 @@ export default new Vuex.Store({
   getters: {
     titleBar (state) {
       return process.platform === 'darwin' && !state.fullScreen
-    },
-    fullScreenAvailable (state) {
-      return process.platform !== 'darwin'
     }
   },
   modules: {

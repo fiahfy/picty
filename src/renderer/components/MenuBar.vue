@@ -6,7 +6,7 @@
         label="Input path..."
         fullwidth
         class="location"
-        @keyup="keyup"
+        @keyup="directoryInputKeyup"
         @contextmenu="contextmenu"
         v-model="directoryInput"
       />
@@ -14,7 +14,8 @@
     <div class="row buttons">
       <mdc-menu-anchor>
         <mdc-button
-          title="Back drectory"
+          class="icon"
+          :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
           :disabled="!canBackDirectory"
           @click="backDirectory"
           v-long-press="(e) => mouseLongPress(e, 'back')"
@@ -33,7 +34,8 @@
       </mdc-menu-anchor>
       <mdc-menu-anchor>
         <mdc-button
-          title="Forward drectory"
+          class="icon"
+          :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
           :disabled="!canForwardDirectory"
           @click="forwardDirectory"
           v-long-press="(e) => mouseLongPress(e, 'forward')"
@@ -51,37 +53,56 @@
         </mdc-simple-menu>
       </mdc-menu-anchor>
       <mdc-button
-        title="Change parent drectory"
+        class="icon"
+        :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
         @click="changeParentDirectory"
       >
         <mdc-icon icon="arrow_upward" />
       </mdc-button>
       <mdc-button
-        title="Change home drectory"
+        class="icon"
+        :title="'Change home directory'|accelerator('CmdOrCtrl+Shift+H')"
         @click="changeHomeDirectory"
       >
         <mdc-icon icon="home" />
       </mdc-button>
       <div class="separator" />
       <mdc-button
-        title="View"
+        class="icon"
+        :title="'View'|accelerator('Enter')"
         @click="showSelectedFile"
       >
         <mdc-icon icon="photo" />
       </mdc-button>
       <div class="separator" />
       <mdc-button
+        class="icon"
         title="Open current directory"
         @click="openDirectory"
       >
         <mdc-icon icon="folder_open" />
       </mdc-button>
+      <div class="separator" />
+      <div class="search-wrapper">
+        <mdc-icon
+          icon="search"
+          :title="'Search'|accelerator('CmdOrCtrl+F')"
+        />
+        <mdc-text-field
+          label="Search"
+          fullwidth
+          class="search"
+          @keyup="searchInputKeyup"
+          @contextmenu="contextmenu"
+          v-model="searchInput"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcListItem from '../components/MdcListItem'
@@ -102,7 +123,8 @@ export default {
   data () {
     return {
       backSelected: null,
-      forwardSelected: null
+      forwardSelected: null,
+      searchInput: ''
     }
   },
   computed: {
@@ -114,28 +136,28 @@ export default {
         this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
       }
     },
-    ...mapState('explorer', [
-      'selectedFile'
-    ]),
-    ...mapGetters('explorer', [
-      'backDirectories',
-      'forwardDirectories',
-      'canBackDirectory',
-      'canForwardDirectory'
-    ])
+    ...mapGetters({
+      backDirectories: 'explorer/backDirectories',
+      forwardDirectories: 'explorer/forwardDirectories',
+      canBackDirectory: 'explorer/canBackDirectory',
+      canForwardDirectory: 'explorer/canForwardDirectory'
+    })
   },
   methods: {
-    keyup (e) {
-      if (e.keyCode === 13) {
-        this.changeDirectory({ dirpath: e.target.value })
-      }
-    },
     contextmenu (e) {
       ContextMenu.show(e, [
         { label: ContextMenu.LABEL_CUT },
         { label: ContextMenu.LABEL_COPY },
         { label: ContextMenu.LABEL_PASTE }
       ])
+    },
+    directoryInputKeyup (e) {
+      if (e.keyCode === 13) {
+        this.changeDirectory({ dirpath: e.target.value })
+      }
+    },
+    searchInputKeyup (e) {
+      this.search({ query: e.target.value })
     },
     mouseLongPress (e, direction) {
       e.target.parentNode.blur()
@@ -153,18 +175,16 @@ export default {
     mouseup (e) {
       e.target.click()
     },
-    ...mapActions('explorer', [
-      'changeDirectory',
-      'changeParentDirectory',
-      'changeHomeDirectory',
-      'refreshDirectory',
-      'backDirectory',
-      'forwardDirectory',
-      'openDirectory'
-    ]),
-    ...mapActions('viewer', [
-      'showSelectedFile'
-    ])
+    ...mapActions({
+      changeDirectory: 'explorer/changeDirectory',
+      changeParentDirectory: 'explorer/changeParentDirectory',
+      changeHomeDirectory: 'explorer/changeHomeDirectory',
+      backDirectory: 'explorer/backDirectory',
+      forwardDirectory: 'explorer/forwardDirectory',
+      openDirectory: 'explorer/openDirectory',
+      search: 'explorer/search',
+      showSelectedFile: 'viewer/showSelectedFile'
+    })
   },
   watch: {
     backSelected (value) {
@@ -196,8 +216,27 @@ export default {
   display: flex;
   height: 40px;
 }
-.row>* {
-  margin: 4px;
+.directory {
+  &>.mdc-icon {
+    color: $material-color-blue-200;
+  }
+  &>* {
+    margin: 4px;
+  }
+}
+.buttons {
+  text-align: left;
+  &>* {
+    margin: 2px;
+  }
+  &>.search-wrapper {
+    display: flex;
+    flex: 1;
+    margin: 0px;
+    &>* {
+      margin: 4px;
+    }
+  }
 }
 .separator {
   border-left-color: $material-color-grey-300;
@@ -207,14 +246,6 @@ export default {
   height: 100%;
   margin: 0;
 }
-.directory {
-  .mdc-icon {
-    color: $material-color-blue-200;
-  }
-}
-.buttons {
-  text-align: left;
-}
 .mdc-list-item {
   box-sizing: border-box;
   height: 41px;
@@ -222,13 +253,6 @@ export default {
 .mdc-text-field {
   border: none;
   height: 32px;
-}
-.mdc-button {
-  border-radius: 0;
-  height: auto;
-  line-height: initial;
-  min-width: 32px;
-  padding: 0;
 }
 .mdc-theme--dark {
   .row {

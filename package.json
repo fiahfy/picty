@@ -1,7 +1,7 @@
 {
   "name": "picty",
   "description": "Simple Image Viewer based on Electron",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
@@ -11,7 +11,7 @@
     "electron-devtools-installer": "^2.2.0",
     "electron-window-state": "^4.1.1",
     "is-electron-renderer": "^2.0.1",
-    "material-components-web": "^0.27.0",
+    "material-components-web": "^0.28.0",
     "material-design-icons": "^3.0.1",
     "vue": "^2.4.2",
     "vue-long-press-directive": "^1.0.1",
@@ -43,7 +43,7 @@
     "node-sass": "^4.5.3",
     "npm-run-all": "^4.0.2",
     "sass-loader": "^6.0.6",
-    "style-loader": "^0.19.1",
+    "style-loader": "^0.20.1",
     "url-loader": "^0.6.2",
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.0.0",

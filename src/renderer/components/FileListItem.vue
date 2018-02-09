@@ -5,10 +5,10 @@
       {{ file.name }}
     </mdc-table-column>
     <mdc-table-column class="size">
-      <template v-if="!directory">{{ this.file.stats.size | readableSize }}</template>
+      <template v-if="!directory">{{ this.file.size | readableSize }}</template>
     </mdc-table-column>
     <mdc-table-column class="date-modified">
-      {{ file.stats.mtime | moment('YYYY-MM-DD HH:mm') }}
+      {{ file.mtime | moment('YYYY-MM-DD HH:mm') }}
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     directory () {
-      return this.file.stats.isDirectory()
+      return this.file.isDirectory()
     },
     icon () {
       return this.directory ? 'folder' : 'photo'
@@ -69,9 +69,6 @@ export default {
   }
   &.photo {
     color: $material-color-green-200;
-  }
-  &.note {
-    color: $material-color-grey-400;
   }
 }
 </style>

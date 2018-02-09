@@ -38,7 +38,7 @@ export default class MenuBuilder {
         label: 'File',
         submenu: [
           { label: 'Open...', accelerator: 'CmdOrCtrl+O', click: () => { this.open() } },
-          { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { this.openLocation() } }
+          { label: 'Open Images...', accelerator: 'CmdOrCtrl+Shift+O', click: () => { this.openImages() } }
         ]
       },
       {
@@ -69,6 +69,28 @@ export default class MenuBuilder {
           // { role: 'zoomout' },
           // { type: 'separator' },
           { role: 'togglefullscreen' }
+        ]
+      },
+      {
+        label: 'Explorer',
+        submenu: [
+          { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { this.openLocation() } },
+          { type: 'separator' },
+          { label: 'Back Directory', accelerator: 'CmdOrCtrl+Left', click: () => { this.backDirectory() } },
+          { label: 'Forward Directory', accelerator: 'CmdOrCtrl+Right', click: () => { this.forwardDirectory() } },
+          { label: 'Change Parent Directory', accelerator: 'CmdOrCtrl+Shift+P', click: () => { this.changeParentDirectory() } },
+          { label: 'Change Home Directory', accelerator: 'CmdOrCtrl+Shift+H', click: () => { this.changeHomeDirectory() } },
+          { type: 'separator' },
+          { label: 'Open Current Directory', click: () => { this.openCurrentDirectory() } },
+          { label: 'Search...', accelerator: 'CmdOrCtrl+F', click: () => { this.search() } }
+        ]
+      },
+      {
+        label: 'Viewer',
+        submenu: [
+          { label: 'Zoom In', accelerator: 'CmdOrCtrl+Plus', click: () => { this.zoomIn() } },
+          { label: 'Zoom Out', accelerator: 'CmdOrCtrl+-', click: () => { this.zoomOut() } },
+          { label: 'Reset Zoom', accelerator: 'CmdOrCtrl+0', click: () => { this.resetZoom() } }
         ]
       },
       {
@@ -117,7 +139,7 @@ export default class MenuBuilder {
       )
 
       // Window menu
-      template[4].submenu.push(
+      template[6].submenu.push(
         { role: 'zoom' },
         { type: 'separator' },
         { role: 'front' }
@@ -127,23 +149,53 @@ export default class MenuBuilder {
     return template
   }
   open () {
-    dialog.showOpenDialog(
-      { properties: ['openFile', 'openDirectory', 'multiSelections'] },
-      (filepathes) => {
-        if (!filepathes) {
-          return
-        }
-        this.window.webContents.send('open', { filepathes })
-      }
-    )
+    const filepathes = dialog.showOpenDialog({ properties: ['openDirectory'] })
+    if (!filepathes) {
+      return
+    }
+    this.window.webContents.send('openDirectory', { dirpath: filepathes[0] })
   }
-  openLocation () {
-    this.window.webContents.send('openLocation')
+  openImages () {
+    const filepathes = dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
+    if (!filepathes) {
+      return
+    }
+    this.window.webContents.send('openImages', { filepathes })
   }
   showExplorer () {
     this.window.webContents.send('showExplorer')
   }
   showSettings () {
     this.window.webContents.send('showSettings')
+  }
+  openLocation () {
+    this.window.webContents.send('openLocation')
+  }
+  backDirectory () {
+    this.window.webContents.send('backDirectory')
+  }
+  forwardDirectory () {
+    this.window.webContents.send('forwardDirectory')
+  }
+  changeParentDirectory () {
+    this.window.webContents.send('changeParentDirectory')
+  }
+  changeHomeDirectory () {
+    this.window.webContents.send('changeHomeDirectory')
+  }
+  openCurrentDirectory () {
+    this.window.webContents.send('openCurrentDirectory')
+  }
+  search () {
+    this.window.webContents.send('search')
+  }
+  zoomIn () {
+    this.window.webContents.send('zoomIn')
+  }
+  zoomOut () {
+    this.window.webContents.send('zoomOut')
+  }
+  resetZoom () {
+    this.window.webContents.send('resetZoom')
   }
 }

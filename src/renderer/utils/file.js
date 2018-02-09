@@ -1,45 +1,52 @@
 import fs from 'fs'
 import path from 'path'
 
-export function getFile (filepath) {
-  const stats = fs.lstatSync(filepath)
-  return {
-    name: path.basename(filepath),
-    path: filepath,
-    stats
+export default class File {
+  constructor (filepath) {
+    this.stats = fs.lstatSync(filepath)
+    this.name = path.basename(filepath)
+    this.path = filepath
+    this.size = this.stats.size
+    this.mtime = this.stats.mtime
   }
-}
-
-export function listFiles (dirpath, options = { recursive: false }) {
-  const filepathes = fs.readdirSync(dirpath)
-  return filepathes.reduce((carry, filename) => {
-    try {
-      if (filename.match(/^\./)) {
+  get parent () {
+    return new File(path.dirname(this.path))
+  }
+  isDirectory () {
+    return this.stats.isDirectory()
+  }
+  isImage () {
+    return [
+      '.jpeg',
+      '.jpg',
+      '.png',
+      '.gif',
+      '.webp',
+      '.tif',
+      '.bmp',
+      '.jxr',
+      '.psd'
+    ].includes(path.extname(this.path).toLowerCase())
+  }
+  listFiles (options = { recursive: false }) {
+    const filepathes = fs.readdirSync(this.path)
+    return filepathes.reduce((carry, filename) => {
+      try {
+        if (filename.match(/^\./)) {
+          return carry
+        }
+        const file = new File(path.join(this.path, filename))
+        if (!options.recursive || !file.isDirectory()) {
+          return [...carry, file]
+        }
+        const files = file.listFiles(options)
+        return [...carry, file, ...files]
+      } catch (e) {
         return carry
       }
-      const file = getFile(path.join(dirpath, filename))
-      if (!options.recursive || !file.stats.isDirectory()) {
-        return [...carry, file]
-      }
-      const files = listFiles(file.path, options)
-      return [...carry, file, ...files]
-    } catch (e) {
-      return carry
-    }
-  }, [])
-}
-
-export function isImage (file) {
-  const extensions = [
-    '.jpeg',
-    '.jpg',
-    '.png',
-    '.gif',
-    '.webp',
-    '.tif',
-    '.bmp',
-    '.jxr',
-    '.psd'
-  ]
-  return extensions.includes(path.extname(file).toLowerCase())
+    }, [])
+  }
+  static listFiles (filepath, options = {}) {
+    return (new File(filepath)).listFiles(options)
+  }
 }

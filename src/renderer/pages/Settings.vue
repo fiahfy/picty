@@ -11,23 +11,20 @@
     <h4>Viewer</h4>
     <div>
       <mdc-form-field>
-        <mdc-checkbox id="image-stretched" v-model="imageStretched" />
-        <label for="image-stretched">Stretch image</label>
+        <mdc-checkbox id="full-screen" v-model="fullScreen" />
+        <label for="full-screen">View in full screen</label>
       </mdc-form-field>
     </div>
-    <template v-if="fullScreenAvailable">
-      <div>
-        <mdc-form-field>
-          <mdc-checkbox id="full-screen" v-model="fullScreen" />
-          <label for="full-screen">View in full screen</label>
-        </mdc-form-field>
-      </div>
-    </template>
+    <div>
+      <mdc-form-field>
+        <mdc-checkbox id="image-stretched" v-model="imageStretched" />
+        <label for="image-stretched">Stretch small image</label>
+      </mdc-form-field>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import MdcCheckbox from '../components/MdcCheckbox'
 import MdcFormField from '../components/MdcFormField'
 
@@ -60,10 +57,7 @@ export default {
       set (value) {
         this.$store.commit('settings/setFullScreen', { fullScreen: value })
       }
-    },
-    ...mapGetters([
-      'fullScreenAvailable'
-    ])
+    }
   }
 }
 </script>
@@ -71,10 +65,6 @@ export default {
 <style scoped lang="scss">
 .settings {
   margin: 15px;
-  text-align: left;
   user-select: none;
-}
-.settings>div {
-  margin-top: 16px;
 }
 </style>

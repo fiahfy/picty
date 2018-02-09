@@ -1,8 +1,8 @@
 <template>
   <div class="activity-bar">
     <ul>
-      <li :key="item.routeName" v-for="item in items">
-        <mdc-button @click="changeRoute({ name: item.name })" :title="item.title">
+      <li :key="item.name" v-for="item in items">
+        <mdc-button :title="item.title" @click="changeRoute({ name: item.name })">
           <mdc-icon :icon="item.icon" :class="item.classes" />
         </mdc-button>
       </li>
@@ -14,7 +14,7 @@
 import { mapActions } from 'vuex'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
-import { title } from '../utils/accelerator'
+import { buildText } from '../utils/accelerator'
 
 export default {
   components: {
@@ -24,8 +24,8 @@ export default {
   data () {
     return {
       items: [
-        { icon: 'list', name: 'explorer', title: title('explorer', 'CmdOrCtrl+Shift+E') },
-        { icon: 'settings', name: 'settings', title: title('settings', 'CmdOrCtrl+,') }
+        { name: 'explorer', icon: 'list', title: `explorer (${buildText('CmdOrCtrl+Shift+E')})` },
+        { name: 'settings', icon: 'settings', title: `settings (${buildText('CmdOrCtrl+,')})` }
       ]
     }
   },
@@ -34,18 +34,16 @@ export default {
   },
   methods: {
     updateItems (name) {
-      this.items = this.items.map(item => (
-        Object.assign({}, {
-          ...item,
-          classes: {
-            selected: item.name === name
-          }
-        })
-      ))
+      this.items = this.items.map(item => ({
+        ...item,
+        classes: {
+          selected: item.name === name
+        }
+      }))
     },
-    ...mapActions([
-      'changeRoute'
-    ])
+    ...mapActions({
+      changeRoute: 'changeRoute'
+    })
   },
   watch: {
     '$route' (to) { // eslint-disable-line object-shorthand
@@ -71,6 +69,7 @@ ul {
   padding: 0;
 }
 .mdc-button {
+  border-radius: 0;
   height: auto;
   line-height: initial;
   min-width: auto;

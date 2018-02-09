@@ -21,3 +21,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.mdc-button.icon {
+  height: auto;
+  line-height: initial;
+  min-width: 36px;
+  padding: 2px;
+}
+</style>

@@ -3,7 +3,7 @@ import Window from './window'
 
 export default class App {
   load () {
-    this.handleEvents()
+    this.addEventListeners()
   }
   createWindow () {
     if (this.window) {
@@ -16,7 +16,7 @@ export default class App {
   removeWindow () {
     this.window = null
   }
-  handleEvents () {
+  addEventListeners () {
     app.on('ready', () => {
       this.createWindow()
     })

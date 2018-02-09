@@ -13,7 +13,7 @@
           >
             <span>Name</span>
             <mdc-icon
-              :icon="sortIcon"
+              :icon="icon"
               v-if="sortOption.key === 'name'"
             />
           </mdc-table-header-column>
@@ -24,7 +24,7 @@
           >
             <span>Size</span>
             <mdc-icon
-              :icon="sortIcon"
+              :icon="icon"
               v-if="sortOption.key === 'size'"
             />
           </mdc-table-header-column>
@@ -35,7 +35,7 @@
           >
             <span>Date Modified</span>
             <mdc-icon
-              :icon="sortIcon"
+              :icon="icon"
               v-if="sortOption.key === 'date_modified'"
             />
           </mdc-table-header-column>
@@ -50,8 +50,8 @@
           :key="item.name"
           :file="item"
           :selected="selected(index)"
-          @click="selectFile({ file: item })"
-          @dblclick="action({ file: item })"
+          @click="selectFile({ filepath: item.path })"
+          @dblclick="action({ filepath: item.path })"
           @contextmenu="e => contextmenu(e, item)"
         />
       </mdc-virtual-table-body>
@@ -92,19 +92,19 @@ export default {
     this.$el.removeEventListener('scroll', this.scroll)
   },
   computed: {
-    sortIcon () {
+    icon () {
       return this.sortOption.order === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
-    ...mapState('explorer', [
-      'directory',
-      'files',
-      'selectedFile'
-    ]),
-    ...mapGetters('explorer', [
-      'selectedIndex',
-      'scrollTop',
-      'sortOption'
-    ])
+    ...mapState({
+      directory: state => state.explorer.directory,
+      selectedFile: state => state.explorer.selectedFile
+    }),
+    ...mapGetters({
+      files: 'explorer/filteredFiles',
+      selectedIndex: 'explorer/selectedIndex',
+      scrollTop: 'explorer/scrollTop',
+      sortOption: 'explorer/sortOption'
+    })
   },
   methods: {
     selected (index) {
@@ -136,6 +136,7 @@ export default {
       })
     },
     contextmenu (e, file) {
+      this.selectFile({ filepath: file.path })
       ContextMenu.show(e, [{
         label: 'View',
         click: () => {
@@ -144,18 +145,16 @@ export default {
         accelerator: 'Enter'
       }])
     },
-    ...mapActions('explorer', [
-      'changeSortKey',
-      'selectFile',
-      'selectPreviousFile',
-      'selectNextFile',
-      'scroll',
-      'action'
-    ]),
-    ...mapActions('viewer', [
-      'showSelectedFile',
-      'showFile'
-    ])
+    ...mapActions({
+      changeSortKey: 'explorer/changeSortKey',
+      selectFile: 'explorer/selectFile',
+      selectPreviousFile: 'explorer/selectPreviousFile',
+      selectNextFile: 'explorer/selectNextFile',
+      scroll: 'explorer/scroll',
+      action: 'explorer/action',
+      showSelectedFile: 'viewer/showSelectedFile',
+      showFile: 'viewer/showFile'
+    })
   },
   watch: {
     directory () {

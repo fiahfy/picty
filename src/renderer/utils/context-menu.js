@@ -2,7 +2,7 @@ import { clipboard, remote } from 'electron'
 
 const { Menu } = remote
 
-function inspectElementTemplate (e) {
+const inspectElementTemplate = (e) => {
   const { clientX: x, clientY: y } = e
 
   return [
@@ -20,7 +20,7 @@ export const LABEL_CUT = 'Cut'
 export const LABEL_COPY = 'Copy'
 export const LABEL_PASTE = 'Paste'
 
-export function show (e, template = []) {
+export const show = (e, template = []) => {
   e.preventDefault()
   e.stopPropagation()
 

@@ -1,6 +1,7 @@
 import Vue from 'vue'
-import vueMoment from 'vue-moment'
 import vueLongPress from 'vue-long-press-directive'
+import vueMoment from 'vue-moment'
+import { buildText } from '../utils/accelerator'
 
 Vue.use(vueMoment)
 
@@ -27,6 +28,10 @@ Vue.mixin({
       next()
     }
   }
+})
+
+Vue.filter('accelerator', (title, accelerator) => {
+  return `${title} (${buildText(accelerator)})`
 })
 
 Vue.filter('readableSize', (bytes) => {
