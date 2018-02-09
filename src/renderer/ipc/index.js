@@ -40,6 +40,12 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('openCurrentDirectory', () => {
     store.dispatch('explorer/openDirectory')
   })
+  ipcRenderer.on('search', () => {
+    store.dispatch('changeRoute', { name: 'explorer' })
+    const selector = '.search input'
+    store.dispatch('focus', { selector })
+    store.dispatch('select', { selector })
+  })
   ipcRenderer.on('zoomIn', () => {
     store.dispatch('viewer/zoomIn')
   })

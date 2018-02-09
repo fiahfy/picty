@@ -97,10 +97,10 @@ export default {
     },
     ...mapState({
       directory: state => state.explorer.directory,
-      files: state => state.explorer.files,
       selectedFile: state => state.explorer.selectedFile
     }),
     ...mapGetters({
+      files: 'explorer/filteredFiles',
       selectedIndex: 'explorer/selectedIndex',
       scrollTop: 'explorer/scrollTop',
       sortOption: 'explorer/sortOption'

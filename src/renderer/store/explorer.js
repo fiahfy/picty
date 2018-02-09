@@ -20,6 +20,7 @@ export default {
     historyIndex: -1,
     directory: remote.app.getPath('home'),
     directoryInput: '',
+    query: '',
     sortOptions: {}
   },
   actions: {
@@ -76,6 +77,7 @@ export default {
       commit('setDirectory', { directory: history.directory })
       commit('setDirectoryInput', { directoryInput: history.directory })
       commit('setSelectedFile', { selectedFile: null })
+      commit('setQuery', { query: '' })
 
       dispatch('loadDirectory')
     },
@@ -107,6 +109,9 @@ export default {
         dispatch('showMessage', { message: `Invalid directory "${state.directory}"` }, { root: true })
       }
     },
+    search ({ commit }, { query }) {
+      commit('setQuery', { query })
+    },
     selectFile ({ commit }, { filepath }) {
       const file = new File(filepath)
       commit('setSelectedFile', { selectedFile: file })
@@ -116,15 +121,15 @@ export default {
       if (index < 0) {
         return
       }
-      const selectedFile = state.files[index]
+      const selectedFile = getters.filteredFiles[index]
       commit('setSelectedFile', { selectedFile })
     },
     selectNextFile ({ commit, getters, state }) {
       const index = getters.selectedIndex + 1
-      if (index > state.files.length - 1) {
+      if (index > getters.filteredFiles.length - 1) {
         return
       }
-      const selectedFile = state.files[index]
+      const selectedFile = getters.filteredFiles[index]
       commit('setSelectedFile', { selectedFile })
     },
     scroll ({ commit, state }) {
@@ -220,6 +225,9 @@ export default {
     setDirectoryInput (state, { directoryInput }) {
       state.directoryInput = directoryInput
     },
+    setQuery (state, { query }) {
+      state.query = query
+    },
     setSortOption (state, { sortOption, key }) {
       state.sortOptions = {
         ...state.sortOptions,
@@ -228,11 +236,6 @@ export default {
     }
   },
   getters: {
-    selectedIndex (state) {
-      return state.files.findIndex((file) => {
-        return state.selectedFile && file.path === state.selectedFile.path
-      })
-    },
     backDirectories (state) {
       return state.histories.slice(0, state.historyIndex).reverse().map(history => history.directory)
     },
@@ -253,6 +256,16 @@ export default {
         key: 'name',
         order: 'asc'
       }
+    },
+    filteredFiles (state) {
+      return state.files.concat().filter((file) => {
+        return file.name.indexOf(state.query) > -1
+      })
+    },
+    selectedIndex (state, getters) {
+      return getters.filteredFiles.findIndex((file) => {
+        return state.selectedFile && file.path === state.selectedFile.path
+      })
     }
   }
 }

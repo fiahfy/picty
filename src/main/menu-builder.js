@@ -81,7 +81,8 @@ export default class MenuBuilder {
           { label: 'Change Parent Directory', accelerator: 'CmdOrCtrl+Shift+P', click: () => { this.changeParentDirectory() } },
           { label: 'Change Home Directory', accelerator: 'CmdOrCtrl+Shift+H', click: () => { this.changeHomeDirectory() } },
           { type: 'separator' },
-          { label: 'Open Current Directory', click: () => { this.openCurrentDirectory() } }
+          { label: 'Open Current Directory', click: () => { this.openCurrentDirectory() } },
+          { label: 'Search...', accelerator: 'CmdOrCtrl+F', click: () => { this.search() } }
         ]
       },
       {
@@ -184,6 +185,9 @@ export default class MenuBuilder {
   }
   openCurrentDirectory () {
     this.window.webContents.send('openCurrentDirectory')
+  }
+  search () {
+    this.window.webContents.send('search')
   }
   zoomIn () {
     this.window.webContents.send('zoomIn')

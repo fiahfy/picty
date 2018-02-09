@@ -6,7 +6,7 @@
         label="Input path..."
         fullwidth
         class="location"
-        @keyup="keyup"
+        @keyup="directoryInputKeyup"
         @contextmenu="contextmenu"
         v-model="directoryInput"
       />
@@ -82,6 +82,21 @@
       >
         <mdc-icon icon="folder_open" />
       </mdc-button>
+      <div class="separator" />
+      <div class="search-wrapper">
+        <mdc-icon
+          icon="search"
+          :title="'Search'|accelerator('CmdOrCtrl+F')"
+        />
+        <mdc-text-field
+          label="Search"
+          fullwidth
+          class="search"
+          @keyup="searchInputKeyup"
+          @contextmenu="contextmenu"
+          v-model="searchInput"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -108,7 +123,8 @@ export default {
   data () {
     return {
       backSelected: null,
-      forwardSelected: null
+      forwardSelected: null,
+      searchInput: ''
     }
   },
   computed: {
@@ -128,17 +144,20 @@ export default {
     })
   },
   methods: {
-    keyup (e) {
-      if (e.keyCode === 13) {
-        this.changeDirectory({ dirpath: e.target.value })
-      }
-    },
     contextmenu (e) {
       ContextMenu.show(e, [
         { label: ContextMenu.LABEL_CUT },
         { label: ContextMenu.LABEL_COPY },
         { label: ContextMenu.LABEL_PASTE }
       ])
+    },
+    directoryInputKeyup (e) {
+      if (e.keyCode === 13) {
+        this.changeDirectory({ dirpath: e.target.value })
+      }
+    },
+    searchInputKeyup (e) {
+      this.search({ query: e.target.value })
     },
     mouseLongPress (e, direction) {
       e.target.parentNode.blur()
@@ -163,6 +182,7 @@ export default {
       backDirectory: 'explorer/backDirectory',
       forwardDirectory: 'explorer/forwardDirectory',
       openDirectory: 'explorer/openDirectory',
+      search: 'explorer/search',
       showSelectedFile: 'viewer/showSelectedFile'
     })
   },
@@ -197,18 +217,26 @@ export default {
   height: 40px;
 }
 .directory {
-  .mdc-icon {
+  &>.mdc-icon {
     color: $material-color-blue-200;
   }
-}
-.directory>* {
-  margin: 4px;
+  &>* {
+    margin: 4px;
+  }
 }
 .buttons {
   text-align: left;
-}
-.buttons>* {
-  margin: 2px;
+  &>* {
+    margin: 2px;
+  }
+  &>.search-wrapper {
+    display: flex;
+    flex: 1;
+    margin: 0px;
+    &>* {
+      margin: 4px;
+    }
+  }
 }
 .separator {
   border-left-color: $material-color-grey-300;
