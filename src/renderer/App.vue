@@ -83,6 +83,9 @@ export default {
 .content {
   flex: 1;
 }
+.viewer {
+  z-index: 1;
+}
 </style>
 
 <style lang="scss">

@@ -253,10 +253,15 @@ export default {
     }
   }
   &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
-    box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
   }
 }
-.mdc-theme--dark .mdc-table .mdc-table-row.shadow .mdc-table-header-column:after {
-  border-bottom-color: $material-color-grey-600;
+.mdc-theme--dark .file-list {
+   .mdc-table .mdc-table-row.shadow .mdc-table-header-column:after {
+    border-bottom-color: $material-color-grey-600;
+  }
+  &.scrolling .mdc-table .mdc-table-row.shadow .mdc-table-header-column:after {
+    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.9);
+  }
 }
 </style>
