@@ -28,9 +28,11 @@ export default {
 .mdc-table-row {
   & /deep/ .mdc-table-header-column,
   & /deep/ .mdc-table-column {
-    border-bottom-color: $material-color-grey-300;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
+    border-bottom: {
+      color: $material-color-grey-300;
+      style: solid;
+      width: 1px;
+    }
   }
   &:hover /deep/ .mdc-table-column {
     background-color: $material-color-grey-100;

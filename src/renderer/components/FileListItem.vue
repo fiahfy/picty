@@ -60,15 +60,15 @@ export default {
   &.size {
     text-align: right;
   }
-}
-.mdc-icon {
-  padding: 0;
-  vertical-align: bottom;
-  &.folder {
-    color: $material-color-blue-200;
-  }
-  &.photo {
-    color: $material-color-green-200;
+  .mdc-icon {
+    padding: 0;
+    vertical-align: bottom;
+    &.folder {
+      color: $material-color-blue-200;
+    }
+    &.photo {
+      color: $material-color-green-200;
+    }
   }
 }
 </style>

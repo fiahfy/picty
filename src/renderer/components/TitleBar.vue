@@ -6,9 +6,11 @@
 @import "~@material/theme/_color-palette.scss";
 
 .title-bar {
-  border-bottom-color: $material-color-grey-300;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
+  border-bottom: {
+    color: $material-color-grey-300;
+    style: solid;
+    width: 1px;
+  }
   box-sizing: border-box;
   font-size: smaller;
   height: 24px;
@@ -20,9 +22,7 @@
   user-select: none;
   -webkit-app-region: drag;
 }
-.mdc-theme--dark {
-  .title-bar {
-    border-bottom-color: $material-color-grey-600;
-  }
+.mdc-theme--dark .title-bar {
+  border-bottom-color: $material-color-grey-600;
 }
 </style>

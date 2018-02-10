@@ -208,58 +208,62 @@ export default {
 
 .menu-bar {
   user-select: none;
-}
-.row {
-  border-bottom-color: $material-color-grey-300;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  display: flex;
-  height: 40px;
-}
-.directory {
-  &>.mdc-icon {
-    color: $material-color-blue-200;
-  }
-  &>* {
-    margin: 4px;
-  }
-}
-.buttons {
-  text-align: left;
-  &>* {
-    margin: 2px;
-  }
-  &>.search-wrapper {
+  .row {
+    border-bottom: {
+      color: $material-color-grey-300;
+      style: solid;
+      width: 1px;
+    }
     display: flex;
-    flex: 1;
-    margin: 0px;
-    &>* {
-      margin: 4px;
+    height: 40px;
+    &.directory {
+      &>* {
+        margin: 4px;
+      }
+      &>.mdc-icon {
+        color: $material-color-blue-200;
+      }
+    }
+    &.buttons {
+      text-align: left;
+      &>* {
+        margin: 2px;
+      }
+      &>.search-wrapper {
+        display: flex;
+        flex: 1;
+        margin: 0px;
+        &>* {
+          margin: 4px;
+        }
+      }
+    }
+    .mdc-list-item {
+      box-sizing: border-box;
+      height: 41px;
+    }
+    .mdc-text-field {
+      border: none;
+      height: 32px;
+    }
+    .separator {
+      border-left: {
+        color: $material-color-grey-300;
+        style: solid;
+        width: 1px;
+      }
+      display: inline-block;
+      height: 100%;
+      margin: 0;
     }
   }
-}
-.separator {
-  border-left-color: $material-color-grey-300;
-  border-left-style: solid;
-  border-left-width: 1px;
-  display: inline-block;
-  height: 100%;
-  margin: 0;
-}
-.mdc-list-item {
-  box-sizing: border-box;
-  height: 41px;
-}
-.mdc-text-field {
-  border: none;
-  height: 32px;
 }
 .mdc-theme--dark {
   .row {
     border-bottom-color: $material-color-grey-600;
-  }
-  .separator {
-    border-left-color: $material-color-grey-600;
+    .separator {
+      border-left-color: $material-color-grey-600;
+    }
   }
 }
 </style>

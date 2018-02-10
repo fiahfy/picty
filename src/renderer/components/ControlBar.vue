@@ -179,33 +179,33 @@ export default {
 }
 .container {
   display: flex;
-}
-.container>div {
-  color: white;
-  line-height: 48px;
-  margin: 0 12px;
-  vertical-align: bottom;
-  white-space: nowrap;
-  z-index: 1;
-}
-.container>.scale {
-  margin-left: 0;
-  text-align: center;
-  width: 35px;
-}
-.mdc-button {
-  margin: 6px 8px;
-  @include mdc-button-ink-color(white);
-  @include mdc-states(white);
-}
-.mdc-button:not(:first-child) {
-  margin-left: 0;
-}
-.menu {
-  bottom: 56px;
-  opacity: 0;
-  position:absolute;
-  right: 8px;
-  visibility: hidden;
+  &>div {
+    color: white;
+    line-height: 48px;
+    margin: 0 12px;
+    vertical-align: bottom;
+    white-space: nowrap;
+    z-index: 1;
+    &.scale {
+      margin-left: 0;
+      text-align: center;
+      width: 35px;
+    }
+  }
+  .mdc-button {
+    margin: 6px 8px;
+    @include mdc-button-ink-color(white);
+    @include mdc-states(white);
+    &:not(:first-child) {
+      margin-left: 0;
+    }
+  }
+  .menu {
+    bottom: 56px;
+    opacity: 0;
+    position:absolute;
+    right: 8px;
+    visibility: hidden;
+  }
 }
 </style>

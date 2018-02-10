@@ -45,21 +45,21 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-.container {
-  flex: 1;
-  height: 100%;
-  overflow-y: auto;
-  position: relative;
-}
-.message {
-  align-items: center;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
+  .container {
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+    position: relative;
+    .message {
+      align-items: center;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
 }
 </style>
