@@ -26,19 +26,7 @@ export default {
 @import "~@material/theme/_color-palette.scss";
 
 .mdc-table-row {
-  // @see https://stackoverflow.com/a/45042852
-  & /deep/ .mdc-table-header-column.sticky {
-    border-bottom-width: 0px;
-    &:after {
-      content:'';
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-    }
-  }
   & /deep/ .mdc-table-header-column,
-  & /deep/ .mdc-table-header-column.sticky:after,
   & /deep/ .mdc-table-column {
     border-bottom-color: $material-color-grey-300;
     border-bottom-style: solid;
@@ -51,19 +39,16 @@ export default {
     background-color: $material-color-grey-300;
   }
 }
-.mdc-theme--dark {
-  .mdc-table-row {
-    & /deep/ .mdc-table-header-column,
-    & /deep/ .mdc-table-header-column.sticky:after,
-    & /deep/ .mdc-table-column {
-      border-bottom-color: $material-color-grey-600;
-    }
-    &:hover /deep/ .mdc-table-column {
-      background-color: $material-color-grey-800;
-    }
-    &.selected /deep/ .mdc-table-column {
-      background-color: $material-color-grey-600;
-    }
+.mdc-theme--dark .mdc-table-row {
+  & /deep/ .mdc-table-header-column,
+  & /deep/ .mdc-table-column {
+    border-bottom-color: $material-color-grey-600;
+  }
+  &:hover /deep/ .mdc-table-column {
+    background-color: $material-color-grey-800;
+  }
+  &.selected /deep/ .mdc-table-column {
+    background-color: $material-color-grey-600;
   }
 }
 </style>

@@ -132,15 +132,12 @@ export default {
       const selectedFile = getters.filteredFiles[index]
       commit('setSelectedFile', { selectedFile })
     },
-    scroll ({ commit, state }) {
-      const node = document.querySelector('.file-list')
-      if (node) {
-        const history = {
-          ...state.histories[state.historyIndex],
-          scrollTop: node.scrollTop
-        }
-        commit('setHistory', { history, index: state.historyIndex })
+    setScrollTop ({ commit, state }, { scrollTop }) {
+      const history = {
+        ...state.histories[state.historyIndex],
+        scrollTop
       }
+      commit('setHistory', { history, index: state.historyIndex })
     },
     changeSortKey ({ commit, dispatch, getters, state }, { sortKey }) {
       let sortOrder = sortOrderDefaults[sortKey]
@@ -264,8 +261,13 @@ export default {
     },
     selectedIndex (state, getters) {
       return getters.filteredFiles.findIndex((file) => {
-        return state.selectedFile && file.path === state.selectedFile.path
+        return getters.isSelectedFile({ filepath: file.path })
       })
+    },
+    isSelectedFile (state) {
+      return ({ filepath }) => {
+        return state.selectedFile && state.selectedFile.path === filepath
+      }
     }
   }
 }
