@@ -57,38 +57,38 @@ export default {
 @import "~@material/theme/_color-palette.scss";
 
 .activity-bar {
-  border-right-color: $material-color-grey-300;
-  border-right-style: solid;
-  border-right-width: 1px;
+  border-right: {
+    color: $material-color-grey-300;
+    style: solid;
+    width: 1px;
+  }
   overflow: hidden;
   width: 48px;
-}
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.mdc-button {
-  border-radius: 0;
-  height: auto;
-  line-height: initial;
-  min-width: auto;
-  padding: 0;
-  .mdc-icon {
-    padding: 12px;
-    &:not(.selected) {
-      color: var(--mdc-theme-text-disabled-on-light, rgba(0, 0, 0, 0.38));
-      &:hover {
-        color: inherit;
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    .mdc-button {
+      border-radius: 0;
+      height: auto;
+      line-height: initial;
+      min-width: auto;
+      padding: 0;
+      .mdc-icon {
+        padding: 12px;
+        &:not(.selected) {
+          color: var(--mdc-theme-text-disabled-on-light, rgba(0, 0, 0, 0.38));
+          &:hover {
+            color: inherit;
+          }
+        }
       }
     }
   }
 }
-.mdc-theme--dark {
-  .activity-bar {
-    border-right-color: $material-color-grey-600;
-  }
-  .mdc-icon:not(.selected) {
+.mdc-theme--dark .activity-bar {
+  border-right-color: $material-color-grey-600;
+  ul .mdc-icon:not(.selected) {
     color: var(--mdc-theme-text-disabled-on-dark, rgba(255, 255, 255, 0.5));
     &:hover {
       color: inherit;

@@ -22,7 +22,7 @@
         >
           <mdc-icon icon="arrow_back" />
         </mdc-button>
-        <mdc-simple-menu ref="backMenu" v-model="backSelected">
+        <mdc-menu ref="backMenu" v-model="backSelected">
           <mdc-list-item
             :key="index"
             @mouseup="mouseup"
@@ -30,7 +30,7 @@
           >
             {{ directory }}
           </mdc-list-item>
-        </mdc-simple-menu>
+        </mdc-menu>
       </mdc-menu-anchor>
       <mdc-menu-anchor>
         <mdc-button
@@ -42,7 +42,7 @@
         >
           <mdc-icon icon="arrow_forward" />
         </mdc-button>
-        <mdc-simple-menu ref="forwardMenu" v-model="forwardSelected">
+        <mdc-menu ref="forwardMenu" v-model="forwardSelected">
           <mdc-list-item
             :key="index"
             @mouseup="mouseup"
@@ -50,7 +50,7 @@
           >
             {{ directory }}
           </mdc-list-item>
-        </mdc-simple-menu>
+        </mdc-menu>
       </mdc-menu-anchor>
       <mdc-button
         class="icon"
@@ -107,7 +107,7 @@ import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcListItem from '../components/MdcListItem'
 import MdcMenuAnchor from '../components/MdcMenuAnchor'
-import MdcSimpleMenu from '../components/MdcSimpleMenu'
+import MdcMenu from '../components/MdcMenu'
 import MdcTextField from '../components/MdcTextField'
 import * as ContextMenu from '../utils/context-menu'
 
@@ -117,7 +117,7 @@ export default {
     MdcIcon,
     MdcListItem,
     MdcMenuAnchor,
-    MdcSimpleMenu,
+    MdcMenu,
     MdcTextField
   },
   data () {
