@@ -54,14 +54,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color-palette.scss";
-
 .activity-bar {
-  border-right: {
-    color: $material-color-grey-300;
-    style: solid;
-    width: 1px;
-  }
   overflow: hidden;
   width: 48px;
   ul {
@@ -86,13 +79,10 @@ export default {
     }
   }
 }
-.mdc-theme--dark .activity-bar {
-  border-right-color: $material-color-grey-600;
-  ul .mdc-icon:not(.selected) {
-    color: var(--mdc-theme-text-disabled-on-dark, rgba(255, 255, 255, 0.5));
-    &:hover {
-      color: inherit;
-    }
+.mdc-theme--dark .activity-bar ul .mdc-icon:not(.selected) {
+  color: var(--mdc-theme-text-disabled-on-dark, rgba(255, 255, 255, 0.5));
+  &:hover {
+    color: inherit;
   }
 }
 </style>

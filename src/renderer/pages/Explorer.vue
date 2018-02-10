@@ -1,6 +1,7 @@
 <template>
   <div class="explorer">
     <menu-bar />
+    <divider />
     <div class="container">
       <div class="message" v-if="message">
         {{ message }}
@@ -12,11 +13,13 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+import Divider from '../components/Divider'
 import FileList from '../components/FileList'
 import MenuBar from '../components/MenuBar'
 
 export default {
   components: {
+    Divider,
     FileList,
     MenuBar
   },

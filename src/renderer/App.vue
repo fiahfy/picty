@@ -7,8 +7,10 @@
     @drop.prevent="drop"
   >
     <title-bar v-if="titleBar" />
+    <divider />
     <div class="container">
       <activity-bar />
+      <divider orientation="vertical" />
       <div class="content">
         <router-view />
         <viewer v-if="viewing" />
@@ -21,6 +23,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
+import Divider from './components/Divider'
 import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
@@ -28,6 +31,7 @@ import Viewer from './components/Viewer'
 export default {
   components: {
     ActivityBar,
+    Divider,
     MdcSnackbar,
     TitleBar,
     Viewer
@@ -73,18 +77,18 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   font-size: small;
   height: 100%;
-}
-.container {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-}
-.content {
-  flex: 1;
-}
-.viewer {
-  z-index: 1;
+  .container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    .content {
+      flex: 1;
+      .viewer {
+        z-index: 1;
+      }
+    }
+  }
 }
 </style>
 

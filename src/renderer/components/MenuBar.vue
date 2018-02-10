@@ -11,6 +11,7 @@
         v-model="directoryInput"
       />
     </div>
+    <divider />
     <div class="row buttons">
       <mdc-menu-anchor>
         <mdc-button
@@ -66,7 +67,7 @@
       >
         <mdc-icon icon="home" />
       </mdc-button>
-      <div class="separator" />
+      <divider orientation="vertical" />
       <mdc-button
         class="icon"
         :title="'View'|accelerator('Enter')"
@@ -74,7 +75,7 @@
       >
         <mdc-icon icon="photo" />
       </mdc-button>
-      <div class="separator" />
+      <divider orientation="vertical" />
       <mdc-button
         class="icon"
         title="Open current directory"
@@ -82,7 +83,7 @@
       >
         <mdc-icon icon="folder_open" />
       </mdc-button>
-      <div class="separator" />
+      <divider orientation="vertical" />
       <div class="search-wrapper">
         <mdc-icon
           icon="search"
@@ -103,6 +104,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import Divider from '../components/Divider'
 import MdcButton from '../components/MdcButton'
 import MdcIcon from '../components/MdcIcon'
 import MdcListItem from '../components/MdcListItem'
@@ -113,6 +115,7 @@ import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
+    Divider,
     MdcButton,
     MdcIcon,
     MdcListItem,
@@ -209,11 +212,6 @@ export default {
 .menu-bar {
   user-select: none;
   .row {
-    border-bottom: {
-      color: $material-color-grey-300;
-      style: solid;
-      width: 1px;
-    }
     display: flex;
     height: 40px;
     &.directory {
@@ -228,6 +226,9 @@ export default {
       text-align: left;
       &>* {
         margin: 2px;
+      }
+      &>.divider {
+        margin: 0;
       }
       &>.search-wrapper {
         display: flex;
@@ -245,24 +246,6 @@ export default {
     .mdc-text-field {
       border: none;
       height: 32px;
-    }
-    .separator {
-      border-left: {
-        color: $material-color-grey-300;
-        style: solid;
-        width: 1px;
-      }
-      display: inline-block;
-      height: 100%;
-      margin: 0;
-    }
-  }
-}
-.mdc-theme--dark {
-  .row {
-    border-bottom-color: $material-color-grey-600;
-    .separator {
-      border-left-color: $material-color-grey-600;
     }
   }
 }
