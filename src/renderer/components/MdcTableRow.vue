@@ -23,7 +23,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color-palette.scss";
+@import "~@material/theme/_color-palette";
 
 .mdc-table-row {
   & /deep/ .mdc-table-header-column,

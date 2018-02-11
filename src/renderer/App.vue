@@ -96,9 +96,8 @@ export default {
 $mdc-theme-primary: #ff4081;
 $mdc-theme-secondary: #ff4081;
 
-@import '~material-components-web/material-components-web';
-@import '~material-design-icons/iconfont/material-icons.css';
-@import "~@material/theme/_color-palette.scss";
+@import "~@material/theme/mdc-theme";
+@import "~@material/theme/_color-palette";
 
 ::-webkit-scrollbar {
   -webkit-appearance: none;
@@ -117,6 +116,9 @@ $mdc-theme-secondary: #ff4081;
   }
 }
 
+.mdc-theme--background {
+  background-color: white;
+}
 .mdc-theme--dark {
   color: white;
   &.mdc-theme--background, .mdc-theme--background {

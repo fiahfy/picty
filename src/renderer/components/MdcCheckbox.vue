@@ -67,3 +67,7 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+@import "~@material/checkbox/mdc-checkbox";
+</style>

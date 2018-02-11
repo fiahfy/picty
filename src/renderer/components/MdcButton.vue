@@ -22,7 +22,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "~@material/button/mdc-button";
+
 .mdc-button.icon {
   height: auto;
   line-height: initial;
