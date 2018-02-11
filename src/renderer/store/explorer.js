@@ -101,7 +101,7 @@ export default {
         commit('setFiles', { files: [] })
       }
       dispatch('sortFiles')
-      dispatch('focus', { selector: '.file-list table' }, { root: true })
+      dispatch('focus', { selector: '.explorer-list table' }, { root: true })
     },
     openDirectory ({ dispatch, state }) {
       const result = shell.openItem(state.directory)

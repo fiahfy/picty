@@ -1,5 +1,5 @@
 <template>
-  <div class="menu-bar">
+  <div class="explorer-menu-bar">
     <div class="row directory">
       <mdc-icon icon="folder" />
       <mdc-text-field
@@ -104,13 +104,13 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import Divider from '../components/Divider'
-import MdcButton from '../components/MdcButton'
-import MdcIcon from '../components/MdcIcon'
-import MdcListItem from '../components/MdcListItem'
-import MdcMenuAnchor from '../components/MdcMenuAnchor'
-import MdcMenu from '../components/MdcMenu'
-import MdcTextField from '../components/MdcTextField'
+import Divider from './Divider'
+import MdcButton from './MdcButton'
+import MdcIcon from './MdcIcon'
+import MdcListItem from './MdcListItem'
+import MdcMenuAnchor from './MdcMenuAnchor'
+import MdcMenu from './MdcMenu'
+import MdcTextField from './MdcTextField'
 import * as ContextMenu from '../utils/context-menu'
 
 export default {
@@ -209,7 +209,7 @@ export default {
 <style scoped lang="scss">
 @import "~@material/theme/_color-palette.scss";
 
-.menu-bar {
+.explorer-menu-bar {
   user-select: none;
   .row {
     display: flex;

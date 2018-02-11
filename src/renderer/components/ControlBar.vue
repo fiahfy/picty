@@ -80,9 +80,9 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import MdcButton from '../components/MdcButton'
-import MdcIcon from '../components/MdcIcon'
-import MdcSlider from '../components/MdcSlider'
+import MdcButton from './MdcButton'
+import MdcIcon from './MdcIcon'
+import MdcSlider from './MdcSlider'
 
 export default {
   components: {

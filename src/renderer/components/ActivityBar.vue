@@ -12,8 +12,8 @@
 
 <script>
 import { mapActions } from 'vuex'
-import MdcButton from '../components/MdcButton'
-import MdcIcon from '../components/MdcIcon'
+import MdcButton from './MdcButton'
+import MdcIcon from './MdcIcon'
 import { buildText } from '../utils/accelerator'
 
 export default {
@@ -24,7 +24,8 @@ export default {
   data () {
     return {
       items: [
-        { name: 'explorer', icon: 'list', title: `explorer (${buildText('CmdOrCtrl+Shift+E')})` },
+        { name: 'explorer', icon: 'view_list', title: `explorer (${buildText('CmdOrCtrl+Shift+E')})` },
+        { name: 'bookmark', icon: 'star', title: `bookmark (${buildText('CmdOrCtrl+Shift+B')})` },
         { name: 'settings', icon: 'settings', title: `settings (${buildText('CmdOrCtrl+,')})` }
       ]
     }

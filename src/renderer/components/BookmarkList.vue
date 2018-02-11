@@ -1,5 +1,5 @@
 <template>
-  <div class="file-list" :class="classes">
+  <div class="bookmark-list" :class="classes">
     <mdc-table
       tabindex="0"
       @keydown="keydown"
@@ -61,14 +61,14 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import FileListItem from '../components/FileListItem'
-import MdcIcon from '../components/MdcIcon'
-import MdcTable from '../components/MdcTable'
-import MdcTableBody from '../components/MdcTableBody'
-import MdcTableHeader from '../components/MdcTableHeader'
-import MdcTableHeaderColumn from '../components/MdcTableHeaderColumn'
-import MdcTableRow from '../components/MdcTableRow'
-import MdcVirtualTableBody from '../components/MdcVirtualTableBody'
+import FileListItem from './FileListItem'
+import MdcIcon from './MdcIcon'
+import MdcTable from './MdcTable'
+import MdcTableBody from './MdcTableBody'
+import MdcTableHeader from './MdcTableHeader'
+import MdcTableHeaderColumn from './MdcTableHeaderColumn'
+import MdcTableRow from './MdcTableRow'
+import MdcVirtualTableBody from './MdcVirtualTableBody'
 import * as ContextMenu from '../utils/context-menu'
 
 export default {
@@ -201,62 +201,67 @@ export default {
 <style scoped lang="scss">
 @import "~@material/theme/_color-palette.scss";
 
-.file-list {
+.bookmark-list {
   height: 100%;
   overflow-y: scroll;
   .mdc-table {
     outline: none;
     table-layout: fixed;
-    .mdc-table-row {
-      cursor: pointer;
-      height: 40px;
-      .mdc-table-header-column {
-        border: 0;
-        line-height: 20px;
-        position: sticky;
-        top: 0;
-        vertical-align: bottom;
-        white-space: nowrap;
-        z-index: 1;
-        &.date-modified {
-          width: 128px;
-        }
-        &.size {
-          width: 64px;
-        }
-        .mdc-icon {
-          padding: 0;
-          vertical-align: bottom;
-        }
-      }
-      &.shadow {
-        height: 1px;
+    .mdc-table-header {
+      .mdc-table-row {
+        height: 40px;
         .mdc-table-header-column {
-          padding: 0;
+          border: 0;
+          line-height: 20px;
           position: sticky;
-          top: 40px;
-          z-index: 0;
-          &:after {
-            border-bottom: {
-              color: $material-color-grey-300;
-              style: solid;
-              width: 1px;
+          top: 0;
+          vertical-align: bottom;
+          white-space: nowrap;
+          z-index: 1;
+          &.date-modified {
+            width: 128px;
+          }
+          &.size {
+            width: 64px;
+          }
+          .mdc-icon {
+            padding: 0;
+            vertical-align: bottom;
+          }
+        }
+        &.shadow {
+          height: 1px;
+          .mdc-table-header-column {
+            padding: 0;
+            position: sticky;
+            top: 40px;
+            z-index: 0;
+            &:after {
+              border-bottom: {
+                color: $material-color-grey-300;
+                style: solid;
+                width: 1px;
+              }
+              bottom: 0;
+              content:'';
+              left: 0;
+              position: absolute;
+              width: 100%;
             }
-            bottom: 0;
-            content:'';
-            left: 0;
-            position: absolute;
-            width: 100%;
           }
         }
       }
+    }
+    .mdc-table-row {
+      cursor: pointer;
+      height: 41px;
     }
   }
   &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
     box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
   }
 }
-.mdc-theme--dark .file-list {
+.mdc-theme--dark .bookmark-list {
    .mdc-table .mdc-table-row.shadow .mdc-table-header-column:after {
     border-bottom-color: $material-color-grey-600;
   }

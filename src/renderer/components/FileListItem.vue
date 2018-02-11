@@ -14,9 +14,9 @@
 </template>
 
 <script>
-import MdcIcon from '../components/MdcIcon'
-import MdcTableColumn from '../components/MdcTableColumn'
-import MdcTableRow from '../components/MdcTableRow'
+import MdcIcon from './MdcIcon'
+import MdcTableColumn from './MdcTableColumn'
+import MdcTableRow from './MdcTableRow'
 
 export default {
   props: {

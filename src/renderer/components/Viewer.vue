@@ -32,7 +32,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import ControlBar from '../components/ControlBar'
+import ControlBar from './ControlBar'
 
 export default {
   components: {
