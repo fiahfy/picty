@@ -58,27 +58,29 @@ export default {
     sortBookmarks ({ commit, getters, state }) {
       const bookmarks = getters.files.sort((a, b) => {
         let result = 0
-        switch (state.sortOption.key) {
-          case 'date_modified':
-            if (a.mtime > b.mtime) {
-              result = 1
-            } else if (a.mtime < b.mtime) {
-              result = -1
-            }
-            break
-          case 'size':
-            const size = (file) => {
-              if (file.isDirectory()) {
-                return -1
+        if (a.exists() && b.exists()) {
+          switch (state.sortOption.key) {
+            case 'date_modified':
+              if (a.mtime > b.mtime) {
+                result = 1
+              } else if (a.mtime < b.mtime) {
+                result = -1
               }
-              return file.size
-            }
-            if (size(a) > size(b)) {
-              result = 1
-            } else if (size(a) < size(b)) {
-              result = -1
-            }
-            break
+              break
+            case 'size':
+              const size = (file) => {
+                if (file.isDirectory()) {
+                  return -1
+                }
+                return file.size
+              }
+              if (size(a) > size(b)) {
+                result = 1
+              } else if (size(a) < size(b)) {
+                result = -1
+              }
+              break
+          }
         }
         if (result === 0) {
           if (a.name > b.name) {
