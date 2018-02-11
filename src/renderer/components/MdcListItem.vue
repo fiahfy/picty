@@ -3,7 +3,3 @@
     <slot />
   </li>
 </template>
-
-<style scoped lang="scss">
-@import "@material/list/mdc-list";
-</style>

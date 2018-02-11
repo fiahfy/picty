@@ -16,8 +16,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '~material-design-icons/iconfont/material-icons.css';
-
 .mdc-icon {
   padding: 4px;
   user-select: none;

@@ -97,7 +97,8 @@ $mdc-theme-primary: #ff4081;
 $mdc-theme-secondary: #ff4081;
 $mdc-theme-background: #fff;
 
-@import "@material/theme/mdc-theme";
+@import '~material-design-icons/iconfont/material-icons.css';
+@import 'material-components-web/material-components-web';
 @import "@material/theme/_color-palette";
 
 ::-webkit-scrollbar {

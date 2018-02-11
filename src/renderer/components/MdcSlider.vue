@@ -84,7 +84,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-@import "@material/slider/mdc-slider";
-</style>
