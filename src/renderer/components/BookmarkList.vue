@@ -161,10 +161,10 @@ export default {
       setScrollTop: 'bookmark/setScrollTop'
     }),
     ...mapActions({
-      changeSortKey: 'bookmark/changeSortKey',
       selectBookmark: 'bookmark/selectBookmark',
       selectPreviousBookmark: 'bookmark/selectPreviousBookmark',
       selectNextBookmark: 'bookmark/selectNextBookmark',
+      changeSortKey: 'bookmark/changeSortKey',
       action: 'explorer/action',
       showSelectedFile: 'viewer/showSelectedFile',
       showFile: 'viewer/showFile'

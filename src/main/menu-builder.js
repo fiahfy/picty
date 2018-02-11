@@ -59,6 +59,7 @@ export default class MenuBuilder {
         label: 'View',
         submenu: [
           { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { this.showExplorer() } },
+          { label: 'Bookmark', accelerator: 'CmdOrCtrl+Shift+B', click: () => { this.showBookmark() } },
           { type: 'separator' },
           { role: 'reload' },
           { role: 'forcereload' },
@@ -164,6 +165,9 @@ export default class MenuBuilder {
   }
   showExplorer () {
     this.window.webContents.send('showExplorer')
+  }
+  showBookmark () {
+    this.window.webContents.send('showBookmark')
   }
   showSettings () {
     this.window.webContents.send('showSettings')

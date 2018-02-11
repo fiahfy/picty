@@ -159,11 +159,11 @@ export default {
       }])
     },
     ...mapActions({
-      changeSortKey: 'explorer/changeSortKey',
       selectFile: 'explorer/selectFile',
       selectPreviousFile: 'explorer/selectPreviousFile',
       selectNextFile: 'explorer/selectNextFile',
       setScrollTop: 'explorer/setScrollTop',
+      changeSortKey: 'explorer/changeSortKey',
       action: 'explorer/action',
       showSelectedFile: 'viewer/showSelectedFile',
       showFile: 'viewer/showFile'
