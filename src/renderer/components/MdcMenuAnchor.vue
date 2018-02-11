@@ -5,5 +5,5 @@
 </template>
 
 <style scoped lang="scss">
-@import "~@material/menu/mdc-menu";
+@import "@material/menu/mdc-menu";
 </style>

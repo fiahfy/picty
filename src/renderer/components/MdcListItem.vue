@@ -5,5 +5,5 @@
 </template>
 
 <style scoped lang="scss">
-@import "~@material/list/mdc-list";
+@import "@material/list/mdc-list";
 </style>

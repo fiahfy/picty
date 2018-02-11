@@ -95,9 +95,10 @@ export default {
 <style lang="scss">
 $mdc-theme-primary: #ff4081;
 $mdc-theme-secondary: #ff4081;
+$mdc-theme-background: #fff;
 
-@import "~@material/theme/mdc-theme";
-@import "~@material/theme/_color-palette";
+@import "@material/theme/mdc-theme";
+@import "@material/theme/_color-palette";
 
 ::-webkit-scrollbar {
   -webkit-appearance: none;
@@ -116,9 +117,6 @@ $mdc-theme-secondary: #ff4081;
   }
 }
 
-.mdc-theme--background {
-  background-color: white;
-}
 .mdc-theme--dark {
   color: white;
   &.mdc-theme--background, .mdc-theme--background {

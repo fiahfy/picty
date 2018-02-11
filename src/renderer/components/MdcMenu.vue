@@ -71,8 +71,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/list/mdc-list";
-@import "~@material/menu/mdc-menu";
+@import "@material/list/mdc-list";
+@import "@material/menu/mdc-menu";
 
 .mdc-menu {
   .mdc-list, .mdc-list-item {

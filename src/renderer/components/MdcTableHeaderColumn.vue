@@ -5,7 +5,7 @@
 </template>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color-palette";
+@import "@material/theme/_color-palette";
 
 .mdc-table-header-column {
   color: $material-color-grey-600;

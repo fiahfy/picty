@@ -200,7 +200,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color-palette";
+@import "@material/theme/_color-palette";
 
 .bookmark-list {
   height: 100%;

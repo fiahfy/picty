@@ -81,5 +81,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/textfield/mdc-text-field";
+@import "@material/textfield/mdc-text-field";
 </style>

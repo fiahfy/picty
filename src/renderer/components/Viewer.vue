@@ -214,7 +214,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/animation/functions";
+@import "@material/animation/functions";
 
 @keyframes fade-in {
   from {

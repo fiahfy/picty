@@ -135,9 +135,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/animation/functions";
-@import "~@material/button/mixins";
-@import "~@material/ripple/mixins";
+@import "@material/animation/functions";
+@import "@material/button/mixins";
+@import "@material/ripple/mixins";
 
 @keyframes fade-in {
   0% {

@@ -214,7 +214,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color-palette";
+@import "@material/theme/_color-palette";
 
 .explorer-menu-bar {
   user-select: none;
