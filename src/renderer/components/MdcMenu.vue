@@ -1,19 +1,19 @@
 <template>
   <div
-    class="mdc-menu"
+    class="mdc-menu mdc-simple-menu"
     tabindex="-1"
     :style="styles"
-    @MDCMenu:cancel="cancel"
-    @MDCMenu:selected="select"
+    @MDCSimpleMenu:cancel="cancel"
+    @MDCSimpleMenu:selected="select"
   >
-    <ul class="mdc-menu__items mdc-list" role="menu" aria-hidden="true">
+    <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
       <slot />
     </ul>
   </div>
 </template>
 
 <script>
-import { MDCMenu } from '@material/menu'
+import { MDCSimpleMenu } from '@material/menu'
 
 export default {
   props: {
@@ -32,7 +32,7 @@ export default {
     }
   },
   mounted () {
-    this.mdcMenu = MDCMenu.attachTo(this.$el)
+    this.mdcMenu = MDCSimpleMenu.attachTo(this.$el)
     this.parentOffset = this.$el.parentNode.getBoundingClientRect()
   },
   beforeDestroy () {
