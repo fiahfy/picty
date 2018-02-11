@@ -1,7 +1,5 @@
 <template>
   <div class="bookmark">
-    <explorer-menu-bar />
-    <divider />
     <div class="container">
       <div class="message" v-if="message">
         {{ message }}
@@ -14,13 +12,11 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import BookmarkList from '../components/BookmarkList'
-import ExplorerMenuBar from '../components/ExplorerMenuBar'
 import Divider from '../components/Divider'
 
 export default {
   components: {
     BookmarkList,
-    ExplorerMenuBar,
     Divider
   },
   computed: {

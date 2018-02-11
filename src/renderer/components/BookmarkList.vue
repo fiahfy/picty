@@ -45,12 +45,12 @@
         :items="files"
         :estimatedHeight="41"
       >
-        <file-list-item
+        <bookmark-list-item
           slot-scope="{ item, index }"
           :key="item.name"
           :file="item"
-          :selected="isSelectedFile({ filepath: item.path })"
-          @click="selectFile({ filepath: item.path })"
+          :selected="isSelectedBookmark({ filepath: item.path })"
+          @click="selectBookmark({ filepath: item.path })"
           @dblclick="action({ filepath: item.path })"
           @contextmenu="e => contextmenu(e, item)"
         />
@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
-import FileListItem from './FileListItem'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import BookmarkListItem from './BookmarkListItem'
 import MdcIcon from './MdcIcon'
 import MdcTable from './MdcTable'
 import MdcTableBody from './MdcTableBody'
@@ -73,7 +73,7 @@ import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
-    FileListItem,
+    BookmarkListItem,
     MdcIcon,
     MdcTable,
     MdcTableBody,
@@ -106,15 +106,14 @@ export default {
       return this.sortOption.order === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState({
-      directory: state => state.explorer.directory,
-      selectedFile: state => state.explorer.selectedFile
+      selectedBookmark: state => state.bookmark.selectedBookmark,
+      scrollTop: state => state.bookmark.scrollTop,
+      sortOption: state => state.bookmark.sortOption
     }),
     ...mapGetters({
-      files: 'explorer/filteredFiles',
-      scrollTop: 'explorer/scrollTop',
-      sortOption: 'explorer/sortOption',
-      selectedIndex: 'explorer/selectedIndex',
-      isSelectedFile: 'explorer/isSelectedFile'
+      files: 'bookmark/files',
+      selectedIndex: 'bookmark/selectedIndex',
+      isSelectedBookmark: 'bookmark/isSelectedBookmark'
     })
   },
   methods: {
@@ -134,11 +133,11 @@ export default {
           break
         case 38:
           e.preventDefault()
-          this.selectPreviousFile()
+          this.selectPreviousBookmark()
           break
         case 40:
           e.preventDefault()
-          this.selectNextFile()
+          this.selectNextBookmark()
           break
       }
     },
@@ -149,7 +148,7 @@ export default {
       })
     },
     contextmenu (e, file) {
-      this.selectFile({ filepath: file.path })
+      this.selectBookmark({ filepath: file.path })
       ContextMenu.show(e, [{
         label: 'View',
         click: () => {
@@ -158,12 +157,14 @@ export default {
         accelerator: 'Enter'
       }])
     },
+    ...mapMutations({
+      setScrollTop: 'bookmark/setScrollTop'
+    }),
     ...mapActions({
-      changeSortKey: 'explorer/changeSortKey',
-      selectFile: 'explorer/selectFile',
-      selectPreviousFile: 'explorer/selectPreviousFile',
-      selectNextFile: 'explorer/selectNextFile',
-      setScrollTop: 'explorer/setScrollTop',
+      changeSortKey: 'bookmark/changeSortKey',
+      selectBookmark: 'bookmark/selectBookmark',
+      selectPreviousBookmark: 'bookmark/selectPreviousBookmark',
+      selectNextBookmark: 'bookmark/selectNextBookmark',
       action: 'explorer/action',
       showSelectedFile: 'viewer/showSelectedFile',
       showFile: 'viewer/showFile'
@@ -175,7 +176,7 @@ export default {
         this.$el.scrollTop = this.scrollTop
       })
     },
-    selectedFile () {
+    selectedBookmark () {
       this.$nextTick(() => {
         const index = this.selectedIndex
         if (index === -1) {
@@ -199,7 +200,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color-palette.scss";
+@import "~@material/theme/_color-palette";
 
 .bookmark-list {
   height: 100%;

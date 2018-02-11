@@ -45,7 +45,7 @@
         :items="files"
         :estimatedHeight="41"
       >
-        <file-list-item
+        <explorer-list-item
           slot-scope="{ item, index }"
           :key="item.name"
           :file="item"
@@ -61,7 +61,7 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import FileListItem from './FileListItem'
+import ExplorerListItem from './ExplorerListItem'
 import MdcIcon from './MdcIcon'
 import MdcTable from './MdcTable'
 import MdcTableBody from './MdcTableBody'
@@ -73,7 +73,7 @@ import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
-    FileListItem,
+    ExplorerListItem,
     MdcIcon,
     MdcTable,
     MdcTableBody,
@@ -199,7 +199,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color-palette.scss";
+@import "~@material/theme/_color-palette";
 
 .explorer-list {
   height: 100%;

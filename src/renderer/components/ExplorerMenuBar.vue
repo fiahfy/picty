@@ -67,21 +67,27 @@
       >
         <mdc-icon icon="home" />
       </mdc-button>
-      <divider orientation="vertical" />
-      <mdc-button
-        class="icon"
-        :title="'View'|accelerator('Enter')"
-        @click="showSelectedFile"
-      >
-        <mdc-icon icon="photo" />
-      </mdc-button>
-      <divider orientation="vertical" />
       <mdc-button
         class="icon"
         title="Open current directory"
         @click="openDirectory"
       >
         <mdc-icon icon="folder_open" />
+      </mdc-button>
+      <divider orientation="vertical" />
+      <mdc-button
+        class="icon"
+        :title="'Bookmark'|accelerator('')"
+        @click="addSelectedFileToBookmark"
+      >
+        <mdc-icon icon="star" />
+      </mdc-button>
+      <mdc-button
+        class="icon"
+        :title="'View'|accelerator('Enter')"
+        @click="showSelectedFile"
+      >
+        <mdc-icon icon="photo" />
       </mdc-button>
       <divider orientation="vertical" />
       <div class="search-wrapper">
@@ -186,6 +192,7 @@ export default {
       forwardDirectory: 'explorer/forwardDirectory',
       openDirectory: 'explorer/openDirectory',
       search: 'explorer/search',
+      addSelectedFileToBookmark: 'bookmark/addSelectedFileToBookmark',
       showSelectedFile: 'viewer/showSelectedFile'
     })
   },
@@ -207,7 +214,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color-palette.scss";
+@import "~@material/theme/_color-palette";
 
 .explorer-menu-bar {
   user-select: none;

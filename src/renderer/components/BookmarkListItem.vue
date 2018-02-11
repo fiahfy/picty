@@ -1,14 +1,14 @@
 <template>
-  <mdc-table-row class="file-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
+  <mdc-table-row class="bookmark-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
     <mdc-table-column class="name">
       <mdc-icon :icon="icon" :class="icon" />
       {{ file.name }}
     </mdc-table-column>
     <mdc-table-column class="size">
-      <template v-if="!directory">{{ this.file.size | readableSize }}</template>
+      <template v-if="size !== null">{{ size | readableSize }}</template>
     </mdc-table-column>
     <mdc-table-column class="date-modified">
-      {{ file.mtime | moment('YYYY-MM-DD HH:mm') }}
+      <template v-if="mtime !== null">{{ mtime | moment('YYYY-MM-DD HH:mm') }}</template>
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -35,18 +35,24 @@ export default {
     MdcTableRow
   },
   computed: {
-    directory () {
-      return this.file.isDirectory()
-    },
     icon () {
-      return this.directory ? 'folder' : 'photo'
+      if (!this.file.exists()) {
+        return 'broken_image'
+      }
+      return this.file.isDirectory() ? 'folder' : 'photo'
+    },
+    size () {
+      return this.file.exists() && !this.file.isDirectory() ? this.file.size : null
+    },
+    mtime () {
+      return this.file.exists() ? this.file.mtime : null
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color-palette.scss";
+@import "~@material/theme/_color-palette";
 
 .mdc-table-column {
   line-height: 20px;
@@ -68,6 +74,9 @@ export default {
     }
     &.photo {
       color: $material-color-green-200;
+    }
+    &.broken_image {
+      color: $material-color-grey-400;
     }
   }
 }

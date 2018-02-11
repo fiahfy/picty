@@ -4,6 +4,7 @@ import createPersistedState from 'vuex-persistedstate'
 import { remote } from 'electron'
 import router from '../router'
 import explorer from './explorer'
+import bookmark from './bookmark'
 import settings from './settings'
 import viewer from './viewer'
 import File from '../utils/file'
@@ -102,6 +103,7 @@ export default new Vuex.Store({
   },
   modules: {
     explorer,
+    bookmark,
     settings,
     viewer
   },
@@ -109,6 +111,7 @@ export default new Vuex.Store({
     createPersistedState({
       paths: [
         'explorer.directory',
+        'bookmark.bookmarks',
         'settings'
       ]
     })
