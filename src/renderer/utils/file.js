@@ -3,17 +3,20 @@ import path from 'path'
 
 export default class File {
   constructor (filepath) {
-    this.stats = fs.lstatSync(filepath)
     this.name = path.basename(filepath)
     this.path = filepath
-    this.size = this.stats.size
-    this.mtime = this.stats.mtime
+  }
+  get size () {
+    return fs.lstatSync(this.path).size
+  }
+  get mtime () {
+    return fs.lstatSync(this.path).mtime
   }
   get parent () {
     return new File(path.dirname(this.path))
   }
   isDirectory () {
-    return this.stats.isDirectory()
+    return fs.lstatSync(this.path).isDirectory()
   }
   isImage () {
     return [
@@ -27,6 +30,17 @@ export default class File {
       '.jxr',
       '.psd'
     ].includes(path.extname(this.path).toLowerCase())
+  }
+  exists () {
+    try {
+      fs.lstatSync(this.path)
+      return true
+    } catch (e) {
+      if (e.code === 'ENOENT') {
+        return false
+      }
+      throw e
+    }
   }
   listFiles (options = { recursive: false }) {
     const filepathes = fs.readdirSync(this.path)

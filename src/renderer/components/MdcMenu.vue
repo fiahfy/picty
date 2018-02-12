@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mdc-simple-menu"
+    class="mdc-menu mdc-simple-menu"
     tabindex="-1"
     :style="styles"
     @MDCSimpleMenu:cancel="cancel"
@@ -27,16 +27,16 @@ export default {
   },
   data () {
     return {
-      mdcSimpleMenu: null,
+      mdcMenu: null,
       parentOffset: {}
     }
   },
   mounted () {
-    this.mdcSimpleMenu = MDCSimpleMenu.attachTo(this.$el)
+    this.mdcMenu = MDCSimpleMenu.attachTo(this.$el)
     this.parentOffset = this.$el.parentNode.getBoundingClientRect()
   },
   beforeDestroy () {
-    this.mdcSimpleMenu.destroy()
+    this.mdcMenu.destroy()
   },
   computed: {
     styles () {
@@ -50,15 +50,15 @@ export default {
   },
   watch: {
     value (value) {
-      this.mdcSimpleMenu.open = value
+      this.mdcMenu.open = value
     }
   },
   methods: {
     show () {
-      this.mdcSimpleMenu.show({ focusIndex: this.selected })
+      this.mdcMenu.show({ focusIndex: this.selected })
     },
     hide () {
-      this.mdcSimpleMenu.hide()
+      this.mdcMenu.hide()
     },
     select (e) {
       this.$emit('change', e.detail.index)
@@ -71,7 +71,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.mdc-simple-menu {
+.mdc-menu {
   .mdc-list, .mdc-list-item {
     font-size: inherit;
   }

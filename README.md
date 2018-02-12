@@ -6,8 +6,9 @@ Simple Image Viewer based on Electron.
 
 ## Features
 * View images easily
-* Viewer has paging controller
-* Change theme color (Light/Dark)
+* Paging/Zooming controller on viewer
+* Bookmark
+* Change theme (Light/Dark)
 
 
 ## Screenshots
@@ -26,8 +27,6 @@ https://github.com/fiahfy/picty/releases
 
 ## Development
 ```
-$ git clone https://github.com/fiahfy/picty.git
-$ cd picty
 $ yarn
 $ yarn dev
 ```

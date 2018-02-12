@@ -88,6 +88,7 @@ export default {
         }
         watcher = fs.watch(state.directory, () => {
           dispatch('loadDirectory')
+          dispatch('showMessage', { message: 'Reloaded directory' }, { root: true })
         })
         const files = File.listFiles(state.directory).filter((file) => file.isDirectory() || file.isImage())
         if (!files.length) {
@@ -101,16 +102,13 @@ export default {
         commit('setFiles', { files: [] })
       }
       dispatch('sortFiles')
-      dispatch('focus', { selector: '.file-list table' }, { root: true })
+      dispatch('focus', { selector: '.explorer-list table' }, { root: true })
     },
     openDirectory ({ dispatch, state }) {
       const result = shell.openItem(state.directory)
       if (!result) {
         dispatch('showMessage', { message: `Invalid directory "${state.directory}"` }, { root: true })
       }
-    },
-    search ({ commit }, { query }) {
-      commit('setQuery', { query })
     },
     selectFile ({ commit }, { filepath }) {
       const file = new File(filepath)
@@ -132,15 +130,15 @@ export default {
       const selectedFile = getters.filteredFiles[index]
       commit('setSelectedFile', { selectedFile })
     },
-    scroll ({ commit, state }) {
-      const node = document.querySelector('.file-list')
-      if (node) {
-        const history = {
-          ...state.histories[state.historyIndex],
-          scrollTop: node.scrollTop
-        }
-        commit('setHistory', { history, index: state.historyIndex })
+    search ({ commit }, { query }) {
+      commit('setQuery', { query })
+    },
+    setScrollTop ({ commit, state }, { scrollTop }) {
+      const history = {
+        ...state.histories[state.historyIndex],
+        scrollTop
       }
+      commit('setHistory', { history, index: state.historyIndex })
     },
     changeSortKey ({ commit, dispatch, getters, state }, { sortKey }) {
       let sortOrder = sortOrderDefaults[sortKey]
@@ -150,14 +148,6 @@ export default {
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption, key: state.directory })
       dispatch('sortFiles')
-    },
-    action ({ commit, dispatch, state }, { filepath }) {
-      const file = new File(filepath)
-      if (file.isDirectory()) {
-        dispatch('changeDirectory', { dirpath: file.path })
-      } else {
-        dispatch('viewer/showDirectory', { dirpath: file.parent.path, currentFilepath: file.path }, { root: true })
-      }
     },
     sortFiles ({ commit, getters, state }) {
       const files = state.files.concat().sort((a, b) => {
@@ -194,6 +184,24 @@ export default {
         return getters.sortOption.order === 'asc' ? result : -1 * result
       })
       commit('setFiles', { files })
+    },
+    action ({ commit, dispatch, state }, { filepath }) {
+      const file = new File(filepath)
+      if (file.isDirectory()) {
+        dispatch('changeDirectory', { dirpath: file.path })
+      } else {
+        dispatch('showViewer', { filepath: file.path })
+      }
+    },
+    showViewer ({ dispatch }, { filepath }) {
+      const file = new File(filepath)
+      if (file.isDirectory()) {
+        const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
+        dispatch('viewer/show', { filepathes }, { root: true })
+      } else {
+        const filepathes = File.listFiles(file.parent.path).map(file => file.path)
+        dispatch('viewer/show', { filepathes, currentFilepath: filepath }, { root: true })
+      }
     }
   },
   mutations: {
@@ -259,13 +267,21 @@ export default {
     },
     filteredFiles (state) {
       return state.files.concat().filter((file) => {
-        return file.name.indexOf(state.query) > -1
+        return file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
       })
+    },
+    selectedFilepath (state) {
+      return state.selectedFile ? state.selectedFile.path : null
     },
     selectedIndex (state, getters) {
       return getters.filteredFiles.findIndex((file) => {
-        return state.selectedFile && file.path === state.selectedFile.path
+        return getters.isSelectedFile({ filepath: file.path })
       })
+    },
+    isSelectedFile (state, getters) {
+      return ({ filepath }) => {
+        return getters.selectedFilepath === filepath
+      }
     }
   }
 }

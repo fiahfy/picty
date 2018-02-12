@@ -22,7 +22,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .mdc-button.icon {
   height: auto;
   line-height: initial;

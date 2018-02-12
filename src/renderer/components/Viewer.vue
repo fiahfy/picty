@@ -32,7 +32,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import ControlBar from '../components/ControlBar'
+import ControlBar from './ControlBar'
 
 export default {
   components: {
@@ -214,7 +214,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/animation/functions";
+@import "@material/animation/functions";
 
 @keyframes fade-in {
   from {
@@ -244,6 +244,10 @@ export default {
   animation: mdc-animation-enter(fade-out, 350ms) forwards;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 .viewer {
   bottom: 0;
   left: 0;
@@ -258,54 +262,51 @@ export default {
   &.dragging .wrapper {
     cursor: -webkit-grabbing;
   }
-}
-.message {
-  align-items: center;
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  width: 100%;
-}
-.wrapper {
-  bottom:0;
-  cursor: -webkit-grab;
-  left: 0;
-  overflow: auto;
-  position: absolute;
-  right: 0;
-  top:0;
-}
-img {
-  bottom:0;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top:0;
-  &.horizontal-center {
-    margin-left: auto;
-    margin-right: auto;
+  .message {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
   }
-  &.vertical-center {
-    margin-bottom: auto;
-    margin-top: auto;
-  }
-  &:not(.scaling) {
-    max-height: 100%;
-    max-width: 100%;
-    &.stretched {
-      height: 100%;
-      object-fit: contain;
-      width: 100%;
+  .wrapper {
+    bottom:0;
+    cursor: -webkit-grab;
+    left: 0;
+    overflow: auto;
+    position: absolute;
+    right: 0;
+    top:0;
+    img {
+      bottom:0;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top:0;
+      &.horizontal-center {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      &.vertical-center {
+        margin-bottom: auto;
+        margin-top: auto;
+      }
+      &:not(.scaling) {
+        max-height: 100%;
+        max-width: 100%;
+        &.stretched {
+          height: 100%;
+          object-fit: contain;
+          width: 100%;
+        }
+      }
     }
   }
-}
-.control-bar {
-  bottom: 0;
-  left: 0;
-  position: absolute;
-  right: 0;
-}
-::-webkit-scrollbar {
-  display: none;
+  .control-bar {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+  }
 }
 </style>

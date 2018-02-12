@@ -12,8 +12,8 @@
 
 <script>
 import { mapActions } from 'vuex'
-import MdcButton from '../components/MdcButton'
-import MdcIcon from '../components/MdcIcon'
+import MdcButton from './MdcButton'
+import MdcIcon from './MdcIcon'
 import { buildText } from '../utils/accelerator'
 
 export default {
@@ -24,7 +24,8 @@ export default {
   data () {
     return {
       items: [
-        { name: 'explorer', icon: 'list', title: `explorer (${buildText('CmdOrCtrl+Shift+E')})` },
+        { name: 'explorer', icon: 'view_list', title: `explorer (${buildText('CmdOrCtrl+Shift+E')})` },
+        { name: 'bookmark', icon: 'star', title: `bookmark (${buildText('CmdOrCtrl+Shift+B')})` },
         { name: 'settings', icon: 'settings', title: `settings (${buildText('CmdOrCtrl+,')})` }
       ]
     }
@@ -54,45 +55,35 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~@material/theme/_color-palette.scss";
-
 .activity-bar {
-  border-right-color: $material-color-grey-300;
-  border-right-style: solid;
-  border-right-width: 1px;
   overflow: hidden;
   width: 48px;
-}
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.mdc-button {
-  border-radius: 0;
-  height: auto;
-  line-height: initial;
-  min-width: auto;
-  padding: 0;
-  .mdc-icon {
-    padding: 12px;
-    &:not(.selected) {
-      color: var(--mdc-theme-text-disabled-on-light, rgba(0, 0, 0, 0.38));
-      &:hover {
-        color: inherit;
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    .mdc-button {
+      border-radius: 0;
+      height: auto;
+      line-height: initial;
+      min-width: auto;
+      padding: 0;
+      .mdc-icon {
+        padding: 12px;
+        &:not(.selected) {
+          color: var(--mdc-theme-text-disabled-on-light, rgba(0, 0, 0, 0.38));
+          &:hover {
+            color: inherit;
+          }
+        }
       }
     }
   }
 }
-.mdc-theme--dark {
-  .activity-bar {
-    border-right-color: $material-color-grey-600;
-  }
-  .mdc-icon:not(.selected) {
-    color: var(--mdc-theme-text-disabled-on-dark, rgba(255, 255, 255, 0.5));
-    &:hover {
-      color: inherit;
-    }
+.mdc-theme--dark .activity-bar ul .mdc-icon:not(.selected) {
+  color: var(--mdc-theme-text-disabled-on-dark, rgba(255, 255, 255, 0.5));
+  &:hover {
+    color: inherit;
   }
 }
 </style>

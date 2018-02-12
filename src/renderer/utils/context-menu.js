@@ -54,10 +54,11 @@ export const show = (e, template = []) => {
       case LABEL_PASTE:
         return {
           label: item.label,
-          click: () => {
+          click: async () => {
             const text = clipboard.readText()
             const position = e.target.selectionStart + text.length
-            e.target.value = e.target.value.slice(0, e.target.selectionStart) + text + e.target.value.slice(e.target.selectionEnd)
+            const value = e.target.value.slice(0, e.target.selectionStart) + text + e.target.value.slice(e.target.selectionEnd)
+            await item.callback(value)
             e.target.setSelectionRange(position, position)
           },
           accelerator: 'CmdOrCtrl+V'

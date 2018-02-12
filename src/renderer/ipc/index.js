@@ -10,6 +10,9 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('showExplorer', () => {
     store.dispatch('changeRoute', { name: 'explorer' })
   })
+  ipcRenderer.on('showBookmark', () => {
+    store.dispatch('changeRoute', { name: 'bookmark' })
+  })
   ipcRenderer.on('showSettings', () => {
     store.dispatch('changeRoute', { name: 'settings' })
   })

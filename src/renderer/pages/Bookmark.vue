@@ -1,50 +1,41 @@
 <template>
-  <div class="explorer">
-    <explorer-menu-bar />
+  <div class="bookmark">
+    <bookmark-menu-bar />
     <divider />
     <div class="container">
       <div class="message" v-if="message">
         {{ message }}
       </div>
-      <explorer-list />
+      <bookmark-list />
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
-import ExplorerList from '../components/ExplorerList'
-import ExplorerMenuBar from '../components/ExplorerMenuBar'
+import { mapGetters } from 'vuex'
+import BookmarkList from '../components/BookmarkList'
+import BookmarkMenuBar from '../components/BookmarkMenuBar'
 import Divider from '../components/Divider'
 
 export default {
   components: {
-    ExplorerList,
-    ExplorerMenuBar,
+    BookmarkList,
+    BookmarkMenuBar,
     Divider
   },
   computed: {
     message () {
-      if (this.error) {
-        return this.error.message
-      }
-      if (!this.files.length) {
-        return 'No Results'
-      }
-      return ''
+      return this.files.length ? '' : 'No Bookmarks'
     },
-    ...mapState({
-      error: state => state.explorer.error
-    }),
     ...mapGetters({
-      files: 'explorer/filteredFiles'
+      files: 'bookmark/files'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.explorer {
+.bookmark {
   display: flex;
   flex-direction: column;
   height: 100%;

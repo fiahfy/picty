@@ -4,6 +4,7 @@ import createPersistedState from 'vuex-persistedstate'
 import { remote } from 'electron'
 import router from '../router'
 import explorer from './explorer'
+import bookmark from './bookmark'
 import settings from './settings'
 import viewer from './viewer'
 import File from '../utils/file'
@@ -78,7 +79,11 @@ export default new Vuex.Store({
     },
     dismissViewer ({ commit, dispatch, state }) {
       commit('setViewing', { viewing: false })
-      dispatch('focus', { selector: '.file-list table' })
+      if (router.app.$route.name === 'explorer') {
+        dispatch('focus', { selector: '.explorer-list table' })
+      } else {
+        dispatch('focus', { selector: '.bookmark-list table' })
+      }
       if (state.settings.fullScreen || process.platform !== 'darwin') {
         dispatch('leaveFullScreen')
       }
@@ -102,6 +107,7 @@ export default new Vuex.Store({
   },
   modules: {
     explorer,
+    bookmark,
     settings,
     viewer
   },
@@ -109,6 +115,7 @@ export default new Vuex.Store({
     createPersistedState({
       paths: [
         'explorer.directory',
+        'bookmark.bookmarks',
         'settings'
       ]
     })
