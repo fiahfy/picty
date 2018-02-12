@@ -19,7 +19,7 @@ export default {
   },
   actions: {
     bookmark ({ commit, getters, state }, { filepath }) {
-      if (getters.isBookmarked({ filepath })) {
+      if (!filepath || getters.isBookmarked({ filepath })) {
         return
       }
       const bookmarks = [
@@ -49,7 +49,7 @@ export default {
       if (index < 0) {
         return
       }
-      const selectedBookmark = getters.files[index]
+      const selectedBookmark = getters.files[index].path
       commit('setSelectedBookmark', { selectedBookmark })
     },
     selectNextBookmark ({ commit, getters, state }) {
@@ -57,7 +57,7 @@ export default {
       if (index > getters.files.length - 1) {
         return
       }
-      const selectedBookmark = getters.files[index]
+      const selectedBookmark = getters.files[index].path
       commit('setSelectedBookmark', { selectedBookmark })
     },
     changeSortKey ({ commit, dispatch, state }, { sortKey }) {
@@ -106,6 +106,24 @@ export default {
         return state.sortOption.order === 'asc' ? result : -1 * result
       }).map((file) => file.path)
       commit('setBookmarks', { bookmarks })
+    },
+    action ({ commit, dispatch, state }, { filepath }) {
+      const file = new File(filepath)
+      if (file.isDirectory()) {
+        dispatch('explorer/changeDirectory', { dirpath: file.path }, { root: true })
+        dispatch('changeRoute', { name: 'explorer' }, { root: true })
+      } else {
+        dispatch('showViewer', { filepath: file.path })
+      }
+    },
+    showViewer ({ dispatch }, { filepath }) {
+      const file = new File(filepath)
+      if (file.isDirectory()) {
+        const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
+        dispatch('viewer/show', { filepathes }, { root: true })
+      } else {
+        dispatch('viewer/show', { filepathes: [filepath] }, { root: true })
+      }
     }
   },
   mutations: {
@@ -124,7 +142,7 @@ export default {
   },
   getters: {
     files (state) {
-      return state.bookmarks.map((bookmark) => new File(bookmark))
+      return state.bookmarks.filter((bookmark) => !!bookmark).map((bookmark) => new File(bookmark))
     },
     selectedIndex (state, getters) {
       return getters.files.findIndex((file) => {

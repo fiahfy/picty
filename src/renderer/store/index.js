@@ -79,7 +79,11 @@ export default new Vuex.Store({
     },
     dismissViewer ({ commit, dispatch, state }) {
       commit('setViewing', { viewing: false })
-      dispatch('focus', { selector: '.explorer-list table' })
+      if (router.app.$route.name === 'explorer') {
+        dispatch('focus', { selector: '.explorer-list table' })
+      } else {
+        dispatch('focus', { selector: '.bookmark-list table' })
+      }
       if (state.settings.fullScreen || process.platform !== 'darwin') {
         dispatch('leaveFullScreen')
       }

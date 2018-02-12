@@ -126,6 +126,12 @@ export default {
     },
     keydown (e) {
       if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+        switch (e.keyCode) {
+          case 68:
+            e.preventDefault()
+            this.toggleBookmark({ filepath: this.selectedFilepath })
+            break
+        }
         return
       }
       switch (e.keyCode) {
@@ -264,7 +270,7 @@ export default {
     }
     .mdc-table-row {
       cursor: pointer;
-      height: 40px;
+      height: 41px;
     }
   }
   &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {

@@ -43,9 +43,6 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('openCurrentDirectory', () => {
     store.dispatch('explorer/openDirectory')
   })
-  ipcRenderer.on('toggleBookmark', () => {
-    store.dispatch('bookmark/toggleBookmark', { filepath: store.getters['explorer/selectedFilepath'] })
-  })
   ipcRenderer.on('search', () => {
     store.dispatch('changeRoute', { name: 'explorer' })
     const selector = '.search input'

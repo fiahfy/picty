@@ -1,5 +1,7 @@
 <template>
   <div class="bookmark">
+    <bookmark-menu-bar />
+    <divider />
     <div class="container">
       <div class="message" v-if="message">
         {{ message }}
@@ -10,19 +12,24 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import BookmarkList from '../components/BookmarkList'
+import BookmarkMenuBar from '../components/BookmarkMenuBar'
 import Divider from '../components/Divider'
 
 export default {
   components: {
     BookmarkList,
+    BookmarkMenuBar,
     Divider
   },
   computed: {
     message () {
-      return ''
-    }
+      return this.files.length ? '' : 'No Bookmarks'
+    },
+    ...mapGetters({
+      files: 'bookmark/files'
+    })
   }
 }
 </script>

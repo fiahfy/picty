@@ -83,7 +83,6 @@ export default class MenuBuilder {
           { label: 'Change Home Directory', accelerator: 'CmdOrCtrl+Shift+H', click: () => { this.changeHomeDirectory() } },
           { label: 'Open Current Directory', click: () => { this.openCurrentDirectory() } },
           { type: 'separator' },
-          { label: 'Toggle bookmark', accelerator: 'CmdOrCtrl+D', click: () => { this.toggleBookmark() } },
           { label: 'Search...', accelerator: 'CmdOrCtrl+F', click: () => { this.search() } }
         ]
       },
@@ -190,9 +189,6 @@ export default class MenuBuilder {
   }
   openCurrentDirectory () {
     this.window.webContents.send('openCurrentDirectory')
-  }
-  toggleBookmark () {
-    this.window.webContents.send('toggleBookmark')
   }
   search () {
     this.window.webContents.send('search')

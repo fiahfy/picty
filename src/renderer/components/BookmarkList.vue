@@ -124,12 +124,18 @@ export default {
     },
     keydown (e) {
       if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+        switch (e.keyCode) {
+          case 68:
+            e.preventDefault()
+            this.toggleBookmark({ filepath: this.selectedBookmark })
+            break
+        }
         return
       }
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
-          this.showSelectedFile()
+          this.showViewer({ filepath: this.selectedBookmark })
           break
         case 38:
           e.preventDefault()
@@ -149,25 +155,34 @@ export default {
     },
     contextmenu (e, file) {
       this.selectBookmark({ filepath: file.path })
-      ContextMenu.show(e, [{
-        label: 'View',
-        click: () => {
-          this.showFile({ filepath: file.path })
+      ContextMenu.show(e, [
+        {
+          label: 'Bookmark',
+          click: () => {
+            this.toggleBookmark({ filepath: file.path })
+          },
+          accelerator: 'CmdOrCtrl+D'
         },
-        accelerator: 'Enter'
-      }])
+        {
+          label: 'View',
+          click: () => {
+            this.showViewer({ filepath: file.path })
+          },
+          accelerator: 'Enter'
+        }
+      ])
     },
     ...mapMutations({
       setScrollTop: 'bookmark/setScrollTop'
     }),
     ...mapActions({
+      toggleBookmark: 'bookmark/toggleBookmark',
       selectBookmark: 'bookmark/selectBookmark',
       selectPreviousBookmark: 'bookmark/selectPreviousBookmark',
       selectNextBookmark: 'bookmark/selectNextBookmark',
       changeSortKey: 'bookmark/changeSortKey',
-      action: 'explorer/action',
-      showSelectedFile: 'viewer/showSelectedFile',
-      showFile: 'viewer/showFile'
+      action: 'bookmark/action',
+      showViewer: 'bookmark/showViewer'
     })
   },
   watch: {
@@ -255,7 +270,7 @@ export default {
     }
     .mdc-table-row {
       cursor: pointer;
-      height: 40px;
+      height: 41px;
     }
   }
   &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
