@@ -13,24 +13,6 @@ export default {
     scaling: false
   },
   actions: {
-    showSelectedFile ({ dispatch, rootState }) {
-      if (rootState.explorer.selectedFile) {
-        const filepath = rootState.explorer.selectedFile.path
-        dispatch('showFile', { filepath })
-      }
-    },
-    showFile ({ dispatch }, { filepath }) {
-      const file = new File(filepath)
-      if (file.isDirectory()) {
-        dispatch('showDirectory', { dirpath: filepath, recursive: true })
-      } else {
-        dispatch('showDirectory', { dirpath: file.parent.path, currentFilepath: filepath })
-      }
-    },
-    showDirectory ({ dispatch }, { dirpath, currentFilepath, recursive = false }) {
-      const filepathes = File.listFiles(dirpath, { recursive }).map(file => file.path)
-      dispatch('show', { filepathes, currentFilepath })
-    },
     show ({ commit, dispatch, rootState }, { filepathes, currentFilepath }) {
       try {
         const files = filepathes.map(filepath => new File(filepath)).filter((file) => file.isImage())

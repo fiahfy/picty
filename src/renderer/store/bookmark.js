@@ -18,14 +18,21 @@ export default {
     }
   },
   actions: {
-    addSelectedFileToBookmark ({ commit, rootState }) {
-      if (rootState.explorer.selectedFile) {
-        const filepath = rootState.explorer.selectedFile.path
-        commit('addBookmark', { filepath })
+    bookmark ({ commit, getters, state }, { filepath }) {
+      if (getters.isBookmarked({ filepath })) {
+        return
       }
+      const bookmarks = [
+        ...state.bookmarks,
+        filepath
+      ]
+      commit('setBookmarks', { bookmarks })
     },
-    removeBookmark () {
-
+    deleteBookmark ({ commit, state }, { filepath }) {
+      const bookmarks = state.bookmarks.filter((bookmark) => {
+        return bookmark !== filepath
+      })
+      commit('setBookmarks', { bookmarks })
     },
     selectBookmark ({ commit }, { filepath }) {
       commit('setSelectedBookmark', { selectedBookmark: filepath })
@@ -98,17 +105,6 @@ export default {
     setBookmarks (state, { bookmarks }) {
       state.bookmarks = bookmarks
     },
-    addBookmark (state, { filepath }) {
-      state.bookmarks = [
-        ...state.bookmarks,
-        filepath
-      ]
-    },
-    removeBookmark (state, { filepath }) {
-      state.bookmarks = state.bookmarks.filter((bookmark) => {
-        return bookmark !== filepath
-      })
-    },
     setSelectedBookmark (state, { selectedBookmark }) {
       state.selectedBookmark = selectedBookmark
     },
@@ -131,6 +127,11 @@ export default {
     isSelectedBookmark (state) {
       return ({ filepath }) => {
         return state.selectedBookmark === filepath
+      }
+    },
+    isBookmarked (state) {
+      return ({ filepath }) => {
+        return state.bookmarks.indexOf(filepath) > -1
       }
     }
   }

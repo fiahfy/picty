@@ -113,6 +113,7 @@ export default {
       files: 'explorer/filteredFiles',
       scrollTop: 'explorer/scrollTop',
       sortOption: 'explorer/sortOption',
+      selectedFilepath: 'explorer/selectedFilepath',
       selectedIndex: 'explorer/selectedIndex',
       isSelectedFile: 'explorer/isSelectedFile'
     })
@@ -130,7 +131,7 @@ export default {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
-          this.showSelectedFile()
+          this.showViewer({ filepath: this.selectedFilepath })
           break
         case 38:
           e.preventDefault()
@@ -153,7 +154,7 @@ export default {
       ContextMenu.show(e, [{
         label: 'View',
         click: () => {
-          this.showFile({ filepath: file.path })
+          this.showViewer({ filepath: file.path })
         },
         accelerator: 'Enter'
       }])
@@ -165,8 +166,7 @@ export default {
       setScrollTop: 'explorer/setScrollTop',
       changeSortKey: 'explorer/changeSortKey',
       action: 'explorer/action',
-      showSelectedFile: 'viewer/showSelectedFile',
-      showFile: 'viewer/showFile'
+      showViewer: 'explorer/showViewer'
     })
   },
   watch: {

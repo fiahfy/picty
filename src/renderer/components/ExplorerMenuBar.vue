@@ -74,22 +74,38 @@
       >
         <mdc-icon icon="folder_open" />
       </mdc-button>
+
       <divider orientation="vertical" />
+
       <mdc-button
         class="icon"
-        :title="'Bookmark'|accelerator('')"
-        @click="addSelectedFileToBookmark"
+        :title="'Remove from bookmark'|accelerator('')"
+        :disabled="!selectedFilepath"
+        @click="deleteBookmark({ filepath: selectedFilepath })"
+        v-if="isBookmarked({ filepath: selectedFilepath})"
       >
         <mdc-icon icon="star" />
       </mdc-button>
       <mdc-button
         class="icon"
+        :title="'Add to bookmark'|accelerator('')"
+        :disabled="!selectedFilepath"
+        @click="bookmark({ filepath: selectedFilepath })"
+        v-else
+      >
+        <mdc-icon icon="star_border" />
+      </mdc-button>
+      <mdc-button
+        class="icon"
         :title="'View'|accelerator('Enter')"
-        @click="showSelectedFile"
+        :disabled="!selectedFilepath"
+        @click="showViewer({ filepath: selectedFilepath })"
       >
         <mdc-icon icon="photo" />
       </mdc-button>
+
       <divider orientation="vertical" />
+
       <div class="search-wrapper">
         <mdc-icon
           icon="search"
@@ -149,7 +165,9 @@ export default {
       backDirectories: 'explorer/backDirectories',
       forwardDirectories: 'explorer/forwardDirectories',
       canBackDirectory: 'explorer/canBackDirectory',
-      canForwardDirectory: 'explorer/canForwardDirectory'
+      canForwardDirectory: 'explorer/canForwardDirectory',
+      selectedFilepath: 'explorer/selectedFilepath',
+      isBookmarked: 'bookmark/isBookmarked'
     })
   },
   methods: {
@@ -203,8 +221,9 @@ export default {
       forwardDirectory: 'explorer/forwardDirectory',
       openDirectory: 'explorer/openDirectory',
       search: 'explorer/search',
-      addSelectedFileToBookmark: 'bookmark/addSelectedFileToBookmark',
-      showSelectedFile: 'viewer/showSelectedFile'
+      showViewer: 'explorer/showViewer',
+      bookmark: 'bookmark/bookmark',
+      deleteBookmark: 'bookmark/deleteBookmark'
     })
   },
   watch: {
