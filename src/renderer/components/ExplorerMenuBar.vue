@@ -6,8 +6,8 @@
         label="Input path..."
         fullwidth
         class="location"
-        @keyup="directoryInputKeyup"
-        @contextmenu="contextmenu"
+        @keyup="(e) => keyup(e, 'directory')"
+        @contextmenu="(e) => contextmenu(e, 'directory')"
         v-model="directoryInput"
       />
     </div>
@@ -99,8 +99,8 @@
           label="Search"
           fullwidth
           class="search"
-          @keyup="searchInputKeyup"
-          @contextmenu="contextmenu"
+          @keyup="(e) => keyup(e, 'search')"
+          @contextmenu="(e) => contextmenu(e, 'search')"
           v-model="searchInput"
         />
       </div>
@@ -153,20 +153,31 @@ export default {
     })
   },
   methods: {
-    contextmenu (e) {
+    contextmenu (e, mode) {
       ContextMenu.show(e, [
         { label: ContextMenu.LABEL_CUT },
         { label: ContextMenu.LABEL_COPY },
-        { label: ContextMenu.LABEL_PASTE }
+        {
+          label: ContextMenu.LABEL_PASTE,
+          callback: async (value) => {
+            if (mode === 'directory') {
+              this.directoryInput = value
+            } else {
+              this.searchInput = value
+            }
+            await this.$nextTick()
+          }
+        }
       ])
     },
-    directoryInputKeyup (e) {
+    keyup (e, mode) {
       if (e.keyCode === 13) {
-        this.changeDirectory({ dirpath: e.target.value })
+        if (mode === 'directory') {
+          this.changeDirectory({ dirpath: e.target.value })
+        } else {
+          this.search({ query: e.target.value })
+        }
       }
-    },
-    searchInputKeyup (e) {
-      this.search({ query: e.target.value })
     },
     mouseLongPress (e, direction) {
       e.target.parentNode.blur()
@@ -208,6 +219,9 @@ export default {
         this.forwardDirectory({ offset: value })
       }
       this.forwardSelected = null
+    },
+    searchInput (value) {
+      this.search({ query: value })
     }
   }
 }
