@@ -1,8 +1,10 @@
 <template>
   <mdc-table-row class="explorer-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
     <mdc-table-column class="name">
-      <mdc-icon :icon="icon" :class="icon" />
-      {{ file.name }}
+      <div>
+        <mdc-icon :icon="icon" :class="icon" />
+        <span class="filename">{{ file.name }}</span>
+      </div>
     </mdc-table-column>
     <mdc-table-column class="size">
       <template v-if="size !== null">{{ size | readableSize }}</template>
@@ -53,9 +55,19 @@ export default {
   vertical-align: bottom;
   white-space: nowrap;
   &.name {
-    overflow: hidden;
-    text-align: left;
-    text-overflow: ellipsis;
+    div {
+      display: flex;
+      .filename {
+        flex: 1;
+        margin: 0 0 0 4px;
+        overflow: hidden;
+        text-align: left;
+        text-overflow: ellipsis;
+      }
+      &>* {
+        align-self: flex-end;
+      }
+    }
   }
   &.size {
     text-align: right;

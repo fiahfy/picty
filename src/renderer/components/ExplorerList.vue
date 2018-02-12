@@ -264,7 +264,7 @@ export default {
     }
     .mdc-table-row {
       cursor: pointer;
-      height: 41px;
+      height: 40px;
     }
   }
   &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {

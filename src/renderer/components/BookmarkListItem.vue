@@ -1,8 +1,11 @@
 <template>
   <mdc-table-row class="bookmark-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
     <mdc-table-column class="name">
-      <mdc-icon :icon="icon" :class="icon" />
-      {{ file.name }}
+      <div>
+        <mdc-icon :icon="icon" :class="icon" />
+        <span class="filename">{{ file.name }}</span>
+        <span class="direpath">{{ dirpath }}</span>
+      </div>
     </mdc-table-column>
     <mdc-table-column class="size">
       <template v-if="size !== null">{{ size | readableSize }}</template>
@@ -46,6 +49,9 @@ export default {
     },
     mtime () {
       return this.file.exists() ? this.file.mtime : null
+    },
+    dirpath () {
+      return this.file.parent.path
     }
   }
 }
@@ -59,9 +65,24 @@ export default {
   vertical-align: bottom;
   white-space: nowrap;
   &.name {
-    overflow: hidden;
-    text-align: left;
-    text-overflow: ellipsis;
+    div {
+      display: flex;
+      .filename {
+        margin: 0 4px;
+      }
+      .direpath {
+        color: $material-color-grey-400;
+        direction: rtl;
+        flex: 1;
+        font-size: smaller;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+      }
+      &>* {
+        align-self: flex-end;
+      }
+    }
   }
   &.size {
     text-align: right;
