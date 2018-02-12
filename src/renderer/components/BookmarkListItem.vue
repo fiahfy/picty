@@ -4,14 +4,14 @@
       <div>
         <mdc-icon :icon="icon" :class="icon" />
         <span class="filename">{{ file.name }}</span>
-        <span class="direpath">{{ dirpath }}</span>
+        <span class="direpath">{{ file.dirpath }}</span>
       </div>
     </mdc-table-column>
     <mdc-table-column class="size">
       <template v-if="size !== null">{{ size | readableSize }}</template>
     </mdc-table-column>
     <mdc-table-column class="date-modified">
-      <template v-if="mtime !== null">{{ mtime | moment('YYYY-MM-DD HH:mm') }}</template>
+      <template v-if="file.mtime !== null">{{ file.mtime | moment('YYYY-MM-DD HH:mm') }}</template>
     </mdc-table-column>
   </mdc-table-row>
 </template>
@@ -39,19 +39,13 @@ export default {
   },
   computed: {
     icon () {
-      if (!this.file.exists()) {
+      if (!this.file.exists) {
         return 'broken_image'
       }
-      return this.file.isDirectory() ? 'folder' : 'photo'
+      return this.file.directory ? 'folder' : 'photo'
     },
     size () {
-      return this.file.exists() && !this.file.isDirectory() ? this.file.size : null
-    },
-    mtime () {
-      return this.file.exists() ? this.file.mtime : null
-    },
-    dirpath () {
-      return this.file.parent.path
+      return this.file.directory ? null : this.file.size
     }
   }
 }

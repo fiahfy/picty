@@ -72,29 +72,22 @@ export default {
     sortBookmarks ({ commit, getters, state }) {
       const bookmarks = getters.files.sort((a, b) => {
         let result = 0
-        if (a.exists() && b.exists()) {
-          switch (state.sortOption.key) {
-            case 'date_modified':
-              if (a.mtime > b.mtime) {
-                result = 1
-              } else if (a.mtime < b.mtime) {
-                result = -1
-              }
-              break
-            case 'size':
-              const size = (file) => {
-                if (file.isDirectory()) {
-                  return -1
-                }
-                return file.size
-              }
-              if (size(a) > size(b)) {
-                result = 1
-              } else if (size(a) < size(b)) {
-                result = -1
-              }
-              break
-          }
+        switch (state.sortOption.key) {
+          case 'date_modified':
+            if (a.mtime > b.mtime) {
+              result = 1
+            } else if (a.mtime < b.mtime) {
+              result = -1
+            }
+            break
+          case 'size':
+            const size = (file) => file.directory ? -1 : file.size
+            if (size(a) > size(b)) {
+              result = 1
+            } else if (size(a) < size(b)) {
+              result = -1
+            }
+            break
         }
         if (result === 0) {
           if (a.name > b.name) {
@@ -109,6 +102,9 @@ export default {
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
+      if (!file.exists()) {
+        return
+      }
       if (file.isDirectory()) {
         dispatch('explorer/changeDirectory', { dirpath: file.path }, { root: true })
         dispatch('changeRoute', { name: 'explorer' }, { root: true })
@@ -142,7 +138,7 @@ export default {
   },
   getters: {
     files (state) {
-      return state.bookmarks.filter((bookmark) => !!bookmark).map((bookmark) => new File(bookmark))
+      return state.bookmarks.filter((bookmark) => !!bookmark).map((bookmark) => (new File(bookmark)).toObject())
     },
     selectedIndex (state, getters) {
       return getters.files.findIndex((file) => {

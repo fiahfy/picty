@@ -37,7 +37,7 @@ export default {
       dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
-      if (state.selectedFile && state.selectedFile.isDirectory()) {
+      if (state.selectedFile && state.selectedFile.directory) {
         const dirpath = state.selectedFile.path
         dispatch('changeDirectory', { dirpath })
       }
@@ -90,7 +90,7 @@ export default {
           dispatch('loadDirectory')
           dispatch('showMessage', { message: 'Reloaded directory' }, { root: true })
         })
-        const files = File.listFiles(state.directory).filter((file) => file.isDirectory() || file.isImage())
+        const files = File.listFiles(state.directory).filter((file) => file.isDirectory() || file.isImage()).map((file) => file.toObject())
         if (!files.length) {
           throw new Error('No Images')
         }
@@ -111,7 +111,7 @@ export default {
       }
     },
     selectFile ({ commit }, { filepath }) {
-      const file = new File(filepath)
+      const file = (new File(filepath)).toObject()
       commit('setSelectedFile', { selectedFile: file })
     },
     selectPreviousFile ({ commit, getters, state }) {
@@ -161,12 +161,7 @@ export default {
             }
             break
           case 'size':
-            const size = (file) => {
-              if (file.isDirectory()) {
-                return -1
-              }
-              return file.size
-            }
+            const size = (file) => file.directory ? -1 : file.size
             if (size(a) > size(b)) {
               result = 1
             } else if (size(a) < size(b)) {

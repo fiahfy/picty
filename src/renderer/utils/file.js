@@ -60,6 +60,29 @@ export default class File {
       }
     }, [])
   }
+  toObject () {
+    let obj = {
+      name: this.name,
+      path: this.path,
+      dirpath: path.dirname(this.path),
+      size: null,
+      mtime: null,
+      exists: false,
+      directory: false,
+      image: false
+    }
+    if (!this.exists()) {
+      return obj
+    }
+    return {
+      ...obj,
+      size: this.size,
+      mtime: this.mtime,
+      exists: true,
+      directory: this.isDirectory(),
+      image: this.isImage()
+    }
+  }
   static listFiles (filepath, options = {}) {
     return (new File(filepath)).listFiles(options)
   }

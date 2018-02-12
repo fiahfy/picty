@@ -38,10 +38,10 @@ export default {
   },
   computed: {
     icon () {
-      return this.file.isDirectory() ? 'folder' : 'photo'
+      return this.file.directory ? 'folder' : 'photo'
     },
     size () {
-      return !this.file.isDirectory() ? this.file.size : null
+      return this.file.directory ? null : this.file.size
     }
   }
 }
