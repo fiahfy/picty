@@ -34,6 +34,13 @@ export default {
       })
       commit('setBookmarks', { bookmarks })
     },
+    toggleBookmark ({ dispatch, getters }, { filepath }) {
+      if (getters.isBookmarked({ filepath })) {
+        dispatch('deleteBookmark', { filepath })
+      } else {
+        dispatch('bookmark', { filepath })
+      }
+    },
     selectBookmark ({ commit }, { filepath }) {
       commit('setSelectedBookmark', { selectedBookmark: filepath })
     },

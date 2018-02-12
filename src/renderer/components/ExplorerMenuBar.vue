@@ -79,21 +79,11 @@
 
       <mdc-button
         class="icon"
-        :title="'Remove from bookmark'|accelerator('')"
+        :title="'Bbookmark'|accelerator('CmdOrCtrl+D')"
         :disabled="!selectedFilepath"
-        @click="deleteBookmark({ filepath: selectedFilepath })"
-        v-if="isBookmarked({ filepath: selectedFilepath})"
+        @click="toggleBookmark({ filepath: selectedFilepath })"
       >
-        <mdc-icon icon="star" />
-      </mdc-button>
-      <mdc-button
-        class="icon"
-        :title="'Add to bookmark'|accelerator('')"
-        :disabled="!selectedFilepath"
-        @click="bookmark({ filepath: selectedFilepath })"
-        v-else
-      >
-        <mdc-icon icon="star_border" />
+        <mdc-icon :icon="isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border'" />
       </mdc-button>
       <mdc-button
         class="icon"
@@ -222,8 +212,7 @@ export default {
       openDirectory: 'explorer/openDirectory',
       search: 'explorer/search',
       showViewer: 'explorer/showViewer',
-      bookmark: 'bookmark/bookmark',
-      deleteBookmark: 'bookmark/deleteBookmark'
+      toggleBookmark: 'bookmark/toggleBookmark'
     })
   },
   watch: {

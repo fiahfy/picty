@@ -151,13 +151,22 @@ export default {
     },
     contextmenu (e, file) {
       this.selectFile({ filepath: file.path })
-      ContextMenu.show(e, [{
-        label: 'View',
-        click: () => {
-          this.showViewer({ filepath: file.path })
+      ContextMenu.show(e, [
+        {
+          label: 'Bookmark',
+          click: () => {
+            this.toggleBookmark({ filepath: file.path })
+          },
+          accelerator: 'CmdOrCtrl+D'
         },
-        accelerator: 'Enter'
-      }])
+        {
+          label: 'View',
+          click: () => {
+            this.showViewer({ filepath: file.path })
+          },
+          accelerator: 'Enter'
+        }
+      ])
     },
     ...mapActions({
       selectFile: 'explorer/selectFile',
@@ -166,7 +175,8 @@ export default {
       setScrollTop: 'explorer/setScrollTop',
       changeSortKey: 'explorer/changeSortKey',
       action: 'explorer/action',
-      showViewer: 'explorer/showViewer'
+      showViewer: 'explorer/showViewer',
+      toggleBookmark: 'bookmark/toggleBookmark'
     })
   },
   watch: {
