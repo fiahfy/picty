@@ -11,6 +11,14 @@ import File from '../utils/file'
 
 Vue.use(Vuex)
 
+const Selector = {
+  locationInput: '.location>input',
+  searchInput: '.search>input',
+  explorerList: '.explorer-list>table',
+  bookmarkList: '.bookmark-list>table',
+  viewer: '.viewer'
+}
+
 export default new Vuex.Store({
   state: {
     message: '',
@@ -49,12 +57,19 @@ export default new Vuex.Store({
         }
       })
     },
-    showMessage ({ commit }, { message }) {
-      commit('setMessage', { message })
-      // wait dom updated
-      setTimeout(() => {
-        commit('setMessage', { message: '' })
-      })
+    focusLocationInput ({ dispatch }) {
+      dispatch('focus', { selector: Selector.locationInput })
+      dispatch('select', { selector: Selector.locationInput })
+    },
+    focusSearchInput ({ dispatch }) {
+      dispatch('focus', { selector: Selector.searchInput })
+      dispatch('select', { selector: Selector.searchInput })
+    },
+    focusExplorerList ({ dispatch }) {
+      dispatch('focus', { selector: Selector.explorerList })
+    },
+    focusBookmarkList ({ dispatch }) {
+      dispatch('focus', { selector: Selector.bookmarkList })
     },
     open ({ dispatch }, { filepathes }) {
       const file = new File(filepathes[0])
@@ -70,14 +85,16 @@ export default new Vuex.Store({
     openImages ({ dispatch }, { filepathes }) {
       dispatch('viewer/show', { filepathes })
     },
-    search ({ dispatch }) {
-      const selector = '.search input'
-      dispatch('focus', { selector })
-      dispatch('select', { selector })
+    showMessage ({ commit }, { message }) {
+      commit('setMessage', { message })
+      // wait dom updated
+      setTimeout(() => {
+        commit('setMessage', { message: '' })
+      })
     },
     showViewer ({ commit, dispatch, state }) {
       commit('setViewing', { viewing: true })
-      dispatch('focus', { selector: '.viewer' })
+      dispatch('focus', { selector: Selector.viewer })
       if (state.settings.fullScreen) {
         dispatch('enterFullScreen')
       }
@@ -85,9 +102,9 @@ export default new Vuex.Store({
     dismissViewer ({ commit, dispatch, state }) {
       commit('setViewing', { viewing: false })
       if (router.app.$route.name === 'explorer') {
-        dispatch('focus', { selector: '.explorer-list table' })
+        dispatch('focus', { selector: Selector.explorerList })
       } else {
-        dispatch('focus', { selector: '.bookmark-list table' })
+        dispatch('focus', { selector: Selector.bookmarkList })
       }
       if (state.settings.fullScreen || process.platform !== 'darwin') {
         dispatch('leaveFullScreen')
