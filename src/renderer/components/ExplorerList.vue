@@ -172,7 +172,7 @@ export default {
           accelerator: 'Enter'
         },
         { type: 'separator' },
-        { label: ContextMenu.LABEL_COPY }
+        { label: ContextMenu.Label.Copy }
       ])
     },
     ...mapActions({

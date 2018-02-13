@@ -79,9 +79,9 @@ export default {
   methods: {
     contextmenu (e) {
       ContextMenu.show(e, [
-        { label: ContextMenu.LABEL_CUT },
-        { label: ContextMenu.LABEL_COPY },
-        { label: ContextMenu.LABEL_PASTE }
+        { label: ContextMenu.Label.Cut },
+        { label: ContextMenu.Label.Copy },
+        { label: ContextMenu.Label.Paste }
       ])
     },
     keyup (e) {
