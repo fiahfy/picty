@@ -111,7 +111,7 @@ export default {
       sortOption: state => state.bookmark.sortOption
     }),
     ...mapGetters({
-      files: 'bookmark/files',
+      files: 'bookmark/filteredFiles',
       selectedIndex: 'bookmark/selectedIndex',
       isSelectedBookmark: 'bookmark/isSelectedBookmark'
     })

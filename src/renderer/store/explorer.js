@@ -15,13 +15,13 @@ export default {
   state: {
     error: null,
     files: [],
-    selectedFile: null,
+    selectedFilepath: null,
     histories: [],
     historyIndex: -1,
+    sortOptions: {},
     directory: remote.app.getPath('home'),
     directoryInput: '',
-    query: '',
-    sortOptions: {}
+    query: ''
   },
   actions: {
     initDirectory ({ dispatch, state }) {
@@ -37,8 +37,8 @@ export default {
       dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
-      if (state.selectedFile && state.selectedFile.isDirectory()) {
-        const dirpath = state.selectedFile.path
+      if (state.selectedFilepath && (new File(state.selectedFilepath)).isDirectory()) {
+        const dirpath = state.selectedFilepath
         dispatch('changeDirectory', { dirpath })
       }
     },
@@ -76,21 +76,21 @@ export default {
 
       commit('setDirectory', { directory: history.directory })
       commit('setDirectoryInput', { directoryInput: history.directory })
-      commit('setSelectedFile', { selectedFile: null })
+      commit('setSelectedFilepath', { selectedFilepath: null })
       commit('setQuery', { query: '' })
 
-      dispatch('loadDirectory')
+      dispatch('loadFiles')
     },
-    loadDirectory ({ commit, dispatch, state }) {
+    loadFiles ({ commit, dispatch, state }) {
       try {
         if (watcher) {
           watcher.close()
         }
         watcher = fs.watch(state.directory, () => {
-          dispatch('loadDirectory')
+          dispatch('loadFiles')
           dispatch('showMessage', { message: 'Reloaded directory' }, { root: true })
         })
-        const files = File.listFiles(state.directory).filter((file) => file.isDirectory() || file.isImage())
+        const files = File.listFiles(state.directory).filter((file) => file.isDirectory() || file.isImage()).map((file) => file.toObject())
         if (!files.length) {
           throw new Error('No Images')
         }
@@ -111,24 +111,23 @@ export default {
       }
     },
     selectFile ({ commit }, { filepath }) {
-      const file = new File(filepath)
-      commit('setSelectedFile', { selectedFile: file })
+      commit('setSelectedFilepath', { selectedFilepath: filepath })
     },
     selectPreviousFile ({ commit, getters, state }) {
       const index = getters.selectedIndex - 1
       if (index < 0) {
         return
       }
-      const selectedFile = getters.filteredFiles[index]
-      commit('setSelectedFile', { selectedFile })
+      const selectedFilepath = getters.filteredFiles[index].path
+      commit('setSelectedFilepath', { selectedFilepath })
     },
     selectNextFile ({ commit, getters, state }) {
       const index = getters.selectedIndex + 1
       if (index > getters.filteredFiles.length - 1) {
         return
       }
-      const selectedFile = getters.filteredFiles[index]
-      commit('setSelectedFile', { selectedFile })
+      const selectedFilepath = getters.filteredFiles[index].path
+      commit('setSelectedFilepath', { selectedFilepath })
     },
     search ({ commit }, { query }) {
       commit('setQuery', { query })
@@ -161,12 +160,7 @@ export default {
             }
             break
           case 'size':
-            const size = (file) => {
-              if (file.isDirectory()) {
-                return -1
-              }
-              return file.size
-            }
+            const size = (file) => file.directory ? -1 : file.size
             if (size(a) > size(b)) {
               result = 1
             } else if (size(a) < size(b)) {
@@ -211,8 +205,8 @@ export default {
     setFiles (state, { files }) {
       state.files = files
     },
-    setSelectedFile (state, { selectedFile }) {
-      state.selectedFile = selectedFile
+    setSelectedFilepath (state, { selectedFilepath }) {
+      state.selectedFilepath = selectedFilepath
     },
     setHistory (state, { history, index }) {
       state.histories = [
@@ -227,6 +221,12 @@ export default {
     setHistoryIndex (state, { historyIndex }) {
       state.historyIndex = historyIndex
     },
+    setSortOption (state, { sortOption, key }) {
+      state.sortOptions = {
+        ...state.sortOptions,
+        [key]: sortOption
+      }
+    },
     setDirectory (state, { directory }) {
       state.directory = directory
     },
@@ -235,12 +235,6 @@ export default {
     },
     setQuery (state, { query }) {
       state.query = query
-    },
-    setSortOption (state, { sortOption, key }) {
-      state.sortOptions = {
-        ...state.sortOptions,
-        [key]: sortOption
-      }
     }
   },
   getters: {
@@ -270,17 +264,14 @@ export default {
         return file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
       })
     },
-    selectedFilepath (state) {
-      return state.selectedFile ? state.selectedFile.path : null
-    },
     selectedIndex (state, getters) {
       return getters.filteredFiles.findIndex((file) => {
         return getters.isSelectedFile({ filepath: file.path })
       })
     },
-    isSelectedFile (state, getters) {
+    isSelectedFile (state) {
       return ({ filepath }) => {
-        return getters.selectedFilepath === filepath
+        return state.selectedFilepath === filepath
       }
     }
   }

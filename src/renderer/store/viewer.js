@@ -15,11 +15,11 @@ export default {
   actions: {
     show ({ commit, dispatch, rootState }, { filepathes, currentFilepath }) {
       try {
-        const files = filepathes.map(filepath => new File(filepath)).filter((file) => file.isImage())
+        const files = filepathes.map(filepath => new File(filepath)).filter((file) => file.isImage()).map((file) => file.toObject())
         if (!files.length) {
           throw new Error('No Images')
         }
-        const currentFile = currentFilepath ? new File(currentFilepath) : files[0]
+        const currentFile = currentFilepath ? (new File(currentFilepath)).toObject() : files[0]
         commit('setError', { error: null })
         commit('setFiles', { files })
         commit('setCurrentFile', { currentFile })

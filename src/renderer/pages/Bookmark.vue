@@ -28,7 +28,7 @@ export default {
       return this.files.length ? '' : 'No Bookmarks'
     },
     ...mapGetters({
-      files: 'bookmark/files'
+      files: 'bookmark/filteredFiles'
     })
   }
 }
