@@ -1,4 +1,4 @@
-import { clipboard, remote } from 'electron'
+import { remote } from 'electron'
 
 const { Menu } = remote
 
@@ -16,9 +16,11 @@ const inspectElementTemplate = (e) => {
   ]
 }
 
-export const LABEL_CUT = 'Cut'
-export const LABEL_COPY = 'Copy'
-export const LABEL_PASTE = 'Paste'
+export const Label = {
+  Cut: 'Cut',
+  Copy: 'Copy',
+  Paste: 'Paste'
+}
 
 export const show = (e, template = []) => {
   e.preventDefault()
@@ -30,37 +32,22 @@ export const show = (e, template = []) => {
 
   template = template.map((item) => {
     switch (item.label) {
-      case LABEL_CUT:
+      case Label.Cut:
         return {
           label: item.label,
-          click: () => {
-            const text = e.target.value.slice(e.target.selectionStart, e.target.selectionEnd)
-            clipboard.writeText(text)
-            const position = e.target.selectionStart
-            e.target.value = e.target.value.slice(0, e.target.selectionStart) + e.target.value.slice(e.target.selectionEnd)
-            e.target.setSelectionRange(position, position)
-          },
+          click: () => document.execCommand('cut'),
           accelerator: 'CmdOrCtrl+X'
         }
-      case LABEL_COPY:
+      case Label.Copy:
         return {
           label: item.label,
-          click: () => {
-            const text = e.target.value.slice(e.target.selectionStart, e.target.selectionEnd)
-            clipboard.writeText(text)
-          },
+          click: () => document.execCommand('copy'),
           accelerator: 'CmdOrCtrl+C'
         }
-      case LABEL_PASTE:
+      case Label.Paste:
         return {
           label: item.label,
-          click: async () => {
-            const text = clipboard.readText()
-            const position = e.target.selectionStart + text.length
-            const value = e.target.value.slice(0, e.target.selectionStart) + text + e.target.value.slice(e.target.selectionEnd)
-            await item.callback(value)
-            e.target.setSelectionRange(position, position)
-          },
+          click: () => document.execCommand('paste'),
           accelerator: 'CmdOrCtrl+V'
         }
       default:

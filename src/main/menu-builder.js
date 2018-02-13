@@ -52,7 +52,9 @@ export default class MenuBuilder {
           { role: 'paste' },
           // { role: 'pasteandmatchstyle' },
           { role: 'delete' },
-          { role: 'selectall' }
+          { role: 'selectall' },
+          { type: 'separator' },
+          { label: 'Search...', accelerator: 'CmdOrCtrl+F', click: () => { this.search() } }
         ]
       },
       {
@@ -81,9 +83,7 @@ export default class MenuBuilder {
           { label: 'Forward Directory', accelerator: 'CmdOrCtrl+Right', click: () => { this.forwardDirectory() } },
           { label: 'Change Parent Directory', accelerator: 'CmdOrCtrl+Shift+P', click: () => { this.changeParentDirectory() } },
           { label: 'Change Home Directory', accelerator: 'CmdOrCtrl+Shift+H', click: () => { this.changeHomeDirectory() } },
-          { label: 'Open Current Directory', click: () => { this.openCurrentDirectory() } },
-          { type: 'separator' },
-          { label: 'Search...', accelerator: 'CmdOrCtrl+F', click: () => { this.search() } }
+          { label: 'Open Current Directory', click: () => { this.openCurrentDirectory() } }
         ]
       },
       {

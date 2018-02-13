@@ -7,7 +7,7 @@
         fullwidth
         class="location"
         @keyup="(e) => keyup(e, 'directory')"
-        @contextmenu="(e) => contextmenu(e, 'directory')"
+        @contextmenu="contextmenu"
         v-model="directoryInput"
       />
     </div>
@@ -15,13 +15,12 @@
     <div class="row buttons">
       <mdc-menu-anchor>
         <mdc-button
-          class="icon"
           :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
           :disabled="!canBackDirectory"
           @click="backDirectory"
           v-long-press="(e) => mouseLongPress(e, 'back')"
         >
-          <mdc-icon icon="arrow_back" />
+          <mdc-icon slot="icon" icon="arrow_back" />
         </mdc-button>
         <mdc-menu ref="backMenu" v-model="backSelected">
           <mdc-list-item
@@ -35,13 +34,12 @@
       </mdc-menu-anchor>
       <mdc-menu-anchor>
         <mdc-button
-          class="icon"
           :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
           :disabled="!canForwardDirectory"
           @click="forwardDirectory"
           v-long-press="(e) => mouseLongPress(e, 'forward')"
         >
-          <mdc-icon icon="arrow_forward" />
+          <mdc-icon slot="icon" icon="arrow_forward" />
         </mdc-button>
         <mdc-menu ref="forwardMenu" v-model="forwardSelected">
           <mdc-list-item
@@ -54,44 +52,39 @@
         </mdc-menu>
       </mdc-menu-anchor>
       <mdc-button
-        class="icon"
         :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
         @click="changeParentDirectory"
       >
-        <mdc-icon icon="arrow_upward" />
+        <mdc-icon slot="icon" icon="arrow_upward" />
       </mdc-button>
       <mdc-button
-        class="icon"
         :title="'Change home directory'|accelerator('CmdOrCtrl+Shift+H')"
         @click="changeHomeDirectory"
       >
-        <mdc-icon icon="home" />
+        <mdc-icon slot="icon" icon="home" />
       </mdc-button>
       <mdc-button
-        class="icon"
         title="Open current directory"
         @click="openDirectory"
       >
-        <mdc-icon icon="folder_open" />
+        <mdc-icon slot="icon" icon="folder_open" />
       </mdc-button>
 
       <divider orientation="vertical" />
 
       <mdc-button
-        class="icon"
         :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
         :disabled="!selectedFilepath"
         @click="toggleBookmark({ filepath: selectedFilepath })"
       >
-        <mdc-icon :icon="isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border'" />
+        <mdc-icon slot="icon" :icon="isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border'" />
       </mdc-button>
       <mdc-button
-        class="icon"
         :title="'View'|accelerator('Enter')"
         :disabled="!selectedFilepath"
         @click="showViewer({ filepath: selectedFilepath })"
       >
-        <mdc-icon icon="photo" />
+        <mdc-icon slot="icon" icon="photo" />
       </mdc-button>
 
       <divider orientation="vertical" />
@@ -106,7 +99,7 @@
           fullwidth
           class="search"
           @keyup="(e) => keyup(e, 'search')"
-          @contextmenu="(e) => contextmenu(e, 'search')"
+          @contextmenu="contextmenu"
           v-model="searchInput"
         />
       </div>
@@ -163,21 +156,11 @@ export default {
     })
   },
   methods: {
-    contextmenu (e, mode) {
+    contextmenu (e) {
       ContextMenu.show(e, [
-        { label: ContextMenu.LABEL_CUT },
-        { label: ContextMenu.LABEL_COPY },
-        {
-          label: ContextMenu.LABEL_PASTE,
-          callback: async (value) => {
-            if (mode === 'directory') {
-              this.directoryInput = value
-            } else {
-              this.searchInput = value
-            }
-            await this.$nextTick()
-          }
-        }
+        { label: ContextMenu.Label.Cut },
+        { label: ContextMenu.Label.Copy },
+        { label: ContextMenu.Label.Paste }
       ])
     },
     keyup (e, mode) {
@@ -249,7 +232,7 @@ export default {
       &>* {
         margin: 4px;
       }
-      &>.mdc-icon {
+      .mdc-icon {
         color: $material-color-blue-200;
       }
     }
@@ -258,15 +241,26 @@ export default {
       &>* {
         margin: 2px;
       }
-      &>.divider {
+      .divider {
         margin: 0;
       }
-      &>.search-wrapper {
+      .search-wrapper {
         display: flex;
         flex: 1;
         margin: 0px;
         &>* {
           margin: 4px;
+        }
+      }
+      .mdc-button {
+        min-width: 36px;
+        padding: 0;
+        .mdc-icon {
+          font-size: 24px;
+          height: auto;
+          margin: 0;
+          padding: 0;
+          width: auto;
         }
       }
     }
@@ -277,6 +271,9 @@ export default {
     .mdc-text-field {
       border: none;
       height: 32px;
+    }
+    .mdc-icon {
+      padding: 4px;
     }
   }
 }

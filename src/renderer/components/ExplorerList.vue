@@ -170,7 +170,9 @@ export default {
             this.showViewer({ filepath: file.path })
           },
           accelerator: 'Enter'
-        }
+        },
+        { type: 'separator' },
+        { label: ContextMenu.Label.Copy }
       ])
     },
     ...mapActions({

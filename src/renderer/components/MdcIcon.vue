@@ -14,10 +14,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.mdc-icon {
-  padding: 4px;
-  user-select: none;
-}
-</style>

@@ -1,5 +1,6 @@
 <template>
   <button class="mdc-button" v-bind="$attrs" v-on="$listeners">
+    <slot name="icon" />
     <slot />
   </button>
 </template>
@@ -15,18 +16,14 @@ export default {
   },
   mounted () {
     this.mdcRipple = MDCRipple.attachTo(this.$el)
+    if (this.$slots.icon) {
+      this.$slots.icon.map(n => {
+        n.elm.classList.add('mdc-button__icon')
+      })
+    }
   },
   beforeDestroy () {
     this.mdcRipple.destroy()
   }
 }
 </script>
-
-<style scoped lang="scss">
-.mdc-button.icon {
-  height: auto;
-  line-height: initial;
-  min-width: 36px;
-  padding: 2px;
-}
-</style>

@@ -2,30 +2,27 @@
   <div class="bookmark-menu-bar">
     <div class="row buttons">
       <mdc-button
-        class="icon"
         title="Refresh"
         @click="loadFiles"
       >
-        <mdc-icon icon="refresh" />
+        <mdc-icon slot="icon" icon="refresh" />
       </mdc-button>
 
       <divider orientation="vertical" />
 
       <mdc-button
-        class="icon"
         :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
         :disabled="!selectedBookmark"
         @click="toggleBookmark({ filepath: selectedBookmark })"
       >
-        <mdc-icon :icon="isBookmarked({ filepath: selectedBookmark}) ? 'star' : 'star_border'" />
+        <mdc-icon slot="icon" :icon="isBookmarked({ filepath: selectedBookmark}) ? 'star' : 'star_border'" />
       </mdc-button>
       <mdc-button
-        class="icon"
         :title="'View'|accelerator('Enter')"
         :disabled="!selectedBookmark"
         @click="showViewer({ filepath: selectedBookmark })"
       >
-        <mdc-icon icon="photo" />
+        <mdc-icon slot="icon" icon="photo" />
       </mdc-button>
 
       <divider orientation="vertical" />
@@ -33,7 +30,7 @@
       <div class="search-wrapper">
         <mdc-icon
           icon="search"
-          title="Search"
+          :title="'Search'|accelerator('CmdOrCtrl+F')"
         />
         <mdc-text-field
           label="Search"
@@ -79,15 +76,9 @@ export default {
   methods: {
     contextmenu (e) {
       ContextMenu.show(e, [
-        { label: ContextMenu.LABEL_CUT },
-        { label: ContextMenu.LABEL_COPY },
-        {
-          label: ContextMenu.LABEL_PASTE,
-          callback: async (value) => {
-            this.searchInput = value
-            await this.$nextTick()
-          }
-        }
+        { label: ContextMenu.Label.Cut },
+        { label: ContextMenu.Label.Copy },
+        { label: ContextMenu.Label.Paste }
       ])
     },
     keyup (e) {
@@ -123,10 +114,10 @@ export default {
       &>* {
         margin: 2px;
       }
-      &>.divider {
+      .divider {
         margin: 0;
       }
-      &>.search-wrapper {
+      .search-wrapper {
         display: flex;
         flex: 1;
         margin: 0px;
@@ -137,6 +128,20 @@ export default {
           border: none;
           height: 32px;
         }
+      }
+      .mdc-button {
+        min-width: 36px;
+        padding: 0;
+        .mdc-icon {
+          font-size: 24px;
+          height: auto;
+          margin: 0;
+          padding: 0;
+          width: auto;
+        }
+      }
+      .mdc-icon {
+        padding: 4px;
       }
     }
   }

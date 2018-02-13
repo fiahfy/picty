@@ -49,6 +49,7 @@ export default {
       const files = state.bookmarks.map((bookmark) => (new File(bookmark).toObject()))
       commit('setFiles', { files })
       dispatch('sortFiles')
+      dispatch('focusBookmarkList', null, { root: true })
     },
     selectBookmark ({ commit }, { filepath }) {
       commit('setSelectedBookmark', { selectedBookmark: filepath })
