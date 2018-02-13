@@ -38,6 +38,7 @@ export default {
   },
   async asyncData ({ store }) {
     await store.dispatch('explorer/initDirectory')
+    await store.dispatch('bookmark/loadFiles')
   },
   computed: {
     classes () {

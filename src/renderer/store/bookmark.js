@@ -9,6 +9,7 @@ const sortOrderDefaults = {
 export default {
   namespaced: true,
   state: {
+    files: [],
     bookmarks: [],
     selectedBookmark: null,
     scrollTop: 0,
@@ -18,7 +19,7 @@ export default {
     }
   },
   actions: {
-    bookmark ({ commit, getters, state }, { filepath }) {
+    bookmark ({ commit, dispatch, getters, state }, { filepath }) {
       if (!filepath || getters.isBookmarked({ filepath })) {
         return
       }
@@ -27,12 +28,14 @@ export default {
         filepath
       ]
       commit('setBookmarks', { bookmarks })
+      dispatch('loadFiles')
     },
-    deleteBookmark ({ commit, state }, { filepath }) {
+    deleteBookmark ({ commit, dispatch, state }, { filepath }) {
       const bookmarks = state.bookmarks.filter((bookmark) => {
         return bookmark !== filepath
       })
       commit('setBookmarks', { bookmarks })
+      dispatch('loadFiles')
     },
     toggleBookmark ({ dispatch, getters }, { filepath }) {
       if (getters.isBookmarked({ filepath })) {
@@ -40,6 +43,11 @@ export default {
       } else {
         dispatch('bookmark', { filepath })
       }
+    },
+    loadFiles ({ commit, dispatch, state }) {
+      const files = state.bookmarks.map((bookmark) => (new File(bookmark).toObject()))
+      commit('setFiles', { files })
+      dispatch('sortFiles')
     },
     selectBookmark ({ commit }, { filepath }) {
       commit('setSelectedBookmark', { selectedBookmark: filepath })
@@ -67,10 +75,10 @@ export default {
       }
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption })
-      dispatch('sortBookmarks')
+      dispatch('sortFiles')
     },
-    sortBookmarks ({ commit, getters, state }) {
-      const bookmarks = getters.filteredFiles.sort((a, b) => {
+    sortFiles ({ commit, getters, state }) {
+      const files = state.files.sort((a, b) => {
         let result = 0
         switch (state.sortOption.key) {
           case 'date_modified':
@@ -97,8 +105,8 @@ export default {
           }
         }
         return state.sortOption.order === 'asc' ? result : -1 * result
-      }).map((file) => file.path)
-      commit('setBookmarks', { bookmarks })
+      })
+      commit('setFiles', { files })
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
@@ -123,6 +131,9 @@ export default {
     }
   },
   mutations: {
+    setFiles (state, { files }) {
+      state.files = files
+    },
     setBookmarks (state, { bookmarks }) {
       state.bookmarks = bookmarks
     },
@@ -138,7 +149,7 @@ export default {
   },
   getters: {
     filteredFiles (state) {
-      return state.bookmarks.map((bookmark) => (new File(bookmark).toObject()))
+      return state.files
     },
     selectedIndex (state, getters) {
       return getters.filteredFiles.findIndex((file) => {

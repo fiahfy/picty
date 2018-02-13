@@ -3,6 +3,16 @@
     <div class="row buttons">
       <mdc-button
         class="icon"
+        title="Refresh"
+        @click="loadFiles"
+      >
+        <mdc-icon icon="refresh" />
+      </mdc-button>
+
+      <divider orientation="vertical" />
+
+      <mdc-button
+        class="icon"
         :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
         :disabled="!selectedBookmark"
         @click="toggleBookmark({ filepath: selectedBookmark })"
@@ -43,6 +53,7 @@ export default {
   },
   methods: {
     ...mapActions({
+      loadFiles: 'bookmark/loadFiles',
       showViewer: 'bookmark/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'
     })
@@ -62,6 +73,9 @@ export default {
       text-align: left;
       &>* {
         margin: 2px;
+      }
+      &>.divider {
+        margin: 0;
       }
     }
   }
