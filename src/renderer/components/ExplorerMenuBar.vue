@@ -7,7 +7,7 @@
         fullwidth
         class="location"
         @keyup="(e) => keyup(e, 'directory')"
-        @contextmenu="(e) => contextmenu(e, 'directory')"
+        @contextmenu="contextmenu"
         v-model="directoryInput"
       />
     </div>
@@ -106,7 +106,7 @@
           fullwidth
           class="search"
           @keyup="(e) => keyup(e, 'search')"
-          @contextmenu="(e) => contextmenu(e, 'search')"
+          @contextmenu="contextmenu"
           v-model="searchInput"
         />
       </div>
@@ -163,21 +163,11 @@ export default {
     })
   },
   methods: {
-    contextmenu (e, mode) {
+    contextmenu (e) {
       ContextMenu.show(e, [
         { label: ContextMenu.LABEL_CUT },
         { label: ContextMenu.LABEL_COPY },
-        {
-          label: ContextMenu.LABEL_PASTE,
-          callback: async (value) => {
-            if (mode === 'directory') {
-              this.directoryInput = value
-            } else {
-              this.searchInput = value
-            }
-            await this.$nextTick()
-          }
-        }
+        { label: ContextMenu.LABEL_PASTE }
       ])
     },
     keyup (e, mode) {

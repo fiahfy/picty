@@ -81,13 +81,7 @@ export default {
       ContextMenu.show(e, [
         { label: ContextMenu.LABEL_CUT },
         { label: ContextMenu.LABEL_COPY },
-        {
-          label: ContextMenu.LABEL_PASTE,
-          callback: async (value) => {
-            this.searchInput = value
-            await this.$nextTick()
-          }
-        }
+        { label: ContextMenu.LABEL_PASTE }
       ])
     },
     keyup (e) {
