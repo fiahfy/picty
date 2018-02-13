@@ -15,7 +15,7 @@ export default {
   state: {
     error: null,
     files: [],
-    selectedFile: null,
+    selectedFilepath: null,
     histories: [],
     historyIndex: -1,
     directory: remote.app.getPath('home'),
@@ -37,8 +37,8 @@ export default {
       dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
-      if (state.selectedFile && state.selectedFile.directory) {
-        const dirpath = state.selectedFile.path
+      if (state.selectedFilepath && (new File(state.selectedFilepath)).isDirectory()) {
+        const dirpath = state.selectedFilepath
         dispatch('changeDirectory', { dirpath })
       }
     },
@@ -76,7 +76,7 @@ export default {
 
       commit('setDirectory', { directory: history.directory })
       commit('setDirectoryInput', { directoryInput: history.directory })
-      commit('setSelectedFile', { selectedFile: null })
+      commit('setSelectedFilepath', { selectedFilepath: null })
       commit('setQuery', { query: '' })
 
       dispatch('loadDirectory')
@@ -111,24 +111,23 @@ export default {
       }
     },
     selectFile ({ commit }, { filepath }) {
-      const file = (new File(filepath)).toObject()
-      commit('setSelectedFile', { selectedFile: file })
+      commit('setSelectedFilepath', { selectedFilepath: filepath })
     },
     selectPreviousFile ({ commit, getters, state }) {
       const index = getters.selectedIndex - 1
       if (index < 0) {
         return
       }
-      const selectedFile = getters.filteredFiles[index]
-      commit('setSelectedFile', { selectedFile })
+      const selectedFilepath = getters.filteredFiles[index].path
+      commit('setSelectedFilepath', { selectedFilepath })
     },
     selectNextFile ({ commit, getters, state }) {
       const index = getters.selectedIndex + 1
       if (index > getters.filteredFiles.length - 1) {
         return
       }
-      const selectedFile = getters.filteredFiles[index]
-      commit('setSelectedFile', { selectedFile })
+      const selectedFilepath = getters.filteredFiles[index].path
+      commit('setSelectedFilepath', { selectedFilepath })
     },
     search ({ commit }, { query }) {
       commit('setQuery', { query })
@@ -206,8 +205,8 @@ export default {
     setFiles (state, { files }) {
       state.files = files
     },
-    setSelectedFile (state, { selectedFile }) {
-      state.selectedFile = selectedFile
+    setSelectedFilepath (state, { selectedFilepath }) {
+      state.selectedFilepath = selectedFilepath
     },
     setHistory (state, { history, index }) {
       state.histories = [
@@ -265,17 +264,14 @@ export default {
         return file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
       })
     },
-    selectedFilepath (state) {
-      return state.selectedFile ? state.selectedFile.path : null
-    },
     selectedIndex (state, getters) {
       return getters.filteredFiles.findIndex((file) => {
         return getters.isSelectedFile({ filepath: file.path })
       })
     },
-    isSelectedFile (state, getters) {
+    isSelectedFile (state) {
       return ({ filepath }) => {
-        return getters.selectedFilepath === filepath
+        return state.selectedFilepath === filepath
       }
     }
   }

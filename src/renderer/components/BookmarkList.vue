@@ -106,12 +106,12 @@ export default {
       return this.sortOption.order === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState({
-      selectedBookmark: state => state.bookmark.selectedBookmark,
+      selectedFilepath: state => state.bookmark.selectedFilepath,
       scrollTop: state => state.bookmark.scrollTop,
       sortOption: state => state.bookmark.sortOption
     }),
     ...mapGetters({
-      files: 'bookmark/files',
+      files: 'bookmark/filteredFiles',
       selectedIndex: 'bookmark/selectedIndex',
       isSelectedBookmark: 'bookmark/isSelectedBookmark'
     })
@@ -127,7 +127,7 @@ export default {
         switch (e.keyCode) {
           case 68:
             e.preventDefault()
-            this.toggleBookmark({ filepath: this.selectedBookmark })
+            this.toggleBookmark({ filepath: this.selectedFilepath })
             break
         }
         return
@@ -135,7 +135,7 @@ export default {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
-          this.showViewer({ filepath: this.selectedBookmark })
+          this.showViewer({ filepath: this.selectedFilepath })
           break
         case 38:
           e.preventDefault()
@@ -191,7 +191,7 @@ export default {
         this.$el.scrollTop = this.scrollTop
       })
     },
-    selectedBookmark () {
+    selectedFilepath () {
       this.$nextTick(() => {
         const index = this.selectedIndex
         if (index === -1) {

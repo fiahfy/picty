@@ -3,7 +3,7 @@
     <div class="row buttons">
       <mdc-button
         class="icon"
-        :title="'Bbookmark'|accelerator('CmdOrCtrl+D')"
+        :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
         :disabled="!selectedBookmark"
         @click="toggleBookmark({ filepath: selectedBookmark })"
       >

@@ -79,7 +79,7 @@
 
       <mdc-button
         class="icon"
-        :title="'Bbookmark'|accelerator('CmdOrCtrl+D')"
+        :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
         :disabled="!selectedFilepath"
         @click="toggleBookmark({ filepath: selectedFilepath })"
       >
@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import Divider from './Divider'
 import MdcButton from './MdcButton'
 import MdcIcon from './MdcIcon'
@@ -151,12 +151,14 @@ export default {
         this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
       }
     },
+    ...mapState({
+      selectedFilepath: state => state.explorer.selectedFilepath
+    }),
     ...mapGetters({
       backDirectories: 'explorer/backDirectories',
       forwardDirectories: 'explorer/forwardDirectories',
       canBackDirectory: 'explorer/canBackDirectory',
       canForwardDirectory: 'explorer/canForwardDirectory',
-      selectedFilepath: 'explorer/selectedFilepath',
       isBookmarked: 'bookmark/isBookmarked'
     })
   },

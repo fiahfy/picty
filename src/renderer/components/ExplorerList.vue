@@ -107,13 +107,12 @@ export default {
     },
     ...mapState({
       directory: state => state.explorer.directory,
-      selectedFile: state => state.explorer.selectedFile
+      selectedFilepath: state => state.explorer.selectedFilepath
     }),
     ...mapGetters({
       files: 'explorer/filteredFiles',
       scrollTop: 'explorer/scrollTop',
       sortOption: 'explorer/sortOption',
-      selectedFilepath: 'explorer/selectedFilepath',
       selectedIndex: 'explorer/selectedIndex',
       isSelectedFile: 'explorer/isSelectedFile'
     })
@@ -191,7 +190,7 @@ export default {
         this.$el.scrollTop = this.scrollTop
       })
     },
-    selectedFile () {
+    selectedFilepath () {
       this.$nextTick(() => {
         const index = this.selectedIndex
         if (index === -1) {

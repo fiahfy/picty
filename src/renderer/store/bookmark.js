@@ -49,15 +49,15 @@ export default {
       if (index < 0) {
         return
       }
-      const selectedBookmark = getters.files[index].path
+      const selectedBookmark = getters.filteredFiles[index].path
       commit('setSelectedBookmark', { selectedBookmark })
     },
     selectNextBookmark ({ commit, getters, state }) {
       const index = getters.selectedIndex + 1
-      if (index > getters.files.length - 1) {
+      if (index > getters.filteredFiles.length - 1) {
         return
       }
-      const selectedBookmark = getters.files[index].path
+      const selectedBookmark = getters.filteredFiles[index].path
       commit('setSelectedBookmark', { selectedBookmark })
     },
     changeSortKey ({ commit, dispatch, state }, { sortKey }) {
@@ -70,7 +70,7 @@ export default {
       dispatch('sortBookmarks')
     },
     sortBookmarks ({ commit, getters, state }) {
-      const bookmarks = getters.files.sort((a, b) => {
+      const bookmarks = getters.filteredFiles.sort((a, b) => {
         let result = 0
         switch (state.sortOption.key) {
           case 'date_modified':
@@ -137,11 +137,11 @@ export default {
     }
   },
   getters: {
-    files (state) {
-      return state.bookmarks.filter((bookmark) => !!bookmark).map((bookmark) => (new File(bookmark)).toObject())
+    filteredFiles (state) {
+      return state.bookmarks.map((bookmark) => (new File(bookmark).toObject()))
     },
     selectedIndex (state, getters) {
-      return getters.files.findIndex((file) => {
+      return getters.filteredFiles.findIndex((file) => {
         return getters.isSelectedBookmark({ filepath: file.path })
       })
     },
