@@ -16,7 +16,8 @@ export default {
     sortOption: {
       key: 'name',
       order: 'asc'
-    }
+    },
+    query: ''
   },
   actions: {
     bookmark ({ commit, dispatch, getters, state }, { filepath }) {
@@ -67,6 +68,9 @@ export default {
       }
       const selectedBookmark = getters.filteredFiles[index].path
       commit('setSelectedBookmark', { selectedBookmark })
+    },
+    search ({ commit }, { query }) {
+      commit('setQuery', { query })
     },
     changeSortKey ({ commit, dispatch, state }, { sortKey }) {
       let sortOrder = sortOrderDefaults[sortKey]
@@ -145,11 +149,16 @@ export default {
     },
     setSortOption (state, { sortOption }) {
       state.sortOption = sortOption
+    },
+    setQuery (state, { query }) {
+      state.query = query
     }
   },
   getters: {
     filteredFiles (state) {
-      return state.files
+      return state.files.concat().filter((file) => {
+        return file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
+      })
     },
     selectedIndex (state, getters) {
       return getters.filteredFiles.findIndex((file) => {

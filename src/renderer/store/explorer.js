@@ -18,10 +18,10 @@ export default {
     selectedFilepath: null,
     histories: [],
     historyIndex: -1,
+    sortOptions: {},
     directory: remote.app.getPath('home'),
     directoryInput: '',
-    query: '',
-    sortOptions: {}
+    query: ''
   },
   actions: {
     initDirectory ({ dispatch, state }) {
@@ -221,6 +221,12 @@ export default {
     setHistoryIndex (state, { historyIndex }) {
       state.historyIndex = historyIndex
     },
+    setSortOption (state, { sortOption, key }) {
+      state.sortOptions = {
+        ...state.sortOptions,
+        [key]: sortOption
+      }
+    },
     setDirectory (state, { directory }) {
       state.directory = directory
     },
@@ -229,12 +235,6 @@ export default {
     },
     setQuery (state, { query }) {
       state.query = query
-    },
-    setSortOption (state, { sortOption, key }) {
-      state.sortOptions = {
-        ...state.sortOptions,
-        [key]: sortOption
-      }
     }
   },
   getters: {
