@@ -70,6 +70,11 @@ export default new Vuex.Store({
     openImages ({ dispatch }, { filepathes }) {
       dispatch('viewer/show', { filepathes })
     },
+    search ({ dispatch }) {
+      const selector = '.search input'
+      dispatch('focus', { selector })
+      dispatch('select', { selector })
+    },
     showViewer ({ commit, dispatch, state }) {
       commit('setViewing', { viewing: true })
       dispatch('focus', { selector: '.viewer' })

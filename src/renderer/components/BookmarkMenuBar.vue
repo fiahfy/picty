@@ -33,7 +33,7 @@
       <div class="search-wrapper">
         <mdc-icon
           icon="search"
-          title="Search"
+          :title="'Search'|accelerator('CmdOrCtrl+F')"
         />
         <mdc-text-field
           label="Search"

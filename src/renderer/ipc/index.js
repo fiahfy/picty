@@ -28,6 +28,9 @@ export const addIpcRendererListeners = (store) => {
     store.dispatch('focus', { selector })
     store.dispatch('select', { selector })
   })
+  ipcRenderer.on('search', () => {
+    store.dispatch('search')
+  })
   ipcRenderer.on('backDirectory', () => {
     store.dispatch('explorer/backDirectory')
   })
@@ -42,12 +45,6 @@ export const addIpcRendererListeners = (store) => {
   })
   ipcRenderer.on('openCurrentDirectory', () => {
     store.dispatch('explorer/openDirectory')
-  })
-  ipcRenderer.on('search', () => {
-    store.dispatch('changeRoute', { name: 'explorer' })
-    const selector = '.search input'
-    store.dispatch('focus', { selector })
-    store.dispatch('select', { selector })
   })
   ipcRenderer.on('zoomIn', () => {
     store.dispatch('viewer/zoomIn')
