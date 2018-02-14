@@ -32,19 +32,19 @@ export const show = (e, template = []) => {
 
   template = template.map((item) => {
     switch (item.label) {
-      case Label.Cut:
+      case Label.cut:
         return {
           label: item.label,
           click: () => document.execCommand('cut'),
           accelerator: 'CmdOrCtrl+X'
         }
-      case Label.Copy:
+      case Label.copy:
         return {
           label: item.label,
           click: () => document.execCommand('copy'),
           accelerator: 'CmdOrCtrl+C'
         }
-      case Label.Paste:
+      case Label.paste:
         return {
           label: item.label,
           click: () => document.execCommand('paste'),
