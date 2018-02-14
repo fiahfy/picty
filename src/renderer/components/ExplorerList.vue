@@ -64,7 +64,6 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import ExplorerListItem from './ExplorerListItem'
 import MdcIcon from './MdcIcon'
 import MdcTable from './MdcTable'
-import MdcTableBody from './MdcTableBody'
 import MdcTableHeader from './MdcTableHeader'
 import MdcTableHeaderColumn from './MdcTableHeaderColumn'
 import MdcTableRow from './MdcTableRow'
@@ -76,7 +75,6 @@ export default {
     ExplorerListItem,
     MdcIcon,
     MdcTable,
-    MdcTableBody,
     MdcTableHeader,
     MdcTableHeaderColumn,
     MdcTableRow,

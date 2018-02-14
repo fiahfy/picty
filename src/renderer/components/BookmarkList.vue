@@ -64,7 +64,6 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import BookmarkListItem from './BookmarkListItem'
 import MdcIcon from './MdcIcon'
 import MdcTable from './MdcTable'
-import MdcTableBody from './MdcTableBody'
 import MdcTableHeader from './MdcTableHeader'
 import MdcTableHeaderColumn from './MdcTableHeaderColumn'
 import MdcTableRow from './MdcTableRow'
@@ -76,7 +75,6 @@ export default {
     BookmarkListItem,
     MdcIcon,
     MdcTable,
-    MdcTableBody,
     MdcTableHeader,
     MdcTableHeaderColumn,
     MdcTableRow,
