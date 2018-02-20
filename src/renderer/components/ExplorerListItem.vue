@@ -48,8 +48,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .mdc-table-column {
   line-height: 20px;
   vertical-align: bottom;
@@ -76,10 +74,10 @@ export default {
     padding: 0;
     vertical-align: bottom;
     &.folder {
-      color: $material-color-blue-200;
+      color: var(--icon-folder);
     }
     &.photo {
-      color: $material-color-green-200;
+      color: var(--icon-photo);
     }
   }
 }

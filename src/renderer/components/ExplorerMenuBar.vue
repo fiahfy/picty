@@ -3,8 +3,8 @@
     <div class="row directory">
       <mdc-icon icon="folder" />
       <mdc-text-field
-        label="Input path..."
         fullwidth
+        label="Input path..."
         class="location"
         @keyup="(e) => keyup(e, 'directory')"
         @contextmenu="contextmenu"
@@ -221,8 +221,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .explorer-menu-bar {
   user-select: none;
   .row {
@@ -233,7 +231,7 @@ export default {
         margin: 4px;
       }
       .mdc-icon {
-        color: $material-color-blue-200;
+        color: var(--icon-folder);
       }
     }
     &.buttons {

@@ -33,8 +33,8 @@
           :title="'Search'|accelerator('CmdOrCtrl+F')"
         />
         <mdc-text-field
-          label="Search"
           fullwidth
+          label="Search"
           class="search"
           @keyup="keyup"
           @contextmenu="contextmenu"
@@ -102,8 +102,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .bookmark-menu-bar {
   user-select: none;
   .row {

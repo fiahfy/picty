@@ -52,8 +52,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .mdc-table-column {
   line-height: 20px;
   vertical-align: bottom;
@@ -65,7 +63,7 @@ export default {
         margin: 0 4px;
       }
       .direpath {
-        color: $material-color-grey-400;
+        color: var(--mdc-theme-text-secondary-on-background);
         direction: rtl;
         flex: 1;
         font-size: smaller;
@@ -85,13 +83,13 @@ export default {
     padding: 0;
     vertical-align: bottom;
     &.folder {
-      color: $material-color-blue-200;
+      color: var(--icon-folder);
     }
     &.photo {
-      color: $material-color-green-200;
+      color: var(--icon-photo);
     }
     &.broken_image {
-      color: $material-color-grey-400;
+      color: var(--icon-broken);
     }
   }
 }

@@ -56,6 +56,7 @@ export default {
     .message {
       align-items: center;
       bottom: 0;
+      color: var(--mdc-theme-text-secondary-on-background);
       display: flex;
       justify-content: center;
       left: 0;

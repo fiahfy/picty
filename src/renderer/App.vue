@@ -2,7 +2,7 @@
   <div
     id="app"
     class="mdc-theme--background"
-    :class="classes"
+    :style="styles"
     @dragover.prevent
     @drop.prevent="drop"
   >
@@ -24,6 +24,7 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
+import Theme from './theme'
 import ActivityBar from './components/ActivityBar'
 import Divider from './components/Divider'
 import MdcSnackbar from './components/MdcSnackbar'
@@ -43,10 +44,8 @@ export default {
     await store.dispatch('bookmark/loadFiles')
   },
   computed: {
-    classes () {
-      return {
-        'mdc-theme--dark': this.darkTheme
-      }
+    styles () {
+      return this.darkTheme ? Theme.dark : Theme.light
     },
     ...mapState({
       message: state => state.message,
@@ -73,6 +72,28 @@ export default {
 }
 </script>
 
+<style lang="scss">
+@import '~material-design-icons/iconfont/material-icons.css';
+@import '~material-components-web/material-components-web.scss';
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  border-left-color: var(--divider);
+  border-left-style: solid;
+  border-left-width: 1px;
+  width: 14px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar);
+  &:hover {
+    background-color: var(--scrollbar-hover);
+  }
+  &:active {
+    background-color: var(--scrollbar-active);
+  }
+}
+</style>
+
 <style scoped lang="scss">
 #app {
   display: flex;
@@ -90,52 +111,6 @@ export default {
       .viewer {
         z-index: 1;
       }
-    }
-  }
-}
-</style>
-
-<style lang="scss">
-$mdc-theme-primary: #ff4081;
-$mdc-theme-secondary: #ff4081;
-$mdc-theme-background: #fff;
-
-@import '~material-design-icons/iconfont/material-icons.css';
-@import 'material-components-web/material-components-web';
-@import "@material/theme/_color-palette";
-
-::-webkit-scrollbar {
-  -webkit-appearance: none;
-  border-left-color: $material-color-grey-300;
-  border-left-style: solid;
-  border-left-width: 1px;
-  width: 14px;
-}
-::-webkit-scrollbar-thumb {
-  background-color: $material-color-grey-300;
-  &:hover {
-    background-color: $material-color-grey-400;
-  }
-  &:active {
-    background-color: $material-color-grey-500;
-  }
-}
-
-.mdc-theme--dark {
-  color: white;
-  &.mdc-theme--background, .mdc-theme--background {
-    background-color: #303030;
-  }
-  ::-webkit-scrollbar {
-    border-left-color: $material-color-grey-600;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: $material-color-grey-600;
-    &:hover {
-      background-color: $material-color-grey-500;
-    }
-    &:active {
-      background-color: $material-color-grey-400;
     }
   }
 }

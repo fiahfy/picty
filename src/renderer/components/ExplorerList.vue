@@ -214,8 +214,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .explorer-list {
   height: 100%;
   overflow-y: scroll;
@@ -253,7 +251,7 @@ export default {
             z-index: 0;
             &:after {
               border-bottom: {
-                color: $material-color-grey-300;
+                color: var(--divider);
                 style: solid;
                 width: 1px;
               }
@@ -273,15 +271,7 @@ export default {
     }
   }
   &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
-    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
-  }
-}
-.mdc-theme--dark .explorer-list {
-   .mdc-table .mdc-table-row.shadow .mdc-table-header-column:after {
-    border-bottom-color: $material-color-grey-600;
-  }
-  &.scrolling .mdc-table .mdc-table-row.shadow .mdc-table-header-column:after {
-    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 0 3px 1px var(--shadow);
   }
 }
 </style>
