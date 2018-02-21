@@ -1,7 +1,7 @@
 # Picty
 [![Build Status](https://travis-ci.org/fiahfy/picty.svg?branch=master)](https://travis-ci.org/fiahfy/picty)
 
-Simple Image Viewer based on Electron.
+> Simple Image Viewer based on Electron.
 
 
 ## Features
@@ -26,7 +26,10 @@ https://github.com/fiahfy/picty/releases
 
 
 ## Development
-```
-$ yarn
-$ yarn dev
+``` bash
+# install dependencies
+yarn
+
+# serve with hot reload
+yarn dev
 ```
