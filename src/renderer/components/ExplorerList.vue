@@ -260,11 +260,6 @@ export default {
             top: 40px;
             z-index: 0;
             &:after {
-              border-bottom: {
-                color: var(--divider);
-                style: solid;
-                width: 1px;
-              }
               bottom: 0;
               content:'';
               left: 0;

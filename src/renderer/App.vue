@@ -82,11 +82,8 @@ export default {
 @import '~material-components-web/material-components-web.scss';
 
 ::-webkit-scrollbar {
-  -webkit-appearance: none;
-  border-left-color: var(--divider);
-  border-left-style: solid;
-  border-left-width: 1px;
   width: 14px;
+  -webkit-appearance: none;
 }
 ::-webkit-scrollbar-thumb {
   background-color: var(--scrollbar);
