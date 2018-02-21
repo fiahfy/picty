@@ -2,24 +2,24 @@ import { remote } from 'electron'
 
 const { Menu } = remote
 
-const inspectElementTemplate = (e) => {
+const appendInspectElementMenu = (e, template) => {
   const { clientX: x, clientY: y } = e
 
-  return [
-    { type: 'separator' },
-    {
-      label: 'Inspect Element',
-      click: () => {
-        remote.getCurrentWindow().inspectElement(x, y)
-      }
+  if (template.length) {
+    template = template.concat([{ type: 'separator' }])
+  }
+  return template.concat([{
+    label: 'Inspect Element',
+    click: () => {
+      remote.getCurrentWindow().inspectElement(x, y)
     }
-  ]
+  }])
 }
 
 export const Label = {
-  Cut: 'Cut',
-  Copy: 'Copy',
-  Paste: 'Paste'
+  cut: 'Cut',
+  copy: 'Copy',
+  paste: 'Paste'
 }
 
 export const show = (e, template = []) => {
@@ -27,7 +27,7 @@ export const show = (e, template = []) => {
   e.stopPropagation()
 
   if (process.env.NODE_ENV !== 'production') {
-    template = template.concat(inspectElementTemplate(e))
+    template = appendInspectElementMenu(e, template)
   }
 
   template = template.map((item) => {

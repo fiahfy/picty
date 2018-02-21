@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, remote } from 'electron'
 
 export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('enterFullScreen', () => {
@@ -16,10 +16,20 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('showSettings', () => {
     store.dispatch('changeRoute', { name: 'settings' })
   })
-  ipcRenderer.on('openDirectory', (event, { dirpath }) => {
+  ipcRenderer.on('openDirectory', () => {
+    const filepathes = remote.dialog.showOpenDialog({ properties: ['openDirectory'] })
+    if (!filepathes.length) {
+      return
+    }
+    const dirpath = filepathes[0]
     store.dispatch('openDirectory', { dirpath })
+    store.dispatch('changeRoute', { name: 'explorer' })
   })
-  ipcRenderer.on('openImages', (event, { filepathes }) => {
+  ipcRenderer.on('openImages', () => {
+    const filepathes = remote.dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
+    if (!filepathes.length) {
+      return
+    }
     store.dispatch('openImages', { filepathes })
   })
   ipcRenderer.on('openLocation', () => {
