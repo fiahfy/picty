@@ -3,7 +3,10 @@
     <h4>General</h4>
     <div>
       <mdc-form-field>
-        <mdc-checkbox id="dark-theme" v-model="darkTheme" />
+        <mdc-checkbox
+          id="dark-theme"
+          v-model="darkTheme"
+        />
         <label for="dark-theme">Use dark theme</label>
       </mdc-form-field>
     </div>
@@ -11,13 +14,19 @@
     <h4>Viewer</h4>
     <div>
       <mdc-form-field>
-        <mdc-checkbox id="full-screen" v-model="fullScreen" />
+        <mdc-checkbox
+          id="full-screen"
+          v-model="fullScreen"
+        />
         <label for="full-screen">View in full screen</label>
       </mdc-form-field>
     </div>
     <div>
       <mdc-form-field>
-        <mdc-checkbox id="image-stretched" v-model="imageStretched" />
+        <mdc-checkbox
+          id="image-stretched"
+          v-model="imageStretched"
+        />
         <label for="image-stretched">Stretch small image</label>
       </mdc-form-field>
     </div>

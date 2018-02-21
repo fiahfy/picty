@@ -1,8 +1,16 @@
 <template>
-  <mdc-table-row class="explorer-list-item" :selected="selected" v-bind="$attrs" v-on="$listeners">
+  <mdc-table-row
+    class="explorer-list-item"
+    :selected="selected"
+    v-bind="$attrs"
+    v-on="$listeners"
+  >
     <mdc-table-column class="name">
       <div>
-        <mdc-icon :icon="icon" :class="icon" />
+        <mdc-icon
+          :icon="icon"
+          :class="icon"
+        />
         <span class="filename">{{ file.name }}</span>
       </div>
     </mdc-table-column>
@@ -21,6 +29,11 @@ import MdcTableColumn from './MdcTableColumn'
 import MdcTableRow from './MdcTableRow'
 
 export default {
+  components: {
+    MdcIcon,
+    MdcTableColumn,
+    MdcTableRow
+  },
   props: {
     file: {
       type: Object,
@@ -30,11 +43,6 @@ export default {
       type: Boolean,
       default: false
     }
-  },
-  components: {
-    MdcIcon,
-    MdcTableColumn,
-    MdcTableRow
   },
   computed: {
     icon () {

@@ -6,7 +6,11 @@
     @MDCMenu:cancel="cancel"
     @MDCMenu:selected="select"
   >
-    <ul class="mdc-menu__items mdc-list" role="menu" aria-hidden="true">
+    <ul
+      class="mdc-menu__items mdc-list"
+      role="menu"
+      aria-hidden="true"
+    >
       <slot />
     </ul>
   </div>
@@ -16,27 +20,21 @@
 import { MDCMenu } from '@material/menu'
 
 export default {
-  props: {
-    selected: {
-      type: Number
-    }
-  },
   model: {
     prop: 'selected',
     event: 'change'
+  },
+  props: {
+    selected: {
+      type: Number,
+      required: true
+    }
   },
   data () {
     return {
       mdcMenu: null,
       parentOffset: {}
     }
-  },
-  mounted () {
-    this.mdcMenu = MDCMenu.attachTo(this.$el)
-    this.parentOffset = this.$el.parentNode.getBoundingClientRect()
-  },
-  beforeDestroy () {
-    this.mdcMenu.destroy()
   },
   computed: {
     styles () {
@@ -53,9 +51,16 @@ export default {
       this.mdcMenu.open = value
     }
   },
+  mounted () {
+    this.mdcMenu = MDCMenu.attachTo(this.$el)
+    this.parentOffset = this.$el.parentNode.getBoundingClientRect()
+  },
+  beforeDestroy () {
+    this.mdcMenu.destroy()
+  },
   methods: {
     show () {
-      this.mdcMenu.show({ focusIndex: this.selected })
+      this.mdcMenu.show(this.selected > -1 ? { focusIndex: this.selected } : {})
     },
     hide () {
       this.mdcMenu.hide()

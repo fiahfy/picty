@@ -18,8 +18,16 @@
       <div class="mdc-slider__pin">
         <span class="mdc-slider__pin-value-marker" />
       </div>
-      <svg class="mdc-slider__thumb" width="21" height="21">
-        <circle cx="10.5" cy="10.5" r="7.875" />
+      <svg
+        class="mdc-slider__thumb"
+        width="21"
+        height="21"
+      >
+        <circle
+          cx="10.5"
+          cy="10.5"
+          r="7.875"
+        />
       </svg>
       <div class="mdc-slider__focus-ring" />
     </div>
@@ -30,9 +38,14 @@
 import { MDCSlider } from '@material/slider'
 
 export default {
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   props: {
     value: {
-      type: Number
+      type: Number,
+      required: true
     },
     min: {
       type: Number,
@@ -47,20 +60,10 @@ export default {
       default: 1
     }
   },
-  model: {
-    prop: 'value',
-    event: 'change'
-  },
   data () {
     return {
       mdcSlider: null
     }
-  },
-  mounted () {
-    this.mdcSlider = MDCSlider.attachTo(this.$el)
-  },
-  beforeDestroy () {
-    this.mdcSlider.destroy()
   },
   watch: {
     value (value) {
@@ -76,6 +79,12 @@ export default {
     step (value) {
       this.mdcSlider.step = value
     }
+  },
+  mounted () {
+    this.mdcSlider = MDCSlider.attachTo(this.$el)
+  },
+  beforeDestroy () {
+    this.mdcSlider.destroy()
   },
   methods: {
     input () {

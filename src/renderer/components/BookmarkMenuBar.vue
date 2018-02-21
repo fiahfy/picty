@@ -5,7 +5,10 @@
         title="Refresh"
         @click="loadFiles"
       >
-        <mdc-icon slot="icon" icon="refresh" />
+        <mdc-icon
+          slot="icon"
+          icon="refresh"
+        />
       </mdc-button>
 
       <divider orientation="vertical" />
@@ -15,14 +18,20 @@
         :disabled="!selectedBookmark"
         @click="toggleBookmark({ filepath: selectedBookmark })"
       >
-        <mdc-icon slot="icon" :icon="isBookmarked({ filepath: selectedBookmark}) ? 'star' : 'star_border'" />
+        <mdc-icon
+          slot="icon"
+          :icon="isBookmarked({ filepath: selectedBookmark}) ? 'star' : 'star_border'"
+        />
       </mdc-button>
       <mdc-button
         :title="'View'|accelerator('Enter')"
         :disabled="!selectedBookmark"
         @click="showViewer({ filepath: selectedBookmark })"
       >
-        <mdc-icon slot="icon" icon="photo" />
+        <mdc-icon
+          slot="icon"
+          icon="photo"
+        />
       </mdc-button>
 
       <divider orientation="vertical" />
@@ -73,6 +82,11 @@ export default {
       isBookmarked: 'bookmark/isBookmarked'
     })
   },
+  watch: {
+    searchInput (value) {
+      this.search({ query: value })
+    }
+  },
   methods: {
     contextmenu (e) {
       ContextMenu.show(e, [
@@ -92,11 +106,6 @@ export default {
       showViewer: 'bookmark/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'
     })
-  },
-  watch: {
-    searchInput (value) {
-      this.search({ query: value })
-    }
   }
 }
 </script>

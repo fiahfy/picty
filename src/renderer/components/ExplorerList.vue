@@ -1,5 +1,8 @@
 <template>
-  <div class="explorer-list" :class="classes">
+  <div
+    class="explorer-list"
+    :class="classes"
+  >
     <mdc-table
       tabindex="0"
       @keydown="keydown"
@@ -43,7 +46,7 @@
       </mdc-table-header>
       <mdc-virtual-table-body
         :items="files"
-        :estimatedHeight="41"
+        :estimated-height="41"
       >
         <explorer-list-item
           slot-scope="{ item, index }"
@@ -85,15 +88,6 @@ export default {
       scrolling: false
     }
   },
-  mounted () {
-    this.$el.addEventListener('scroll', this.scroll)
-    this.$nextTick(() => {
-      this.$el.scrollTop = this.scrollTop
-    })
-  },
-  beforeDestroy () {
-    this.$el.removeEventListener('scroll', this.scroll)
-  },
   computed: {
     classes () {
       return {
@@ -114,6 +108,41 @@ export default {
       selectedIndex: 'explorer/selectedIndex',
       isSelectedFile: 'explorer/isSelectedFile'
     })
+  },
+  watch: {
+    directory () {
+      this.$nextTick(() => {
+        this.$el.scrollTop = this.scrollTop
+      })
+    },
+    selectedFilepath () {
+      this.$nextTick(() => {
+        const index = this.selectedIndex
+        if (index === -1) {
+          return
+        }
+        const rowHeight = 41
+        const offsetHeight = 41
+        const el = {
+          offsetTop: rowHeight * index + offsetHeight,
+          offsetHeight: rowHeight
+        }
+        if (el.offsetTop - el.offsetHeight < this.$el.scrollTop) {
+          this.$el.scrollTop = el.offsetTop - el.offsetHeight
+        } else if (el.offsetTop + el.offsetHeight > this.$el.scrollTop + this.$el.offsetHeight) {
+          this.$el.scrollTop = el.offsetTop + el.offsetHeight - this.$el.offsetHeight
+        }
+      })
+    }
+  },
+  mounted () {
+    this.$el.addEventListener('scroll', this.scroll)
+    this.$nextTick(() => {
+      this.$el.scrollTop = this.scrollTop
+    })
+  },
+  beforeDestroy () {
+    this.$el.removeEventListener('scroll', this.scroll)
   },
   methods: {
     scroll () {
@@ -183,32 +212,6 @@ export default {
       showViewer: 'explorer/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'
     })
-  },
-  watch: {
-    directory () {
-      this.$nextTick(() => {
-        this.$el.scrollTop = this.scrollTop
-      })
-    },
-    selectedFilepath () {
-      this.$nextTick(() => {
-        const index = this.selectedIndex
-        if (index === -1) {
-          return
-        }
-        const rowHeight = 41
-        const offsetHeight = 41
-        const el = {
-          offsetTop: rowHeight * index + offsetHeight,
-          offsetHeight: rowHeight
-        }
-        if (el.offsetTop - el.offsetHeight < this.$el.scrollTop) {
-          this.$el.scrollTop = el.offsetTop - el.offsetHeight
-        } else if (el.offsetTop + el.offsetHeight > this.$el.scrollTop + this.$el.offsetHeight) {
-          this.$el.scrollTop = el.offsetTop + el.offsetHeight - this.$el.offsetHeight
-        }
-      })
-    }
   }
 }
 </script>

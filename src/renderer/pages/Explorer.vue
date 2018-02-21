@@ -3,7 +3,10 @@
     <explorer-menu-bar />
     <divider />
     <div class="container">
-      <div class="message" v-if="message">
+      <div
+        class="message"
+        v-if="message"
+      >
         {{ message }}
       </div>
       <explorer-list />
