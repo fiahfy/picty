@@ -60,45 +60,59 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.mdc-table-column {
-  line-height: 20px;
-  vertical-align: bottom;
-  white-space: nowrap;
-  &.name {
-    div {
-      display: flex;
-      .filename {
-        margin: 0 4px;
-      }
-      .direpath {
-        color: var(--mdc-theme-text-secondary-on-background);
-        direction: rtl;
-        flex: 1;
-        font-size: smaller;
-        overflow: hidden;
-        text-align: right;
-        text-overflow: ellipsis;
-      }
-      &>* {
-        align-self: flex-end;
-      }
-    }
-  }
-  &.size {
-    text-align: right;
-  }
-  .mdc-icon {
-    padding: 0;
+.bookmark-list-item {
+  cursor: pointer;
+  height: 41px;
+  .mdc-table-column {
+    line-height: 20px;
+    padding: 8px;
     vertical-align: bottom;
-    &.folder {
-      color: var(--icon-folder);
+    white-space: nowrap;
+    &.name {
+      div {
+        display: flex;
+        .filename {
+          margin: 0 4px;
+        }
+        .direpath {
+          color: var(--mdc-theme-text-secondary-on-background);
+          direction: rtl;
+          flex: 1;
+          font-size: smaller;
+          overflow: hidden;
+          text-align: right;
+          text-overflow: ellipsis;
+        }
+        &>* {
+          align-self: flex-end;
+        }
+      }
     }
-    &.photo {
-      color: var(--icon-photo);
+    &.size {
+      text-align: right;
     }
-    &.broken_image {
-      color: var(--icon-broken);
+    .mdc-icon {
+      padding: 0;
+      vertical-align: bottom;
+      &.folder {
+        color: var(--icon-folder);
+      }
+      &.photo {
+        color: var(--icon-photo);
+      }
+      &.broken_image {
+        color: var(--icon-broken);
+      }
     }
   }
+  &:hover .mdc-table-column {
+    background-color: var(--hover);
+  }
+  &.selected .mdc-table-column {
+    background-color: var(--selected);
+  }
+}
+.bookmark-list:focus .bookmark-list-item.selected .mdc-table-column {
+  background-color: var(--focus);
 }
 </style>

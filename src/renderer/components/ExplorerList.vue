@@ -1,12 +1,11 @@
 <template>
   <div
     class="explorer-list"
+    tabindex="0"
     :class="classes"
+    @keydown="keydown"
   >
-    <mdc-table
-      tabindex="0"
-      @keydown="keydown"
-    >
+    <mdc-table>
       <mdc-table-header>
         <mdc-table-row>
           <mdc-table-header-column
@@ -221,16 +220,24 @@ export default {
   height: 100%;
   overflow-y: scroll;
   .mdc-table {
+    border-spacing: 0;
     outline: none;
     table-layout: fixed;
+    width: 100%;
     .mdc-table-header {
       .mdc-table-row {
+        cursor: pointer;
         height: 40px;
         .mdc-table-header-column {
           border: 0;
+          color: var(--mdc-theme-text-secondary-on-background);
+          font-size: smaller;
+          font-weight: normal;
           line-height: 20px;
+          padding: 8px;
           position: sticky;
           top: 0;
+          user-select: none;
           vertical-align: bottom;
           white-space: nowrap;
           z-index: 1;
@@ -267,10 +274,6 @@ export default {
           }
         }
       }
-    }
-    .mdc-table-row {
-      cursor: pointer;
-      height: 41px;
     }
   }
   &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {

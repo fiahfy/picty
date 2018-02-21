@@ -14,8 +14,8 @@ Vue.use(Vuex)
 const Selector = {
   locationInput: '.location>input',
   searchInput: '.search>input',
-  explorerList: '.explorer-list>table',
-  bookmarkList: '.bookmark-list>table',
+  explorerList: '.explorer-list',
+  bookmarkList: '.bookmark-list',
   viewer: '.viewer'
 }
 

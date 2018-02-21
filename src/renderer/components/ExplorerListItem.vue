@@ -56,37 +56,51 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.mdc-table-column {
-  line-height: 20px;
-  vertical-align: bottom;
-  white-space: nowrap;
-  &.name {
-    div {
-      display: flex;
-      .filename {
-        flex: 1;
-        margin: 0 0 0 4px;
-        overflow: hidden;
-        text-align: left;
-        text-overflow: ellipsis;
-      }
-      &>* {
-        align-self: flex-end;
-      }
-    }
-  }
-  &.size {
-    text-align: right;
-  }
-  .mdc-icon {
-    padding: 0;
+.explorer-list-item {
+  cursor: pointer;
+  height: 41px;
+  .mdc-table-column {
+    line-height: 20px;
+    padding: 8px;
     vertical-align: bottom;
-    &.folder {
-      color: var(--icon-folder);
+    white-space: nowrap;
+    &.name {
+      div {
+        display: flex;
+        .filename {
+          flex: 1;
+          margin: 0 0 0 4px;
+          overflow: hidden;
+          text-align: left;
+          text-overflow: ellipsis;
+        }
+        &>* {
+          align-self: flex-end;
+        }
+      }
     }
-    &.photo {
-      color: var(--icon-photo);
+    &.size {
+      text-align: right;
+    }
+    .mdc-icon {
+      padding: 0;
+      vertical-align: bottom;
+      &.folder {
+        color: var(--icon-folder);
+      }
+      &.photo {
+        color: var(--icon-photo);
+      }
     }
   }
+  &:hover .mdc-table-column {
+    background-color: var(--hover);
+  }
+  &.selected .mdc-table-column {
+    background-color: var(--selected);
+  }
+}
+.explorer-list:focus .explorer-list-item.selected .mdc-table-column {
+  background-color: var(--focus);
 }
 </style>

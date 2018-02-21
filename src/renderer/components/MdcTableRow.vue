@@ -26,22 +26,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.mdc-table-row {
-  & /deep/ .mdc-table-header-column,
-  & /deep/ .mdc-table-column {
-    border-bottom: {
-      color: var(--divider);
-      style: solid;
-      width: 1px;
-    }
-  }
-  &:hover /deep/ .mdc-table-column {
-    background-color: var(--hover);
-  }
-  &.selected /deep/ .mdc-table-column {
-    background-color: var(--selected);
-  }
-}
-</style>

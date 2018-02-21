@@ -1,4 +1,4 @@
-import { app, dialog, shell, Menu } from 'electron'
+import { app, shell, Menu } from 'electron'
 
 export default class MenuBuilder {
   constructor (window) {
