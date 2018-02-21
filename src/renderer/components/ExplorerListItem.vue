@@ -60,6 +60,7 @@ export default {
   cursor: pointer;
   height: 41px;
   .mdc-table-column {
+    color: var(--mdc-theme-text-primary-on-background);
     line-height: 20px;
     padding: 8px;
     vertical-align: bottom;
@@ -67,6 +68,9 @@ export default {
     &.name {
       div {
         display: flex;
+        .mdc-icon {
+          user-select: none;
+        }
         .filename {
           flex: 1;
           margin: 0 0 0 4px;

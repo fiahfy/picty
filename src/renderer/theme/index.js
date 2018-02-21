@@ -58,8 +58,8 @@ export default {
     '--selected': 'rgba(0, 0, 0, 0.10)',
     '--focus': 'rgba(255, 64, 129, 0.15)',
     '--scrollbar': 'rgba(0, 0, 0, 0.15)',
-    '--scrollbar-hover': 'rgba(0, 0, 0, 0.20)',
-    '--scrollbar-active': 'rgba(0, 0, 0, 0.25)',
+    '--scrollbar-hover': 'rgba(0, 0, 0, 0.25)',
+    '--scrollbar-active': 'rgba(0, 0, 0, 0.35)',
     '--icon-photo': '#a5d6a7',
     '--icon-folder': '#90caf9',
     '--icon-broken': '#bdbdbd'
@@ -122,9 +122,9 @@ export default {
     '--hover': 'rgba(255, 255, 255, 0.10)',
     '--selected': 'rgba(255, 255, 255, 0.20)',
     '--focus': 'rgba(255, 64, 129, 0.15)',
-    '--scrollbar': 'rgba(0, 0, 0, 0.15)',
-    '--scrollbar-hover': 'rgba(0, 0, 0, 0.20)',
-    '--scrollbar-active': 'rgba(0, 0, 0, 0.25)',
+    '--scrollbar': 'rgba(255, 255, 255, 0.30)',
+    '--scrollbar-hover': 'rgba(255, 255, 255, 0.40)',
+    '--scrollbar-active': 'rgba(255, 255, 255, 0.50)',
     '--icon-photo': '#a5d6a7',
     '--icon-folder': '#90caf9',
     '--icon-broken': '#bdbdbd'

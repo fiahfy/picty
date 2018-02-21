@@ -1,7 +1,7 @@
 <template>
   <div
     class="viewer mdc-theme--background"
-    tabindex="-1"
+    tabindex="0"
     :class="classes"
     @keydown="keydown"
     @mousemove="mousemove"

@@ -131,9 +131,15 @@ export default {
         &>* {
           margin: 4px;
         }
+        .mdc-icon {
+          color: var(--mdc-theme-text-icon-on-background);
+        }
         .mdc-text-field {
           border: none;
           height: 32px;
+        }
+        &:not(.mdc-text-field--disabled) /deep/ .mdc-text-field__input::placeholder {
+          color: var(--mdc-theme-text-hint-on-background);
         }
       }
       .mdc-button {
