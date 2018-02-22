@@ -29,14 +29,14 @@ export default {
         filepath
       ]
       commit('setBookmarks', { bookmarks })
-      dispatch('loadFiles')
+      dispatch('load')
     },
     deleteBookmark ({ commit, dispatch, state }, { filepath }) {
       const bookmarks = state.bookmarks.filter((bookmark) => {
         return bookmark !== filepath
       })
       commit('setBookmarks', { bookmarks })
-      dispatch('loadFiles')
+      dispatch('load')
     },
     toggleBookmark ({ dispatch, getters }, { filepath }) {
       if (getters.isBookmarked({ filepath })) {
@@ -45,30 +45,33 @@ export default {
         dispatch('bookmark', { filepath })
       }
     },
-    loadFiles ({ commit, dispatch, state }) {
+    load ({ commit, dispatch, state }) {
       const files = state.bookmarks.map((bookmark) => (new File(bookmark).toObject()))
       commit('setFiles', { files })
-      dispatch('sortFiles')
+      dispatch('sort')
       dispatch('focusBookmarkList', null, { root: true })
     },
-    selectBookmark ({ commit }, { filepath }) {
+    select ({ commit }, { filepath }) {
       commit('setSelectedBookmark', { selectedBookmark: filepath })
     },
-    selectPreviousBookmark ({ commit, getters, state }) {
-      const index = getters.selectedIndex - 1
-      if (index < 0) {
+    selectIndex ({ dispatch, getters }, { index }) {
+      if (index < 0 || index > getters.filteredFiles.length - 1) {
         return
       }
-      const selectedBookmark = getters.filteredFiles[index].path
-      commit('setSelectedBookmark', { selectedBookmark })
+      const filepath = getters.filteredFiles[index].path
+      dispatch('select', { filepath })
     },
-    selectNextBookmark ({ commit, getters, state }) {
-      const index = getters.selectedIndex + 1
-      if (index > getters.filteredFiles.length - 1) {
-        return
-      }
-      const selectedBookmark = getters.filteredFiles[index].path
-      commit('setSelectedBookmark', { selectedBookmark })
+    selectFirst ({ dispatch }) {
+      dispatch('selectIndex', { index: 0 })
+    },
+    selectLast ({ dispatch, getters }) {
+      dispatch('selectIndex', { index: getters.filteredFiles.length - 1 })
+    },
+    selectPrevious ({ dispatch, getters }) {
+      dispatch('selectIndex', { index: getters.selectedIndex - 1 })
+    },
+    selectNext ({ dispatch, getters }) {
+      dispatch('selectIndex', { index: getters.selectedIndex + 1 })
     },
     search ({ commit }, { query }) {
       commit('setQuery', { query })
@@ -80,9 +83,9 @@ export default {
       }
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption })
-      dispatch('sortFiles')
+      dispatch('sort')
     },
-    sortFiles ({ commit, getters, state }) {
+    sort ({ commit, getters, state }) {
       const files = state.files.sort((a, b) => {
         let result = 0
         switch (state.sortOption.key) {
@@ -163,10 +166,10 @@ export default {
     },
     selectedIndex (state, getters) {
       return getters.filteredFiles.findIndex((file) => {
-        return getters.isSelectedBookmark({ filepath: file.path })
+        return getters.isSelected({ filepath: file.path })
       })
     },
-    isSelectedBookmark (state) {
+    isSelected (state) {
       return ({ filepath }) => {
         return state.selectedBookmark === filepath
       }

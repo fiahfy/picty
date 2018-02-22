@@ -34,7 +34,7 @@ export default {
     dismiss ({ commit, dispatch, rootState }) {
       dispatch('dismissViewer', null, { root: true })
     },
-    viewPreviousImage ({ commit, getters, state }) {
+    movePrevious ({ commit, getters, state }) {
       let index = getters.currentIndex - 1
       if (index < 0) {
         index = state.files.length - 1
@@ -42,7 +42,7 @@ export default {
       const currentFile = state.files[index]
       commit('setCurrentFile', { currentFile })
     },
-    viewNextImage ({ commit, getters, state }) {
+    moveNext ({ commit, getters, state }) {
       let index = getters.currentIndex + 1
       if (index > state.files.length - 1) {
         index = 0

@@ -9,15 +9,17 @@
       :id="id"
       :placeholder="placeholder"
       :aria-label="placeholder"
+      :disabled="disabled"
       v-model="model"
       v-bind="$attrs"
       v-on="listeners"
-    />
+    >
     <label
       class="mdc-text-field__label"
       :for="id"
       v-if="!fullwidth"
     >{{ label }}</label>
+    <div class="mdc-line-ripple" />
   </div>
 </template>
 
@@ -25,34 +27,33 @@
 import { MDCTextField } from '@material/textfield'
 
 export default {
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   props: {
     value: {
-      type: String
+      type: String,
+      required: true
     },
     label: {
-      type: String
+      type: String,
+      required: true
     },
     fullwidth: {
       type: Boolean,
       default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
-  },
-  model: {
-    prop: 'value',
-    event: 'change'
   },
   data () {
     return {
       mdcTextField: null,
       id: -1
     }
-  },
-  mounted () {
-    this.mdcTextField = MDCTextField.attachTo(this.$el)
-    this.id = this._uid // eslint-disable-line no-underscore-dangle
-  },
-  beforeDestroy () {
-    this.mdcTextField.destroy()
   },
   computed: {
     listeners () {
@@ -62,7 +63,8 @@ export default {
     },
     classes () {
       return {
-        'mdc-text-field--fullwidth': this.fullwidth
+        'mdc-text-field--fullwidth': this.fullwidth,
+        'mdc-text-field--disabled': this.disabled
       }
     },
     placeholder () {
@@ -76,6 +78,13 @@ export default {
         this.$emit('change', value)
       }
     }
+  },
+  mounted () {
+    this.mdcTextField = MDCTextField.attachTo(this.$el)
+    this.id = this._uid // eslint-disable-line no-underscore-dangle
+  },
+  beforeDestroy () {
+    this.mdcTextField.destroy()
   }
 }
 </script>

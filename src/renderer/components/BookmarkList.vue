@@ -1,9 +1,11 @@
 <template>
-  <div class="bookmark-list" :class="classes">
-    <mdc-table
-      tabindex="0"
-      @keydown="keydown"
-    >
+  <div
+    class="bookmark-list"
+    tabindex="0"
+    :class="classes"
+    @keydown="keydown"
+  >
+    <mdc-table>
       <mdc-table-header>
         <mdc-table-row>
           <mdc-table-header-column
@@ -43,14 +45,14 @@
       </mdc-table-header>
       <mdc-virtual-table-body
         :items="files"
-        :estimatedHeight="41"
+        :estimated-height="41"
       >
         <bookmark-list-item
           slot-scope="{ item, index }"
           :key="item.name"
           :file="item"
-          :selected="isSelectedBookmark({ filepath: item.path })"
-          @click="selectBookmark({ filepath: item.path })"
+          :selected="isSelected({ filepath: item.path })"
+          @click="select({ filepath: item.path })"
           @dblclick="action({ filepath: item.path })"
           @contextmenu="e => contextmenu(e, item)"
         />
@@ -64,7 +66,6 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import BookmarkListItem from './BookmarkListItem'
 import MdcIcon from './MdcIcon'
 import MdcTable from './MdcTable'
-import MdcTableBody from './MdcTableBody'
 import MdcTableHeader from './MdcTableHeader'
 import MdcTableHeaderColumn from './MdcTableHeaderColumn'
 import MdcTableRow from './MdcTableRow'
@@ -76,7 +77,6 @@ export default {
     BookmarkListItem,
     MdcIcon,
     MdcTable,
-    MdcTableBody,
     MdcTableHeader,
     MdcTableHeaderColumn,
     MdcTableRow,
@@ -86,15 +86,6 @@ export default {
     return {
       scrolling: false
     }
-  },
-  mounted () {
-    this.$el.addEventListener('scroll', this.scroll)
-    this.$nextTick(() => {
-      this.$el.scrollTop = this.scrollTop
-    })
-  },
-  beforeDestroy () {
-    this.$el.removeEventListener('scroll', this.scroll)
   },
   computed: {
     classes () {
@@ -113,76 +104,7 @@ export default {
     ...mapGetters({
       files: 'bookmark/filteredFiles',
       selectedIndex: 'bookmark/selectedIndex',
-      isSelectedBookmark: 'bookmark/isSelectedBookmark'
-    })
-  },
-  methods: {
-    scroll () {
-      const scrollTop = this.$el.scrollTop
-      this.scrolling = scrollTop > 0
-      this.setScrollTop({ scrollTop })
-    },
-    keydown (e) {
-      if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-        switch (e.keyCode) {
-          case 68:
-            e.preventDefault()
-            this.toggleBookmark({ filepath: this.selectedBookmark })
-            break
-        }
-        return
-      }
-      switch (e.keyCode) {
-        case 13:
-          e.preventDefault()
-          this.showViewer({ filepath: this.selectedBookmark })
-          break
-        case 38:
-          e.preventDefault()
-          this.selectPreviousBookmark()
-          break
-        case 40:
-          e.preventDefault()
-          this.selectNextBookmark()
-          break
-      }
-    },
-    click (e, sortKey) {
-      this.changeSortKey({ sortKey })
-      this.$nextTick(() => {
-        this.$el.scrollTop = 0
-      })
-    },
-    contextmenu (e, file) {
-      this.selectBookmark({ filepath: file.path })
-      ContextMenu.show(e, [
-        {
-          label: 'Bookmark',
-          click: () => {
-            this.toggleBookmark({ filepath: file.path })
-          },
-          accelerator: 'CmdOrCtrl+D'
-        },
-        {
-          label: 'View',
-          click: () => {
-            this.showViewer({ filepath: file.path })
-          },
-          accelerator: 'Enter'
-        }
-      ])
-    },
-    ...mapMutations({
-      setScrollTop: 'bookmark/setScrollTop'
-    }),
-    ...mapActions({
-      toggleBookmark: 'bookmark/toggleBookmark',
-      selectBookmark: 'bookmark/selectBookmark',
-      selectPreviousBookmark: 'bookmark/selectPreviousBookmark',
-      selectNextBookmark: 'bookmark/selectNextBookmark',
-      changeSortKey: 'bookmark/changeSortKey',
-      action: 'bookmark/action',
-      showViewer: 'bookmark/showViewer'
+      isSelected: 'bookmark/isSelected'
     })
   },
   watch: {
@@ -210,27 +132,118 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+    this.$el.addEventListener('scroll', this.scroll)
+    this.$nextTick(() => {
+      this.$el.scrollTop = this.scrollTop
+    })
+  },
+  beforeDestroy () {
+    this.$el.removeEventListener('scroll', this.scroll)
+  },
+  methods: {
+    scroll () {
+      const scrollTop = this.$el.scrollTop
+      this.scrolling = scrollTop > 0
+      this.setScrollTop({ scrollTop })
+    },
+    keydown (e) {
+      switch (e.keyCode) {
+        case 13:
+          e.preventDefault()
+          this.showViewer({ filepath: this.selectedBookmark })
+          break
+        case 38:
+          e.preventDefault()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectFirst()
+          } else {
+            this.selectPrevious()
+          }
+          break
+        case 40:
+          e.preventDefault()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectLast()
+          } else {
+            this.selectNext()
+          }
+          break
+        case 68:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.toggleBookmark({ filepath: this.selectedBookmark })
+          }
+          break
+      }
+    },
+    click (e, sortKey) {
+      this.changeSortKey({ sortKey })
+      this.$nextTick(() => {
+        this.$el.scrollTop = 0
+      })
+    },
+    contextmenu (e, file) {
+      this.select({ filepath: file.path })
+      ContextMenu.show(e, [
+        {
+          label: 'Bookmark',
+          click: () => {
+            this.toggleBookmark({ filepath: file.path })
+          },
+          accelerator: 'CmdOrCtrl+D'
+        },
+        {
+          label: 'View',
+          click: () => {
+            this.showViewer({ filepath: file.path })
+          },
+          accelerator: 'Enter'
+        }
+      ])
+    },
+    ...mapMutations({
+      setScrollTop: 'bookmark/setScrollTop'
+    }),
+    ...mapActions({
+      toggleBookmark: 'bookmark/toggleBookmark',
+      select: 'bookmark/select',
+      selectFirst: 'bookmark/selectFirst',
+      selectLast: 'bookmark/selectLast',
+      selectPrevious: 'bookmark/selectPrevious',
+      selectNext: 'bookmark/selectNext',
+      changeSortKey: 'bookmark/changeSortKey',
+      action: 'bookmark/action',
+      showViewer: 'bookmark/showViewer'
+    })
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .bookmark-list {
   height: 100%;
   overflow-y: scroll;
   .mdc-table {
+    border-spacing: 0;
     outline: none;
     table-layout: fixed;
+    width: 100%;
     .mdc-table-header {
       .mdc-table-row {
+        cursor: pointer;
         height: 40px;
         .mdc-table-header-column {
           border: 0;
+          color: var(--mdc-theme-text-secondary-on-background);
+          font-size: smaller;
+          font-weight: normal;
           line-height: 20px;
+          padding: 8px;
           position: sticky;
           top: 0;
+          user-select: none;
           vertical-align: bottom;
           white-space: nowrap;
           z-index: 1;
@@ -253,11 +266,6 @@ export default {
             top: 40px;
             z-index: 0;
             &:after {
-              border-bottom: {
-                color: $material-color-grey-300;
-                style: solid;
-                width: 1px;
-              }
               bottom: 0;
               content:'';
               left: 0;
@@ -268,21 +276,9 @@ export default {
         }
       }
     }
-    .mdc-table-row {
-      cursor: pointer;
-      height: 41px;
-    }
   }
   &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
-    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
-  }
-}
-.mdc-theme--dark .bookmark-list {
-   .mdc-table .mdc-table-row.shadow .mdc-table-header-column:after {
-    border-bottom-color: $material-color-grey-600;
-  }
-  &.scrolling .mdc-table .mdc-table-row.shadow .mdc-table-header-column:after {
-    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 0 3px 1px var(--shadow);
   }
 }
 </style>

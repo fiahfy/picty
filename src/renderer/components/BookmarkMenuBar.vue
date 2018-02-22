@@ -3,9 +3,12 @@
     <div class="row buttons">
       <mdc-button
         title="Refresh"
-        @click="loadFiles"
+        @click="load"
       >
-        <mdc-icon slot="icon" icon="refresh" />
+        <mdc-icon
+          slot="icon"
+          icon="refresh"
+        />
       </mdc-button>
 
       <divider orientation="vertical" />
@@ -15,14 +18,20 @@
         :disabled="!selectedBookmark"
         @click="toggleBookmark({ filepath: selectedBookmark })"
       >
-        <mdc-icon slot="icon" :icon="isBookmarked({ filepath: selectedBookmark}) ? 'star' : 'star_border'" />
+        <mdc-icon
+          slot="icon"
+          :icon="isBookmarked({ filepath: selectedBookmark}) ? 'star' : 'star_border'"
+        />
       </mdc-button>
       <mdc-button
         :title="'View'|accelerator('Enter')"
         :disabled="!selectedBookmark"
         @click="showViewer({ filepath: selectedBookmark })"
       >
-        <mdc-icon slot="icon" icon="photo" />
+        <mdc-icon
+          slot="icon"
+          icon="photo"
+        />
       </mdc-button>
 
       <divider orientation="vertical" />
@@ -33,8 +42,8 @@
           :title="'Search'|accelerator('CmdOrCtrl+F')"
         />
         <mdc-text-field
-          label="Search"
           fullwidth
+          label="Search"
           class="search"
           @keyup="keyup"
           @contextmenu="contextmenu"
@@ -73,6 +82,11 @@ export default {
       isBookmarked: 'bookmark/isBookmarked'
     })
   },
+  watch: {
+    searchInput (value) {
+      this.search({ query: value })
+    }
+  },
   methods: {
     contextmenu (e) {
       ContextMenu.show(e, [
@@ -87,23 +101,16 @@ export default {
       }
     },
     ...mapActions({
-      loadFiles: 'bookmark/loadFiles',
+      load: 'bookmark/load',
       search: 'bookmark/search',
       showViewer: 'bookmark/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'
     })
-  },
-  watch: {
-    searchInput (value) {
-      this.search({ query: value })
-    }
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .bookmark-menu-bar {
   user-select: none;
   .row {
@@ -124,9 +131,15 @@ export default {
         &>* {
           margin: 4px;
         }
+        .mdc-icon {
+          color: var(--mdc-theme-text-icon-on-background);
+        }
         .mdc-text-field {
           border: none;
           height: 32px;
+        }
+        &:not(.mdc-text-field--disabled) /deep/ .mdc-text-field__input::placeholder {
+          color: var(--mdc-theme-text-hint-on-background);
         }
       }
       .mdc-button {

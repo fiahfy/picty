@@ -2,7 +2,8 @@
   <div
     id="app"
     class="mdc-theme--background"
-    :class="classes"
+    :style="styles"
+    @contextmenu="contextmenu"
     @dragover.prevent
     @drop.prevent="drop"
   >
@@ -11,12 +12,14 @@
       <divider />
     </template>
     <div class="container">
-      <activity-bar />
-      <divider orientation="vertical" />
-      <div class="content">
-        <router-view />
-        <viewer v-if="viewing" />
-      </div>
+      <viewer v-if="viewing" />
+      <template v-else>
+        <activity-bar />
+        <divider orientation="vertical" />
+        <div class="content">
+          <router-view />
+        </div>
+      </template>
     </div>
     <mdc-snackbar :message="message" />
   </div>
@@ -24,11 +27,13 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
+import Theme from './theme'
 import ActivityBar from './components/ActivityBar'
 import Divider from './components/Divider'
 import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
+import * as ContextMenu from './utils/context-menu'
 
 export default {
   components: {
@@ -40,13 +45,11 @@ export default {
   },
   async asyncData ({ store }) {
     await store.dispatch('explorer/initDirectory')
-    await store.dispatch('bookmark/loadFiles')
+    await store.dispatch('bookmark/load')
   },
   computed: {
-    classes () {
-      return {
-        'mdc-theme--dark': this.darkTheme
-      }
+    styles () {
+      return this.darkTheme ? Theme.dark : Theme.light
     },
     ...mapState({
       message: state => state.message,
@@ -58,6 +61,9 @@ export default {
     })
   },
   methods: {
+    contextmenu (e) {
+      ContextMenu.show(e)
+    },
     drop (e) {
       const files = Array.from(e.dataTransfer.files)
       if (!files.length) {
@@ -73,6 +79,25 @@ export default {
 }
 </script>
 
+<style lang="scss">
+@import '~material-design-icons/iconfont/material-icons.css';
+@import '~material-components-web/material-components-web.scss';
+
+::-webkit-scrollbar {
+  width: 14px;
+  -webkit-appearance: none;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar);
+  &:hover {
+    background-color: var(--scrollbar-hover);
+  }
+  &:active {
+    background-color: var(--scrollbar-active);
+  }
+}
+</style>
+
 <style scoped lang="scss">
 #app {
   display: flex;
@@ -87,55 +112,6 @@ export default {
     position: relative;
     .content {
       flex: 1;
-      .viewer {
-        z-index: 1;
-      }
-    }
-  }
-}
-</style>
-
-<style lang="scss">
-$mdc-theme-primary: #ff4081;
-$mdc-theme-secondary: #ff4081;
-$mdc-theme-background: #fff;
-
-@import '~material-design-icons/iconfont/material-icons.css';
-@import 'material-components-web/material-components-web';
-@import "@material/theme/_color-palette";
-
-::-webkit-scrollbar {
-  -webkit-appearance: none;
-  border-left-color: $material-color-grey-300;
-  border-left-style: solid;
-  border-left-width: 1px;
-  width: 14px;
-}
-::-webkit-scrollbar-thumb {
-  background-color: $material-color-grey-300;
-  &:hover {
-    background-color: $material-color-grey-400;
-  }
-  &:active {
-    background-color: $material-color-grey-500;
-  }
-}
-
-.mdc-theme--dark {
-  color: white;
-  &.mdc-theme--background, .mdc-theme--background {
-    background-color: #303030;
-  }
-  ::-webkit-scrollbar {
-    border-left-color: $material-color-grey-600;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: $material-color-grey-600;
-    &:hover {
-      background-color: $material-color-grey-500;
-    }
-    &:active {
-      background-color: $material-color-grey-400;
     }
   }
 }

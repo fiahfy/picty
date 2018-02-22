@@ -1,12 +1,15 @@
 <template>
   <div
     class="viewer mdc-theme--background"
-    tabindex="-1"
+    tabindex="0"
     :class="classes"
     @keydown="keydown"
     @mousemove="mousemove"
   >
-    <div class="message" v-if="message">
+    <div
+      class="message"
+      v-if="message"
+    >
       {{ message }}
     </div>
     <div
@@ -24,7 +27,7 @@
         :style="styles"
         @load="imageLoad"
         @error="imageError"
-      />
+      >
     </div>
     <control-bar :class="controlBarClasses" />
   </div>
@@ -50,9 +53,6 @@ export default {
       },
       controlBarHidden: null
     }
-  },
-  mounted () {
-    this.showControlBar()
   },
   computed: {
     message () {
@@ -100,6 +100,35 @@ export default {
       imageStretched: state => state.settings.imageStretched
     })
   },
+  watch: {
+    currentFile () {
+      this.hasLoadError = false
+    },
+    scale (newValue, oldValue) {
+      if (this.error) {
+        return
+      }
+      this.$nextTick(() => {
+        var offsetX = 0
+        if (newValue > oldValue && this.$el.clientWidth > this.originalSize.width * oldValue) {
+          offsetX = (this.$el.clientWidth - this.originalSize.width * oldValue) / 2
+        }
+        var offsetY = 0
+        if (newValue > oldValue && this.$el.clientHeight > this.originalSize.height * oldValue) {
+          offsetY = (this.$el.clientHeight - this.originalSize.height * oldValue) / 2
+        }
+
+        this.$refs.wrapper.scrollLeft += (newValue - oldValue) * this.originalSize.width / 2 - offsetX
+        this.$refs.wrapper.scrollTop += (newValue - oldValue) * this.originalSize.height / 2 - offsetY
+
+        this.horizontalCentered = this.$el.clientWidth >= this.originalSize.width * newValue
+        this.verticalCentered = this.$el.clientHeight >= this.originalSize.height * newValue
+      })
+    }
+  },
+  mounted () {
+    this.showControlBar()
+  },
   methods: {
     keydown (e) {
       switch (e.keyCode) {
@@ -109,13 +138,13 @@ export default {
         case 37:
         case 40:
           if (e.target.getAttribute('role') !== 'slider') {
-            this.viewPreviousImage()
+            this.movePrevious()
           }
           break
         case 38:
         case 39:
           if (e.target.getAttribute('role') !== 'slider') {
-            this.viewNextImage()
+            this.moveNext()
           }
           break
       }
@@ -179,36 +208,10 @@ export default {
     },
     ...mapActions({
       dismiss: 'viewer/dismiss',
-      viewPreviousImage: 'viewer/viewPreviousImage',
-      viewNextImage: 'viewer/viewNextImage',
+      movePrevious: 'viewer/movePrevious',
+      moveNext: 'viewer/moveNext',
       initZoom: 'viewer/initZoom'
     })
-  },
-  watch: {
-    currentFile () {
-      this.hasLoadError = false
-    },
-    scale (newValue, oldValue) {
-      if (this.error) {
-        return
-      }
-      this.$nextTick(() => {
-        var offsetX = 0
-        if (newValue > oldValue && this.$el.clientWidth > this.originalSize.width * oldValue) {
-          offsetX = (this.$el.clientWidth - this.originalSize.width * oldValue) / 2
-        }
-        var offsetY = 0
-        if (newValue > oldValue && this.$el.clientHeight > this.originalSize.height * oldValue) {
-          offsetY = (this.$el.clientHeight - this.originalSize.height * oldValue) / 2
-        }
-
-        this.$refs.wrapper.scrollLeft += (newValue - oldValue) * this.originalSize.width / 2 - offsetX
-        this.$refs.wrapper.scrollTop += (newValue - oldValue) * this.originalSize.height / 2 - offsetY
-
-        this.horizontalCentered = this.$el.clientWidth >= this.originalSize.width * newValue
-        this.verticalCentered = this.$el.clientHeight >= this.originalSize.height * newValue
-      })
-    }
   }
 }
 </script>

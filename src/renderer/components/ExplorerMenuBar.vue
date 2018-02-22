@@ -3,8 +3,8 @@
     <div class="row directory">
       <mdc-icon icon="folder" />
       <mdc-text-field
-        label="Input path..."
         fullwidth
+        label="Input path..."
         class="location"
         @keyup="(e) => keyup(e, 'directory')"
         @contextmenu="contextmenu"
@@ -20,9 +20,15 @@
           @click="backDirectory"
           v-long-press="(e) => mouseLongPress(e, 'back')"
         >
-          <mdc-icon slot="icon" icon="arrow_back" />
+          <mdc-icon
+            slot="icon"
+            icon="arrow_back"
+          />
         </mdc-button>
-        <mdc-menu ref="backMenu" v-model="backSelected">
+        <mdc-menu
+          ref="backMenu"
+          v-model="backSelected"
+        >
           <mdc-list-item
             :key="index"
             @mouseup="mouseup"
@@ -39,9 +45,15 @@
           @click="forwardDirectory"
           v-long-press="(e) => mouseLongPress(e, 'forward')"
         >
-          <mdc-icon slot="icon" icon="arrow_forward" />
+          <mdc-icon
+            slot="icon"
+            icon="arrow_forward"
+          />
         </mdc-button>
-        <mdc-menu ref="forwardMenu" v-model="forwardSelected">
+        <mdc-menu
+          ref="forwardMenu"
+          v-model="forwardSelected"
+        >
           <mdc-list-item
             :key="index"
             @mouseup="mouseup"
@@ -55,19 +67,28 @@
         :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
         @click="changeParentDirectory"
       >
-        <mdc-icon slot="icon" icon="arrow_upward" />
+        <mdc-icon
+          slot="icon"
+          icon="arrow_upward"
+        />
       </mdc-button>
       <mdc-button
         :title="'Change home directory'|accelerator('CmdOrCtrl+Shift+H')"
         @click="changeHomeDirectory"
       >
-        <mdc-icon slot="icon" icon="home" />
+        <mdc-icon
+          slot="icon"
+          icon="home"
+        />
       </mdc-button>
       <mdc-button
         title="Open current directory"
         @click="openDirectory"
       >
-        <mdc-icon slot="icon" icon="folder_open" />
+        <mdc-icon
+          slot="icon"
+          icon="folder_open"
+        />
       </mdc-button>
 
       <divider orientation="vertical" />
@@ -77,14 +98,20 @@
         :disabled="!selectedFilepath"
         @click="toggleBookmark({ filepath: selectedFilepath })"
       >
-        <mdc-icon slot="icon" :icon="isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border'" />
+        <mdc-icon
+          slot="icon"
+          :icon="isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border'"
+        />
       </mdc-button>
       <mdc-button
         :title="'View'|accelerator('Enter')"
         :disabled="!selectedFilepath"
         @click="showViewer({ filepath: selectedFilepath })"
       >
-        <mdc-icon slot="icon" icon="photo" />
+        <mdc-icon
+          slot="icon"
+          icon="photo"
+        />
       </mdc-button>
 
       <divider orientation="vertical" />
@@ -130,8 +157,8 @@ export default {
   },
   data () {
     return {
-      backSelected: null,
-      forwardSelected: null,
+      backSelected: -1,
+      forwardSelected: -1,
       searchInput: ''
     }
   },
@@ -154,6 +181,23 @@ export default {
       canForwardDirectory: 'explorer/canForwardDirectory',
       isBookmarked: 'bookmark/isBookmarked'
     })
+  },
+  watch: {
+    backSelected (value) {
+      if (value !== -1) {
+        this.backDirectory({ offset: value })
+      }
+      this.backSelected = -1
+    },
+    forwardSelected (value) {
+      if (value !== -1) {
+        this.forwardDirectory({ offset: value })
+      }
+      this.forwardSelected = -1
+    },
+    searchInput (value) {
+      this.search({ query: value })
+    }
   },
   methods: {
     contextmenu (e) {
@@ -199,30 +243,11 @@ export default {
       showViewer: 'explorer/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'
     })
-  },
-  watch: {
-    backSelected (value) {
-      if (value !== null) {
-        this.backDirectory({ offset: value })
-      }
-      this.backSelected = null
-    },
-    forwardSelected (value) {
-      if (value !== null) {
-        this.forwardDirectory({ offset: value })
-      }
-      this.forwardSelected = null
-    },
-    searchInput (value) {
-      this.search({ query: value })
-    }
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import "@material/theme/_color-palette";
-
 .explorer-menu-bar {
   user-select: none;
   .row {
@@ -233,7 +258,7 @@ export default {
         margin: 4px;
       }
       .mdc-icon {
-        color: $material-color-blue-200;
+        color: var(--icon-folder);
       }
     }
     &.buttons {
@@ -250,6 +275,9 @@ export default {
         margin: 0px;
         &>* {
           margin: 4px;
+        }
+        .mdc-icon {
+          color: var(--mdc-theme-text-icon-on-background);
         }
       }
       .mdc-button {
@@ -271,6 +299,9 @@ export default {
     .mdc-text-field {
       border: none;
       height: 32px;
+      &:not(.mdc-text-field--disabled) /deep/ .mdc-text-field__input::placeholder {
+        color: var(--mdc-theme-text-hint-on-background);
+      }
     }
     .mdc-icon {
       padding: 4px;

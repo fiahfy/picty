@@ -1,9 +1,18 @@
 <template>
   <div class="activity-bar">
     <ul>
-      <li :key="item.name" v-for="item in items">
-        <mdc-button :title="item.title" @click="changeRoute({ name: item.name })">
-          <mdc-icon :icon="item.icon" :class="item.classes" />
+      <li
+        :key="item.name"
+        v-for="item in items"
+      >
+        <mdc-button
+          :title="item.title"
+          @click="changeRoute({ name: item.name })"
+        >
+          <mdc-icon
+            :icon="item.icon"
+            :class="item.classes"
+          />
         </mdc-button>
       </li>
     </ul>
@@ -30,6 +39,11 @@ export default {
       ]
     }
   },
+  watch: {
+    '$route' (to) { // eslint-disable-line object-shorthand
+      this.updateItems(to.name)
+    }
+  },
   mounted () {
     this.updateItems(this.$route.name)
   },
@@ -45,11 +59,6 @@ export default {
     ...mapActions({
       changeRoute: 'changeRoute'
     })
-  },
-  watch: {
-    '$route' (to) { // eslint-disable-line object-shorthand
-      this.updateItems(to.name)
-    }
   }
 }
 </script>
@@ -71,19 +80,13 @@ export default {
       .mdc-icon {
         padding: 12px;
         &:not(.selected) {
-          color: var(--mdc-theme-text-disabled-on-light, rgba(0, 0, 0, 0.38));
+          color: var(--mdc-theme-text-icon-on-background);
           &:hover {
             color: inherit;
           }
         }
       }
     }
-  }
-}
-.mdc-theme--dark .activity-bar ul .mdc-icon:not(.selected) {
-  color: var(--mdc-theme-text-disabled-on-dark, rgba(255, 255, 255, 0.5));
-  &:hover {
-    color: inherit;
   }
 }
 </style>

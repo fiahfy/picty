@@ -5,61 +5,92 @@
       <mdc-button
         class="previous"
         :title="'View previous image'|accelerator('Left')"
-        @click="viewPreviousImage"
+        @click="movePrevious"
       >
-        <mdc-icon slot="icon" icon="skip_previous" />
+        <mdc-icon
+          slot="icon"
+          icon="skip_previous"
+        />
       </mdc-button>
       <mdc-button
         class="next"
         :title="'View next image'|accelerator('Right')"
-        @click="viewNextImage"
+        @click="moveNext"
       >
-        <mdc-icon slot="icon" icon="skip_next" />
+        <mdc-icon
+          slot="icon"
+          icon="skip_next"
+        />
       </mdc-button>
-      <mdc-slider v-model="page" :min="1" :max="maxPage" />
+      <mdc-slider
+        v-model="page"
+        :min="1"
+        :max="maxPage"
+      />
       <div>{{ page }} / {{ maxPage }}</div>
       <mdc-button
         title="Zoom"
         @click="toggleZoomMenu"
       >
-        <mdc-icon slot="icon" icon="zoom_in" />
+        <mdc-icon
+          slot="icon"
+          icon="zoom_in"
+        />
       </mdc-button>
       <mdc-button
         title="Exit fullscreen"
         @click="leaveFullScreen"
         v-if="fullScreen"
       >
-        <mdc-icon slot="icon" icon="fullscreen_exit" />
+        <mdc-icon
+          slot="icon"
+          icon="fullscreen_exit"
+        />
       </mdc-button>
       <mdc-button
         title="Fullscreen"
         @click="enterFullScreen"
         v-else
       >
-        <mdc-icon slot="icon" icon="fullscreen" />
+        <mdc-icon
+          slot="icon"
+          icon="fullscreen"
+        />
       </mdc-button>
       <mdc-button
         :title="'Close'|accelerator('Esc')"
         @click="dismiss"
       >
-        <mdc-icon slot="icon" icon="close" />
+        <mdc-icon
+          slot="icon"
+          icon="close"
+        />
       </mdc-button>
     </div>
-    <div class="menu" :class="zoomMenuClasses">
+    <div
+      class="menu"
+      :class="zoomMenuClasses"
+    >
       <div class="background" />
       <div class="container">
         <mdc-button
           :title="'Zoom in'|accelerator('CmdOrCtrl+Plus')"
           @click="zoomIn"
         >
-          <mdc-icon slot="icon" icon="zoom_in" />
+          <mdc-icon
+            slot="icon"
+            icon="zoom_in"
+          />
         </mdc-button>
         <div class="scale">{{ scale }}%</div>
         <mdc-button
           :title="'Zoom out'|accelerator('CmdOrCtrl+-')"
           @click="zoomOut"
         >
-          <mdc-icon slot="icon" icon="zoom_out" />
+          <mdc-icon
+            slot="icon"
+            icon="zoom_out"
+          />
         </mdc-button>
         <mdc-button
           class="reset"
@@ -119,8 +150,8 @@ export default {
       enterFullScreen: 'enterFullScreen',
       leaveFullScreen: 'leaveFullScreen',
       dismiss: 'viewer/dismiss',
-      viewPreviousImage: 'viewer/viewPreviousImage',
-      viewNextImage: 'viewer/viewNextImage',
+      movePrevious: 'viewer/movePrevious',
+      moveNext: 'viewer/moveNext',
       zoomIn: 'viewer/zoomIn',
       zoomOut: 'viewer/zoomOut',
       resetZoom: 'viewer/resetZoom'

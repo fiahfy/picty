@@ -1,44 +1,21 @@
-import { app, dialog, shell, Menu } from 'electron'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import { app, shell, Menu } from 'electron'
 
 export default class MenuBuilder {
   constructor (window) {
     this.window = window
   }
   build () {
-    if (process.env.NODE_ENV !== 'production') {
-      this.setupDevelopmentEnvironment()
-    }
     const template = this.buildTemplate()
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
-  }
-  setupDevelopmentEnvironment () {
-    installExtension(VUEJS_DEVTOOLS)
-      .catch((err) => {
-        console.log('Unable to install `vue-devtools`: \n', err) // eslint-disable-line no-console
-      })
-    this.window.openDevTools()
-    this.window.webContents.on('context-menu', (e, props) => {
-      const { x, y } = props
-
-      Menu
-        .buildFromTemplate([{
-          label: 'Inspect element',
-          click: () => {
-            this.window.inspectElement(x, y)
-          }
-        }])
-        .popup(this.window)
-    })
   }
   buildTemplate () {
     const template = [
       {
         label: 'File',
         submenu: [
-          { label: 'Open...', accelerator: 'CmdOrCtrl+O', click: () => { this.open() } },
-          { label: 'Open Images...', accelerator: 'CmdOrCtrl+Shift+O', click: () => { this.openImages() } }
+          { label: 'Open...', accelerator: 'CmdOrCtrl+O', click: () => { this.window.sendMessage('openDirectory') } },
+          { label: 'Open Images...', accelerator: 'CmdOrCtrl+Shift+O', click: () => { this.window.sendMessage('openImages') } }
         ]
       },
       {
@@ -54,14 +31,14 @@ export default class MenuBuilder {
           { role: 'delete' },
           { role: 'selectall' },
           { type: 'separator' },
-          { label: 'Search...', accelerator: 'CmdOrCtrl+F', click: () => { this.search() } }
+          { label: 'Search...', accelerator: 'CmdOrCtrl+F', click: () => { this.window.sendMessage('search') } }
         ]
       },
       {
         label: 'View',
         submenu: [
-          { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { this.showExplorer() } },
-          { label: 'Bookmark', accelerator: 'CmdOrCtrl+Shift+B', click: () => { this.showBookmark() } },
+          { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { this.window.sendMessage('showExplorer') } },
+          { label: 'Bookmark', accelerator: 'CmdOrCtrl+Shift+B', click: () => { this.window.sendMessage('showBookmark') } },
           { type: 'separator' },
           { role: 'reload' },
           { role: 'forcereload' },
@@ -77,21 +54,21 @@ export default class MenuBuilder {
       {
         label: 'Explorer',
         submenu: [
-          { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { this.openLocation() } },
+          { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { this.window.sendMessage('openLocation') } },
           { type: 'separator' },
-          { label: 'Back Directory', accelerator: 'CmdOrCtrl+Left', click: () => { this.backDirectory() } },
-          { label: 'Forward Directory', accelerator: 'CmdOrCtrl+Right', click: () => { this.forwardDirectory() } },
-          { label: 'Change Parent Directory', accelerator: 'CmdOrCtrl+Shift+P', click: () => { this.changeParentDirectory() } },
-          { label: 'Change Home Directory', accelerator: 'CmdOrCtrl+Shift+H', click: () => { this.changeHomeDirectory() } },
-          { label: 'Open Current Directory', click: () => { this.openCurrentDirectory() } }
+          { label: 'Back Directory', accelerator: 'CmdOrCtrl+Left', click: () => { this.window.sendMessage('backDirectory') } },
+          { label: 'Forward Directory', accelerator: 'CmdOrCtrl+Right', click: () => { this.window.sendMessage('forwardDirectory') } },
+          { label: 'Change Parent Directory', accelerator: 'CmdOrCtrl+Shift+P', click: () => { this.window.sendMessage('changeParentDirectory') } },
+          { label: 'Change Home Directory', accelerator: 'CmdOrCtrl+Shift+H', click: () => { this.window.sendMessage('changeHomeDirectory') } },
+          { label: 'Open Current Directory', click: () => { this.window.sendMessage('openCurrentDirectory') } }
         ]
       },
       {
         label: 'Viewer',
         submenu: [
-          { label: 'Zoom In', accelerator: 'CmdOrCtrl+Plus', click: () => { this.zoomIn() } },
-          { label: 'Zoom Out', accelerator: 'CmdOrCtrl+-', click: () => { this.zoomOut() } },
-          { label: 'Reset Zoom', accelerator: 'CmdOrCtrl+0', click: () => { this.resetZoom() } }
+          { label: 'Zoom In', accelerator: 'CmdOrCtrl+Plus', click: () => { this.window.sendMessage('zoomIn') } },
+          { label: 'Zoom Out', accelerator: 'CmdOrCtrl+-', click: () => { this.window.sendMessage('zoomOut') } },
+          { label: 'Reset Zoom', accelerator: 'CmdOrCtrl+0', click: () => { this.window.sendMessage('resetZoom') } }
         ]
       },
       {
@@ -115,7 +92,7 @@ export default class MenuBuilder {
         submenu: [
           { role: 'about' },
           { type: 'separator' },
-          { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => { this.showSettings() } },
+          { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => { this.window.sendMessage('showSettings') } },
           { type: 'separator' },
           { role: 'services', submenu: [] },
           { type: 'separator' },
@@ -127,79 +104,28 @@ export default class MenuBuilder {
         ]
       })
 
-      // Edit menu
-      template[2].submenu.push(
-        { type: 'separator' },
-        {
-          label: 'Speech',
-          submenu: [
-            { role: 'startspeaking' },
-            { role: 'stopspeaking' }
-          ]
+      template.forEach((menu) => {
+        if (menu.label === 'Edit') {
+          menu.submenu.push(
+            { type: 'separator' },
+            {
+              label: 'Speech',
+              submenu: [
+                { role: 'startspeaking' },
+                { role: 'stopspeaking' }
+              ]
+            }
+          )
+        } else if (menu.role === 'window') {
+          menu.submenu.push(
+            { role: 'zoom' },
+            { type: 'separator' },
+            { role: 'front' }
+          )
         }
-      )
-
-      // Window menu
-      template[6].submenu.push(
-        { role: 'zoom' },
-        { type: 'separator' },
-        { role: 'front' }
-      )
+      })
     }
 
     return template
-  }
-  open () {
-    const filepathes = dialog.showOpenDialog({ properties: ['openDirectory'] })
-    if (!filepathes) {
-      return
-    }
-    this.window.webContents.send('openDirectory', { dirpath: filepathes[0] })
-  }
-  openImages () {
-    const filepathes = dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
-    if (!filepathes) {
-      return
-    }
-    this.window.webContents.send('openImages', { filepathes })
-  }
-  showExplorer () {
-    this.window.webContents.send('showExplorer')
-  }
-  showBookmark () {
-    this.window.webContents.send('showBookmark')
-  }
-  showSettings () {
-    this.window.webContents.send('showSettings')
-  }
-  openLocation () {
-    this.window.webContents.send('openLocation')
-  }
-  backDirectory () {
-    this.window.webContents.send('backDirectory')
-  }
-  forwardDirectory () {
-    this.window.webContents.send('forwardDirectory')
-  }
-  changeParentDirectory () {
-    this.window.webContents.send('changeParentDirectory')
-  }
-  changeHomeDirectory () {
-    this.window.webContents.send('changeHomeDirectory')
-  }
-  openCurrentDirectory () {
-    this.window.webContents.send('openCurrentDirectory')
-  }
-  search () {
-    this.window.webContents.send('search')
-  }
-  zoomIn () {
-    this.window.webContents.send('zoomIn')
-  }
-  zoomOut () {
-    this.window.webContents.send('zoomOut')
-  }
-  resetZoom () {
-    this.window.webContents.send('resetZoom')
   }
 }

@@ -3,7 +3,10 @@
     <bookmark-menu-bar />
     <divider />
     <div class="container">
-      <div class="message" v-if="message">
+      <div
+        class="message"
+        v-if="message"
+      >
         {{ message }}
       </div>
       <bookmark-list />
@@ -41,18 +44,20 @@ export default {
   height: 100%;
   .container {
     flex: 1;
-    height: 100%;
     overflow-y: auto;
     position: relative;
     .message {
       align-items: center;
       bottom: 0;
+      color: var(--mdc-theme-text-secondary-on-background);
       display: flex;
       justify-content: center;
       left: 0;
+      pointer-events: none;
       position: absolute;
       right: 0;
       top: 0;
+      user-select: none;
     }
   }
 }
