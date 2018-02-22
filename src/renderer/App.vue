@@ -12,12 +12,14 @@
       <divider />
     </template>
     <div class="container">
-      <activity-bar />
-      <divider orientation="vertical" />
-      <div class="content">
-        <router-view />
-        <viewer v-if="viewing" />
-      </div>
+      <viewer v-if="viewing" />
+      <template v-else>
+        <activity-bar />
+        <divider orientation="vertical" />
+        <div class="content">
+          <router-view />
+        </div>
+      </template>
     </div>
     <mdc-snackbar :message="message" />
   </div>
@@ -110,9 +112,6 @@ export default {
     position: relative;
     .content {
       flex: 1;
-      .viewer {
-        z-index: 1;
-      }
     }
   }
 }
