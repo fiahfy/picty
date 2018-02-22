@@ -101,7 +101,7 @@ export default {
         commit('setError', { error })
         commit('setFiles', { files: [] })
       }
-      dispatch('sortFiles')
+      dispatch('sort')
       dispatch('focusExplorerList', null, { root: true })
     },
     openDirectory ({ dispatch, state }) {
@@ -110,24 +110,27 @@ export default {
         dispatch('showMessage', { message: `Invalid directory "${state.directory}"` }, { root: true })
       }
     },
-    selectFile ({ commit }, { filepath }) {
+    select ({ commit }, { filepath }) {
       commit('setSelectedFilepath', { selectedFilepath: filepath })
     },
-    selectPreviousFile ({ commit, getters, state }) {
-      const index = getters.selectedIndex - 1
-      if (index < 0) {
+    selectIndex ({ dispatch, getters }, { index }) {
+      if (index < 0 || index > getters.filteredFiles.length - 1) {
         return
       }
-      const selectedFilepath = getters.filteredFiles[index].path
-      commit('setSelectedFilepath', { selectedFilepath })
+      const filepath = getters.filteredFiles[index].path
+      dispatch('select', { filepath })
     },
-    selectNextFile ({ commit, getters, state }) {
-      const index = getters.selectedIndex + 1
-      if (index > getters.filteredFiles.length - 1) {
-        return
-      }
-      const selectedFilepath = getters.filteredFiles[index].path
-      commit('setSelectedFilepath', { selectedFilepath })
+    selectFirst ({ dispatch }) {
+      dispatch('selectIndex', { index: 0 })
+    },
+    selectLast ({ dispatch, getters }) {
+      dispatch('selectIndex', { index: getters.filteredFiles.length - 1 })
+    },
+    selectPrevious ({ dispatch, getters }) {
+      dispatch('selectIndex', { index: getters.selectedIndex - 1 })
+    },
+    selectNext ({ dispatch, getters, state }) {
+      dispatch('selectIndex', { index: getters.selectedIndex + 1 })
     },
     search ({ commit }, { query }) {
       commit('setQuery', { query })
@@ -146,9 +149,9 @@ export default {
       }
       const sortOption = { key: sortKey, order: sortOrder }
       commit('setSortOption', { sortOption, key: state.directory })
-      dispatch('sortFiles')
+      dispatch('sort')
     },
-    sortFiles ({ commit, getters, state }) {
+    sort ({ commit, getters, state }) {
       const files = state.files.concat().sort((a, b) => {
         let result = 0
         switch (getters.sortOption.key) {
@@ -266,10 +269,10 @@ export default {
     },
     selectedIndex (state, getters) {
       return getters.filteredFiles.findIndex((file) => {
-        return getters.isSelectedFile({ filepath: file.path })
+        return getters.isSelected({ filepath: file.path })
       })
     },
-    isSelectedFile (state) {
+    isSelected (state) {
       return ({ filepath }) => {
         return state.selectedFilepath === filepath
       }

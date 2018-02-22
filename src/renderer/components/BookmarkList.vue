@@ -51,8 +51,8 @@
           slot-scope="{ item, index }"
           :key="item.name"
           :file="item"
-          :selected="isSelectedBookmark({ filepath: item.path })"
-          @click="selectBookmark({ filepath: item.path })"
+          :selected="isSelected({ filepath: item.path })"
+          @click="select({ filepath: item.path })"
           @dblclick="action({ filepath: item.path })"
           @contextmenu="e => contextmenu(e, item)"
         />
@@ -104,7 +104,7 @@ export default {
     ...mapGetters({
       files: 'bookmark/filteredFiles',
       selectedIndex: 'bookmark/selectedIndex',
-      isSelectedBookmark: 'bookmark/isSelectedBookmark'
+      isSelected: 'bookmark/isSelected'
     })
   },
   watch: {
@@ -149,15 +149,6 @@ export default {
       this.setScrollTop({ scrollTop })
     },
     keydown (e) {
-      if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-        switch (e.keyCode) {
-          case 68:
-            e.preventDefault()
-            this.toggleBookmark({ filepath: this.selectedBookmark })
-            break
-        }
-        return
-      }
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
@@ -165,11 +156,25 @@ export default {
           break
         case 38:
           e.preventDefault()
-          this.selectPreviousBookmark()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectFirst()
+          } else {
+            this.selectPrevious()
+          }
           break
         case 40:
           e.preventDefault()
-          this.selectNextBookmark()
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.selectLast()
+          } else {
+            this.selectNext()
+          }
+          break
+        case 68:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            e.preventDefault()
+            this.toggleBookmark({ filepath: this.selectedBookmark })
+          }
           break
       }
     },
@@ -180,7 +185,7 @@ export default {
       })
     },
     contextmenu (e, file) {
-      this.selectBookmark({ filepath: file.path })
+      this.select({ filepath: file.path })
       ContextMenu.show(e, [
         {
           label: 'Bookmark',
@@ -203,9 +208,11 @@ export default {
     }),
     ...mapActions({
       toggleBookmark: 'bookmark/toggleBookmark',
-      selectBookmark: 'bookmark/selectBookmark',
-      selectPreviousBookmark: 'bookmark/selectPreviousBookmark',
-      selectNextBookmark: 'bookmark/selectNextBookmark',
+      select: 'bookmark/select',
+      selectFirst: 'bookmark/selectFirst',
+      selectLast: 'bookmark/selectLast',
+      selectPrevious: 'bookmark/selectPrevious',
+      selectNext: 'bookmark/selectNext',
       changeSortKey: 'bookmark/changeSortKey',
       action: 'bookmark/action',
       showViewer: 'bookmark/showViewer'
