@@ -138,13 +138,13 @@ export default {
         case 37:
         case 40:
           if (e.target.getAttribute('role') !== 'slider') {
-            this.viewPreviousImage()
+            this.movePrevious()
           }
           break
         case 38:
         case 39:
           if (e.target.getAttribute('role') !== 'slider') {
-            this.viewNextImage()
+            this.moveNext()
           }
           break
       }
@@ -208,8 +208,8 @@ export default {
     },
     ...mapActions({
       dismiss: 'viewer/dismiss',
-      viewPreviousImage: 'viewer/viewPreviousImage',
-      viewNextImage: 'viewer/viewNextImage',
+      movePrevious: 'viewer/movePrevious',
+      moveNext: 'viewer/moveNext',
       initZoom: 'viewer/initZoom'
     })
   }

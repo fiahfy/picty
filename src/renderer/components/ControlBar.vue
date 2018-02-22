@@ -5,7 +5,7 @@
       <mdc-button
         class="previous"
         :title="'View previous image'|accelerator('Left')"
-        @click="viewPreviousImage"
+        @click="movePrevious"
       >
         <mdc-icon
           slot="icon"
@@ -15,7 +15,7 @@
       <mdc-button
         class="next"
         :title="'View next image'|accelerator('Right')"
-        @click="viewNextImage"
+        @click="moveNext"
       >
         <mdc-icon
           slot="icon"
@@ -150,8 +150,8 @@ export default {
       enterFullScreen: 'enterFullScreen',
       leaveFullScreen: 'leaveFullScreen',
       dismiss: 'viewer/dismiss',
-      viewPreviousImage: 'viewer/viewPreviousImage',
-      viewNextImage: 'viewer/viewNextImage',
+      movePrevious: 'viewer/movePrevious',
+      moveNext: 'viewer/moveNext',
       zoomIn: 'viewer/zoomIn',
       zoomOut: 'viewer/zoomOut',
       resetZoom: 'viewer/resetZoom'
