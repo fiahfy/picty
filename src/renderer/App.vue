@@ -43,7 +43,7 @@ export default {
   },
   async asyncData ({ store }) {
     await store.dispatch('explorer/initDirectory')
-    await store.dispatch('bookmark/loadFiles')
+    await store.dispatch('bookmark/load')
   },
   computed: {
     styles () {

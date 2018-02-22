@@ -79,15 +79,15 @@ export default {
       commit('setSelectedFilepath', { selectedFilepath: null })
       commit('setQuery', { query: '' })
 
-      dispatch('loadFiles')
+      dispatch('load')
     },
-    loadFiles ({ commit, dispatch, state }) {
+    load ({ commit, dispatch, state }) {
       try {
         if (watcher) {
           watcher.close()
         }
         watcher = fs.watch(state.directory, () => {
-          dispatch('loadFiles')
+          dispatch('load')
           dispatch('showMessage', { message: 'Reloaded directory' }, { root: true })
         })
         const files = File.listFiles(state.directory).filter((file) => file.isDirectory() || file.isImage()).map((file) => file.toObject())

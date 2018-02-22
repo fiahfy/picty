@@ -29,14 +29,14 @@ export default {
         filepath
       ]
       commit('setBookmarks', { bookmarks })
-      dispatch('loadFiles')
+      dispatch('load')
     },
     deleteBookmark ({ commit, dispatch, state }, { filepath }) {
       const bookmarks = state.bookmarks.filter((bookmark) => {
         return bookmark !== filepath
       })
       commit('setBookmarks', { bookmarks })
-      dispatch('loadFiles')
+      dispatch('load')
     },
     toggleBookmark ({ dispatch, getters }, { filepath }) {
       if (getters.isBookmarked({ filepath })) {
@@ -45,7 +45,7 @@ export default {
         dispatch('bookmark', { filepath })
       }
     },
-    loadFiles ({ commit, dispatch, state }) {
+    load ({ commit, dispatch, state }) {
       const files = state.bookmarks.map((bookmark) => (new File(bookmark).toObject()))
       commit('setFiles', { files })
       dispatch('sort')

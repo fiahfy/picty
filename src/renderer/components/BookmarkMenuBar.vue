@@ -3,7 +3,7 @@
     <div class="row buttons">
       <mdc-button
         title="Refresh"
-        @click="loadFiles"
+        @click="load"
       >
         <mdc-icon
           slot="icon"
@@ -101,7 +101,7 @@ export default {
       }
     },
     ...mapActions({
-      loadFiles: 'bookmark/loadFiles',
+      load: 'bookmark/load',
       search: 'bookmark/search',
       showViewer: 'bookmark/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'
