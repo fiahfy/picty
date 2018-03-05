@@ -1,8 +1,8 @@
 <template>
   <mdc-table-row
-    class="explorer-list-item"
     :selected="selected"
     v-bind="$attrs"
+    class="explorer-list-item"
     v-on="$listeners"
   >
     <mdc-table-column class="name">

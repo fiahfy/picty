@@ -3,22 +3,22 @@
     <div class="row directory">
       <mdc-icon icon="folder" />
       <mdc-text-field
+        v-model="directoryInput"
         fullwidth
         label="Input path..."
         class="location"
         @keyup="(e) => keyup(e, 'directory')"
         @contextmenu="contextmenu"
-        v-model="directoryInput"
       />
     </div>
     <divider />
     <div class="row buttons">
       <mdc-menu-anchor>
         <mdc-button
+          v-long-press="(e) => mouseLongPress(e, 'back')"
           :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
           :disabled="!canBackDirectory"
           @click="backDirectory"
-          v-long-press="(e) => mouseLongPress(e, 'back')"
         >
           <mdc-icon
             slot="icon"
@@ -30,9 +30,9 @@
           v-model="backSelected"
         >
           <mdc-list-item
+            v-for="(directory, index) in backDirectories"
             :key="index"
             @mouseup="mouseup"
-            v-for="(directory, index) in backDirectories"
           >
             {{ directory }}
           </mdc-list-item>
@@ -40,10 +40,10 @@
       </mdc-menu-anchor>
       <mdc-menu-anchor>
         <mdc-button
+          v-long-press="(e) => mouseLongPress(e, 'forward')"
           :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
           :disabled="!canForwardDirectory"
           @click="forwardDirectory"
-          v-long-press="(e) => mouseLongPress(e, 'forward')"
         >
           <mdc-icon
             slot="icon"
@@ -55,9 +55,9 @@
           v-model="forwardSelected"
         >
           <mdc-list-item
+            v-for="(directory, index) in forwardDirectories"
             :key="index"
             @mouseup="mouseup"
-            v-for="(directory, index) in forwardDirectories"
           >
             {{ directory }}
           </mdc-list-item>
@@ -118,16 +118,16 @@
 
       <div class="search-wrapper">
         <mdc-icon
-          icon="search"
           :title="'Search'|accelerator('CmdOrCtrl+F')"
+          icon="search"
         />
         <mdc-text-field
+          v-model="searchInput"
           label="Search"
           fullwidth
           class="search"
           @keyup="(e) => keyup(e, 'search')"
           @contextmenu="contextmenu"
-          v-model="searchInput"
         />
       </div>
     </div>

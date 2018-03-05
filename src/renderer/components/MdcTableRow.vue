@@ -1,8 +1,8 @@
 <template>
   <tr
-    class="mdc-table-row"
     :class="classes"
     v-bind="$attrs"
+    class="mdc-table-row"
     v-on="$listeners"
   >
     <slot />

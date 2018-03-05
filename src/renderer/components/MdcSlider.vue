@@ -1,12 +1,12 @@
 <template>
   <div
-    class="mdc-slider mdc-slider--discrete mdc-slider--display-markers"
-    tabindex="0"
-    role="slider"
     :aria-valuemin="min"
     :aria-valuemax="max"
     :aria-valuenow="value"
     :data-step="step"
+    class="mdc-slider mdc-slider--discrete mdc-slider--display-markers"
+    tabindex="0"
+    role="slider"
     aria-label="Select Value"
     @MDCSlider:input="input"
   >

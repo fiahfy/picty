@@ -1,30 +1,30 @@
 <template>
   <div
+    :class="classes"
     class="viewer mdc-theme--background"
     tabindex="0"
-    :class="classes"
     @keydown="keydown"
     @mousemove="mousemove"
   >
     <div
-      class="message"
       v-if="message"
+      class="message"
     >
       {{ message }}
     </div>
     <div
-      class="wrapper"
+      v-else
       ref="wrapper"
+      class="wrapper"
       @mousemove="imageMousemove"
       @mousedown="imageMousedown"
       @mouseup="imageMouseup"
-      v-else
     >
       <img
-        draggable="false"
         :src="currentFile.path"
         :class="imageClasses"
         :style="styles"
+        draggable="false"
         @load="imageLoad"
         @error="imageError"
       >

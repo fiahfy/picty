@@ -1,8 +1,8 @@
 <template>
   <div
+    :style="styles"
     class="mdc-menu"
     tabindex="-1"
-    :style="styles"
     @MDCMenu:cancel="cancel"
     @MDCMenu:selected="select"
   >

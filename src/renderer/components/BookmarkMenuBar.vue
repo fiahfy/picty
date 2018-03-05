@@ -38,16 +38,16 @@
 
       <div class="search-wrapper">
         <mdc-icon
-          icon="search"
           :title="'Search'|accelerator('CmdOrCtrl+F')"
+          icon="search"
         />
         <mdc-text-field
+          v-model="searchInput"
           fullwidth
           label="Search"
           class="search"
           @keyup="keyup"
           @contextmenu="contextmenu"
-          v-model="searchInput"
         />
       </div>
     </div>

@@ -1,8 +1,8 @@
 <template>
   <div
+    :class="classes"
     class="bookmark-list"
     tabindex="0"
-    :class="classes"
     @keydown="keydown"
   >
     <mdc-table>
@@ -14,8 +14,8 @@
           >
             <span>Name</span>
             <mdc-icon
-              :icon="icon"
               v-if="sortOption.key === 'name'"
+              :icon="icon"
             />
           </mdc-table-header-column>
           <mdc-table-header-column
@@ -24,8 +24,8 @@
           >
             <span>Size</span>
             <mdc-icon
-              :icon="icon"
               v-if="sortOption.key === 'size'"
+              :icon="icon"
             />
           </mdc-table-header-column>
           <mdc-table-header-column
@@ -34,8 +34,8 @@
           >
             <span>Date Modified</span>
             <mdc-icon
-              :icon="icon"
               v-if="sortOption.key === 'date_modified'"
+              :icon="icon"
             />
           </mdc-table-header-column>
         </mdc-table-row>
@@ -48,10 +48,10 @@
         :estimated-height="41"
       >
         <bookmark-list-item
-          slot-scope="{ item, index }"
           :key="item.name"
           :file="item"
           :selected="isSelected({ filepath: item.path })"
+          slot-scope="{ item, index }"
           @click="select({ filepath: item.path })"
           @dblclick="action({ filepath: item.path })"
           @contextmenu="e => contextmenu(e, item)"
