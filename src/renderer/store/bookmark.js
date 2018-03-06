@@ -11,13 +11,13 @@ export default {
   state: {
     files: [],
     bookmarks: [],
+    query: '',
     selectedBookmark: null,
     scrollTop: 0,
     sortOption: {
       key: 'name',
       order: 'asc'
-    },
-    query: ''
+    }
   },
   actions: {
     bookmark ({ commit, dispatch, getters, state }, { filepath }) {
@@ -145,6 +145,9 @@ export default {
     setBookmarks (state, { bookmarks }) {
       state.bookmarks = bookmarks
     },
+    setQuery (state, { query }) {
+      state.query = query
+    },
     setSelectedBookmark (state, { selectedBookmark }) {
       state.selectedBookmark = selectedBookmark
     },
@@ -153,9 +156,6 @@ export default {
     },
     setSortOption (state, { sortOption }) {
       state.sortOption = sortOption
-    },
-    setQuery (state, { query }) {
-      state.query = query
     }
   },
   getters: {

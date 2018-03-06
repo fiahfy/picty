@@ -97,11 +97,11 @@ export default {
       return this.sortOption.order === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState({
-      directory: state => state.explorer.directory,
-      selectedFilepath: state => state.explorer.selectedFilepath
+      directory: state => state.explorer.directory
     }),
     ...mapGetters({
       files: 'explorer/filteredFiles',
+      selectedFilepath: 'explorer/selectedFilepath',
       scrollTop: 'explorer/scrollTop',
       sortOption: 'explorer/sortOption',
       selectedIndex: 'explorer/selectedIndex',

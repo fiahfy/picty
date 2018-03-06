@@ -171,14 +171,12 @@ export default {
         this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
       }
     },
-    ...mapState({
-      selectedFilepath: state => state.explorer.selectedFilepath
-    }),
     ...mapGetters({
       backDirectories: 'explorer/backDirectories',
       forwardDirectories: 'explorer/forwardDirectories',
       canBackDirectory: 'explorer/canBackDirectory',
       canForwardDirectory: 'explorer/canForwardDirectory',
+      selectedFilepath: 'explorer/selectedFilepath',
       isBookmarked: 'bookmark/isBookmarked'
     })
   },
