@@ -1,6 +1,6 @@
 <template>
   <mdc-table-row
-    :selected="selected"
+    :class="classes"
     v-bind="$attrs"
     class="explorer-list-item"
     v-on="$listeners"
@@ -45,6 +45,11 @@ export default {
     }
   },
   computed: {
+    classes () {
+      return {
+        selected: this.selected
+      }
+    },
     icon () {
       return this.file.directory ? 'folder' : 'photo'
     },

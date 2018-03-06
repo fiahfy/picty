@@ -90,9 +90,9 @@ export default {
   methods: {
     contextmenu (e) {
       ContextMenu.show(e, [
-        { label: ContextMenu.Label.cut },
-        { label: ContextMenu.Label.copy },
-        { label: ContextMenu.Label.paste }
+        { label: ContextMenu.Role.cut },
+        { label: ContextMenu.Role.copy },
+        { label: ContextMenu.Role.paste }
       ])
     },
     keyup (e) {

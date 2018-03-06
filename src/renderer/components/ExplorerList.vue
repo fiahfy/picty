@@ -203,7 +203,7 @@ export default {
           accelerator: 'Enter'
         },
         { type: 'separator' },
-        { label: ContextMenu.Label.copy }
+        { label: ContextMenu.Role.copy }
       ])
     },
     ...mapActions({
