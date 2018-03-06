@@ -202,9 +202,9 @@ export default {
   methods: {
     contextmenu (e) {
       ContextMenu.show(e, [
-        { label: ContextMenu.Role.cut },
-        { label: ContextMenu.Role.copy },
-        { label: ContextMenu.Role.paste }
+        { role: ContextMenu.Role.cut },
+        { role: ContextMenu.Role.copy },
+        { role: ContextMenu.Role.paste }
       ])
     },
     keyup (e, mode) {
