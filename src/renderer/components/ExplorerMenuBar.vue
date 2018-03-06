@@ -129,13 +129,23 @@
           @keyup="(e) => keyup(e, 'search')"
           @contextmenu="contextmenu"
         />
+        <mdc-button
+          v-if="searchInput"
+          class="clear"
+          @click="click"
+        >
+          <mdc-icon
+            slot="icon"
+            icon="clear"
+          />
+        </mdc-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import Divider from './Divider'
 import MdcButton from './MdcButton'
 import MdcIcon from './MdcIcon'
@@ -230,6 +240,9 @@ export default {
     mouseup (e) {
       e.target.click()
     },
+    click (e) {
+      this.searchInput = ''
+    },
     ...mapActions({
       changeDirectory: 'explorer/changeDirectory',
       changeParentDirectory: 'explorer/changeParentDirectory',
@@ -271,11 +284,20 @@ export default {
         display: flex;
         flex: 1;
         margin: 0px;
+        position: relative;
         &>* {
           margin: 4px;
         }
         .mdc-icon {
           color: var(--mdc-theme-text-icon-on-background);
+        }
+        .clear {
+          height: 32px;
+          margin: 4px;
+          min-width: 32px;
+          line-height: 32px;
+          position: absolute;
+          right: 0;
         }
       }
       .mdc-button {

@@ -49,6 +49,16 @@
           @keyup="keyup"
           @contextmenu="contextmenu"
         />
+        <mdc-button
+          v-if="searchInput"
+          class="clear"
+          @click="click"
+        >
+          <mdc-icon
+            slot="icon"
+            icon="clear"
+          />
+        </mdc-button>
       </div>
     </div>
   </div>
@@ -100,6 +110,9 @@ export default {
         this.search({ query: e.target.value })
       }
     },
+    click (e) {
+      this.searchInput = ''
+    },
     ...mapActions({
       load: 'bookmark/load',
       search: 'bookmark/search',
@@ -128,11 +141,20 @@ export default {
         display: flex;
         flex: 1;
         margin: 0px;
+        position: relative;
         &>* {
           margin: 4px;
         }
         .mdc-icon {
           color: var(--mdc-theme-text-icon-on-background);
+        }
+        .clear {
+          height: 32px;
+          margin: 4px;
+          min-width: 32px;
+          line-height: 32px;
+          position: absolute;
+          right: 0;
         }
         .mdc-text-field {
           border: none;
