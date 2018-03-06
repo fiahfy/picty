@@ -4,8 +4,8 @@
     <divider />
     <div class="container">
       <div
-        class="message"
         v-if="message"
+        class="message"
       >
         {{ message }}
       </div>

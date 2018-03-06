@@ -1,8 +1,8 @@
 <template>
   <mdc-table-row
-    class="bookmark-list-item"
-    :selected="selected"
+    :class="classes"
     v-bind="$attrs"
+    class="bookmark-list-item"
     v-on="$listeners"
   >
     <mdc-table-column class="name">
@@ -46,6 +46,11 @@ export default {
     }
   },
   computed: {
+    classes () {
+      return {
+        selected: this.selected
+      }
+    },
     icon () {
       if (!this.file.exists) {
         return 'broken_image'

@@ -15,13 +15,12 @@ export default {
   state: {
     error: null,
     files: [],
-    selectedFilepath: null,
-    histories: [],
-    historyIndex: -1,
-    sortOptions: {},
     directory: remote.app.getPath('home'),
     directoryInput: '',
-    query: ''
+    query: '',
+    histories: [],
+    historyIndex: -1,
+    sortOptions: {}
   },
   actions: {
     initDirectory ({ dispatch, state }) {
@@ -36,9 +35,9 @@ export default {
       const dirpath = remote.app.getPath('home')
       dispatch('changeDirectory', { dirpath })
     },
-    changeSelectedDirectory ({ dispatch, state }) {
-      if (state.selectedFilepath && (new File(state.selectedFilepath)).isDirectory()) {
-        const dirpath = state.selectedFilepath
+    changeSelectedDirectory ({ dispatch, getters }) {
+      if (getters.selectedFilepath && (new File(getters.selectedFilepath)).isDirectory()) {
+        const dirpath = getters.selectedFilepath
         dispatch('changeDirectory', { dirpath })
       }
     },
@@ -49,6 +48,7 @@ export default {
       const historyIndex = state.historyIndex + 1
       const histories = [...state.histories.slice(0, historyIndex), {
         directory: dirpath,
+        selectedFilepath: null,
         scrollTop: 0
       }]
       commit('setHistories', { histories })
@@ -76,7 +76,6 @@ export default {
 
       commit('setDirectory', { directory: history.directory })
       commit('setDirectoryInput', { directoryInput: history.directory })
-      commit('setSelectedFilepath', { selectedFilepath: null })
       commit('setQuery', { query: '' })
 
       dispatch('load')
@@ -110,8 +109,12 @@ export default {
         dispatch('showMessage', { message: `Invalid directory "${state.directory}"` }, { root: true })
       }
     },
-    select ({ commit }, { filepath }) {
-      commit('setSelectedFilepath', { selectedFilepath: filepath })
+    select ({ commit, state }, { filepath }) {
+      const history = {
+        ...state.histories[state.historyIndex],
+        selectedFilepath: filepath
+      }
+      commit('setHistory', { history, index: state.historyIndex })
     },
     selectIndex ({ dispatch, getters }, { index }) {
       if (index < 0 || index > getters.filteredFiles.length - 1) {
@@ -208,8 +211,14 @@ export default {
     setFiles (state, { files }) {
       state.files = files
     },
-    setSelectedFilepath (state, { selectedFilepath }) {
-      state.selectedFilepath = selectedFilepath
+    setDirectory (state, { directory }) {
+      state.directory = directory
+    },
+    setDirectoryInput (state, { directoryInput }) {
+      state.directoryInput = directoryInput
+    },
+    setQuery (state, { query }) {
+      state.query = query
     },
     setHistory (state, { history, index }) {
       state.histories = [
@@ -229,15 +238,6 @@ export default {
         ...state.sortOptions,
         [key]: sortOption
       }
-    },
-    setDirectory (state, { directory }) {
-      state.directory = directory
-    },
-    setDirectoryInput (state, { directoryInput }) {
-      state.directoryInput = directoryInput
-    },
-    setQuery (state, { query }) {
-      state.query = query
     }
   },
   getters: {
@@ -252,6 +252,9 @@ export default {
     },
     canForwardDirectory (state) {
       return state.historyIndex < state.histories.length - 1
+    },
+    selectedFilepath (state) {
+      return state.histories[state.historyIndex].selectedFilepath
     },
     scrollTop (state) {
       return state.histories[state.historyIndex].scrollTop
@@ -272,9 +275,9 @@ export default {
         return getters.isSelected({ filepath: file.path })
       })
     },
-    isSelected (state) {
+    isSelected (state, getters) {
       return ({ filepath }) => {
-        return state.selectedFilepath === filepath
+        return getters.selectedFilepath === filepath
       }
     }
   }

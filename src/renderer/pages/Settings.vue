@@ -78,6 +78,9 @@ export default {
   h4 {
     color: var(--mdc-theme-text-secondary-on-background);
   }
+  label {
+    cursor: pointer;
+  }
   .mdc-checkbox {
     & /deep/ .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate) ~ .mdc-checkbox__background {
       border-color: var(--mdc-theme-text-secondary-on-background);

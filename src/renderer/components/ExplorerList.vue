@@ -1,8 +1,8 @@
 <template>
   <div
+    :class="classes"
     class="explorer-list"
     tabindex="0"
-    :class="classes"
     @keydown="keydown"
   >
     <mdc-table>
@@ -14,8 +14,8 @@
           >
             <span>Name</span>
             <mdc-icon
-              :icon="icon"
               v-if="sortOption.key === 'name'"
+              :icon="icon"
             />
           </mdc-table-header-column>
           <mdc-table-header-column
@@ -24,8 +24,8 @@
           >
             <span>Size</span>
             <mdc-icon
-              :icon="icon"
               v-if="sortOption.key === 'size'"
+              :icon="icon"
             />
           </mdc-table-header-column>
           <mdc-table-header-column
@@ -34,8 +34,8 @@
           >
             <span>Date Modified</span>
             <mdc-icon
-              :icon="icon"
               v-if="sortOption.key === 'date_modified'"
+              :icon="icon"
             />
           </mdc-table-header-column>
         </mdc-table-row>
@@ -48,10 +48,10 @@
         :estimated-height="41"
       >
         <explorer-list-item
-          slot-scope="{ item, index }"
           :key="item.name"
           :file="item"
           :selected="isSelected({ filepath: item.path })"
+          slot-scope="{ item, index }"
           @click="select({ filepath: item.path })"
           @dblclick="action({ filepath: item.path })"
           @contextmenu="e => contextmenu(e, item)"
@@ -97,11 +97,11 @@ export default {
       return this.sortOption.order === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
     },
     ...mapState({
-      directory: state => state.explorer.directory,
-      selectedFilepath: state => state.explorer.selectedFilepath
+      directory: state => state.explorer.directory
     }),
     ...mapGetters({
       files: 'explorer/filteredFiles',
+      selectedFilepath: 'explorer/selectedFilepath',
       scrollTop: 'explorer/scrollTop',
       sortOption: 'explorer/sortOption',
       selectedIndex: 'explorer/selectedIndex',
@@ -203,7 +203,7 @@ export default {
           accelerator: 'Enter'
         },
         { type: 'separator' },
-        { label: ContextMenu.Label.copy }
+        { role: ContextMenu.Role.copy }
       ])
     },
     ...mapActions({
@@ -225,10 +225,10 @@ export default {
 <style scoped lang="scss">
 .explorer-list {
   height: 100%;
+  outline: none;
   overflow-y: scroll;
   .mdc-table {
     border-spacing: 0;
-    outline: none;
     table-layout: fixed;
     width: 100%;
     .mdc-table-header {

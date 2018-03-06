@@ -3,8 +3,8 @@
     <div class="background" />
     <div class="container">
       <mdc-button
-        class="previous"
         :title="'View previous image'|accelerator('Left')"
+        class="previous"
         @click="movePrevious"
       >
         <mdc-icon
@@ -13,8 +13,8 @@
         />
       </mdc-button>
       <mdc-button
-        class="next"
         :title="'View next image'|accelerator('Right')"
+        class="next"
         @click="moveNext"
       >
         <mdc-icon
@@ -38,9 +38,9 @@
         />
       </mdc-button>
       <mdc-button
+        v-if="fullScreen"
         title="Exit fullscreen"
         @click="leaveFullScreen"
-        v-if="fullScreen"
       >
         <mdc-icon
           slot="icon"
@@ -48,9 +48,9 @@
         />
       </mdc-button>
       <mdc-button
+        v-else
         title="Fullscreen"
         @click="enterFullScreen"
-        v-else
       >
         <mdc-icon
           slot="icon"
@@ -68,8 +68,8 @@
       </mdc-button>
     </div>
     <div
-      class="menu"
       :class="zoomMenuClasses"
+      class="menu"
     >
       <div class="background" />
       <div class="container">
@@ -93,8 +93,8 @@
           />
         </mdc-button>
         <mdc-button
-          class="reset"
           :title="'Reset'|accelerator('CmdOrCtrl+0')"
+          class="reset"
           @click="resetZoom"
         >
           Reset

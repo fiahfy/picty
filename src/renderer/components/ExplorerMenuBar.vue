@@ -3,22 +3,22 @@
     <div class="row directory">
       <mdc-icon icon="folder" />
       <mdc-text-field
+        v-model="directoryInput"
         fullwidth
         label="Input path..."
         class="location"
         @keyup="(e) => keyup(e, 'directory')"
         @contextmenu="contextmenu"
-        v-model="directoryInput"
       />
     </div>
     <divider />
     <div class="row buttons">
       <mdc-menu-anchor>
         <mdc-button
+          v-long-press="(e) => mouseLongPress(e, 'back')"
           :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
           :disabled="!canBackDirectory"
           @click="backDirectory"
-          v-long-press="(e) => mouseLongPress(e, 'back')"
         >
           <mdc-icon
             slot="icon"
@@ -30,9 +30,9 @@
           v-model="backSelected"
         >
           <mdc-list-item
+            v-for="(directory, index) in backDirectories"
             :key="index"
             @mouseup="mouseup"
-            v-for="(directory, index) in backDirectories"
           >
             {{ directory }}
           </mdc-list-item>
@@ -40,10 +40,10 @@
       </mdc-menu-anchor>
       <mdc-menu-anchor>
         <mdc-button
+          v-long-press="(e) => mouseLongPress(e, 'forward')"
           :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
           :disabled="!canForwardDirectory"
           @click="forwardDirectory"
-          v-long-press="(e) => mouseLongPress(e, 'forward')"
         >
           <mdc-icon
             slot="icon"
@@ -55,9 +55,9 @@
           v-model="forwardSelected"
         >
           <mdc-list-item
+            v-for="(directory, index) in forwardDirectories"
             :key="index"
             @mouseup="mouseup"
-            v-for="(directory, index) in forwardDirectories"
           >
             {{ directory }}
           </mdc-list-item>
@@ -118,24 +118,34 @@
 
       <div class="search-wrapper">
         <mdc-icon
-          icon="search"
           :title="'Search'|accelerator('CmdOrCtrl+F')"
+          icon="search"
         />
         <mdc-text-field
+          v-model="searchInput"
           label="Search"
           fullwidth
           class="search"
           @keyup="(e) => keyup(e, 'search')"
           @contextmenu="contextmenu"
-          v-model="searchInput"
         />
+        <mdc-button
+          v-if="searchInput"
+          class="clear"
+          @click="click"
+        >
+          <mdc-icon
+            slot="icon"
+            icon="clear"
+          />
+        </mdc-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import Divider from './Divider'
 import MdcButton from './MdcButton'
 import MdcIcon from './MdcIcon'
@@ -171,14 +181,12 @@ export default {
         this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
       }
     },
-    ...mapState({
-      selectedFilepath: state => state.explorer.selectedFilepath
-    }),
     ...mapGetters({
       backDirectories: 'explorer/backDirectories',
       forwardDirectories: 'explorer/forwardDirectories',
       canBackDirectory: 'explorer/canBackDirectory',
       canForwardDirectory: 'explorer/canForwardDirectory',
+      selectedFilepath: 'explorer/selectedFilepath',
       isBookmarked: 'bookmark/isBookmarked'
     })
   },
@@ -202,9 +210,9 @@ export default {
   methods: {
     contextmenu (e) {
       ContextMenu.show(e, [
-        { label: ContextMenu.Label.cut },
-        { label: ContextMenu.Label.copy },
-        { label: ContextMenu.Label.paste }
+        { role: ContextMenu.Role.cut },
+        { role: ContextMenu.Role.copy },
+        { role: ContextMenu.Role.paste }
       ])
     },
     keyup (e, mode) {
@@ -231,6 +239,9 @@ export default {
     },
     mouseup (e) {
       e.target.click()
+    },
+    click (e) {
+      this.searchInput = ''
     },
     ...mapActions({
       changeDirectory: 'explorer/changeDirectory',
@@ -273,11 +284,20 @@ export default {
         display: flex;
         flex: 1;
         margin: 0px;
+        position: relative;
         &>* {
           margin: 4px;
         }
         .mdc-icon {
           color: var(--mdc-theme-text-icon-on-background);
+        }
+        .clear {
+          height: 32px;
+          margin: 4px;
+          min-width: 32px;
+          line-height: 32px;
+          position: absolute;
+          right: 0;
         }
       }
       .mdc-button {

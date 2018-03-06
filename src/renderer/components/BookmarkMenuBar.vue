@@ -38,17 +38,27 @@
 
       <div class="search-wrapper">
         <mdc-icon
-          icon="search"
           :title="'Search'|accelerator('CmdOrCtrl+F')"
+          icon="search"
         />
         <mdc-text-field
+          v-model="searchInput"
           fullwidth
           label="Search"
           class="search"
           @keyup="keyup"
           @contextmenu="contextmenu"
-          v-model="searchInput"
         />
+        <mdc-button
+          v-if="searchInput"
+          class="clear"
+          @click="click"
+        >
+          <mdc-icon
+            slot="icon"
+            icon="clear"
+          />
+        </mdc-button>
       </div>
     </div>
   </div>
@@ -90,15 +100,18 @@ export default {
   methods: {
     contextmenu (e) {
       ContextMenu.show(e, [
-        { label: ContextMenu.Label.cut },
-        { label: ContextMenu.Label.copy },
-        { label: ContextMenu.Label.paste }
+        { role: ContextMenu.Role.cut },
+        { role: ContextMenu.Role.copy },
+        { role: ContextMenu.Role.paste }
       ])
     },
     keyup (e) {
       if (e.keyCode === 13) {
         this.search({ query: e.target.value })
       }
+    },
+    click (e) {
+      this.searchInput = ''
     },
     ...mapActions({
       load: 'bookmark/load',
@@ -128,11 +141,20 @@ export default {
         display: flex;
         flex: 1;
         margin: 0px;
+        position: relative;
         &>* {
           margin: 4px;
         }
         .mdc-icon {
           color: var(--mdc-theme-text-icon-on-background);
+        }
+        .clear {
+          height: 32px;
+          margin: 4px;
+          min-width: 32px;
+          line-height: 32px;
+          position: absolute;
+          right: 0;
         }
         .mdc-text-field {
           border: none;
