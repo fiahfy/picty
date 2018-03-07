@@ -125,7 +125,6 @@ export default {
 
 <style scoped lang="scss">
 .bookmark-menu-bar {
-  user-select: none;
   .row {
     display: flex;
     height: 40px;

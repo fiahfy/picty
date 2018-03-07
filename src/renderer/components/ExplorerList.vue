@@ -244,7 +244,6 @@ export default {
           padding: 8px;
           position: sticky;
           top: 0;
-          user-select: none;
           vertical-align: bottom;
           white-space: nowrap;
           z-index: 1;

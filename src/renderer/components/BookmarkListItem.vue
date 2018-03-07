@@ -77,11 +77,9 @@ export default {
     &.name {
       div {
         display: flex;
-        .mdc-icon {
-          user-select: none;
-        }
         .filename {
           margin: 0 4px;
+          user-select: auto;
         }
         .direpath {
           color: var(--mdc-theme-text-secondary-on-background);

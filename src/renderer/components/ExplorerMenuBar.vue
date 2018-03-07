@@ -260,7 +260,6 @@ export default {
 
 <style scoped lang="scss">
 .explorer-menu-bar {
-  user-select: none;
   .row {
     display: flex;
     height: 40px;

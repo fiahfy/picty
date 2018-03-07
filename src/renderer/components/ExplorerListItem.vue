@@ -73,15 +73,13 @@ export default {
     &.name {
       div {
         display: flex;
-        .mdc-icon {
-          user-select: none;
-        }
         .filename {
           flex: 1;
           margin: 0 0 0 4px;
           overflow: hidden;
           text-align: left;
           text-overflow: ellipsis;
+          user-select: auto;
         }
         &>* {
           align-self: flex-end;
