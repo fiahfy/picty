@@ -52,9 +52,9 @@
           :file="item"
           :selected="isSelected({ filepath: item.path })"
           slot-scope="{ item, index }"
-          @click="select({ filepath: item.path })"
-          @dblclick="action({ filepath: item.path })"
-          @contextmenu="e => contextmenu(e, item)"
+          @click.native="select({ filepath: item.path })"
+          @dblclick.native="action({ filepath: item.path })"
+          @contextmenu.native="e => contextmenu(e, item)"
         />
       </mdc-virtual-table-body>
     </mdc-table>

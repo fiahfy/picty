@@ -1,9 +1,7 @@
 <template>
   <mdc-table-row
     :class="classes"
-    v-bind="$attrs"
     class="bookmark-list-item"
-    v-on="$listeners"
   >
     <mdc-table-column class="name">
       <div>
