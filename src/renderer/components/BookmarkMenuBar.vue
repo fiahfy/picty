@@ -42,7 +42,7 @@
           icon="search"
         />
         <mdc-text-field
-          v-model="searchInput"
+          v-model="queryInput"
           fullwidth
           label="Search"
           class="search"
@@ -50,7 +50,7 @@
           @contextmenu="contextmenu"
         />
         <mdc-button
-          v-if="searchInput"
+          v-if="queryInput"
           class="clear"
           @click="click"
         >
@@ -79,12 +79,15 @@ export default {
     MdcIcon,
     MdcTextField
   },
-  data () {
-    return {
-      searchInput: ''
-    }
-  },
   computed: {
+    queryInput: {
+      get () {
+        return this.$store.state.bookmark.queryInput
+      },
+      set (value) {
+        this.$store.commit('bookmark/setQueryInput', { queryInput: value })
+      }
+    },
     ...mapState({
       selectedBookmark: state => state.bookmark.selectedBookmark
     }),
@@ -93,8 +96,8 @@ export default {
     })
   },
   watch: {
-    searchInput (value) {
-      this.search({ query: value })
+    queryInput () {
+      this.search()
     }
   },
   methods: {
@@ -111,7 +114,7 @@ export default {
       }
     },
     click (e) {
-      this.searchInput = ''
+      this.queryInput = ''
     },
     ...mapActions({
       load: 'bookmark/load',

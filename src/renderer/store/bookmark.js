@@ -12,6 +12,7 @@ export default {
     files: [],
     bookmarks: [],
     query: '',
+    queryInput: '',
     selectedBookmark: null,
     scrollTop: 0,
     sortOption: {
@@ -73,7 +74,8 @@ export default {
     selectNext ({ dispatch, getters }) {
       dispatch('selectIndex', { index: getters.selectedIndex + 1 })
     },
-    search ({ commit }, { query }) {
+    search ({ commit, state }) {
+      const query = state.queryInput
       commit('setQuery', { query })
     },
     changeSortKey ({ commit, dispatch, state }, { sortKey }) {
@@ -147,6 +149,9 @@ export default {
     },
     setQuery (state, { query }) {
       state.query = query
+    },
+    setQueryInput (state, { queryInput }) {
+      state.queryInput = queryInput
     },
     setSelectedBookmark (state, { selectedBookmark }) {
       state.selectedBookmark = selectedBookmark
