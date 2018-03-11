@@ -1,9 +1,7 @@
 <template>
   <mdc-table-row
     :class="classes"
-    v-bind="$attrs"
     class="bookmark-list-item"
-    v-on="$listeners"
   >
     <mdc-table-column class="name">
       <div>
@@ -77,11 +75,9 @@ export default {
     &.name {
       div {
         display: flex;
-        .mdc-icon {
-          user-select: none;
-        }
         .filename {
           margin: 0 4px;
+          user-select: auto;
         }
         .direpath {
           color: var(--mdc-theme-text-secondary-on-background);

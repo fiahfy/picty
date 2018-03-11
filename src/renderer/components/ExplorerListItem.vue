@@ -1,9 +1,7 @@
 <template>
   <mdc-table-row
     :class="classes"
-    v-bind="$attrs"
     class="explorer-list-item"
-    v-on="$listeners"
   >
     <mdc-table-column class="name">
       <div>
@@ -73,15 +71,13 @@ export default {
     &.name {
       div {
         display: flex;
-        .mdc-icon {
-          user-select: none;
-        }
         .filename {
           flex: 1;
           margin: 0 0 0 4px;
           overflow: hidden;
           text-align: left;
           text-overflow: ellipsis;
+          user-select: auto;
         }
         &>* {
           align-self: flex-end;

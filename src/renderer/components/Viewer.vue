@@ -204,6 +204,7 @@ export default {
       }
       this.timer = setTimeout(() => {
         this.controlBarHidden = true
+        this.$el.focus()
       }, 2000)
     },
     ...mapActions({
@@ -258,7 +259,6 @@ export default {
   position: absolute;
   right: 0;
   top:0;
-  user-select: none;
   &.hidden .wrapper {
     cursor: none;
   }

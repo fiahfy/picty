@@ -122,7 +122,7 @@
           icon="search"
         />
         <mdc-text-field
-          v-model="searchInput"
+          v-model="queryInput"
           label="Search"
           fullwidth
           class="search"
@@ -130,7 +130,7 @@
           @contextmenu="contextmenu"
         />
         <mdc-button
-          v-if="searchInput"
+          v-if="queryInput"
           class="clear"
           @click="click"
         >
@@ -168,8 +168,7 @@ export default {
   data () {
     return {
       backSelected: -1,
-      forwardSelected: -1,
-      searchInput: ''
+      forwardSelected: -1
     }
   },
   computed: {
@@ -179,6 +178,14 @@ export default {
       },
       set (value) {
         this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
+      }
+    },
+    queryInput: {
+      get () {
+        return this.$store.state.explorer.queryInput
+      },
+      set (value) {
+        this.$store.commit('explorer/setQueryInput', { queryInput: value })
       }
     },
     ...mapGetters({
@@ -203,8 +210,8 @@ export default {
       }
       this.forwardSelected = -1
     },
-    searchInput (value) {
-      this.search({ query: value })
+    queryInput () {
+      this.search()
     }
   },
   methods: {
@@ -241,7 +248,7 @@ export default {
       e.target.click()
     },
     click (e) {
-      this.searchInput = ''
+      this.queryInput = ''
     },
     ...mapActions({
       changeDirectory: 'explorer/changeDirectory',
@@ -260,7 +267,6 @@ export default {
 
 <style scoped lang="scss">
 .explorer-menu-bar {
-  user-select: none;
   .row {
     display: flex;
     height: 40px;

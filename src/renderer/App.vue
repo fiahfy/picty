@@ -105,6 +105,7 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   font-size: small;
   height: 100%;
+  user-select: none;
   .container {
     display: flex;
     flex: 1;

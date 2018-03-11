@@ -13,7 +13,6 @@
   padding: 0 68px;
   text-align: center;
   text-overflow: ellipsis;
-  user-select: none;
   -webkit-app-region: drag;
 }
 </style>

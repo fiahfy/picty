@@ -18,6 +18,7 @@ export default {
     directory: remote.app.getPath('home'),
     directoryInput: '',
     query: '',
+    queryInput: '',
     histories: [],
     historyIndex: -1,
     sortOptions: {}
@@ -135,7 +136,8 @@ export default {
     selectNext ({ dispatch, getters, state }) {
       dispatch('selectIndex', { index: getters.selectedIndex + 1 })
     },
-    search ({ commit }, { query }) {
+    search ({ commit, state }) {
+      const query = state.queryInput
       commit('setQuery', { query })
     },
     setScrollTop ({ commit, state }, { scrollTop }) {
@@ -219,6 +221,9 @@ export default {
     },
     setQuery (state, { query }) {
       state.query = query
+    },
+    setQueryInput (state, { queryInput }) {
+      state.queryInput = queryInput
     },
     setHistory (state, { history, index }) {
       state.histories = [
