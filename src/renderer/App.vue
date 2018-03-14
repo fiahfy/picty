@@ -113,6 +113,8 @@ export default {
     position: relative;
     .content {
       flex: 1;
+      min-width: 256px;
+      overflow: hidden;
     }
   }
 }
