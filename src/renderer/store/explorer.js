@@ -88,7 +88,6 @@ export default {
         }
         watcher = fs.watch(state.directory, () => {
           dispatch('load')
-          dispatch('showMessage', { message: 'Reloaded directory' }, { root: true })
         })
         const files = File.listFiles(state.directory).filter((file) => file.isDirectory() || file.isImage()).map((file) => file.toObject())
         if (!files.length) {
