@@ -246,11 +246,11 @@ export default {
           vertical-align: bottom;
           white-space: nowrap;
           z-index: 1;
-          &.date-modified {
-            width: 128px;
-          }
           &.size {
             width: 64px;
+          }
+          &.date-modified {
+            width: 128px;
           }
           .mdc-icon {
             padding: 0;

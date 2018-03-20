@@ -267,6 +267,7 @@ export default {
   }
   .message {
     align-items: center;
+    color: var(--mdc-theme-text-secondary-on-background);
     display: flex;
     height: 100%;
     justify-content: center;

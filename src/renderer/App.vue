@@ -27,12 +27,12 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import Theme from './theme'
 import ActivityBar from './components/ActivityBar'
 import Divider from './components/Divider'
 import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
+import Theme from './theme'
 import * as ContextMenu from './utils/context-menu'
 
 export default {
@@ -113,6 +113,8 @@ export default {
     position: relative;
     .content {
       flex: 1;
+      min-width: 256px;
+      overflow: hidden;
     }
   }
 }
