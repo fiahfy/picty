@@ -1,14 +1,15 @@
 import config from './config.base.babel'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { VueLoaderPlugin } from 'vue-loader'
 
 export default {
   ...config,
   target: 'electron-renderer',
-  entry: './renderer.js',
+  entry: './js/renderer.js',
   output: {
-    path: `${__dirname}/../app/assets/`,
-    publicPath: './assets/',
-    filename: 'js/renderer.js'
+    path: `${__dirname}/../app/`,
+    publicPath: '../',
+    filename: 'js/index.js'
   },
   module: {
     rules: [
@@ -45,6 +46,10 @@ export default {
   },
   plugins: [
     ...config.plugins,
+    new HtmlWebpackPlugin({
+      template: './html/index.html',
+      filename: './html/index.html'
+    }),
     new VueLoaderPlugin()
   ],
   resolve: {
