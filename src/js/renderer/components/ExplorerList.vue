@@ -1,5 +1,21 @@
 <template>
-  <div
+  <div class="explorer-list">
+    <v-data-table
+      :headers="headers"
+      :items="files"
+      hide-actions
+    >
+      <template
+        slot-scope="props"
+        slot="items"
+      >
+        <td>{{ props.item.name }}</td>
+        <td class="text-xs-right">{{ props.item.size | readableSize }}</td>
+        <td class="text-xs-right">{{ props.item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
+      </template>
+    </v-data-table>
+  </div>
+  <!-- <div
     :class="classes"
     class="explorer-list"
     tabindex="0"
@@ -58,7 +74,7 @@
         />
       </mdc-virtual-table-body>
     </mdc-table>
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -84,7 +100,17 @@ export default {
   },
   data () {
     return {
-      scrolling: false
+      scrolling: false,
+      headers: [
+        {
+          text: 'Name',
+          align: 'left',
+          sortable: false,
+          value: 'name'
+        },
+        { text: 'Size', value: 'size' },
+        { text: 'Date Modified', value: 'mtime' }
+      ]
     }
   },
   computed: {
@@ -225,60 +251,59 @@ export default {
 <style scoped lang="scss">
 .explorer-list {
   height: 100%;
-  outline: none;
-  overflow-y: scroll;
-  .mdc-table {
-    border-spacing: 0;
-    table-layout: fixed;
-    width: 100%;
-    .mdc-table-header {
-      .mdc-table-row {
-        cursor: pointer;
-        height: 40px;
-        .mdc-table-header-column {
-          border: 0;
-          color: var(--mdc-theme-text-secondary-on-background);
-          font-size: smaller;
-          font-weight: normal;
-          line-height: 20px;
-          padding: 8px;
-          position: sticky;
-          top: 0;
-          vertical-align: bottom;
-          white-space: nowrap;
-          z-index: 1;
-          &.size {
-            width: 64px;
-          }
-          &.date-modified {
-            width: 128px;
-          }
-          .mdc-icon {
-            padding: 0;
-            vertical-align: bottom;
-          }
-        }
-        &.shadow {
-          height: 1px;
-          .mdc-table-header-column {
-            padding: 0;
-            position: sticky;
-            top: 40px;
-            z-index: 0;
-            &:after {
-              bottom: 0;
-              content:'';
-              left: 0;
-              position: absolute;
-              width: 100%;
-            }
-          }
-        }
-      }
-    }
-  }
-  &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
-    box-shadow: 0 0 3px 1px var(--shadow);
-  }
+  overflow-y: auto;
+  // .mdc-table {
+  //   border-spacing: 0;
+  //   table-layout: fixed;
+  //   width: 100%;
+  //   .mdc-table-header {
+  //     .mdc-table-row {
+  //       cursor: pointer;
+  //       height: 40px;
+  //       .mdc-table-header-column {
+  //         border: 0;
+  //         color: var(--mdc-theme-text-secondary-on-background);
+  //         font-size: smaller;
+  //         font-weight: normal;
+  //         line-height: 20px;
+  //         padding: 8px;
+  //         position: sticky;
+  //         top: 0;
+  //         vertical-align: bottom;
+  //         white-space: nowrap;
+  //         z-index: 1;
+  //         &.size {
+  //           width: 64px;
+  //         }
+  //         &.date-modified {
+  //           width: 128px;
+  //         }
+  //         .mdc-icon {
+  //           padding: 0;
+  //           vertical-align: bottom;
+  //         }
+  //       }
+  //       &.shadow {
+  //         height: 1px;
+  //         .mdc-table-header-column {
+  //           padding: 0;
+  //           position: sticky;
+  //           top: 40px;
+  //           z-index: 0;
+  //           &:after {
+  //             bottom: 0;
+  //             content:'';
+  //             left: 0;
+  //             position: absolute;
+  //             width: 100%;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+  // &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
+  //   box-shadow: 0 0 3px 1px var(--shadow);
+  // }
 }
 </style>

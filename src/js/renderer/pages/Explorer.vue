@@ -1,6 +1,18 @@
 <template>
-  <v-container class="explorer pa-0">
-    <explorer-menu-bar />
+  <v-container
+    fluid
+    fill-height
+    pa-0
+    class="explorer"
+  >
+    <v-layout column>
+      <explorer-menu-bar />
+      <v-divider />
+      <v-flex fill-height>
+        <explorer-list />
+      </v-flex>
+    </v-layout>
+    <!-- <explorer-menu-bar />
     <divider />
     <div class="container">
       <div
@@ -10,7 +22,7 @@
         {{ message }}
       </div>
       <explorer-list />
-    </div>
+    </div> -->
   </v-container>
 </template>
 
@@ -47,6 +59,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.flex {
+  overflow: hidden;
+}
 // .explorer {
 //   display: flex;
 //   flex-direction: column;

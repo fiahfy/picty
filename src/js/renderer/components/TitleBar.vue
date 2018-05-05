@@ -1,14 +1,16 @@
 <template>
-  <div class="title-bar caption text-xs-center">Picty</div>
+  <v-system-bar
+    status
+    height="22"
+  >
+    <v-spacer/>
+    <span>Picty</span>
+    <v-spacer/>
+  </v-system-bar>
 </template>
 
 <style scoped lang="scss">
-.title-bar {
-  height: 23px;
-  line-height: 23px;
-  overflow: hidden;
-  padding: 0 68px;
-  text-overflow: ellipsis;
+.system-bar {
   -webkit-app-region: drag;
 }
 </style>

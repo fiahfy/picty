@@ -1,17 +1,115 @@
 <template>
   <div class="explorer-menu-bar">
-    <div class="row directory">
-      <mdc-icon icon="folder" />
-      <mdc-text-field
+    <v-layout row>
+      <v-icon class="ma-1 pa-2">folder</v-icon>
+      <v-text-field
         v-model="directoryInput"
-        fullwidth
         label="Input path..."
-        class="location"
+        single-line
+        hide-details
+        full-width
+        dense
+        class="pt-2 pb-0 pl-0"
         @keyup="(e) => keyup(e, 'directory')"
         @contextmenu="contextmenu"
       />
-    </div>
-    <divider />
+    </v-layout>
+    <v-divider />
+    <v-layout row>
+      <v-btn
+        :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
+        :disabled="!canBackDirectory"
+        flat
+        icon
+        color="primary"
+        class="ma-1"
+        @click="backDirectory"
+      >
+        <v-icon>arrow_back</v-icon>
+      </v-btn>
+      <v-btn
+        :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
+        :disabled="!canForwardDirectory"
+        flat
+        icon
+        color="primary"
+        class="ma-1"
+        @click="forwardDirectory"
+      >
+        <v-icon>arrow_forward</v-icon>
+      </v-btn>
+      <v-btn
+        :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
+        flat
+        icon
+        color="primary"
+        class="ma-1"
+        @click="changeParentDirectory"
+      >
+        <v-icon>arrow_upward</v-icon>
+      </v-btn>
+      <v-btn
+        :title="'Change home directory'|accelerator('CmdOrCtrl+Shift+H')"
+        flat
+        icon
+        color="primary"
+        class="ma-1"
+        @click="changeHomeDirectory"
+      >
+        <v-icon>home</v-icon>
+      </v-btn>
+      <v-btn
+        title="Open current directory"
+        flat
+        icon
+        color="primary"
+        class="ma-1"
+        @click="openDirectory"
+      >
+        <v-icon>folder_open</v-icon>
+      </v-btn>
+      <VerticalDivider />
+      <v-btn
+        :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
+        :disabled="!selectedFilepath"
+        flat
+        icon
+        color="primary"
+        class="ma-1"
+        @click="toggleBookmark({ filepath: selectedFilepath })"
+      >
+        <v-icon>{{ isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border' }}</v-icon>
+      </v-btn>
+      <v-btn
+        :title="'View'|accelerator('Enter')"
+        :disabled="!selectedFilepath"
+        flat
+        icon
+        color="primary"
+        class="ma-1"
+        @click="showViewer({ filepath: selectedFilepath })"
+      >
+        <v-icon>photo</v-icon>
+      </v-btn>
+      <VerticalDivider />
+      <v-icon
+        :title="'Search'|accelerator('CmdOrCtrl+F')"
+        class="ma-1 pa-2"
+      >folder</v-icon>
+      <v-text-field
+        v-model="queryInput"
+        label="Search"
+        single-line
+        hide-details
+        full-width
+        dense
+        clearable
+        class="pt-2 pr-1 pb-0 pl-0"
+        @keyup="(e) => keyup(e, 'search')"
+        @contextmenu="contextmenu"
+      />
+    </v-layout>
+    <!--
     <div class="row buttons">
       <mdc-menu-anchor>
         <mdc-button
@@ -63,89 +161,14 @@
           </mdc-list-item>
         </mdc-menu>
       </mdc-menu-anchor>
-      <mdc-button
-        :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
-        @click="changeParentDirectory"
-      >
-        <mdc-icon
-          slot="icon"
-          icon="arrow_upward"
-        />
-      </mdc-button>
-      <mdc-button
-        :title="'Change home directory'|accelerator('CmdOrCtrl+Shift+H')"
-        @click="changeHomeDirectory"
-      >
-        <mdc-icon
-          slot="icon"
-          icon="home"
-        />
-      </mdc-button>
-      <mdc-button
-        title="Open current directory"
-        @click="openDirectory"
-      >
-        <mdc-icon
-          slot="icon"
-          icon="folder_open"
-        />
-      </mdc-button>
 
-      <divider orientation="vertical" />
-
-      <mdc-button
-        :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
-        :disabled="!selectedFilepath"
-        @click="toggleBookmark({ filepath: selectedFilepath })"
-      >
-        <mdc-icon
-          slot="icon"
-          :icon="isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border'"
-        />
-      </mdc-button>
-      <mdc-button
-        :title="'View'|accelerator('Enter')"
-        :disabled="!selectedFilepath"
-        @click="showViewer({ filepath: selectedFilepath })"
-      >
-        <mdc-icon
-          slot="icon"
-          icon="photo"
-        />
-      </mdc-button>
-
-      <divider orientation="vertical" />
-
-      <div class="search-wrapper">
-        <mdc-icon
-          :title="'Search'|accelerator('CmdOrCtrl+F')"
-          icon="search"
-        />
-        <mdc-text-field
-          v-model="queryInput"
-          label="Search"
-          fullwidth
-          class="search"
-          @keyup="(e) => keyup(e, 'search')"
-          @contextmenu="contextmenu"
-        />
-        <mdc-button
-          v-if="queryInput"
-          class="clear"
-          @click="click"
-        >
-          <mdc-icon
-            slot="icon"
-            icon="clear"
-          />
-        </mdc-button>
-      </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import VerticalDivider from './VerticalDivider'
 import Divider from './Divider'
 import MdcButton from './MdcButton'
 import MdcIcon from './MdcIcon'
@@ -157,6 +180,7 @@ import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
+    VerticalDivider,
     Divider,
     MdcButton,
     MdcIcon,
@@ -266,72 +290,83 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.explorer-menu-bar {
-  .row {
-    display: flex;
-    height: 40px;
-    &.directory {
-      &>* {
-        margin: 4px;
-      }
-      .mdc-icon {
-        color: var(--icon-folder);
-      }
-    }
-    &.buttons {
-      text-align: left;
-      &>* {
-        margin: 2px;
-      }
-      .divider {
-        margin: 0;
-      }
-      .search-wrapper {
-        display: flex;
-        flex: 1;
-        margin: 0px;
-        position: relative;
-        &>* {
-          margin: 4px;
-        }
-        .mdc-icon {
-          color: var(--mdc-theme-text-icon-on-background);
-        }
-        .clear {
-          height: 32px;
-          margin: 4px;
-          min-width: 32px;
-          line-height: 32px;
-          position: absolute;
-          right: 0;
-        }
-      }
-      .mdc-button {
-        min-width: 36px;
-        padding: 0;
-        .mdc-icon {
-          font-size: 24px;
-          height: auto;
-          margin: 0;
-          padding: 0;
-          width: auto;
-        }
-      }
-    }
-    .mdc-list-item {
-      box-sizing: border-box;
-      height: 41px;
-    }
-    .mdc-text-field {
-      border: none;
-      height: 32px;
-      &:not(.mdc-text-field--disabled) /deep/ .mdc-text-field__input::placeholder {
-        color: var(--mdc-theme-text-hint-on-background);
-      }
-    }
-    .mdc-icon {
-      padding: 4px;
-    }
-  }
+.layout>.icon {
+  height: 36px;
+  width: 36px;
 }
+.explorer-menu-bar /deep/ .input-group--text-field>label {
+  margin-left: 0;
+  top: unset;
+}
+.explorer-menu-bar /deep/ .input-group--text-field>.input-group__input>i {
+  padding-bottom: 4px;
+}
+// .explorer-menu-bar {
+//   .row {
+//     display: flex;
+//     height: 40px;
+//     &.directory {
+//       &>* {
+//         margin: 4px;
+//       }
+//       .mdc-icon {
+//         color: var(--icon-folder);
+//       }
+//     }
+//     &.buttons {
+//       text-align: left;
+//       &>* {
+//         margin: 2px;
+//       }
+//       .divider {
+//         margin: 0;
+//       }
+//       .search-wrapper {
+//         display: flex;
+//         flex: 1;
+//         margin: 0px;
+//         position: relative;
+//         &>* {
+//           margin: 4px;
+//         }
+//         .mdc-icon {
+//           color: var(--mdc-theme-text-icon-on-background);
+//         }
+//         .clear {
+//           height: 32px;
+//           margin: 4px;
+//           min-width: 32px;
+//           line-height: 32px;
+//           position: absolute;
+//           right: 0;
+//         }
+//       }
+//       .mdc-button {
+//         min-width: 36px;
+//         padding: 0;
+//         .mdc-icon {
+//           font-size: 24px;
+//           height: auto;
+//           margin: 0;
+//           padding: 0;
+//           width: auto;
+//         }
+//       }
+//     }
+//     .mdc-list-item {
+//       box-sizing: border-box;
+//       height: 41px;
+//     }
+//     .mdc-text-field {
+//       border: none;
+//       height: 32px;
+//       &:not(.mdc-text-field--disabled) /deep/ .mdc-text-field__input::placeholder {
+//         color: var(--mdc-theme-text-hint-on-background);
+//       }
+//     }
+//     .mdc-icon {
+//       padding: 4px;
+//     }
+//   }
+// }
 </style>

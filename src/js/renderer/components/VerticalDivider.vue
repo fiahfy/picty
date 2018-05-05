@@ -5,7 +5,7 @@
 <style scoped lang="scss">
 .divider {
   flex: 0 1 auto;
-  height: 100%;
+  height: auto;
   width: 1px;
 }
 </style>

@@ -37,18 +37,13 @@
       >
         <v-layout column>
           <template v-if="titleBar">
-            <v-flex>
-              <TitleBar />
-            </v-flex>
-            <v-divider />
+            <TitleBar />
           </template>
           <v-flex fill-height>
             <v-layout row>
-              <v-flex>
-                <ActivityBar />
-              </v-flex>
+              <ActivityBar />
               <VerticalDivider />
-              <v-flex xs12>
+              <v-flex>
                 <router-view />
               </v-flex>
             </v-layout>
@@ -125,9 +120,15 @@ export default {
 //     background-color: var(--scrollbar-active);
 //   }
 // }
-// </style>
+</style>
 
-// <style scoped lang="scss">
+<style scoped lang="scss">
+.content {
+  height: 100%;
+}
+.flex {
+  overflow: hidden;
+}
 // #app {
 //   display: flex;
 //   flex-direction: column;
