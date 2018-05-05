@@ -48,10 +48,10 @@
         :estimated-height="41"
       >
         <bookmark-list-item
+          slot-scope="{ item, index }"
           :key="item.name"
           :file="item"
           :selected="isSelected({ filepath: item.path })"
-          slot-scope="{ item, index }"
           @click.native="select({ filepath: item.path })"
           @dblclick.native="action({ filepath: item.path })"
           @contextmenu.native="e => contextmenu(e, item)"
