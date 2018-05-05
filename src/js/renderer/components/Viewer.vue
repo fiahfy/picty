@@ -218,7 +218,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/animation/functions";
+// @import "@material/animation/functions";
 
 @keyframes fade-in {
   from {
@@ -241,12 +241,12 @@ export default {
   }
 }
 
-.fade-in {
-  animation: mdc-animation-enter(fade-in, 350ms) forwards;
-}
-.fade-out {
-  animation: mdc-animation-enter(fade-out, 350ms) forwards;
-}
+// .fade-in {
+//   animation: mdc-animation-enter(fade-in, 350ms) forwards;
+// }
+// .fade-out {
+//   animation: mdc-animation-enter(fade-out, 350ms) forwards;
+// }
 
 ::-webkit-scrollbar {
   display: none;

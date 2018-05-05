@@ -1,11 +1,19 @@
 import Vue from 'vue'
-import vueLongPress from 'vue-long-press-directive'
-import vueMoment from 'vue-moment'
+import Vuetify from 'vuetify'
+import VueMoment from 'vue-moment'
+import VueLongPress from 'vue-long-press-directive'
 import { buildText } from '../utils/accelerator'
 
-Vue.use(vueMoment)
+Vue.use(Vuetify, {
+  theme: {
+    primary: '#ff4081',
+    accent: '#ff4081'
+  }
+})
 
-Vue.use(vueLongPress, { duration: 300 })
+Vue.use(VueMoment)
+
+Vue.use(VueLongPress, { duration: 300 })
 
 Vue.mixin({
   beforeMount () {

@@ -1,5 +1,3 @@
 <template>
-  <thead class="mdc-table-header">
-    <slot />
-  </thead>
+  <div />
 </template>

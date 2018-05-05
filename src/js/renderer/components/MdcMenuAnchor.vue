@@ -1,5 +1,3 @@
 <template>
-  <div class="mdc-menu-anchor">
-    <slot />
-  </div>
+  <div />
 </template>

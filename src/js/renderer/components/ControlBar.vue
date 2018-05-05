@@ -161,9 +161,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@material/animation/functions";
-@import "@material/button/mixins";
-@import "@material/ripple/mixins";
+// @import "@material/animation/functions";
+// @import "@material/button/mixins";
+// @import "@material/ripple/mixins";
 
 @keyframes fade-in {
   0% {
@@ -186,12 +186,12 @@ export default {
   }
 }
 
-.fade-in {
-  animation: mdc-animation-enter(fade-in, 350ms) forwards;
-}
-.fade-out {
-  animation: mdc-animation-enter(fade-out, 350ms) forwards;
-}
+// .fade-in {
+//   animation: mdc-animation-enter(fade-in, 350ms) forwards;
+// }
+// .fade-out {
+//   animation: mdc-animation-enter(fade-out, 350ms) forwards;
+// }
 
 .background {
   background-color: black;
@@ -220,8 +220,8 @@ export default {
   }
   .mdc-button {
     margin: 6px 8px;
-    @include mdc-button-ink-color(white);
-    @include mdc-states(white);
+    // @include mdc-button-ink-color(white);
+    // @include mdc-states(white);
     &:not(:first-child) {
       margin-left: 0;
     }
