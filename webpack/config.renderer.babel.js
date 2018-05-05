@@ -1,4 +1,5 @@
 import config from './config.base.babel'
+import { VueLoaderPlugin } from 'vue-loader'
 
 export default {
   ...config,
@@ -14,13 +15,15 @@ export default {
       ...config.module.rules,
       {
         test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-            scss: 'vue-style-loader!css-loader!sass-loader?' +
-              `{ "includePaths": ["${__dirname}/../node_modules"] }`
-          }
-        }
+        loader: 'vue-loader'
+      },
+      {
+        test: /\.s?css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          'sass-loader?' + `{ "includePaths": ["${__dirname}/../node_modules"] }`
+        ]
       },
       {
         test: /\.(jpg|gif|png|svg)$/,
@@ -40,6 +43,10 @@ export default {
       }
     ]
   },
+  plugins: [
+    ...config.plugins,
+    new VueLoaderPlugin()
+  ],
   resolve: {
     extensions: ['.js', '.json', '.vue'],
     alias: {

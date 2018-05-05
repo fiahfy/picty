@@ -41,7 +41,7 @@ export default class Window {
     })
   }
   setupDevTools () {
-    installExtension(VUEJS_DEVTOOLS)
+    installExtension(VUEJS_DEVTOOLS.id)
       .catch((err) => {
         console.log('Unable to install `vue-devtools`: \n', err) // eslint-disable-line no-console
       })
