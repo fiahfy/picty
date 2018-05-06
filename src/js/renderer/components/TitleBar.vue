@@ -1,7 +1,8 @@
 <template>
   <v-system-bar
-    status
     height="22"
+    status
+    app
   >
     <v-spacer/>
     <span>Picty</span>

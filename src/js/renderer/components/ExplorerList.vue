@@ -6,6 +6,7 @@
       v-model="selected"
       item-key="path"
       hide-actions
+      must-sort
     >
       <template
         slot-scope="props"
@@ -352,6 +353,10 @@ export default {
 }
 .explorer-list /deep/ .datatable {
   background: transparent;
+}
+.explorer-list /deep/ .datatable>thead>tr,
+.explorer-list /deep/ .datatable>tbody>tr {
+  border-bottom: none;
 }
 .explorer-list /deep/ .datatable>thead>tr>th {
   background: inherit;

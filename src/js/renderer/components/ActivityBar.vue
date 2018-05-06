@@ -1,18 +1,22 @@
 <template>
-  <div class="activity-bar">
-    <v-list class="transparent pa-0">
+  <v-navigation-drawer
+    mini-variant
+    permanent
+    app
+  >
+    <v-list class="pt-0">
       <v-list-tile
         v-for="item in items"
         :key="item.name"
         :title="item.title"
         @click="changeRoute({ name: item.name })"
       >
-        <v-list-tile-action class="justify-center">
+        <v-list-tile-action>
           <v-icon :color="item.color">{{ item.icon }}</v-icon>
         </v-list-tile-action>
       </v-list-tile>
     </v-list>
-  </div>
+  </v-navigation-drawer>
 </template>
 
 <script>
@@ -50,12 +54,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.activity-bar /deep/ .list__tile {
-  padding: 0;
-}
-.activity-bar /deep/ .list__tile__action {
-  min-width: 48px;
-}
-</style>

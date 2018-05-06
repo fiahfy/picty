@@ -5,28 +5,10 @@
     @dragover.native.prevent
     @drop.native.prevent="drop"
   >
+    <title-bar v-if="titleBar" />
+    <activity-bar />
     <v-content>
-      <v-container
-        fluid
-        fill-height
-        pa-0
-      >
-        <v-layout column>
-          <title-bar v-if="titleBar" />
-          <v-flex fill-height>
-            <v-layout row>
-              <viewer v-if="viewing" />
-              <template v-else>
-                <activity-bar />
-                <vertical-divider />
-                <v-flex>
-                  <router-view />
-                </v-flex>
-              </template>
-            </v-layout>
-          </v-flex>
-        </v-layout>
-      </v-container>
+      <router-view />
     </v-content>
   </v-app>
 </template>
@@ -103,7 +85,7 @@ export default {
 .content {
   height: 100%;
 }
-.flex {
-  overflow: hidden;
-}
+// .flex {
+//   overflow: hidden;
+// }
 </style>

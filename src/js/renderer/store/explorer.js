@@ -271,7 +271,7 @@ export default {
     },
     filteredFiles (state) {
       return state.files.concat().filter((file) => {
-        return file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
+        return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
       })
     },
     selectedIndex (state, getters) {
