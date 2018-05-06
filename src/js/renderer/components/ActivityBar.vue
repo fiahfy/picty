@@ -1,6 +1,6 @@
 <template>
   <div class="activity-bar">
-    <v-list class="pa-0">
+    <v-list class="transparent pa-0">
       <v-list-tile
         v-for="item in items"
         :key="item.name"
@@ -52,9 +52,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.activity-bar /deep/ .list {
-  background: inherit;
-}
 .activity-bar /deep/ .list__tile {
   padding: 0;
 }

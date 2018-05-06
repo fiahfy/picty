@@ -1,28 +1,4 @@
 <template>
-  <!-- <div
-    id="app"
-    :style="styles"
-    class="mdc-theme--background"
-    @contextmenu="contextmenu"
-    @dragover.prevent
-    @drop.prevent="drop"
-  >
-    <template v-if="titleBar">
-      <title-bar />
-      <divider />
-    </template>
-    <div class="container">
-      <viewer v-if="viewing" />
-      <template v-else>
-        <activity-bar />
-        <divider orientation="vertical" />
-        <div class="content">
-          <router-view />
-        </div>
-      </template>
-    </div>
-    <mdc-snackbar :message="message" />
-  </div> -->
   <v-app
     :dark="darkTheme"
     @contextmenu.native="contextmenu"
@@ -36,16 +12,17 @@
         pa-0
       >
         <v-layout column>
-          <template v-if="titleBar">
-            <TitleBar />
-          </template>
+          <title-bar v-if="titleBar" />
           <v-flex fill-height>
             <v-layout row>
-              <ActivityBar />
-              <VerticalDivider />
-              <v-flex>
-                <router-view />
-              </v-flex>
+              <viewer v-if="viewing" />
+              <template v-else>
+                <activity-bar />
+                <vertical-divider />
+                <v-flex>
+                  <router-view />
+                </v-flex>
+              </template>
             </v-layout>
           </v-flex>
         </v-layout>
@@ -129,23 +106,4 @@ export default {
 .flex {
   overflow: hidden;
 }
-// #app {
-//   display: flex;
-//   flex-direction: column;
-//   font-family: 'Avenir', Helvetica, Arial, sans-serif;
-//   font-size: small;
-//   height: 100%;
-//   user-select: none;
-//   .container {
-//     display: flex;
-//     flex: 1;
-//     overflow: hidden;
-//     position: relative;
-//     .content {
-//       flex: 1;
-//       min-width: 256px;
-//       overflow: hidden;
-//     }
-//   }
-// }
 </style>

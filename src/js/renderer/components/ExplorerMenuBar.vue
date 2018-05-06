@@ -1,7 +1,10 @@
 <template>
   <div class="explorer-menu-bar">
     <v-layout row>
-      <v-icon class="ma-1 pa-2">folder</v-icon>
+      <v-icon
+        color="blue lighten-3"
+        class="ma-1 pa-2"
+      >folder</v-icon>
       <v-text-field
         v-model="directoryInput"
         label="Input path..."
@@ -68,7 +71,7 @@
       >
         <v-icon>folder_open</v-icon>
       </v-btn>
-      <VerticalDivider />
+      <vertical-divider />
       <v-btn
         :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
         :disabled="!selectedFilepath"
@@ -91,11 +94,11 @@
       >
         <v-icon>photo</v-icon>
       </v-btn>
-      <VerticalDivider />
+      <vertical-divider />
       <v-icon
         :title="'Search'|accelerator('CmdOrCtrl+F')"
         class="ma-1 pa-2"
-      >folder</v-icon>
+      >search</v-icon>
       <v-text-field
         v-model="queryInput"
         label="Search"

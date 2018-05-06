@@ -3,15 +3,31 @@
     <v-data-table
       :headers="headers"
       :items="files"
+      v-model="selected"
+      item-key="path"
       hide-actions
     >
       <template
         slot-scope="props"
         slot="items"
       >
-        <td>{{ props.item.name }}</td>
-        <td class="text-xs-right">{{ props.item.size | readableSize }}</td>
-        <td class="text-xs-right">{{ props.item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
+        <tr
+          :active="props.selected"
+          @click="selectRow(props)"
+          @dblclick="action({ filepath: props.item.path })"
+        >
+          <td>
+            <v-icon
+              :color="getColor(props.item)"
+              class="pa-1"
+            >{{ getIcon(props.item) }}</v-icon>
+            <span>{{ props.item.name }}</span>
+          </td>
+          <td class="text-xs-right">
+            <template v-if="getSize(props.item) !== null">{{ getSize(props.item) | readableSize }}</template>
+          </td>
+          <td class="text-xs-right">{{ props.item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
+        </tr>
       </template>
     </v-data-table>
   </div>
@@ -101,15 +117,23 @@ export default {
   data () {
     return {
       scrolling: false,
+      selected: [],
       headers: [
         {
           text: 'Name',
-          align: 'left',
-          sortable: false,
+          align: 'center',
           value: 'name'
         },
-        { text: 'Size', value: 'size' },
-        { text: 'Date Modified', value: 'mtime' }
+        {
+          text: 'Size',
+          align: 'center',
+          value: 'size'
+        },
+        {
+          text: 'Date Modified',
+          align: 'center',
+          value: 'mtime'
+        }
       ]
     }
   },
@@ -170,6 +194,19 @@ export default {
     this.$el.removeEventListener('scroll', this.scroll)
   },
   methods: {
+    getIcon (file) {
+      return file.directory ? 'folder' : 'photo'
+    },
+    getColor (file) {
+      return file.directory ? 'blue lighten-3' : 'green lighten-3'
+    },
+    getSize (file) {
+      return file.directory ? null : file.size
+    },
+    selectRow (props) {
+      this.selected = [props.item]
+      this.select({ filepath: props.item.path })
+    },
     scroll () {
       const scrollTop = this.$el.scrollTop
       this.scrolling = scrollTop > 0
@@ -251,7 +288,7 @@ export default {
 <style scoped lang="scss">
 .explorer-list {
   height: 100%;
-  overflow-y: auto;
+  // overflow-y: auto;
   // .mdc-table {
   //   border-spacing: 0;
   //   table-layout: fixed;
@@ -305,5 +342,27 @@ export default {
   // &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
   //   box-shadow: 0 0 3px 1px var(--shadow);
   // }
+}
+.explorer-list>div {
+  height: 100%;
+}
+.explorer-list /deep/ .table__overflow {
+  height: 100%;
+  overflow-y: auto;
+}
+.explorer-list /deep/ .datatable {
+  background: transparent;
+}
+.explorer-list /deep/ .datatable>thead>tr>th {
+  background: inherit;
+  outline: none;
+  position: sticky;
+  top: 0;
+}
+.explorer-list /deep/ .datatable>tbody>tr>td {
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
