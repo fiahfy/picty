@@ -1,5 +1,6 @@
 <template>
   <v-navigation-drawer
+    class="activity-bar"
     mini-variant
     permanent
     app

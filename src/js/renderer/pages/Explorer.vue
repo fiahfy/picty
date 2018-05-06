@@ -1,16 +1,14 @@
 <template>
   <v-container
+    class="explorer"
     fluid
     fill-height
     pa-0
-    class="explorer"
   >
     <v-layout column>
       <explorer-menu-bar />
       <v-divider />
-      <v-flex fill-height>
-        <explorer-list />
-      </v-flex>
+      <explorer-list />
     </v-layout>
   </v-container>
 </template>
@@ -26,9 +24,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.flex {
-  overflow: hidden;
-}
-</style>

@@ -1,5 +1,6 @@
 <template>
   <v-system-bar
+    class="title-bar"
     height="22"
     status
     app

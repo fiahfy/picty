@@ -1,31 +1,34 @@
 <template>
   <div class="explorer-menu-bar">
-    <v-layout row>
+    <v-toolbar
+      flat
+      dense
+    >
       <v-icon
         color="blue lighten-3"
-        class="ma-1 pa-2"
+        class="ma-2 pa-1"
       >folder</v-icon>
       <v-text-field
         v-model="directoryInput"
-        label="Input path..."
+        label="Path"
         single-line
-        hide-details
         full-width
-        dense
-        class="pt-2 pb-0 pl-0"
+        hide-details
         @keyup="(e) => keyup(e, 'directory')"
         @contextmenu="contextmenu"
       />
-    </v-layout>
+    </v-toolbar>
     <v-divider />
-    <v-layout row>
+    <v-toolbar
+      flat
+      dense
+    >
       <v-btn
         :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
         :disabled="!canBackDirectory"
         flat
         icon
         color="primary"
-        class="ma-1"
         @click="backDirectory"
       >
         <v-icon>arrow_back</v-icon>
@@ -36,7 +39,6 @@
         flat
         icon
         color="primary"
-        class="ma-1"
         @click="forwardDirectory"
       >
         <v-icon>arrow_forward</v-icon>
@@ -46,7 +48,6 @@
         flat
         icon
         color="primary"
-        class="ma-1"
         @click="changeParentDirectory"
       >
         <v-icon>arrow_upward</v-icon>
@@ -56,7 +57,6 @@
         flat
         icon
         color="primary"
-        class="ma-1"
         @click="changeHomeDirectory"
       >
         <v-icon>home</v-icon>
@@ -66,19 +66,16 @@
         flat
         icon
         color="primary"
-        class="ma-1"
         @click="openDirectory"
       >
         <v-icon>folder_open</v-icon>
       </v-btn>
-      <vertical-divider />
       <v-btn
         :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
         :disabled="!selectedFilepath"
         flat
         icon
         color="primary"
-        class="ma-1"
         @click="toggleBookmark({ filepath: selectedFilepath })"
       >
         <v-icon>{{ isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border' }}</v-icon>
@@ -89,29 +86,26 @@
         flat
         icon
         color="primary"
-        class="ma-1"
         @click="showViewer({ filepath: selectedFilepath })"
       >
         <v-icon>photo</v-icon>
       </v-btn>
-      <vertical-divider />
       <v-icon
         :title="'Search'|accelerator('CmdOrCtrl+F')"
-        class="ma-1 pa-2"
+        class="ma-2 pa-1"
       >search</v-icon>
       <v-text-field
         v-model="queryInput"
         label="Search"
         single-line
-        hide-details
         full-width
-        dense
+        hide-details
         clearable
-        class="pt-2 pr-1 pb-0 pl-0"
         @keyup="(e) => keyup(e, 'search')"
         @contextmenu="contextmenu"
       />
-    </v-layout>
+    </v-toolbar>
+  </div>
     <!--
     <div class="row buttons">
       <mdc-menu-anchor>
@@ -171,27 +165,9 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import VerticalDivider from './VerticalDivider'
-import Divider from './Divider'
-import MdcButton from './MdcButton'
-import MdcIcon from './MdcIcon'
-import MdcListItem from './MdcListItem'
-import MdcMenuAnchor from './MdcMenuAnchor'
-import MdcMenu from './MdcMenu'
-import MdcTextField from './MdcTextField'
 import * as ContextMenu from '../utils/context-menu'
 
 export default {
-  components: {
-    VerticalDivider,
-    Divider,
-    MdcButton,
-    MdcIcon,
-    MdcListItem,
-    MdcMenuAnchor,
-    MdcMenu,
-    MdcTextField
-  },
   data () {
     return {
       backSelected: -1,
@@ -293,83 +269,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.layout>.icon {
-  height: 36px;
-  width: 36px;
-}
-.explorer-menu-bar /deep/ .input-group--text-field>label {
+.explorer-menu-bar /deep/ .input-group>label {
   margin-left: 0;
-  top: unset;
 }
-.explorer-menu-bar /deep/ .input-group--text-field>.input-group__input>i {
-  padding-bottom: 4px;
-}
-// .explorer-menu-bar {
-//   .row {
-//     display: flex;
-//     height: 40px;
-//     &.directory {
-//       &>* {
-//         margin: 4px;
-//       }
-//       .mdc-icon {
-//         color: var(--icon-folder);
-//       }
-//     }
-//     &.buttons {
-//       text-align: left;
-//       &>* {
-//         margin: 2px;
-//       }
-//       .divider {
-//         margin: 0;
-//       }
-//       .search-wrapper {
-//         display: flex;
-//         flex: 1;
-//         margin: 0px;
-//         position: relative;
-//         &>* {
-//           margin: 4px;
-//         }
-//         .mdc-icon {
-//           color: var(--mdc-theme-text-icon-on-background);
-//         }
-//         .clear {
-//           height: 32px;
-//           margin: 4px;
-//           min-width: 32px;
-//           line-height: 32px;
-//           position: absolute;
-//           right: 0;
-//         }
-//       }
-//       .mdc-button {
-//         min-width: 36px;
-//         padding: 0;
-//         .mdc-icon {
-//           font-size: 24px;
-//           height: auto;
-//           margin: 0;
-//           padding: 0;
-//           width: auto;
-//         }
-//       }
-//     }
-//     .mdc-list-item {
-//       box-sizing: border-box;
-//       height: 41px;
-//     }
-//     .mdc-text-field {
-//       border: none;
-//       height: 32px;
-//       &:not(.mdc-text-field--disabled) /deep/ .mdc-text-field__input::placeholder {
-//         color: var(--mdc-theme-text-hint-on-background);
-//       }
-//     }
-//     .mdc-icon {
-//       padding: 4px;
-//     }
-//   }
-// }
 </style>

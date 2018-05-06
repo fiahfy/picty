@@ -287,8 +287,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.explorer-list {
-  height: 100%;
   // overflow-y: auto;
   // .mdc-table {
   //   border-spacing: 0;
@@ -343,31 +341,34 @@ export default {
   // &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
   //   box-shadow: 0 0 3px 1px var(--shadow);
   // }
-}
-.explorer-list>div {
-  height: 100%;
-}
-.explorer-list /deep/ .table__overflow {
-  height: 100%;
-  overflow-y: auto;
-}
-.explorer-list /deep/ .datatable {
-  background: transparent;
-}
-.explorer-list /deep/ .datatable>thead>tr,
-.explorer-list /deep/ .datatable>tbody>tr {
-  border-bottom: none;
-}
-.explorer-list /deep/ .datatable>thead>tr>th {
-  background: inherit;
-  outline: none;
-  position: sticky;
-  top: 0;
-}
-.explorer-list /deep/ .datatable>tbody>tr>td {
-  cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+// .explorer-list {
+//   height: 100%;
+//   overflow: hidden;
+// }
+// .explorer-list>div {
+//   height: 100%;
+// }
+// .explorer-list /deep/ .table__overflow {
+//   height: 100%;
+//   overflow-y: auto;
+// }
+// .explorer-list /deep/ .datatable {
+//   background: transparent;
+// }
+// .explorer-list /deep/ .datatable>thead>tr,
+// .explorer-list /deep/ .datatable>tbody>tr {
+//   border-bottom: none;
+// }
+// .explorer-list /deep/ .datatable>thead>tr>th {
+//   background: inherit;
+//   outline: none;
+//   position: sticky;
+//   top: 0;
+// }
+// .explorer-list /deep/ .datatable>tbody>tr>td {
+//   cursor: pointer;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   white-space: nowrap;
+// }
 </style>

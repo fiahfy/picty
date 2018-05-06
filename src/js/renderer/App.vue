@@ -18,15 +18,13 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
 import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
-import VerticalDivider from './components/VerticalDivider'
 import * as ContextMenu from './utils/context-menu'
 
 export default {
   components: {
     ActivityBar,
     TitleBar,
-    Viewer,
-    VerticalDivider
+    Viewer
   },
   async asyncData ({ store }) {
     await store.dispatch('explorer/initDirectory')
@@ -85,7 +83,4 @@ export default {
 .content {
   height: 100%;
 }
-// .flex {
-//   overflow: hidden;
-// }
 </style>
