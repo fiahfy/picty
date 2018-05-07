@@ -1,11 +1,35 @@
 <template>
-  <div
+  <v-layout
+    class="viewer"
+    fill-height
+  >
+    <!-- <control-bar :class="controlBarClasses" /> -->
+    <v-flex
+      ref="wrapper"
+      class="wrapper"
+      @mousemove="imageMousemove"
+      @mousedown="imageMousedown"
+      @mouseup="imageMouseup"
+    >
+      <img
+        :src="`file://${currentFile.path}`"
+        :class="imageClasses"
+        :style="styles"
+        draggable="false"
+        @load="imageLoad"
+        @error="imageError"
+      >
+    </v-flex>
+    <control-bar :class="controlBarClasses" />
+  </v-layout>
+  <!-- <div
     :class="classes"
     class="viewer mdc-theme--background"
     tabindex="0"
     @keydown="keydown"
     @mousemove="mousemove"
   >
+    <control-bar :class="controlBarClasses" />
     <div
       v-if="message"
       class="message"
@@ -29,8 +53,7 @@
         @error="imageError"
       >
     </div>
-    <control-bar :class="controlBarClasses" />
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -218,69 +241,73 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.control-bar {
+  bottom: 0;
+  position: absolute;
+}
 // @import "@material/animation/functions";
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(48px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes fade-out {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(48px);
-  }
-}
-
-// .fade-in {
-//   animation: mdc-animation-enter(fade-in, 350ms) forwards;
+// @keyframes fade-in {
+//   from {
+//     opacity: 0;
+//     transform: translateY(48px);
+//   }
+//   to {
+//     opacity: 1;
+//     transform: translateY(0);
+//   }
 // }
-// .fade-out {
-//   animation: mdc-animation-enter(fade-out, 350ms) forwards;
+// @keyframes fade-out {
+//   from {
+//     opacity: 1;
+//     transform: translateY(0);
+//   }
+//   to {
+//     opacity: 0;
+//     transform: translateY(48px);
+//   }
 // }
 
-::-webkit-scrollbar {
-  display: none;
-}
+// // .fade-in {
+// //   animation: mdc-animation-enter(fade-in, 350ms) forwards;
+// // }
+// // .fade-out {
+// //   animation: mdc-animation-enter(fade-out, 350ms) forwards;
+// // }
+
+// ::-webkit-scrollbar {
+//   display: none;
+// }
 
 .viewer {
-  bottom: 0;
-  left: 0;
-  outline: none;
-  position: absolute;
-  right: 0;
-  top:0;
+//   bottom: 0;
+//   left: 0;
+//   outline: none;
+//   position: absolute;
+//   right: 0;
+//   top:0;
   &.hidden .wrapper {
     cursor: none;
   }
   &.dragging .wrapper {
     cursor: -webkit-grabbing;
   }
-  .message {
-    align-items: center;
-    color: var(--mdc-theme-text-secondary-on-background);
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    width: 100%;
-  }
+//   .message {
+//     align-items: center;
+//     color: var(--mdc-theme-text-secondary-on-background);
+//     display: flex;
+//     height: 100%;
+//     justify-content: center;
+//     width: 100%;
+//   }
   .wrapper {
-    bottom:0;
+//     bottom:0;
     cursor: -webkit-grab;
-    left: 0;
+//     left: 0;
     overflow: auto;
-    position: absolute;
-    right: 0;
-    top:0;
+//     position: absolute;
+//     right: 0;
+//     top:0;
     img {
       bottom:0;
       left: 0;
@@ -306,11 +333,11 @@ export default {
       }
     }
   }
-  .control-bar {
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    right: 0;
-  }
+//   .control-bar {
+//     bottom: 100px;
+//     left: 0;
+//     position: absolute;
+//     right: 0;
+//   }
 }
 </style>

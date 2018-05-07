@@ -1,107 +1,115 @@
 <template>
-  <div class="control-bar">
-    <div class="background" />
-    <div class="container">
-      <mdc-button
-        :title="'View previous image'|accelerator('Left')"
-        class="previous"
-        @click="movePrevious"
-      >
-        <mdc-icon
-          slot="icon"
-          icon="skip_previous"
-        />
-      </mdc-button>
-      <mdc-button
-        :title="'View next image'|accelerator('Right')"
-        class="next"
-        @click="moveNext"
-      >
-        <mdc-icon
-          slot="icon"
-          icon="skip_next"
-        />
-      </mdc-button>
-      <mdc-slider
-        v-model="page"
-        :min="1"
-        :max="maxPage"
-      />
-      <div>{{ page }} / {{ maxPage }}</div>
-      <mdc-button
+  <v-toolbar
+    class="control-bar"
+    flat
+    dense
+  >
+    <v-btn
+      :title="'View previous image'|accelerator('Left')"
+      flat
+      icon
+      color="primary"
+      @click="movePrevious"
+    >
+      <v-icon>skip_previous</v-icon>
+    </v-btn>
+    <v-btn
+      :title="'View next image'|accelerator('Right')"
+      flat
+      icon
+      color="primary"
+      @click="moveNext"
+    >
+      <v-icon>skip_next</v-icon>
+    </v-btn>
+    <v-slider
+      v-model="page"
+      :min="1"
+      :max="maxPage"
+      hide-details
+      class="pt-0 px-3"
+    />
+    <span class="px-3">{{ page }} / {{ maxPage }}</span>
+    <v-menu
+      :close-on-click="false"
+      :close-on-content-click="false"
+      v-model="menu"
+      top
+      offset-y
+      nudge-top="12"
+    >
+      <v-btn
+        slot="activator"
         title="Zoom"
+        flat
+        icon
+        color="primary"
         @click="toggleZoomMenu"
       >
-        <mdc-icon
-          slot="icon"
-          icon="zoom_in"
-        />
-      </mdc-button>
-      <mdc-button
-        v-if="fullScreen"
-        title="Exit fullscreen"
-        @click="leaveFullScreen"
+        <v-icon>zoom_in</v-icon>
+      </v-btn>
+      <v-toolbar
+        flat
+        dense
       >
-        <mdc-icon
-          slot="icon"
-          icon="fullscreen_exit"
-        />
-      </mdc-button>
-      <mdc-button
-        v-else
-        title="Fullscreen"
-        @click="enterFullScreen"
-      >
-        <mdc-icon
-          slot="icon"
-          icon="fullscreen"
-        />
-      </mdc-button>
-      <mdc-button
-        :title="'Close'|accelerator('Esc')"
-        @click="dismiss"
-      >
-        <mdc-icon
-          slot="icon"
-          icon="close"
-        />
-      </mdc-button>
-    </div>
-    <div
-      :class="zoomMenuClasses"
-      class="menu"
-    >
-      <div class="background" />
-      <div class="container">
-        <mdc-button
+        <v-btn
           :title="'Zoom in'|accelerator('CmdOrCtrl+Plus')"
+          flat
+          icon
+          color="primary"
           @click="zoomIn"
         >
-          <mdc-icon
-            slot="icon"
-            icon="zoom_in"
-          />
-        </mdc-button>
-        <div class="scale">{{ scale }}%</div>
-        <mdc-button
+          <v-icon>zoom_in</v-icon>
+        </v-btn>
+        <v-btn
           :title="'Zoom out'|accelerator('CmdOrCtrl+-')"
+          flat
+          icon
+          color="primary"
           @click="zoomOut"
         >
-          <mdc-icon
-            slot="icon"
-            icon="zoom_out"
-          />
-        </mdc-button>
-        <mdc-button
+          <v-icon>zoom_out</v-icon>
+        </v-btn>
+        <v-btn
           :title="'Reset'|accelerator('CmdOrCtrl+0')"
-          class="reset"
+          flat
+          color="primary"
           @click="resetZoom"
         >
           Reset
-        </mdc-button>
-      </div>
-    </div>
-  </div>
+        </v-btn>
+      </v-toolbar>
+    </v-menu>
+    <v-btn
+      v-if="fullScreen"
+      title="Exit fullscreen"
+      flat
+      icon
+      color="primary"
+      @click="leaveFullScreen"
+    >
+      <v-icon>fullscreen_exit</v-icon>
+    </v-btn>
+    <v-btn
+      v-else
+      title="Fullscreen"
+      flat
+      icon
+      color="primary"
+      @click="enterFullScreen"
+    >
+      <v-icon>fullscreen</v-icon>
+    </v-btn>
+    <v-btn
+      :title="'Close'|accelerator('Esc')"
+      flat
+      icon
+      color="primary"
+      @click="dismiss"
+    >
+      <v-icon>close</v-icon>
+    </v-btn>
+  </v-toolbar>
 </template>
 
 <script>
@@ -118,7 +126,7 @@ export default {
   },
   data () {
     return {
-      zoomMenuHidden: null
+      menu: false
     }
   },
   computed: {

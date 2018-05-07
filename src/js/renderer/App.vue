@@ -10,6 +10,25 @@
     <v-content>
       <router-view />
     </v-content>
+    <v-dialog
+      v-if="viewing"
+      value="true"
+      fullscreen
+      hide-overlay
+    >
+      <v-layout
+        column
+        fill-height
+      >
+        <title-bar
+          v-if="titleBar"
+          :app="false"
+        />
+        <v-card>
+          <viewer />
+        </v-card>
+      </v-layout>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -82,5 +101,9 @@ export default {
 <style scoped lang="scss">
 .content {
   height: 100%;
+}
+.card {
+  flex: 1;
+  overflow: hidden;
 }
 </style>
