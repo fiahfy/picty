@@ -67,8 +67,8 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production run-s webpack",
     "build:electron": "build -mw -p onTagOrDraft",
-    "dev": "cross-env HOT=1 run-p dev-server start:main",
-    "dev-server": "webpack-dev-server --config webpack/config.renderer.hot.babel.js",
+    "dev": "cross-env HMR=1 run-p dev-server start:main",
+    "dev-server": "webpack-dev-server --config webpack/config.renderer.hmr.babel.js",
     "lint": "eslint src --ext .js,.vue",
     "release": "run-s build build:electron",
     "start": "run-s webpack:renderer start:main",

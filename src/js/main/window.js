@@ -18,9 +18,15 @@ export default class Window {
       titleBarStyle: 'hidden'
     }
 
-    const url = process.env.NODE_ENV === 'production'
-      ? `file://${__dirname}/app/html/index.html`
-      : 'http://localhost:3000/html/index.html'
+    let url = `file://${__dirname}/app/html/index.html`
+
+    if (process.env.HMR) {
+      url = 'http://localhost:3000/html/index.html'
+      options.webPreferences = {
+        ...options.webPreferences,
+        webSecurity: false
+      }
+    }
 
     this.win = new BrowserWindow(options)
     this.win.loadURL(url)
