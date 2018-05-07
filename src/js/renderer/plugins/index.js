@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueMoment from 'vue-moment'
-import VueLongPress from 'vue-long-press-directive'
 import { buildText } from '../utils/accelerator'
 
 Vue.use(Vuetify, {
@@ -12,8 +11,6 @@ Vue.use(Vuetify, {
 })
 
 Vue.use(VueMoment)
-
-Vue.use(VueLongPress, { duration: 300 })
 
 Vue.mixin({
   beforeMount () {

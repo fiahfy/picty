@@ -79,8 +79,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '~typeface-roboto/index.css';
 @import '~material-design-icons/iconfont/material-icons.css';
-// @import '~material-components-web/material-components-web.scss';
 @import '~vuetify/dist/vuetify.min.css';
 
 // ::-webkit-scrollbar {

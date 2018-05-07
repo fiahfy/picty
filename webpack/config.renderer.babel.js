@@ -23,7 +23,7 @@ export default {
         use: [
           'vue-style-loader',
           'css-loader',
-          'sass-loader?' + `{ "includePaths": ["${__dirname}/../node_modules"] }`
+          'sass-loader'
         ]
       },
       {
