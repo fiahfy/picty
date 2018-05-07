@@ -14,8 +14,8 @@
         single-line
         full-width
         hide-details
-        @keyup="(e) => keyup(e, 'directory')"
-        @contextmenu="contextmenu"
+        @keyup="onDirectoryKeyup"
+        @contextmenu="onContextMenu"
       />
     </v-toolbar>
     <v-divider />
@@ -24,25 +24,59 @@
       dense
     >
       <v-btn
+        ref="backButton"
         :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
         :disabled="!canBackDirectory"
         flat
         icon
         color="primary"
         @click="backDirectory"
+        @contextmenu="showBackMenu"
       >
         <v-icon>arrow_back</v-icon>
       </v-btn>
+      <v-menu
+        v-model="backMenu.show"
+        :position-x="backMenu.x"
+        :position-y="backMenu.y"
+      >
+        <v-list>
+          <v-list-tile
+            v-for="(directory, index) in backDirectories"
+            :key="index"
+            @click="() => backDirectory({ offset: index })"
+          >
+            <v-list-tile-title>{{ directory }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
       <v-btn
+        ref="forwardButton"
         :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
         :disabled="!canForwardDirectory"
         flat
         icon
         color="primary"
         @click="forwardDirectory"
+        @contextmenu="showForwardMenu"
       >
         <v-icon>arrow_forward</v-icon>
       </v-btn>
+      <v-menu
+        v-model="forwardMenu.show"
+        :position-x="forwardMenu.x"
+        :position-y="forwardMenu.y"
+      >
+        <v-list>
+          <v-list-tile
+            v-for="(directory, index) in forwardDirectories"
+            :key="index"
+            @click="() => forwardDirectory({ offset: index })"
+          >
+            <v-list-tile-title>{{ directory }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
       <v-btn
         :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
         flat
@@ -101,65 +135,10 @@
         full-width
         hide-details
         clearable
-        @keyup="(e) => keyup(e, 'search')"
-        @contextmenu="contextmenu"
+        @keyup="onQueryKeyup"
+        @contextmenu="onContextMenu"
       />
     </v-toolbar>
-  </div>
-    <!--
-    <div class="row buttons">
-      <mdc-menu-anchor>
-        <mdc-button
-          v-long-press="(e) => mouseLongPress(e, 'back')"
-          :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
-          :disabled="!canBackDirectory"
-          @click="backDirectory"
-        >
-          <mdc-icon
-            slot="icon"
-            icon="arrow_back"
-          />
-        </mdc-button>
-        <mdc-menu
-          ref="backMenu"
-          v-model="backSelected"
-        >
-          <mdc-list-item
-            v-for="(directory, index) in backDirectories"
-            :key="index"
-            @mouseup="mouseup"
-          >
-            {{ directory }}
-          </mdc-list-item>
-        </mdc-menu>
-      </mdc-menu-anchor>
-      <mdc-menu-anchor>
-        <mdc-button
-          v-long-press="(e) => mouseLongPress(e, 'forward')"
-          :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
-          :disabled="!canForwardDirectory"
-          @click="forwardDirectory"
-        >
-          <mdc-icon
-            slot="icon"
-            icon="arrow_forward"
-          />
-        </mdc-button>
-        <mdc-menu
-          ref="forwardMenu"
-          v-model="forwardSelected"
-        >
-          <mdc-list-item
-            v-for="(directory, index) in forwardDirectories"
-            :key="index"
-            @mouseup="mouseup"
-          >
-            {{ directory }}
-          </mdc-list-item>
-        </mdc-menu>
-      </mdc-menu-anchor>
-
-    </div> -->
   </div>
 </template>
 
@@ -170,8 +149,16 @@ import * as ContextMenu from '../utils/context-menu'
 export default {
   data () {
     return {
-      backSelected: -1,
-      forwardSelected: -1
+      backMenu: {
+        show: false,
+        x: 0,
+        y: 0
+      },
+      forwardMenu: {
+        show: false,
+        x: 0,
+        y: 0
+      }
     }
   },
   computed: {
@@ -201,57 +188,45 @@ export default {
     })
   },
   watch: {
-    backSelected (value) {
-      if (value !== -1) {
-        this.backDirectory({ offset: value })
-      }
-      this.backSelected = -1
-    },
-    forwardSelected (value) {
-      if (value !== -1) {
-        this.forwardDirectory({ offset: value })
-      }
-      this.forwardSelected = -1
-    },
     queryInput () {
       this.search()
     }
   },
+  mounted () {
+    const backButtonRect = this.$refs.backButton.$el.getBoundingClientRect()
+    this.backMenu.x = backButtonRect.left
+    this.backMenu.y = backButtonRect.top
+    const forwardButtonRect = this.$refs.forwardButton.$el.getBoundingClientRect()
+    this.forwardMenu.x = forwardButtonRect.left
+    this.forwardMenu.y = forwardButtonRect.top
+  },
   methods: {
-    contextmenu (e) {
+    onContextMenu (e) {
       ContextMenu.show(e, [
         { role: ContextMenu.Role.cut },
         { role: ContextMenu.Role.copy },
         { role: ContextMenu.Role.paste }
       ])
     },
-    keyup (e, mode) {
+    onDirectoryKeyup (e) {
       if (e.keyCode === 13) {
-        if (mode === 'directory') {
-          this.changeDirectory({ dirpath: e.target.value })
-        } else {
-          this.search({ query: e.target.value })
-        }
+        this.changeDirectory({ dirpath: e.target.value })
       }
     },
-    mouseLongPress (e, direction) {
-      e.target.parentNode.blur()
-      // TODO: Remove remained ripple classes
-      e.target.parentNode.classList.remove('mdc-ripple-upgraded--background-active-fill')
-      e.target.parentNode.classList.remove('mdc-ripple-upgraded--foreground-activation')
-      if (direction === 'back') {
-        this.$refs.backMenu.show()
-        this.$refs.forwardMenu.hide()
-      } else {
-        this.$refs.backMenu.hide()
-        this.$refs.forwardMenu.show()
+    onQueryKeyup (e) {
+      if (e.keyCode === 13) {
+        this.search({ query: e.target.value })
       }
     },
-    mouseup (e) {
-      e.target.click()
+    showBackMenu (e) {
+      e.stopPropagation()
+      e.preventDefault()
+      this.backMenu.show = true
     },
-    click (e) {
-      this.queryInput = ''
+    showForwardMenu (e) {
+      e.stopPropagation()
+      e.preventDefault()
+      this.forwardMenu.show = true
     },
     ...mapActions({
       changeDirectory: 'explorer/changeDirectory',

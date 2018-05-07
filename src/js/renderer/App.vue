@@ -1,9 +1,9 @@
 <template>
   <v-app
     :dark="darkTheme"
-    @contextmenu.native="contextmenu"
+    @contextmenu.native="onContextMenu"
+    @drop.native.prevent="onDrop"
     @dragover.native.prevent
-    @drop.native.prevent="drop"
   >
     <title-bar v-if="titleBar" />
     <activity-bar />
@@ -41,10 +41,10 @@ export default {
     })
   },
   methods: {
-    contextmenu (e) {
+    onContextMenu (e) {
       ContextMenu.show(e)
     },
-    drop (e) {
+    onDrop (e) {
       const files = Array.from(e.dataTransfer.files)
       if (!files.length) {
         return
