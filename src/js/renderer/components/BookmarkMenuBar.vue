@@ -66,19 +66,9 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import Divider from './Divider'
-import MdcButton from './MdcButton'
-import MdcIcon from './MdcIcon'
-import MdcTextField from './MdcTextField'
 import * as ContextMenu from '../utils/context-menu'
 
 export default {
-  components: {
-    Divider,
-    MdcButton,
-    MdcIcon,
-    MdcTextField
-  },
   computed: {
     queryInput: {
       get () {

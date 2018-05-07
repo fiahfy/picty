@@ -18,13 +18,11 @@
 import { mapGetters } from 'vuex'
 import BookmarkList from '../components/BookmarkList'
 import BookmarkMenuBar from '../components/BookmarkMenuBar'
-import Divider from '../components/Divider'
 
 export default {
   components: {
     BookmarkList,
-    BookmarkMenuBar,
-    Divider
+    BookmarkMenuBar
   },
   computed: {
     message () {

@@ -63,25 +63,9 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import BookmarkListItem from './BookmarkListItem'
-import MdcIcon from './MdcIcon'
-import MdcTable from './MdcTable'
-import MdcTableHeader from './MdcTableHeader'
-import MdcTableHeaderColumn from './MdcTableHeaderColumn'
-import MdcTableRow from './MdcTableRow'
-import MdcVirtualTableBody from './MdcVirtualTableBody'
 import * as ContextMenu from '../utils/context-menu'
 
 export default {
-  components: {
-    BookmarkListItem,
-    MdcIcon,
-    MdcTable,
-    MdcTableHeader,
-    MdcTableHeaderColumn,
-    MdcTableRow,
-    MdcVirtualTableBody
-  },
   data () {
     return {
       scrolling: false
