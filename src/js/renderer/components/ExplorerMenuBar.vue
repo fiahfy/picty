@@ -29,7 +29,6 @@
         :disabled="!canBackDirectory"
         flat
         icon
-        color="primary"
         @click="backDirectory"
         @contextmenu="showBackMenu"
       >
@@ -56,7 +55,6 @@
         :disabled="!canForwardDirectory"
         flat
         icon
-        color="primary"
         @click="forwardDirectory"
         @contextmenu="showForwardMenu"
       >
@@ -81,7 +79,6 @@
         :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
         flat
         icon
-        color="primary"
         @click="changeParentDirectory"
       >
         <v-icon>arrow_upward</v-icon>
@@ -90,7 +87,6 @@
         :title="'Change home directory'|accelerator('CmdOrCtrl+Shift+H')"
         flat
         icon
-        color="primary"
         @click="changeHomeDirectory"
       >
         <v-icon>home</v-icon>
@@ -99,7 +95,6 @@
         title="Open current directory"
         flat
         icon
-        color="primary"
         @click="openDirectory"
       >
         <v-icon>folder_open</v-icon>
@@ -109,7 +104,6 @@
         :disabled="!selectedFilepath"
         flat
         icon
-        color="primary"
         @click="toggleBookmark({ filepath: selectedFilepath })"
       >
         <v-icon>{{ isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border' }}</v-icon>
@@ -119,7 +113,6 @@
         :disabled="!selectedFilepath"
         flat
         icon
-        color="primary"
         @click="showViewer({ filepath: selectedFilepath })"
       >
         <v-icon>photo</v-icon>

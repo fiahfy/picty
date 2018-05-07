@@ -1,59 +1,36 @@
 <template>
   <v-layout
+    :class="getClass"
     class="viewer"
     fill-height
-  >
-    <!-- <control-bar :class="controlBarClasses" /> -->
-    <v-flex
-      ref="wrapper"
-      class="wrapper"
-      @mousemove="imageMousemove"
-      @mousedown="imageMousedown"
-      @mouseup="imageMouseup"
-    >
-      <img
-        :src="`file://${currentFile.path}`"
-        :class="imageClasses"
-        :style="styles"
-        draggable="false"
-        @load="imageLoad"
-        @error="imageError"
-      >
-    </v-flex>
-    <control-bar :class="controlBarClasses" />
-  </v-layout>
-  <!-- <div
-    :class="classes"
-    class="viewer mdc-theme--background"
-    tabindex="0"
+    tabindex="1"
     @keydown="keydown"
     @mousemove="mousemove"
   >
-    <control-bar :class="controlBarClasses" />
-    <div
-      v-if="message"
-      class="message"
-    >
+    <v-flex v-if="message">
       {{ message }}
-    </div>
-    <div
+    </v-flex>
+    <v-flex
       v-else
       ref="wrapper"
       class="wrapper"
-      @mousemove="imageMousemove"
-      @mousedown="imageMousedown"
-      @mouseup="imageMouseup"
+      @mousemove="onMouseMove"
+      @mousedown="onMouseDown"
+      @mouseup="onMouseUp"
     >
       <img
-        :src="currentFile.path"
-        :class="imageClasses"
-        :style="styles"
+        :src="`file://${currentFile.path}`"
+        :class="getImageClass"
+        :style="getStyle"
         draggable="false"
-        @load="imageLoad"
-        @error="imageError"
+        @load="onLoad"
+        @error="onError"
       >
-    </div>
-  </div> -->
+    </v-flex>
+    <control-bar
+      :class="getControlBarClasses"
+    />
+  </v-layout>
 </template>
 
 <script>
@@ -66,43 +43,45 @@ export default {
   },
   data () {
     return {
-      hasLoadError: false,
+      loadError: false,
       dragging: false,
-      horizontalCentered: true,
-      verticalCentered: true,
+      controlBar: null,
+      centered: {
+        horizontal: true,
+        vertical: true
+      },
       originalSize: {
         width: 0,
         height: 0
-      },
-      controlBarHidden: null
+      }
     }
   },
   computed: {
     message () {
       return this.error ? this.error.message : ''
     },
-    styles () {
+    getStyle () {
       return this.scaling ? {
         width: this.originalSize.width * this.scale + 'px',
         height: this.originalSize.height * this.scale + 'px'
       } : {}
     },
-    classes () {
+    getClass () {
       return {
-        hidden: this.controlBarHidden === true,
+        hidden: this.controlBar === true,
         dragging: this.dragging
       }
     },
-    controlBarClasses () {
+    getControlBarClasses () {
       return {
-        'fade-in': this.controlBarHidden === false,
-        'fade-out': this.controlBarHidden === true
+        'fade-in': this.controlBar === false,
+        'fade-out': this.controlBar === true
       }
     },
-    imageClasses () {
+    getImageClass () {
       return {
-        'horizontal-center': this.horizontalCentered,
-        'vertical-center': this.verticalCentered,
+        'horizontal-center': this.centered.horizontal,
+        'vertical-center': this.centered.vertical,
         scaling: this.scaling,
         stretched: this.imageStretched
       }
@@ -112,7 +91,7 @@ export default {
         if (state.viewer.error) {
           return state.viewer.error
         }
-        if (this.hasLoadError) {
+        if (this.loadError) {
           return new Error('Image Load Failure')
         }
         return null
@@ -125,7 +104,7 @@ export default {
   },
   watch: {
     currentFile () {
-      this.hasLoadError = false
+      this.loadError = false
     },
     scale (newValue, oldValue) {
       if (this.error) {
@@ -144,8 +123,8 @@ export default {
         this.$refs.wrapper.scrollLeft += (newValue - oldValue) * this.originalSize.width / 2 - offsetX
         this.$refs.wrapper.scrollTop += (newValue - oldValue) * this.originalSize.height / 2 - offsetY
 
-        this.horizontalCentered = this.$el.clientWidth >= this.originalSize.width * newValue
-        this.verticalCentered = this.$el.clientHeight >= this.originalSize.height * newValue
+        this.centered.horizontal = this.$el.clientWidth >= this.originalSize.width * newValue
+        this.centered.vertical = this.$el.clientHeight >= this.originalSize.height * newValue
       })
     }
   },
@@ -159,30 +138,34 @@ export default {
           this.dismiss()
           break
         case 37:
-        case 40:
           if (e.target.getAttribute('role') !== 'slider') {
             this.movePrevious()
           }
           break
         case 38:
+          this.movePrevious()
+          break
         case 39:
           if (e.target.getAttribute('role') !== 'slider') {
             this.moveNext()
           }
+          break
+        case 40:
+          this.moveNext()
           break
       }
     },
     mousemove (e) {
       this.showControlBar()
     },
-    imageMousedown (e) {
+    onMouseDown (e) {
       this.dragging = true
     },
-    imageMouseup (e) {
+    onMouseUp (e) {
       this.dragging = false
       this.scrollPosition = null
     },
-    imageMousemove (e) {
+    onMouseMove (e) {
       if (this.error) {
         return
       }
@@ -195,7 +178,7 @@ export default {
         this.scrollPosition = position
       }
     },
-    imageLoad (e) {
+    onLoad (e) {
       const maxWidth = this.$el.clientWidth
       const maxHeight = this.$el.clientHeight
       const imageWidth = e.target.naturalWidth
@@ -212,21 +195,21 @@ export default {
       }
       this.initZoom({ scale })
     },
-    imageError (e) {
-      this.hasLoadError = true
+    onError (e) {
+      this.loadError = true
     },
     showControlBar () {
-      if (this.controlBarHidden === true) {
-        this.controlBarHidden = false
+      if (this.controlBar === true) {
+        this.controlBar = false
       }
       if (this.timer) {
         clearTimeout(this.timer)
       }
-      if (this.$el.querySelector('.control-bar:hover')) {
+      if (document.querySelector('.toolbar:hover')) {
         return
       }
       this.timer = setTimeout(() => {
-        this.controlBarHidden = true
+        this.controlBar = true
         this.$el.focus()
       }, 2000)
     },
@@ -241,73 +224,42 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.control-bar {
-  bottom: 0;
-  position: absolute;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-// @import "@material/animation/functions";
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+}
 
-// @keyframes fade-in {
-//   from {
-//     opacity: 0;
-//     transform: translateY(48px);
-//   }
-//   to {
-//     opacity: 1;
-//     transform: translateY(0);
-//   }
-// }
-// @keyframes fade-out {
-//   from {
-//     opacity: 1;
-//     transform: translateY(0);
-//   }
-//   to {
-//     opacity: 0;
-//     transform: translateY(48px);
-//   }
-// }
-
-// // .fade-in {
-// //   animation: mdc-animation-enter(fade-in, 350ms) forwards;
-// // }
-// // .fade-out {
-// //   animation: mdc-animation-enter(fade-out, 350ms) forwards;
-// // }
-
-// ::-webkit-scrollbar {
-//   display: none;
-// }
+::-webkit-scrollbar {
+  display: none;
+}
 
 .viewer {
-//   bottom: 0;
-//   left: 0;
-//   outline: none;
-//   position: absolute;
-//   right: 0;
-//   top:0;
   &.hidden .wrapper {
     cursor: none;
   }
   &.dragging .wrapper {
     cursor: -webkit-grabbing;
   }
-//   .message {
-//     align-items: center;
-//     color: var(--mdc-theme-text-secondary-on-background);
-//     display: flex;
-//     height: 100%;
-//     justify-content: center;
-//     width: 100%;
-//   }
   .wrapper {
-//     bottom:0;
     cursor: -webkit-grab;
-//     left: 0;
     overflow: auto;
-//     position: absolute;
-//     right: 0;
-//     top:0;
+    position: relative;
     img {
       bottom:0;
       left: 0;
@@ -333,11 +285,15 @@ export default {
       }
     }
   }
-//   .control-bar {
-//     bottom: 100px;
-//     left: 0;
-//     position: absolute;
-//     right: 0;
-//   }
+  .control-bar {
+    bottom: 0;
+    position: absolute;
+    &.fade-in {
+      animation: fade-in 350ms forwards;
+    }
+    &.fade-out {
+      animation: fade-out 350ms forwards;
+    }
+  }
 }
 </style>
