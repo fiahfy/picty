@@ -7,7 +7,6 @@
   >
     <v-layout column>
       <explorer-menu-bar />
-      <v-divider />
       <explorer-list />
     </v-layout>
   </v-container>

@@ -1,138 +1,141 @@
 <template>
-  <div class="explorer-menu-bar">
-    <v-toolbar
+  <v-toolbar
+    class="explorer-menu-bar"
+    flat
+    dense
+    extended
+  >
+    <v-icon
+      color="blue lighten-3"
+      class="ma-2 pa-1"
+    >folder</v-icon>
+    <v-text-field
+      v-model="directoryInput"
+      label="Path"
+      single-line
+      full-width
+      hide-details
+      @keyup="onDirectoryKeyup"
+      @contextmenu="onContextMenu"
+    />
+    <v-btn
+      slot="extension"
+      ref="backButton"
+      :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
+      :disabled="!canBackDirectory"
       flat
-      dense
+      icon
+      @click="backDirectory"
+      @contextmenu="showBackMenu"
     >
-      <v-icon
-        color="blue lighten-3"
-        class="ma-2 pa-1"
-      >folder</v-icon>
-      <v-text-field
-        v-model="directoryInput"
-        label="Path"
-        single-line
-        full-width
-        hide-details
-        @keyup="onDirectoryKeyup"
-        @contextmenu="onContextMenu"
-      />
-    </v-toolbar>
-    <v-divider />
-    <v-toolbar
+      <v-icon>arrow_back</v-icon>
+    </v-btn>
+    <v-menu
+      v-model="backMenu.show"
+      :position-x="backMenu.x"
+      :position-y="backMenu.y"
+    >
+      <v-list>
+        <v-list-tile
+          v-for="(directory, index) in backDirectories"
+          :key="index"
+          @click="() => backDirectory({ offset: index })"
+        >
+          <v-list-tile-title>{{ directory }}</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
+    <v-btn
+      slot="extension"
+      ref="forwardButton"
+      :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
+      :disabled="!canForwardDirectory"
       flat
-      dense
+      icon
+      @click="forwardDirectory"
+      @contextmenu="showForwardMenu"
     >
-      <v-btn
-        ref="backButton"
-        :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
-        :disabled="!canBackDirectory"
-        flat
-        icon
-        @click="backDirectory"
-        @contextmenu="showBackMenu"
-      >
-        <v-icon>arrow_back</v-icon>
-      </v-btn>
-      <v-menu
-        v-model="backMenu.show"
-        :position-x="backMenu.x"
-        :position-y="backMenu.y"
-      >
-        <v-list>
-          <v-list-tile
-            v-for="(directory, index) in backDirectories"
-            :key="index"
-            @click="() => backDirectory({ offset: index })"
-          >
-            <v-list-tile-title>{{ directory }}</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu>
-      <v-btn
-        ref="forwardButton"
-        :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
-        :disabled="!canForwardDirectory"
-        flat
-        icon
-        @click="forwardDirectory"
-        @contextmenu="showForwardMenu"
-      >
-        <v-icon>arrow_forward</v-icon>
-      </v-btn>
-      <v-menu
-        v-model="forwardMenu.show"
-        :position-x="forwardMenu.x"
-        :position-y="forwardMenu.y"
-      >
-        <v-list>
-          <v-list-tile
-            v-for="(directory, index) in forwardDirectories"
-            :key="index"
-            @click="() => forwardDirectory({ offset: index })"
-          >
-            <v-list-tile-title>{{ directory }}</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu>
-      <v-btn
-        :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
-        flat
-        icon
-        @click="changeParentDirectory"
-      >
-        <v-icon>arrow_upward</v-icon>
-      </v-btn>
-      <v-btn
-        :title="'Change home directory'|accelerator('CmdOrCtrl+Shift+H')"
-        flat
-        icon
-        @click="changeHomeDirectory"
-      >
-        <v-icon>home</v-icon>
-      </v-btn>
-      <v-btn
-        title="Open current directory"
-        flat
-        icon
-        @click="openDirectory"
-      >
-        <v-icon>folder_open</v-icon>
-      </v-btn>
-      <v-btn
-        :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
-        :disabled="!selectedFilepath"
-        flat
-        icon
-        @click="toggleBookmark({ filepath: selectedFilepath })"
-      >
-        <v-icon>{{ isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border' }}</v-icon>
-      </v-btn>
-      <v-btn
-        :title="'View'|accelerator('Enter')"
-        :disabled="!selectedFilepath"
-        flat
-        icon
-        @click="showViewer({ filepath: selectedFilepath })"
-      >
-        <v-icon>photo</v-icon>
-      </v-btn>
-      <v-icon
-        :title="'Search'|accelerator('CmdOrCtrl+F')"
-        class="ma-2 pa-1"
-      >search</v-icon>
-      <v-text-field
-        v-model="queryInput"
-        label="Search"
-        single-line
-        full-width
-        hide-details
-        clearable
-        @keyup="onQueryKeyup"
-        @contextmenu="onContextMenu"
-      />
-    </v-toolbar>
-  </div>
+      <v-icon>arrow_forward</v-icon>
+    </v-btn>
+    <v-menu
+      v-model="forwardMenu.show"
+      :position-x="forwardMenu.x"
+      :position-y="forwardMenu.y"
+    >
+      <v-list>
+        <v-list-tile
+          v-for="(directory, index) in forwardDirectories"
+          :key="index"
+          @click="() => forwardDirectory({ offset: index })"
+        >
+          <v-list-tile-title>{{ directory }}</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
+    <v-btn
+      slot="extension"
+      :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
+      flat
+      icon
+      @click="changeParentDirectory"
+    >
+      <v-icon>arrow_upward</v-icon>
+    </v-btn>
+    <v-btn
+      slot="extension"
+      :title="'Change home directory'|accelerator('CmdOrCtrl+Shift+H')"
+      flat
+      icon
+      @click="changeHomeDirectory"
+    >
+      <v-icon>home</v-icon>
+    </v-btn>
+    <v-btn
+      slot="extension"
+      title="Open current directory"
+      flat
+      icon
+      @click="openDirectory"
+    >
+      <v-icon>folder_open</v-icon>
+    </v-btn>
+    <v-btn
+      slot="extension"
+      :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
+      :disabled="!selectedFilepath"
+      flat
+      icon
+      @click="toggleBookmark({ filepath: selectedFilepath })"
+    >
+      <v-icon>{{ isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border' }}</v-icon>
+    </v-btn>
+    <v-btn
+      slot="extension"
+      :title="'View'|accelerator('Enter')"
+      :disabled="!selectedFilepath"
+      flat
+      icon
+      @click="showViewer({ filepath: selectedFilepath })"
+    >
+      <v-icon>photo</v-icon>
+    </v-btn>
+    <v-icon
+      slot="extension"
+      :title="'Search'|accelerator('CmdOrCtrl+F')"
+      class="ma-2 pa-1"
+    >search</v-icon>
+    <v-text-field
+      slot="extension"
+      v-model="queryInput"
+      label="Search"
+      single-line
+      full-width
+      hide-details
+      clearable
+      @keyup="onQueryKeyup"
+      @contextmenu="onContextMenu"
+    />
+  </v-toolbar>
 </template>
 
 <script>
