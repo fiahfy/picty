@@ -5,19 +5,23 @@
     dense
     extended
   >
-    <v-icon
-      color="blue lighten-3"
-      class="ma-2 pa-1"
-    >folder</v-icon>
     <v-text-field
       v-model="directoryInput"
       label="Path"
+      prepend-icon="folder"
       single-line
-      full-width
       hide-details
       @keyup="onDirectoryKeyup"
       @contextmenu="onContextMenu"
     />
+    <v-btn
+      title="Open current directory"
+      flat
+      icon
+      @click="openDirectory"
+    >
+      <v-icon>open_in_browser</v-icon>
+    </v-btn>
     <v-btn
       slot="extension"
       ref="backButton"
@@ -89,15 +93,6 @@
       @click="changeHomeDirectory"
     >
       <v-icon>home</v-icon>
-    </v-btn>
-    <v-btn
-      slot="extension"
-      title="Open current directory"
-      flat
-      icon
-      @click="openDirectory"
-    >
-      <v-icon>folder_open</v-icon>
     </v-btn>
     <v-btn
       slot="extension"

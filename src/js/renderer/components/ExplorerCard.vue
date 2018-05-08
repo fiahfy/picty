@@ -1,12 +1,11 @@
 <template>
   <v-card flat>
     <v-card-title>
-      Nutrition
       <v-spacer />
       <v-text-field
         v-model="queryInput"
-        append-icon="search"
         label="Search"
+        append-icon="search"
         single-line
         hide-details
         clearable
