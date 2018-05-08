@@ -12,6 +12,7 @@
       prepend-icon="folder"
       single-line
       hide-details
+      full-width
       @keyup="onKeyup"
       @contextmenu="onContextMenu"
     />

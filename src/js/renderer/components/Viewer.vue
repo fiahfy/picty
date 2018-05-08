@@ -27,7 +27,7 @@
         @error="onError"
       >
     </v-flex>
-    <control-bar
+    <viewer-toolbar
       :class="getControlBarClasses"
     />
   </v-layout>
@@ -35,11 +35,11 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import ControlBar from './ControlBar'
+import ViewerToolbar from './ViewerToolbar'
 
 export default {
   components: {
-    ControlBar
+    ViewerToolbar
   },
   data () {
     return {
@@ -285,7 +285,7 @@ export default {
       }
     }
   }
-  .control-bar {
+  .viewer-toolbar {
     bottom: 0;
     position: absolute;
     &.fade-in {

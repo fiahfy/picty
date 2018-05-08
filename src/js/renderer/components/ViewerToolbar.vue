@@ -1,6 +1,6 @@
 <template>
   <v-toolbar
-    class="control-bar"
+    class="viewer-toolbar"
     flat
     dense
   >
