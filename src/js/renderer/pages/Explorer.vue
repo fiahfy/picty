@@ -7,19 +7,29 @@
   >
     <v-layout column>
       <explorer-menu-bar />
-      <explorer-list />
+      <explorer-card />
+      <explorer-table />
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import ExplorerList from '../components/ExplorerList'
 import ExplorerMenuBar from '../components/ExplorerMenuBar'
+import ExplorerCard from '../components/ExplorerCard'
+import ExplorerTable from '../components/ExplorerTable'
 
 export default {
   components: {
-    ExplorerList,
-    ExplorerMenuBar
+    ExplorerMenuBar,
+    ExplorerCard,
+    ExplorerTable
   }
 }
 </script>
+
+<style scoped lang="scss">
+.explorer-table {
+  flex: 1;
+  overflow: hidden;
+}
+</style>

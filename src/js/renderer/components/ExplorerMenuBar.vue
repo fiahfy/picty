@@ -119,22 +119,6 @@
     >
       <v-icon>photo</v-icon>
     </v-btn>
-    <v-icon
-      slot="extension"
-      :title="'Search'|accelerator('CmdOrCtrl+F')"
-      class="ma-2 pa-1"
-    >search</v-icon>
-    <v-text-field
-      slot="extension"
-      v-model="queryInput"
-      label="Search"
-      single-line
-      full-width
-      hide-details
-      clearable
-      @keyup="onQueryKeyup"
-      @contextmenu="onContextMenu"
-    />
   </v-toolbar>
 </template>
 
@@ -166,14 +150,6 @@ export default {
         this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
       }
     },
-    queryInput: {
-      get () {
-        return this.$store.state.explorer.queryInput
-      },
-      set (value) {
-        this.$store.commit('explorer/setQueryInput', { queryInput: value })
-      }
-    },
     ...mapGetters({
       backDirectories: 'explorer/backDirectories',
       forwardDirectories: 'explorer/forwardDirectories',
@@ -182,11 +158,6 @@ export default {
       selectedFilepath: 'explorer/selectedFilepath',
       isBookmarked: 'bookmark/isBookmarked'
     })
-  },
-  watch: {
-    queryInput () {
-      this.search()
-    }
   },
   mounted () {
     const backButtonRect = this.$refs.backButton.$el.getBoundingClientRect()
@@ -198,20 +169,11 @@ export default {
   },
   methods: {
     onContextMenu (e) {
-      ContextMenu.show(e, [
-        { role: ContextMenu.Role.cut },
-        { role: ContextMenu.Role.copy },
-        { role: ContextMenu.Role.paste }
-      ])
+      ContextMenu.showTextMenu(e)
     },
     onDirectoryKeyup (e) {
       if (e.keyCode === 13) {
         this.changeDirectory({ dirpath: e.target.value })
-      }
-    },
-    onQueryKeyup (e) {
-      if (e.keyCode === 13) {
-        this.search({ query: e.target.value })
       }
     },
     showBackMenu (e) {
@@ -231,7 +193,6 @@ export default {
       backDirectory: 'explorer/backDirectory',
       forwardDirectory: 'explorer/forwardDirectory',
       openDirectory: 'explorer/openDirectory',
-      search: 'explorer/search',
       showViewer: 'explorer/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'
     })

@@ -1,37 +1,36 @@
 <template>
-  <div class="explorer-list">
-    <v-data-table
-      :headers="headers"
-      :items="files"
-      v-model="selected"
-      item-key="path"
-      hide-actions
-      must-sort
+  <v-data-table
+    :headers="headers"
+    :items="files"
+    v-model="selected"
+    class="explorer-table"
+    item-key="path"
+    hide-actions
+    must-sort
+  >
+    <template
+      slot-scope="props"
+      slot="items"
     >
-      <template
-        slot-scope="props"
-        slot="items"
+      <tr
+        :active="props.selected"
+        @click="selectRow(props)"
+        @dblclick="action({ filepath: props.item.path })"
       >
-        <tr
-          :active="props.selected"
-          @click="selectRow(props)"
-          @dblclick="action({ filepath: props.item.path })"
-        >
-          <td>
-            <v-icon
-              :color="getColor(props.item)"
-              class="pa-1"
-            >{{ getIcon(props.item) }}</v-icon>
-            <span>{{ props.item.name }}</span>
-          </td>
-          <td class="text-xs-right">
-            <template v-if="getSize(props.item) !== null">{{ getSize(props.item) | readableSize }}</template>
-          </td>
-          <td class="text-xs-right">{{ props.item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
-        </tr>
-      </template>
-    </v-data-table>
-  </div>
+        <td>
+          <v-icon
+            :color="getColor(props.item)"
+            class="pa-1"
+          >{{ getIcon(props.item) }}</v-icon>
+          <span>{{ props.item.name }}</span>
+        </td>
+        <td class="text-xs-right">
+          <template v-if="getSize(props.item) !== null">{{ getSize(props.item) | readableSize }}</template>
+        </td>
+        <td class="text-xs-right">{{ props.item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
+      </tr>
+    </template>
+  </v-data-table>
   <!-- <div
     :class="classes"
     class="explorer-list"
@@ -325,34 +324,37 @@ export default {
   // &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
   //   box-shadow: 0 0 3px 1px var(--shadow);
   // }
-// .explorer-list {
+// .explorer-table {
 //   height: 100%;
 //   overflow: hidden;
 // }
-// .explorer-list>div {
+// .explorer-table>div {
 //   height: 100%;
 // }
-// .explorer-list /deep/ .table__overflow {
-//   height: 100%;
-//   overflow-y: auto;
-// }
-// .explorer-list /deep/ .datatable {
+.explorer-table /deep/ .table__overflow {
+  height: 100%;
+  overflow-y: auto;
+}
+// .explorer-table /deep/ .datatable {
 //   background: transparent;
 // }
-// .explorer-list /deep/ .datatable>thead>tr,
-// .explorer-list /deep/ .datatable>tbody>tr {
+// .explorer-table /deep/ .datatable>thead>tr,
+// .explorer-table /deep/ .datatable>tbody>tr {
 //   border-bottom: none;
 // }
-// .explorer-list /deep/ .datatable>thead>tr>th {
+// .explorer-table /deep/ .datatable>thead>tr>th {
 //   background: inherit;
 //   outline: none;
 //   position: sticky;
 //   top: 0;
 // }
-// .explorer-list /deep/ .datatable>tbody>tr>td {
+// .explorer-table /deep/ .datatable>tbody>tr>td {
 //   cursor: pointer;
 //   overflow: hidden;
 //   text-overflow: ellipsis;
 //   white-space: nowrap;
+// }
+// .explorer-table {
+//   flex: 1;
 // }
 </style>

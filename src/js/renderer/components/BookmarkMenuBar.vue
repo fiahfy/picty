@@ -75,11 +75,7 @@ export default {
   },
   methods: {
     onContextMenu (e) {
-      ContextMenu.show(e, [
-        { role: ContextMenu.Role.cut },
-        { role: ContextMenu.Role.copy },
-        { role: ContextMenu.Role.paste }
-      ])
+      ContextMenu.showTextMenu(e)
     },
     onQueryKeyup (e) {
       if (e.keyCode === 13) {
