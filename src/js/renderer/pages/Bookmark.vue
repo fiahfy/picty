@@ -6,20 +6,27 @@
     pa-0
   >
     <v-layout column>
-      <bookmark-menu-bar />
-      <bookmark-list />
+      <bookmark-card />
+      <bookmark-table />
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import BookmarkList from '../components/BookmarkList'
-import BookmarkMenuBar from '../components/BookmarkMenuBar'
+import BookmarkCard from '../components/BookmarkCard'
+import BookmarkTable from '../components/BookmarkTable'
 
 export default {
   components: {
-    BookmarkList,
-    BookmarkMenuBar
+    BookmarkCard,
+    BookmarkTable
   }
 }
 </script>
+
+<style scoped lang="scss">
+.bookmark-table {
+  flex: 1;
+  overflow: hidden;
+}
+</style>

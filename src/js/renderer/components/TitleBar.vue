@@ -6,17 +6,24 @@
     status
   >
     <v-spacer/>
-    <span>Picty</span>
+    <span>{{ title }}</span>
     <v-spacer/>
   </v-system-bar>
 </template>
 
 <script>
+import Package from '../../../../package.json'
+
 export default {
   props: {
     app: {
       type: Boolean,
       default: true
+    }
+  },
+  computed: {
+    title () {
+      return Package.productName
     }
   }
 }

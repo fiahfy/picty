@@ -1,5 +1,5 @@
 <template>
-  <div />
+  <div class="bookmark-table" />
   <!-- <div
     :class="classes"
     class="bookmark-list"

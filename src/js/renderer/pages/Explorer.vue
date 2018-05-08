@@ -6,7 +6,7 @@
     pa-0
   >
     <v-layout column>
-      <explorer-menu-bar />
+      <explorer-toolbar />
       <explorer-card />
       <explorer-table />
     </v-layout>
@@ -14,13 +14,13 @@
 </template>
 
 <script>
-import ExplorerMenuBar from '../components/ExplorerMenuBar'
+import ExplorerToolbar from '../components/ExplorerToolbar'
 import ExplorerCard from '../components/ExplorerCard'
 import ExplorerTable from '../components/ExplorerTable'
 
 export default {
   components: {
-    ExplorerMenuBar,
+    ExplorerToolbar,
     ExplorerCard,
     ExplorerTable
   }
