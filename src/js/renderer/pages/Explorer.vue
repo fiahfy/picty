@@ -1,14 +1,20 @@
 <template>
   <v-container
     class="explorer"
-    fluid
     fill-height
+    fluid
     pa-0
   >
     <v-layout column>
       <explorer-toolbar />
       <explorer-card />
-      <explorer-table />
+      <v-container
+        fluid
+        pa-0
+        overflow-hidden
+      >
+        <explorer-table class="fill-height" />
+      </v-container>
     </v-layout>
   </v-container>
 </template>
@@ -26,10 +32,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.explorer-table {
-  flex: 1;
-  overflow: hidden;
-}
-</style>

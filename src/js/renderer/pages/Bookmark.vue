@@ -1,13 +1,19 @@
 <template>
   <v-container
     class="bookmark"
-    fluid
     fill-height
+    fluid
     pa-0
   >
     <v-layout column>
       <bookmark-card />
-      <bookmark-table />
+      <v-container
+        fluid
+        pa-0
+        overflow-hidden
+      >
+        <bookmark-table class="fill-height" />
+      </v-container>
     </v-layout>
   </v-container>
 </template>
@@ -23,10 +29,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.bookmark-table {
-  flex: 1;
-  overflow: hidden;
-}
-</style>

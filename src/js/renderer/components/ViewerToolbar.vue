@@ -129,7 +129,7 @@ export default {
     })
   },
   methods: {
-    hide () {
+    hideMenu () {
       this.menu = false
     },
     isHover () {

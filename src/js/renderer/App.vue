@@ -7,7 +7,7 @@
   >
     <title-bar v-if="titleBar" />
     <drawer />
-    <v-content>
+    <v-content class="fill-height">
       <router-view />
     </v-content>
     <v-dialog
@@ -24,9 +24,14 @@
           v-if="titleBar"
           :app="false"
         />
-        <v-card>
-          <viewer />
-        </v-card>
+        <v-container
+          card
+          fluid
+          pa-0
+          overflow-hidden
+        >
+          <viewer class="fill-height" />
+        </v-container>
       </v-layout>
     </v-dialog>
   </v-app>
@@ -96,14 +101,4 @@ export default {
 //     background-color: var(--scrollbar-active);
 //   }
 // }
-</style>
-
-<style scoped lang="scss">
-.content {
-  height: 100%;
-}
-.card {
-  flex: 1;
-  overflow: hidden;
-}
 </style>

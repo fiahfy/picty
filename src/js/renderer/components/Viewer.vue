@@ -1,16 +1,18 @@
 <template>
-  <v-layout
+  <div
     class="viewer"
-    fill-height
     tabindex="1"
     @keydown="onKeyDown"
   >
-    <viewer-container :class="getContainerClass" />
+    <viewer-container
+      :class="containerClasses"
+      class="fill-height"
+    />
     <viewer-toolbar
       ref="toolbar"
-      :class="getToolbarClass"
+      :class="toolbarClasses"
     />
-  </v-layout>
+  </div>
 </template>
 
 <script>
@@ -29,12 +31,12 @@ export default {
     }
   },
   computed: {
-    getContainerClass () {
+    containerClasses () {
       return {
         hidden: this.toolbar === false
       }
     },
-    getToolbarClass () {
+    toolbarClasses () {
       return {
         'fade-in': this.toolbar === true,
         'fade-out': this.toolbar === false
@@ -43,11 +45,11 @@ export default {
   },
   mounted () {
     this.showToolbar()
-    document.body.addEventListener('mousemove', this.mousemove)
+    document.body.addEventListener('mousemove', this.onMouseMove)
   },
   beforeDestroy () {
-    this.$el.removeEventListener('scroll', this.scroll)
-    document.body.removeEventListener('mousemove', this.mousemove)
+    this.clearTimer()
+    document.body.removeEventListener('mousemove', this.onMouseMove)
   },
   methods: {
     onKeyDown (e) {
@@ -73,24 +75,30 @@ export default {
           break
       }
     },
-    mousemove (e) {
+    onMouseMove (e) {
       this.showToolbar()
+    },
+    clearTimer () {
+      if (this.timer) {
+        clearTimeout(this.timer)
+      }
+    },
+    setTimer () {
+      this.timer = setTimeout(() => {
+        this.toolbar = false
+        this.$refs.toolbar.hideMenu()
+        this.$el.focus()
+      }, 2000)
     },
     showToolbar () {
       if (this.toolbar === false) {
         this.toolbar = true
       }
-      if (this.timer) {
-        clearTimeout(this.timer)
-      }
+      this.clearTimer()
       if (this.$refs.toolbar.isHover()) {
         return
       }
-      this.timer = setTimeout(() => {
-        this.toolbar = false
-        this.$refs.toolbar.hide()
-        this.$el.focus()
-      }, 2000)
+      this.setTimer()
     },
     ...mapActions({
       dismiss: 'viewer/dismiss',
@@ -122,10 +130,7 @@ export default {
     transform: translateY(48px);
   }
 }
-
 .viewer-container {
-  flex: 1;
-  overflow: hidden;
   &.hidden {
     cursor: none;
   }

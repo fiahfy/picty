@@ -1,29 +1,31 @@
 <template>
-  <v-layout
-    :class="getClass"
+  <v-container
+    :class="classes"
     class="viewer-container"
   >
-    <v-flex v-if="message">
-      {{ message }}
-    </v-flex>
-    <v-flex
-      v-else
-      ref="wrapper"
-      class="wrapper"
-      @mousemove="onMouseMove"
-      @mousedown="onMouseDown"
-      @mouseup="onMouseUp"
-    >
-      <img
-        :src="`file://${currentFile.path}`"
-        :class="getImageClass"
-        :style="getStyle"
-        draggable="false"
-        @load="onLoad"
-        @error="onError"
+    <v-layout fill-height>
+      <v-flex v-if="message">
+        {{ message }}
+      </v-flex>
+      <v-flex
+        v-else
+        ref="wrapper"
+        class="wrapper"
+        @mousemove="onMouseMove"
+        @mousedown="onMouseDown"
+        @mouseup="onMouseUp"
       >
-    </v-flex>
-  </v-layout>
+        <img
+          :src="`file://${currentFile.path}`"
+          :class="imageClasses"
+          :style="imageStyles"
+          draggable="false"
+          @load="onLoad"
+          @error="onError"
+        >
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -48,12 +50,12 @@ export default {
     message () {
       return this.error ? this.error.message : ''
     },
-    getClass () {
+    classes () {
       return {
         dragging: this.dragging
       }
     },
-    getImageClass () {
+    imageClasses () {
       return {
         'horizontal-center': this.centered.horizontal,
         'vertical-center': this.centered.vertical,
@@ -61,7 +63,7 @@ export default {
         stretched: this.imageStretched
       }
     },
-    getStyle () {
+    imageStyles () {
       return this.scaling ? {
         width: this.originalSize.width * this.scale + 'px',
         height: this.originalSize.height * this.scale + 'px'
@@ -161,7 +163,6 @@ export default {
 ::-webkit-scrollbar {
   display: none;
 }
-
 .viewer-container {
   cursor: -webkit-grab;
   &.dragging {
