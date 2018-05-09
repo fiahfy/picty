@@ -98,7 +98,7 @@
         single-line
         hide-details
         clearable
-        @keyup="onKeyup"
+        @keyup="onKeyUp"
         @contextmenu="onContextMenu"
       />
     </v-card-title>
@@ -159,7 +159,7 @@ export default {
     onContextMenu (e) {
       ContextMenu.showTextMenu(e)
     },
-    onKeyup (e) {
+    onKeyUp (e) {
       if (e.keyCode === 13) {
         this.search({ query: e.target.value })
       }

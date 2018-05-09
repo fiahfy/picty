@@ -13,7 +13,7 @@
       single-line
       hide-details
       full-width
-      @keyup="onKeyup"
+      @keyup="onKeyUp"
       @contextmenu="onContextMenu"
     />
   </v-toolbar>
@@ -38,7 +38,7 @@ export default {
     onContextMenu (e) {
       ContextMenu.showTextMenu(e)
     },
-    onKeyup (e) {
+    onKeyUp (e) {
       if (e.keyCode === 13) {
         this.changeDirectory({ dirpath: e.target.value })
       }
