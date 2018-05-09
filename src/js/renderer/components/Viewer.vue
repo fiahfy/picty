@@ -5,7 +5,6 @@
     fill-height
     tabindex="1"
     @keydown="keydown"
-    @mousemove="mousemove"
   >
     <v-flex v-if="message">
       {{ message }}
@@ -28,7 +27,8 @@
       >
     </v-flex>
     <viewer-toolbar
-      :class="getControlBarClasses"
+      ref="toolbar"
+      :class="getToolbarClass"
     />
   </v-layout>
 </template>
@@ -45,7 +45,7 @@ export default {
     return {
       loadError: false,
       dragging: false,
-      controlBar: null,
+      toolbar: null,
       centered: {
         horizontal: true,
         vertical: true
@@ -68,14 +68,14 @@ export default {
     },
     getClass () {
       return {
-        hidden: this.controlBar === true,
+        hidden: this.toolbar === false,
         dragging: this.dragging
       }
     },
-    getControlBarClasses () {
+    getToolbarClass () {
       return {
-        'fade-in': this.controlBar === false,
-        'fade-out': this.controlBar === true
+        'fade-in': this.toolbar === true,
+        'fade-out': this.toolbar === false
       }
     },
     getImageClass () {
@@ -129,7 +129,12 @@ export default {
     }
   },
   mounted () {
-    this.showControlBar()
+    this.showToolbar()
+    document.body.addEventListener('mousemove', this.mousemove)
+  },
+  beforeDestroy () {
+    this.$el.removeEventListener('scroll', this.scroll)
+    document.body.removeEventListener('mousemove', this.mousemove)
   },
   methods: {
     keydown (e) {
@@ -156,7 +161,7 @@ export default {
       }
     },
     mousemove (e) {
-      this.showControlBar()
+      this.showToolbar()
     },
     onMouseDown (e) {
       this.dragging = true
@@ -198,18 +203,19 @@ export default {
     onError (e) {
       this.loadError = true
     },
-    showControlBar () {
-      if (this.controlBar === true) {
-        this.controlBar = false
+    showToolbar () {
+      if (this.toolbar === false) {
+        this.toolbar = true
       }
       if (this.timer) {
         clearTimeout(this.timer)
       }
-      if (document.querySelector('.toolbar:hover')) {
+      if (this.$refs.toolbar.isHover()) {
         return
       }
       this.timer = setTimeout(() => {
-        this.controlBar = true
+        this.toolbar = false
+        this.$refs.toolbar.hide()
         this.$el.focus()
       }, 2000)
     },

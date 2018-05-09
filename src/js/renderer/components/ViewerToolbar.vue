@@ -44,6 +44,7 @@
         <v-icon>zoom_in</v-icon>
       </v-btn>
       <v-toolbar
+        ref="toolbar"
         flat
         dense
       >
@@ -108,6 +109,7 @@ import { mapActions, mapState } from 'vuex'
 export default {
   data () {
     return {
+      hovered: false,
       menu: false
     }
   },
@@ -127,6 +129,12 @@ export default {
     })
   },
   methods: {
+    hide () {
+      this.menu = false
+    },
+    isHover () {
+      return !!(this.$el.querySelector(':hover') || this.$refs.toolbar.$el.querySelector(':hover'))
+    },
     ...mapActions({
       enterFullScreen: 'enterFullScreen',
       leaveFullScreen: 'leaveFullScreen',
