@@ -1,7 +1,8 @@
 <template>
-  <v-data-table
+  <virtual-data-table
     :headers="headers"
     :items="files"
+    :pagination.sync="pagination"
     v-model="selected"
     class="explorer-table"
     item-key="path"
@@ -9,8 +10,24 @@
     must-sort
   >
     <template
+      slot="headers"
       slot-scope="props"
+    >
+      <tr>
+        <th
+          v-for="header in props.headers"
+          :key="header.text"
+          :class="['column sortable', header.descending ? (pagination.descending ? 'asc' : 'desc') : (pagination.descending ? 'desc' : 'asc'), header.value === pagination.sortBy ? 'active' : '']"
+          @click="changeSort(header)"
+        >
+          <v-icon small>{{ header.descending ? 'arrow_downward' : 'arrow_upward' }}</v-icon>
+          {{ header.text }}
+        </th>
+      </tr>
+    </template>
+    <template
       slot="items"
+      slot-scope="props"
     >
       <tr
         :active="props.selected"
@@ -30,7 +47,7 @@
         <td class="text-xs-right">{{ props.item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
       </tr>
     </template>
-  </v-data-table>
+  </virtual-data-table>
   <!-- <div
     :class="classes"
     class="explorer-list"
@@ -95,12 +112,20 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
+import VirtualDataTable from './VirtualDataTable'
 import * as ContextMenu from '../utils/context-menu'
 
 export default {
+  components: {
+    VirtualDataTable
+  },
   data () {
     return {
       scrolling: false,
+      pagination: {
+        sortBy: 'size',
+        rowsPerPage: -1
+      },
       selected: [],
       headers: [
         {
@@ -116,7 +141,8 @@ export default {
         {
           text: 'Date Modified',
           align: 'center',
-          value: 'mtime'
+          value: 'mtime',
+          descending: true
         }
       ]
     }
@@ -178,6 +204,20 @@ export default {
     this.$el.removeEventListener('scroll', this.scroll)
   },
   methods: {
+    changeSort (header) {
+      if (this.pagination.sortBy === header.value) {
+        this.pagination = {
+          ...this.pagination,
+          descending: !this.pagination.descending
+        }
+      } else {
+        this.pagination = {
+          ...this.pagination,
+          sortBy: header.value,
+          descending: header.descending
+        }
+      }
+    },
     getIcon (file) {
       return file.directory ? 'folder' : 'photo'
     },
@@ -188,6 +228,7 @@ export default {
       return file.directory ? null : file.size
     },
     selectRow (props) {
+      console.log(props)
       this.selected = [props.item]
       this.select({ filepath: props.item.path })
     },
