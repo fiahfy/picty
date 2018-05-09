@@ -2,6 +2,8 @@
   <v-container
     :class="classes"
     class="viewer-container"
+    fluid
+    pa-0
   >
     <v-layout fill-height>
       <v-flex v-if="message">
