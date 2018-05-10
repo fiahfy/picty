@@ -1,5 +1,6 @@
 <template>
   <virtual-data-table
+    ref="table"
     :headers="headers"
     :items="files"
     :pagination.sync="pagination"
@@ -30,6 +31,7 @@
       slot-scope="props"
     >
       <tr
+        :key="props.item.path"
         :active="props.selected"
         @click="selectRow(props)"
         @dblclick="action({ filepath: props.item.path })"
@@ -195,13 +197,13 @@ export default {
     }
   },
   mounted () {
-    this.$el.addEventListener('scroll', this.scroll)
+    this.$el.querySelector('.table__overflow').addEventListener('scroll', this.scroll)
     this.$nextTick(() => {
       this.$el.scrollTop = this.scrollTop
     })
   },
   beforeDestroy () {
-    this.$el.removeEventListener('scroll', this.scroll)
+    this.$el.querySelector('.table__overflow').removeEventListener('scroll', this.scroll)
   },
   methods: {
     changeSort (header) {
@@ -372,10 +374,6 @@ export default {
 // .explorer-table>div {
 //   height: 100%;
 // }
-.explorer-table /deep/ .table__overflow {
-  height: 100%;
-  overflow-y: auto;
-}
 // .explorer-table /deep/ .datatable {
 //   background: transparent;
 // }
