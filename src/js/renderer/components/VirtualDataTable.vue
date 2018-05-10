@@ -2,7 +2,9 @@
   <v-data-table
     ref="table"
     v-bind="$attrs"
+    v-model="model"
     :pagination.sync="paginationModel"
+    :class="classes"
     class="virtual-data-table"
   >
     <template
@@ -20,16 +22,17 @@
     >
       <tr
         v-if="props.index === 0"
-        :style="{ height: `${offset.top}px` }"
+        :style="{ height: `${padding.top}px` }"
       />
       <slot
-        v-if="props.index >= offset.first && props.index < offset.last"
+        v-if="props.index >= offset.top && props.index < offset.bottom"
         v-bind="props"
+        :selected="props.selected"
         name="items"
       />
       <tr
         v-if="props.index === pagination.totalItems - 1"
-        :style="{ height: `${offset.bottom}px` }"
+        :style="{ height: `${padding.bottom}px` }"
       />
     </template>
   </v-data-table>
@@ -38,22 +41,32 @@
 <script>
 export default {
   props: {
+    value: {
+      type: Array,
+      default: () => []
+    },
     pagination: {
       type: Object,
       default: () => ({})
+    },
+    stickyHeaders: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
     return {
+      selected: [],
       estimatedHeight: 48,
       offset: {
         top: 0,
         bottom: 0
       },
-      offsetIndex: {
-        first: 0,
-        last: 0
-      }
+      padding: {
+        top: 0,
+        bottom: 0
+      },
+      scrolling: false
     }
   },
   computed: {
@@ -65,11 +78,26 @@ export default {
         this.$emit('update:pagination', value)
       }
     },
+    model: {
+      get () {
+        return this.value
+      },
+      set (value) {
+        this.$emit('update:value', value)
+      }
+    },
+    classes () {
+      return {
+        'sticky-headers': this.stickyHeaders,
+        scrolling: this.scrolling
+      }
+    },
     filteredItems () {
       return this.$refs.table.filteredItems
     }
   },
   mounted () {
+    window.addEventListener('resize', this.onScroll)
     this.container = this.$el.querySelector('.table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
     this.$nextTick(() => {
@@ -77,51 +105,76 @@ export default {
     })
   },
   beforeDestroy () {
+    window.removeEventListener('resize', this.onScroll)
     this.container.removeEventListener('scroll', this.onScroll)
   },
   methods: {
     onScroll () {
-      const top = this.container.scrollTop
+      const scrollTop = this.container.scrollTop
       const offset = Math.ceil(this.container.offsetHeight / this.estimatedHeight)
-      const first = Math.max(0, Math.floor(top / this.estimatedHeight))
-      const last = Math.min(first + offset, this.pagination.totalItems)
-      // this.offsetIndex = {
-      //   first,
-      //   last: Math.min(first + offset, this.pagination.totalItems)
-      // }
-      this.$nextTick(() => {
-      this.offset = {
-        first, last,
-        top: first * this.estimatedHeight,
-        bottom: (this.pagination.totalItems - last) * this.estimatedHeight
+      const top = Math.max(0, Math.floor(scrollTop / this.estimatedHeight) + (this.stickyHeaders ? 0 : -1))
+      const bottom = Math.min(top + offset, this.pagination.totalItems)
+      this.scrolling = scrollTop > 0
+      this.offset = { top, bottom }
+      this.padding = {
+        top: top * this.estimatedHeight,
+        bottom: (this.pagination.totalItems - bottom) * this.estimatedHeight
       }
-      })
-      // console.log(top, (this.offset.top == this.offset.first * 48), (this.offset.bottom == (this.pagination.totalItems - this.offset.last) * 48))
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.virtual-data-table /deep/ .table__overflow::-webkit-scrollbar {
-  width: 14px;
-  -webkit-appearance: none;
-}
-.virtual-data-table /deep/ .table__overflow::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.15);
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.25);
+.virtual-data-table {
+  & /deep/ .table__overflow {
+    height: 100%;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 14px;
+      -webkit-appearance: none;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.15);
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.25);
+      }
+      &:active {
+        background-color: rgba(0, 0, 0, 0.35);
+      }
+    }
   }
-  &:active {
-    background-color: rgba(0, 0, 0, 0.35);
+  &.sticky-headers {
+    & /deep/ .datatable>thead {
+      background: inherit;
+      &>tr {
+        background: inherit;
+        &>th {
+          background: inherit;
+          position: sticky;
+          top: 0;
+          z-index: 1;
+        }
+        &.datatable__progress>th {
+          top: 56px;
+          z-index: 0;
+          &:after {
+            bottom: 0;
+            box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+            content: '';
+            left: 0;
+            position: absolute;
+            width: 100%;
+          }
+        }
+      }
+    }
+    &.scrolling /deep/ .datatable>thead>tr {
+      border-bottom: none;
+      &.datatable__progress>th:after {
+        height: 10px;
+      }
+    }
   }
-}
-
-.virtual-data-table /deep/ .table__overflow {
-  height: 100%;
-  overflow-y: auto;
-}
-.virtual-data-table /deep/ .datatable__progress {
-  display: none;
 }
 </style>

@@ -9,6 +9,7 @@
     item-key="path"
     hide-actions
     must-sort
+    sticky-headers
   >
     <template
       slot="headers"
