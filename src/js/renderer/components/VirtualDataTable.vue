@@ -4,6 +4,7 @@
     v-bind="$attrs"
     v-model="model"
     :pagination.sync="paginationModel"
+    :items="items"
     :class="classes"
     class="virtual-data-table"
   >
@@ -48,6 +49,10 @@ export default {
     pagination: {
       type: Object,
       default: () => ({})
+    },
+    items: {
+      type: Array,
+      default: () => []
     },
     stickyHeaders: {
       type: Boolean,
@@ -96,6 +101,13 @@ export default {
       return this.$refs.table.filteredItems
     }
   },
+  watch: {
+    items () {
+      this.$nextTick(() => {
+        this.onScroll()
+      })
+    }
+  },
   mounted () {
     window.addEventListener('resize', this.onScroll)
     this.container = this.$el.querySelector('.table__overflow')
@@ -125,8 +137,21 @@ export default {
 }
 </script>
 
+<style lang="scss">
+.theme--dark .virtual-data-table /deep/ .table__overflow::-webkit-scrollbar-thumb {
+  background-color: #424242!important;
+  &:hover {
+    background-color: #505050!important;
+  }
+  &:active {
+    background-color: #616161!important;
+  }
+}
+</style>
+
 <style scoped lang="scss">
 .virtual-data-table {
+  table-layout: fixed;
   & /deep/ .table__overflow {
     height: 100%;
     overflow-y: auto;
@@ -135,12 +160,12 @@ export default {
       -webkit-appearance: none;
     }
     &::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.15);
+      background-color: #eee;
       &:hover {
-        background-color: rgba(0, 0, 0, 0.25);
+        background-color: #ddd;
       }
       &:active {
-        background-color: rgba(0, 0, 0, 0.35);
+        background-color: #ccc;
       }
     }
   }

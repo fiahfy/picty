@@ -19,7 +19,12 @@
         <th
           v-for="header in props.headers"
           :key="header.text"
-          :class="['column sortable', header.descending ? (pagination.descending ? 'asc' : 'desc') : (pagination.descending ? 'desc' : 'asc'), header.value === pagination.sortBy ? 'active' : '']"
+          :class="[
+            'column sortable',
+            header.descending ? (pagination.descending ? 'asc' : 'desc') : (pagination.descending ? 'desc' : 'asc'),
+            header.value === pagination.sortBy ? 'active' : ''
+          ]"
+          :style="{ 'box-sizing': 'content-box', width: header.width ? `${header.width}px` : null }"
           @click="changeSort(header)"
         >
           <v-icon small>{{ header.descending ? 'arrow_downward' : 'arrow_upward' }}</v-icon>
@@ -124,12 +129,11 @@ export default {
   },
   data () {
     return {
-      scrolling: false,
+      selected: [],
       pagination: {
         sortBy: 'size',
         rowsPerPage: -1
       },
-      selected: [],
       headers: [
         {
           text: 'Name',
@@ -139,26 +143,20 @@ export default {
         {
           text: 'Size',
           align: 'center',
-          value: 'size'
+          value: 'size',
+          width: 64
         },
         {
           text: 'Date Modified',
           align: 'center',
           value: 'mtime',
+          width: 128,
           descending: true
         }
       ]
     }
   },
   computed: {
-    classes () {
-      return {
-        scrolling: this.scrolling
-      }
-    },
-    icon () {
-      return this.sortOption.order === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
-    },
     ...mapState({
       directory: state => state.explorer.directory
     }),
@@ -198,13 +196,9 @@ export default {
     }
   },
   mounted () {
-    this.$el.querySelector('.table__overflow').addEventListener('scroll', this.scroll)
     this.$nextTick(() => {
       this.$el.scrollTop = this.scrollTop
     })
-  },
-  beforeDestroy () {
-    this.$el.querySelector('.table__overflow').removeEventListener('scroll', this.scroll)
   },
   methods: {
     changeSort (header) {
@@ -235,11 +229,11 @@ export default {
       this.selected = [props.item]
       this.select({ filepath: props.item.path })
     },
-    scroll () {
-      const scrollTop = this.$el.scrollTop
-      this.scrolling = scrollTop > 0
-      this.setScrollTop({ scrollTop })
-    },
+    // scroll () {
+    //   const scrollTop = this.$el.scrollTop
+    //   this.scrolling = scrollTop > 0
+    //   this.setScrollTop({ scrollTop })
+    // },
     keydown (e) {
       switch (e.keyCode) {
         case 13:
@@ -270,12 +264,12 @@ export default {
           break
       }
     },
-    click (e, sortKey) {
-      this.changeSortKey({ sortKey })
-      this.$nextTick(() => {
-        this.$el.scrollTop = 0
-      })
-    },
+    // click (e, sortKey) {
+    //   this.changeSortKey({ sortKey })
+    //   this.$nextTick(() => {
+    //     this.$el.scrollTop = 0
+    //   })
+    // },
     contextmenu (e, file) {
       this.select({ filepath: file.path })
       ContextMenu.show(e, [
@@ -312,89 +306,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-  // overflow-y: auto;
-  // .mdc-table {
-  //   border-spacing: 0;
-  //   table-layout: fixed;
-  //   width: 100%;
-  //   .mdc-table-header {
-  //     .mdc-table-row {
-  //       cursor: pointer;
-  //       height: 40px;
-  //       .mdc-table-header-column {
-  //         border: 0;
-  //         color: var(--mdc-theme-text-secondary-on-background);
-  //         font-size: smaller;
-  //         font-weight: normal;
-  //         line-height: 20px;
-  //         padding: 8px;
-  //         position: sticky;
-  //         top: 0;
-  //         vertical-align: bottom;
-  //         white-space: nowrap;
-  //         z-index: 1;
-  //         &.size {
-  //           width: 64px;
-  //         }
-  //         &.date-modified {
-  //           width: 128px;
-  //         }
-  //         .mdc-icon {
-  //           padding: 0;
-  //           vertical-align: bottom;
-  //         }
-  //       }
-  //       &.shadow {
-  //         height: 1px;
-  //         .mdc-table-header-column {
-  //           padding: 0;
-  //           position: sticky;
-  //           top: 40px;
-  //           z-index: 0;
-  //           &:after {
-  //             bottom: 0;
-  //             content:'';
-  //             left: 0;
-  //             position: absolute;
-  //             width: 100%;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-  // &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
-  //   box-shadow: 0 0 3px 1px var(--shadow);
-  // }
-// .explorer-table {
-//   height: 100%;
-//   overflow: hidden;
-// }
-// .explorer-table>div {
-//   height: 100%;
-// }
-// .explorer-table /deep/ .datatable {
-//   background: transparent;
-// }
-// .explorer-table /deep/ .datatable>thead>tr,
-// .explorer-table /deep/ .datatable>tbody>tr {
-//   border-bottom: none;
-// }
-// .explorer-table /deep/ .datatable>thead>tr>th {
-//   background: inherit;
-//   outline: none;
-//   position: sticky;
-//   top: 0;
-// }
-// .explorer-table /deep/ .datatable>tbody>tr>td {
-//   cursor: pointer;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-//   white-space: nowrap;
-// }
-// .explorer-table {
-//   flex: 1;
-// }
-</style>
