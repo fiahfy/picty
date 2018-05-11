@@ -96,11 +96,11 @@ export default {
   },
   computed: {
     ...mapState({
-      directory: state => state.explorer.directory
+      directory: state => state.explorer.directory,
+      selectedFilepath: state => state.explorer.selectedFilepath
     }),
     ...mapGetters({
       files: 'explorer/filteredFiles',
-      selectedFilepath: 'explorer/selectedFilepath',
       currentScrollTop: 'explorer/currentScrollTop',
       currentPagination: 'explorer/currentPagination',
       selectedIndex: 'explorer/selectedIndex',
@@ -114,7 +114,10 @@ export default {
     directory () {
       this.restore()
     },
-    selectedFilepath () {
+    selected (value) {
+      if (value.length) {
+        this.select({ filepath: value[0].path })
+      }
       this.$nextTick(() => {
         const index = this.selectedIndex
         if (index === -1) {
@@ -164,6 +167,7 @@ export default {
       if (this.currentPagination) {
         this.pagination = this.currentPagination
       }
+      this.selected = []
       const scrollTop = this.currentScrollTop
       this.$nextTick(() => {
         this.$refs.table.setScrollTop(scrollTop)
@@ -187,9 +191,7 @@ export default {
       })
     },
     selectRow (props) {
-      console.log(props)
       this.selected = [props.item]
-      this.select({ filepath: props.item.path })
     },
     onScroll ({ scrollTop }) {
       this.setScrollTop({ scrollTop })

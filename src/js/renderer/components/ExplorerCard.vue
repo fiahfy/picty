@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '../utils/context-menu'
 
 export default {
@@ -133,12 +133,14 @@ export default {
         this.$store.commit('explorer/setQueryInput', { queryInput: value })
       }
     },
+    ...mapState({
+      selectedFilepath: state => state.explorer.selectedFilepath
+    }),
     ...mapGetters({
       backDirectories: 'explorer/backDirectories',
       forwardDirectories: 'explorer/forwardDirectories',
       canBackDirectory: 'explorer/canBackDirectory',
       canForwardDirectory: 'explorer/canForwardDirectory',
-      selectedFilepath: 'explorer/selectedFilepath',
       isBookmarked: 'bookmark/isBookmarked'
     })
   },
