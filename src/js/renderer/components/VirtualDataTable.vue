@@ -104,6 +104,9 @@ export default {
   watch: {
     items () {
       this.onScroll()
+      this.$nextTick(() => {
+        this.onScroll()
+      })
     }
   },
   mounted () {

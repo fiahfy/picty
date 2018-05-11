@@ -3,6 +3,7 @@
     ref="table"
     :headers="headers"
     :items="files"
+    :search="query"
     :pagination.sync="pagination"
     v-model="selected"
     class="explorer-table"
@@ -71,6 +72,7 @@ export default {
   data () {
     return {
       selected: [],
+      search: '',
       pagination: {
         sortBy: 'name',
         rowsPerPage: -1
@@ -95,15 +97,22 @@ export default {
     }
   },
   computed: {
+    query: {
+      get () {
+        return this.$store.state.explorer.query
+      },
+      set (value) {
+        this.$store.commit('explorer/setQuery', { query: value })
+      }
+    },
     ...mapState({
+      files: state => state.explorer.files,
       directory: state => state.explorer.directory,
       selectedFilepath: state => state.explorer.selectedFilepath
     }),
     ...mapGetters({
-      files: 'explorer/filteredFiles',
       currentScrollTop: 'explorer/currentScrollTop',
       currentPagination: 'explorer/currentPagination',
-      selectedIndex: 'explorer/selectedIndex',
       isSelected: 'explorer/isSelected'
     })
   },
