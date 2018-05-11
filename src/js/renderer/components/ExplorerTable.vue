@@ -10,6 +10,9 @@
     hide-actions
     must-sort
     sticky-headers
+    tabindex="0"
+    @scroll="onScroll"
+    @keydown.native="onKeyDown"
   >
     <template
       slot="headers"
@@ -19,12 +22,8 @@
         <th
           v-for="header in props.headers"
           :key="header.text"
-          :class="[
-            'column sortable',
-            header.descending ? (pagination.descending ? 'asc' : 'desc') : (pagination.descending ? 'desc' : 'asc'),
-            header.value === pagination.sortBy ? 'active' : ''
-          ]"
-          :style="{ 'box-sizing': 'content-box', width: header.width ? `${header.width}px` : null }"
+          :class="getHeaderClass(header)"
+          :style="getHeaderStyle(header)"
           @click="changeSort(header)"
         >
           <v-icon small>{{ header.descending ? 'arrow_downward' : 'arrow_upward' }}</v-icon>
@@ -41,8 +40,10 @@
         :active="props.selected"
         @click="selectRow(props)"
         @dblclick="action({ filepath: props.item.path })"
+        @contextmenu="(e) => onContextMenu(e, props.item)"
       >
         <td>
+          <v-icon class="pa-1">star_outline</v-icon>
           <v-icon
             :color="getColor(props.item)"
             class="pa-1"
@@ -56,66 +57,6 @@
       </tr>
     </template>
   </virtual-data-table>
-  <!-- <div
-    :class="classes"
-    class="explorer-list"
-    tabindex="0"
-    @keydown="keydown"
-  >
-    <mdc-table>
-      <mdc-table-header>
-        <mdc-table-row>
-          <mdc-table-header-column
-            class="name"
-            @click="e => click(e, 'name')"
-          >
-            <span>Name</span>
-            <mdc-icon
-              v-if="sortOption.key === 'name'"
-              :icon="icon"
-            />
-          </mdc-table-header-column>
-          <mdc-table-header-column
-            class="size"
-            @click="e => click(e, 'size')"
-          >
-            <span>Size</span>
-            <mdc-icon
-              v-if="sortOption.key === 'size'"
-              :icon="icon"
-            />
-          </mdc-table-header-column>
-          <mdc-table-header-column
-            class="date-modified"
-            @click="e => click(e, 'date_modified')"
-          >
-            <span>Date Modified</span>
-            <mdc-icon
-              v-if="sortOption.key === 'date_modified'"
-              :icon="icon"
-            />
-          </mdc-table-header-column>
-        </mdc-table-row>
-        <mdc-table-row class="shadow">
-          <mdc-table-header-column colspan="3" />
-        </mdc-table-row>
-      </mdc-table-header>
-      <mdc-virtual-table-body
-        :items="files"
-        :estimated-height="41"
-      >
-        <explorer-list-item
-          slot-scope="{ item, index }"
-          :key="item.name"
-          :file="item"
-          :selected="isSelected({ filepath: item.path })"
-          @click.native="select({ filepath: item.path })"
-          @dblclick.native="action({ filepath: item.path })"
-          @contextmenu.native="e => contextmenu(e, item)"
-        />
-      </mdc-virtual-table-body>
-    </mdc-table>
-  </div> -->
 </template>
 
 <script>
@@ -131,24 +72,21 @@ export default {
     return {
       selected: [],
       pagination: {
-        sortBy: 'size',
+        sortBy: 'name',
         rowsPerPage: -1
       },
       headers: [
         {
           text: 'Name',
-          align: 'center',
           value: 'name'
         },
         {
           text: 'Size',
-          align: 'center',
           value: 'size',
           width: 64
         },
         {
           text: 'Date Modified',
-          align: 'center',
           value: 'mtime',
           width: 128,
           descending: true
@@ -163,17 +101,18 @@ export default {
     ...mapGetters({
       files: 'explorer/filteredFiles',
       selectedFilepath: 'explorer/selectedFilepath',
-      scrollTop: 'explorer/scrollTop',
-      sortOption: 'explorer/sortOption',
+      currentScrollTop: 'explorer/currentScrollTop',
+      currentPagination: 'explorer/currentPagination',
       selectedIndex: 'explorer/selectedIndex',
       isSelected: 'explorer/isSelected'
     })
   },
   watch: {
+    pagination (value) {
+      this.setPagination({ pagination: value })
+    },
     directory () {
-      this.$nextTick(() => {
-        this.$el.scrollTop = this.scrollTop
-      })
+      this.restore()
     },
     selectedFilepath () {
       this.$nextTick(() => {
@@ -196,11 +135,40 @@ export default {
     }
   },
   mounted () {
-    this.$nextTick(() => {
-      this.$el.scrollTop = this.scrollTop
-    })
+    this.restore()
   },
   methods: {
+    getHeaderClass (header) {
+      return [
+        'column sortable',
+        header.descending ? (this.pagination.descending ? 'asc' : 'desc') : (this.pagination.descending ? 'desc' : 'asc'),
+        header.value === this.pagination.sortBy ? 'active' : ''
+      ]
+    },
+    getHeaderStyle (header) {
+      return {
+        'box-sizing': 'content-box',
+        width: header.width ? `${header.width}px` : null
+      }
+    },
+    getIcon (file) {
+      return file.directory ? 'folder' : 'photo'
+    },
+    getColor (file) {
+      return file.directory ? 'blue lighten-3' : 'green lighten-3'
+    },
+    getSize (file) {
+      return file.directory ? null : file.size
+    },
+    restore () {
+      if (this.currentPagination) {
+        this.pagination = this.currentPagination
+      }
+      const scrollTop = this.currentScrollTop
+      this.$nextTick(() => {
+        this.$refs.table.setScrollTop(scrollTop)
+      })
+    },
     changeSort (header) {
       if (this.pagination.sortBy === header.value) {
         this.pagination = {
@@ -214,27 +182,19 @@ export default {
           descending: header.descending
         }
       }
-    },
-    getIcon (file) {
-      return file.directory ? 'folder' : 'photo'
-    },
-    getColor (file) {
-      return file.directory ? 'blue lighten-3' : 'green lighten-3'
-    },
-    getSize (file) {
-      return file.directory ? null : file.size
+      this.$nextTick(() => {
+        this.$refs.table.setScrollTop(0)
+      })
     },
     selectRow (props) {
       console.log(props)
       this.selected = [props.item]
       this.select({ filepath: props.item.path })
     },
-    // scroll () {
-    //   const scrollTop = this.$el.scrollTop
-    //   this.scrolling = scrollTop > 0
-    //   this.setScrollTop({ scrollTop })
-    // },
-    keydown (e) {
+    onScroll ({ scrollTop }) {
+      this.setScrollTop({ scrollTop })
+    },
+    onKeyDown (e) {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
@@ -264,13 +224,7 @@ export default {
           break
       }
     },
-    // click (e, sortKey) {
-    //   this.changeSortKey({ sortKey })
-    //   this.$nextTick(() => {
-    //     this.$el.scrollTop = 0
-    //   })
-    // },
-    contextmenu (e, file) {
+    onContextMenu (e, file) {
       this.select({ filepath: file.path })
       ContextMenu.show(e, [
         {
@@ -298,7 +252,7 @@ export default {
       selectPrevious: 'explorer/selectPrevious',
       selectNext: 'explorer/selectNext',
       setScrollTop: 'explorer/setScrollTop',
-      changeSortKey: 'explorer/changeSortKey',
+      setPagination: 'explorer/setPagination',
       action: 'explorer/action',
       showViewer: 'explorer/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'
@@ -306,3 +260,17 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.explorer-table /deep/ .datatable {
+  table-layout: fixed;
+  tr {
+    cursor: pointer;
+    &>td {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+</style>

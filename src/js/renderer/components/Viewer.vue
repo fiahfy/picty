@@ -1,7 +1,7 @@
 <template>
   <div
     class="viewer"
-    tabindex="1"
+    tabindex="0"
     @keydown="onKeyDown"
   >
     <viewer-container

@@ -2,12 +2,6 @@ import fs from 'fs'
 import { remote, shell } from 'electron'
 import File from '../utils/file'
 
-const sortOrderDefaults = {
-  name: 'asc',
-  size: 'asc',
-  date_modified: 'desc'
-}
-
 let watcher = null
 
 export default {
@@ -21,7 +15,7 @@ export default {
     queryInput: '',
     histories: [],
     historyIndex: -1,
-    sortOptions: {}
+    paginations: {}
   },
   actions: {
     initDirectory ({ dispatch, state }) {
@@ -100,7 +94,6 @@ export default {
         commit('setError', { error })
         commit('setFiles', { files: [] })
       }
-      dispatch('sort')
       dispatch('focusExplorerList', null, { root: true })
     },
     openDirectory ({ dispatch, state }) {
@@ -146,45 +139,8 @@ export default {
       }
       commit('setHistory', { history, index: state.historyIndex })
     },
-    changeSortKey ({ commit, dispatch, getters, state }, { sortKey }) {
-      let sortOrder = sortOrderDefaults[sortKey]
-      if (getters.sortOption.key === sortKey) {
-        sortOrder = getters.sortOption.order === 'asc' ? 'desc' : 'asc'
-      }
-      const sortOption = { key: sortKey, order: sortOrder }
-      commit('setSortOption', { sortOption, key: state.directory })
-      dispatch('sort')
-    },
-    sort ({ commit, getters, state }) {
-      const files = state.files.concat().sort((a, b) => {
-        let result = 0
-        switch (getters.sortOption.key) {
-          case 'date_modified':
-            if (a.mtime > b.mtime) {
-              result = 1
-            } else if (a.mtime < b.mtime) {
-              result = -1
-            }
-            break
-          case 'size':
-            const size = (file) => file.directory ? -1 : file.size
-            if (size(a) > size(b)) {
-              result = 1
-            } else if (size(a) < size(b)) {
-              result = -1
-            }
-            break
-        }
-        if (result === 0) {
-          if (a.name > b.name) {
-            result = 1
-          } else if (a.name < b.name) {
-            result = -1
-          }
-        }
-        return getters.sortOption.order === 'asc' ? result : -1 * result
-      })
-      commit('setFiles', { files })
+    setPagination ({ commit, state }, { pagination }) {
+      commit('setPagination', { pagination, key: state.directory })
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
@@ -237,10 +193,10 @@ export default {
     setHistoryIndex (state, { historyIndex }) {
       state.historyIndex = historyIndex
     },
-    setSortOption (state, { sortOption, key }) {
-      state.sortOptions = {
-        ...state.sortOptions,
-        [key]: sortOption
+    setPagination (state, { pagination, key }) {
+      state.paginations = {
+        ...state.paginations,
+        [key]: pagination
       }
     }
   },
@@ -260,14 +216,11 @@ export default {
     selectedFilepath (state) {
       return state.histories[state.historyIndex].selectedFilepath
     },
-    scrollTop (state) {
+    currentScrollTop (state) {
       return state.histories[state.historyIndex].scrollTop
     },
-    sortOption (state) {
-      return state.sortOptions[state.directory] || {
-        key: 'name',
-        order: 'asc'
-      }
+    currentPagination (state) {
+      return state.paginations[state.directory]
     },
     filteredFiles (state) {
       return state.files.concat().filter((file) => {

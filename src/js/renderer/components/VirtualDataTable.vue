@@ -103,9 +103,7 @@ export default {
   },
   watch: {
     items () {
-      this.$nextTick(() => {
-        this.onScroll()
-      })
+      this.onScroll()
     }
   },
   mounted () {
@@ -121,9 +119,14 @@ export default {
     this.container.removeEventListener('scroll', this.onScroll)
   },
   methods: {
+    setScrollTop (value) {
+      this.$nextTick(() => {
+        this.container.scrollTop = value
+      })
+    },
     onScroll () {
-      const scrollTop = this.container.scrollTop
-      const offset = Math.ceil(this.container.offsetHeight / this.estimatedHeight)
+      const { scrollTop, offsetHeight } = this.container
+      const offset = Math.ceil(offsetHeight / this.estimatedHeight)
       const top = Math.max(0, Math.floor(scrollTop / this.estimatedHeight) + (this.stickyHeaders ? 0 : -1))
       const bottom = Math.min(top + offset, this.pagination.totalItems)
       this.scrolling = scrollTop > 0
@@ -132,6 +135,10 @@ export default {
         top: top * this.estimatedHeight,
         bottom: (this.pagination.totalItems - bottom) * this.estimatedHeight
       }
+      this.$emit('scroll', {
+        scrollTop,
+        offsetHeight
+      })
     }
   }
 }
@@ -150,11 +157,10 @@ export default {
 </style>
 
 <style scoped lang="scss">
-.virtual-data-table {
-  table-layout: fixed;
+.virtual-data-table.sticky-headers {
   & /deep/ .table__overflow {
     height: 100%;
-    overflow-y: auto;
+    overflow-y: scroll;
     &::-webkit-scrollbar {
       width: 14px;
       -webkit-appearance: none;
@@ -168,9 +174,7 @@ export default {
         background-color: #ccc;
       }
     }
-  }
-  &.sticky-headers {
-    & /deep/ .datatable>thead {
+    .datatable>thead {
       background: inherit;
       &>tr {
         background: inherit;
@@ -194,11 +198,11 @@ export default {
         }
       }
     }
-    &.scrolling /deep/ .datatable>thead>tr {
-      border-bottom: none;
-      &.datatable__progress>th:after {
-        height: 10px;
-      }
+  }
+  &.scrolling /deep/ .datatable>thead>tr {
+    border-bottom: none;
+    &.datatable__progress>th:after {
+      height: 10px;
     }
   }
 }
