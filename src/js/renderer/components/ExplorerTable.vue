@@ -39,7 +39,7 @@
       <tr
         :key="props.item.path"
         :active="props.selected"
-        @click="selectRow(props)"
+        @click="selectIndex(props.index)"
         @dblclick="action({ filepath: props.item.path })"
         @contextmenu="(e) => onContextMenu(e, props.item)"
       >
@@ -105,6 +105,13 @@ export default {
         this.$store.commit('explorer/setQuery', { query: value })
       }
     },
+    filteredItems () {
+      return this.$refs.table.filteredItems
+    },
+    selectedIndex () {
+      const path = this.selected.length ? this.selected[0].path : null
+      return this.filteredItems.findIndex((item) => item.path === path)
+    },
     ...mapState({
       files: state => state.explorer.files,
       directory: state => state.explorer.directory,
@@ -112,8 +119,7 @@ export default {
     }),
     ...mapGetters({
       currentScrollTop: 'explorer/currentScrollTop',
-      currentPagination: 'explorer/currentPagination',
-      isSelected: 'explorer/isSelected'
+      currentPagination: 'explorer/currentPagination'
     })
   },
   watch: {
@@ -132,16 +138,20 @@ export default {
         if (index === -1) {
           return
         }
-        const rowHeight = 41
-        const offsetHeight = 41
+        const rowHeight = 48
+        const headerHeight = 58
         const el = {
-          offsetTop: rowHeight * index + offsetHeight,
+          offsetTop: rowHeight * (index + 1),
           offsetHeight: rowHeight
         }
-        if (el.offsetTop - el.offsetHeight < this.$el.scrollTop) {
-          this.$el.scrollTop = el.offsetTop - el.offsetHeight
-        } else if (el.offsetTop + el.offsetHeight > this.$el.scrollTop + this.$el.offsetHeight) {
-          this.$el.scrollTop = el.offsetTop + el.offsetHeight - this.$el.offsetHeight
+        const table = {
+          scrollTop: this.$refs.table.getScrollTop(),
+          offsetHeight: this.$refs.table.getOffsetHeight()
+        }
+        if (el.offsetTop - el.offsetHeight < table.scrollTop) {
+          this.$refs.table.setScrollTop(el.offsetTop - el.offsetHeight)
+        } else if (el.offsetTop + el.offsetHeight > table.scrollTop + table.offsetHeight) {
+          this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight + headerHeight - rowHeight)
         }
       })
     }
@@ -199,8 +209,11 @@ export default {
         this.$refs.table.setScrollTop(0)
       })
     },
-    selectRow (props) {
-      this.selected = [props.item]
+    selectIndex (index) {
+      if (index < 0 || index > this.filteredItems.length - 1) {
+        return
+      }
+      this.selected = [this.filteredItems[index]]
     },
     onScroll ({ scrollTop }) {
       this.setScrollTop({ scrollTop })
@@ -214,17 +227,17 @@ export default {
         case 38:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirst()
+            this.selectIndex(0)
           } else {
-            this.selectPrevious()
+            this.selectIndex(this.selectedIndex - 1)
           }
           break
         case 40:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLast()
+            this.selectIndex(this.filteredItems.length - 1)
           } else {
-            this.selectNext()
+            this.selectIndex(this.selectedIndex + 1)
           }
           break
         case 68:
@@ -258,10 +271,6 @@ export default {
     },
     ...mapActions({
       select: 'explorer/select',
-      selectFirst: 'explorer/selectFirst',
-      selectLast: 'explorer/selectLast',
-      selectPrevious: 'explorer/selectPrevious',
-      selectNext: 'explorer/selectNext',
       setScrollTop: 'explorer/setScrollTop',
       setPagination: 'explorer/setPagination',
       action: 'explorer/action',

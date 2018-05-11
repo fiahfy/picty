@@ -122,10 +122,16 @@ export default {
     this.container.removeEventListener('scroll', this.onScroll)
   },
   methods: {
+    getScrollTop () {
+      return this.container.scrollTop
+    },
     setScrollTop (value) {
       this.$nextTick(() => {
         this.container.scrollTop = value
       })
+    },
+    getOffsetHeight () {
+      return this.container.offsetHeight
     },
     onScroll () {
       const { scrollTop, offsetHeight } = this.container

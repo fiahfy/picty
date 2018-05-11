@@ -106,15 +106,6 @@ export default {
     select ({ commit }, { filepath }) {
       commit('setSelectedFilepath', { selectedFilepath: filepath })
     },
-    selectFirst ({ dispatch }) {
-      dispatch('selectIndex', { index: 0 })
-    },
-    selectPrevious ({ dispatch, getters }) {
-      dispatch('selectIndex', { index: getters.selectedIndex - 1 })
-    },
-    selectNext ({ dispatch, getters, state }) {
-      dispatch('selectIndex', { index: getters.selectedIndex + 1 })
-    },
     search ({ commit, state }) {
       const query = state.queryInput
       commit('setQuery', { query })
@@ -208,11 +199,6 @@ export default {
     },
     currentPagination (state) {
       return state.paginations[state.directory]
-    },
-    isSelected (state) {
-      return ({ filepath }) => {
-        return state.selectedFilepath === filepath
-      }
     }
   }
 }
