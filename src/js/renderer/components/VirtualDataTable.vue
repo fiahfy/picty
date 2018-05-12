@@ -36,6 +36,9 @@
         :style="{ height: `${padding.bottom}px` }"
       />
     </template>
+    <template slot="no-data">
+      <slot name="no-data" />
+    </template>
   </v-data-table>
 </template>
 

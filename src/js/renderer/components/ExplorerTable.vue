@@ -44,7 +44,12 @@
         @contextmenu="(e) => onContextMenu(e, props.item)"
       >
         <td>
-          <v-icon class="pa-1">star_outline</v-icon>
+          <v-btn
+            flat
+            icon
+          >
+            <v-icon>star_outline</v-icon>
+          </v-btn>
           <v-icon
             :color="getColor(props.item)"
             class="pa-1"
