@@ -2,6 +2,12 @@ import fs from 'fs'
 import { remote, shell } from 'electron'
 import File from '../utils/file'
 
+const sortReversed = {
+  name: false,
+  size: false,
+  date_modified: true
+}
+
 let watcher = null
 
 export default {
@@ -16,7 +22,7 @@ export default {
     selectedFilepath: null,
     histories: [],
     historyIndex: -1,
-    paginations: {}
+    sortOptions: {}
   },
   actions: {
     initDirectory ({ dispatch, state }) {
@@ -95,6 +101,7 @@ export default {
         commit('setError', { error })
         commit('setFiles', { files: [] })
       }
+      dispatch('sort')
       dispatch('focusExplorerList', null, { root: true })
     },
     openDirectory ({ dispatch, state }) {
@@ -105,6 +112,25 @@ export default {
     },
     select ({ commit }, { filepath }) {
       commit('setSelectedFilepath', { selectedFilepath: filepath })
+    },
+    selectIndex ({ dispatch, getters }, { index }) {
+      if (index < 0 || index > getters.filteredFiles.length - 1) {
+        return
+      }
+      const filepath = getters.filteredFiles[index].path
+      dispatch('select', { filepath })
+    },
+    selectFirst ({ dispatch }) {
+      dispatch('selectIndex', { index: 0 })
+    },
+    selectLast ({ dispatch, getters }) {
+      dispatch('selectIndex', { index: getters.filteredFiles.length - 1 })
+    },
+    selectPrevious ({ dispatch, getters }) {
+      dispatch('selectIndex', { index: getters.selectedIndex - 1 })
+    },
+    selectNext ({ dispatch, getters, state }) {
+      dispatch('selectIndex', { index: getters.selectedIndex + 1 })
     },
     search ({ commit, state }) {
       const query = state.queryInput
@@ -117,8 +143,46 @@ export default {
       }
       commit('setHistory', { history, index: state.historyIndex })
     },
-    setPagination ({ commit, state }, { pagination }) {
-      commit('setPagination', { pagination, key: state.directory })
+    changeSortKey ({ commit, dispatch, getters, state }, { sortKey }) {
+      let sortDescending = false
+      if (getters.sortOption.key === sortKey) {
+        sortDescending = !getters.sortOption.descending
+      }
+      const sortOption = { key: sortKey, descending: sortDescending }
+      commit('setSortOption', { sortOption, key: state.directory })
+      dispatch('sort')
+    },
+    sort ({ commit, getters, state }) {
+      const files = state.files.concat().sort((a, b) => {
+        let result = 0
+        switch (getters.sortOption.key) {
+          case 'date_modified':
+            if (a.mtime > b.mtime) {
+              result = 1
+            } else if (a.mtime < b.mtime) {
+              result = -1
+            }
+            break
+          case 'size':
+            const size = (file) => file.directory ? -1 : file.size
+            if (size(a) > size(b)) {
+              result = 1
+            } else if (size(a) < size(b)) {
+              result = -1
+            }
+            break
+        }
+        if (result === 0) {
+          if (a.name > b.name) {
+            result = 1
+          } else if (a.name < b.name) {
+            result = -1
+          }
+        }
+        result = sortReversed[getters.sortOption.key] ? -1 * result : result
+        return getters.sortOption.descending ? -1 * result : result
+      })
+      commit('setFiles', { files })
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
@@ -179,6 +243,12 @@ export default {
         ...state.paginations,
         [key]: pagination
       }
+    },
+    setSortOption (state, { sortOption, key }) {
+      state.sortOptions = {
+        ...state.sortOptions,
+        [key]: sortOption
+      }
     }
   },
   getters: {
@@ -194,11 +264,29 @@ export default {
     canForwardDirectory (state) {
       return state.historyIndex < state.histories.length - 1
     },
-    currentScrollTop (state) {
+    scrollTop (state) {
       return state.histories[state.historyIndex].scrollTop
     },
-    currentPagination (state) {
-      return state.paginations[state.directory]
+    sortOption (state) {
+      return state.sortOptions[state.directory] || {
+        key: 'name',
+        descending: false
+      }
+    },
+    filteredFiles (state) {
+      return state.files.concat().filter((file) => {
+        return file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
+      })
+    },
+    selectedIndex (state, getters) {
+      return getters.filteredFiles.findIndex((file) => {
+        return getters.isSelected({ filepath: file.path })
+      })
+    },
+    isSelected (state) {
+      return ({ filepath }) => {
+        return state.selectedFilepath === filepath
+      }
     }
   }
 }

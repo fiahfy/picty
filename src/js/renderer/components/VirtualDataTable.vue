@@ -4,8 +4,9 @@
     v-bind="$attrs"
     v-model="model"
     :pagination.sync="paginationModel"
-    :items="items"
+    :items="renderItems"
     :class="classes"
+    :disable-initial-sort="true"
     class="virtual-data-table"
   >
     <template
@@ -26,13 +27,12 @@
         :style="{ height: `${padding.top}px` }"
       />
       <slot
-        v-if="props.index >= offset.top && props.index < offset.bottom"
         v-bind="props"
         :selected="props.selected"
         name="items"
       />
       <tr
-        v-if="props.index === pagination.totalItems - 1"
+        v-if="props.index === renderItems.length - 1"
         :style="{ height: `${padding.bottom}px` }"
       />
     </template>
@@ -66,14 +66,11 @@ export default {
     return {
       selected: [],
       estimatedHeight: 48,
-      offset: {
-        top: 0,
-        bottom: 0
-      },
       padding: {
         top: 0,
         bottom: 0
       },
+      renderItems: [],
       scrolling: false
     }
   },
@@ -99,9 +96,6 @@ export default {
         'sticky-headers': this.stickyHeaders,
         scrolling: this.scrolling
       }
-    },
-    filteredItems () {
-      return this.$refs.table.filteredItems
     }
   },
   watch: {
@@ -116,6 +110,7 @@ export default {
     window.addEventListener('resize', this.onScroll)
     this.container = this.$el.querySelector('.table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
+    this.onScroll()
     this.$nextTick(() => {
       this.onScroll()
     })
@@ -140,13 +135,13 @@ export default {
       const { scrollTop, offsetHeight } = this.container
       const offset = Math.ceil(offsetHeight / this.estimatedHeight)
       const top = Math.max(0, Math.floor(scrollTop / this.estimatedHeight) + (this.stickyHeaders ? 0 : -1))
-      const bottom = Math.min(top + offset, this.pagination.totalItems)
+      const bottom = Math.min(top + offset, this.items.length)
       this.scrolling = scrollTop > 0
-      this.offset = { top, bottom }
       this.padding = {
         top: top * this.estimatedHeight,
-        bottom: (this.pagination.totalItems - bottom) * this.estimatedHeight
+        bottom: (this.items.length - bottom) * this.estimatedHeight
       }
+      this.renderItems = this.items.slice(top, bottom)
       this.$emit('scroll', {
         scrollTop,
         offsetHeight

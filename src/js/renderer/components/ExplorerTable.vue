@@ -3,9 +3,6 @@
     ref="table"
     :headers="headers"
     :items="files"
-    :search="query"
-    :pagination.sync="pagination"
-    v-model="selected"
     class="explorer-table"
     item-key="path"
     hide-actions
@@ -27,7 +24,7 @@
           :style="getHeaderStyle(header)"
           @click="changeSort(header)"
         >
-          <v-icon small>{{ header.descending ? 'arrow_downward' : 'arrow_upward' }}</v-icon>
+          <v-icon small>arrow_upward</v-icon>
           {{ header.text }}
         </th>
       </tr>
@@ -38,8 +35,8 @@
     >
       <tr
         :key="props.item.path"
-        :active="props.selected"
-        @click="selectIndex(props.index)"
+        :active="isSelected({ filepath: props.item.path })"
+        @click="select({ filepath: props.item.path })"
         @dblclick="action({ filepath: props.item.path })"
         @contextmenu="(e) => onContextMenu(e, props.item)"
       >
@@ -76,12 +73,6 @@ export default {
   },
   data () {
     return {
-      selected: [],
-      search: '',
-      pagination: {
-        sortBy: 'name',
-        rowsPerPage: -1
-      },
       headers: [
         {
           text: 'Name',
@@ -94,50 +85,33 @@ export default {
         },
         {
           text: 'Date Modified',
-          value: 'mtime',
-          width: 128,
-          descending: true
+          value: 'date_modified',
+          width: 128
         }
       ]
     }
   },
   computed: {
-    query: {
-      get () {
-        return this.$store.state.explorer.query
-      },
-      set (value) {
-        this.$store.commit('explorer/setQuery', { query: value })
-      }
-    },
-    filteredItems () {
-      return this.$refs.table.filteredItems
-    },
-    selectedIndex () {
-      const path = this.selected.length ? this.selected[0].path : null
-      return this.filteredItems.findIndex((item) => item.path === path)
-    },
     ...mapState({
-      files: state => state.explorer.files,
       directory: state => state.explorer.directory,
       selectedFilepath: state => state.explorer.selectedFilepath
     }),
     ...mapGetters({
-      currentScrollTop: 'explorer/currentScrollTop',
-      currentPagination: 'explorer/currentPagination'
+      files: 'explorer/filteredFiles',
+      scrollTop: 'explorer/scrollTop',
+      sortOption: 'explorer/sortOption',
+      selectedIndex: 'explorer/selectedIndex',
+      isSelected: 'explorer/isSelected'
     })
   },
   watch: {
-    pagination (value) {
-      this.setPagination({ pagination: value })
-    },
     directory () {
       this.restore()
+      // this.$nextTick(() => {
+      //   this.$el.scrollTop = this.scrollTop
+      // })
     },
-    selected (value) {
-      if (value.length) {
-        this.select({ filepath: value[0].path })
-      }
+    selectedFilepath (value) {
       this.$nextTick(() => {
         const index = this.selectedIndex
         if (index === -1) {
@@ -154,9 +128,15 @@ export default {
           offsetHeight: this.$refs.table.getOffsetHeight()
         }
         if (el.offsetTop - el.offsetHeight < table.scrollTop) {
+          console.log('t')
           this.$refs.table.setScrollTop(el.offsetTop - el.offsetHeight)
         } else if (el.offsetTop + el.offsetHeight > table.scrollTop + table.offsetHeight) {
-          this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight + headerHeight - rowHeight)
+          // this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight)
+          this.$refs.table.setScrollTop(
+            el.offsetTop + el.offsetHeight
+             - (table.offsetHeight)
+            //  + rowHeight
+          )
         }
       })
     }
@@ -168,8 +148,8 @@ export default {
     getHeaderClass (header) {
       return [
         'column sortable',
-        header.descending ? (this.pagination.descending ? 'asc' : 'desc') : (this.pagination.descending ? 'desc' : 'asc'),
-        header.value === this.pagination.sortBy ? 'active' : ''
+        this.sortOption.descending ? 'desc' : 'asc',
+        header.value === this.sortOption.key ? 'active' : ''
       ]
     },
     getHeaderStyle (header) {
@@ -188,37 +168,16 @@ export default {
       return file.directory ? null : file.size
     },
     restore () {
-      if (this.currentPagination) {
-        this.pagination = this.currentPagination
-      }
-      this.selected = []
-      const scrollTop = this.currentScrollTop
+      const scrollTop = this.scrollTop
       this.$nextTick(() => {
         this.$refs.table.setScrollTop(scrollTop)
       })
     },
     changeSort (header) {
-      if (this.pagination.sortBy === header.value) {
-        this.pagination = {
-          ...this.pagination,
-          descending: !this.pagination.descending
-        }
-      } else {
-        this.pagination = {
-          ...this.pagination,
-          sortBy: header.value,
-          descending: header.descending
-        }
-      }
+      this.changeSortKey({ sortKey: header.value })
       this.$nextTick(() => {
-        this.$refs.table.setScrollTop(0)
+        this.$el.scrollTop = 0
       })
-    },
-    selectIndex (index) {
-      if (index < 0 || index > this.filteredItems.length - 1) {
-        return
-      }
-      this.selected = [this.filteredItems[index]]
     },
     onScroll ({ scrollTop }) {
       this.setScrollTop({ scrollTop })
@@ -232,17 +191,17 @@ export default {
         case 38:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectIndex(0)
+            this.selectFirst()
           } else {
-            this.selectIndex(this.selectedIndex - 1)
+            this.selectPrevious()
           }
           break
         case 40:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectIndex(this.filteredItems.length - 1)
+            this.selectLast()
           } else {
-            this.selectIndex(this.selectedIndex + 1)
+            this.selectNext()
           }
           break
         case 68:
@@ -276,8 +235,12 @@ export default {
     },
     ...mapActions({
       select: 'explorer/select',
+      selectFirst: 'explorer/selectFirst',
+      selectLast: 'explorer/selectLast',
+      selectPrevious: 'explorer/selectPrevious',
+      selectNext: 'explorer/selectNext',
       setScrollTop: 'explorer/setScrollTop',
-      setPagination: 'explorer/setPagination',
+      changeSortKey: 'explorer/changeSortKey',
       action: 'explorer/action',
       showViewer: 'explorer/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'
