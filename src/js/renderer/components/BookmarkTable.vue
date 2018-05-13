@@ -56,7 +56,6 @@
         </td>
         <td class="text-xs-right">{{ getSize(props.item) | readableSize }}</td>
         <td class="text-xs-right">{{ props.item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
-        <td class="text-xs-right">{{ props.item.createdAt | moment('YYYY-MM-DD HH:mm') }}</td>
       </tr>
     </template>
   </virtual-data-table>
@@ -86,11 +85,6 @@ export default {
         {
           text: 'Date Modified',
           value: 'mtime',
-          width: 128
-        },
-        {
-          text: 'Bookmark Added',
-          value: 'createdAt',
           width: 128
         }
       ]

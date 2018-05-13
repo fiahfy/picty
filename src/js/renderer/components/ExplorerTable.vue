@@ -92,7 +92,7 @@ export default {
   },
   computed: {
     ...mapState({
-      directory: state => state.explorer.directory,
+      directory: state => state.directory,
       selectedFilepath: state => state.explorer.selectedFilepath
     }),
     ...mapGetters({
@@ -166,7 +166,7 @@ export default {
     changeSort (header) {
       this.changeSortKey({ sortKey: header.value })
       this.$nextTick(() => {
-        this.$el.scrollTop = 0
+        this.$refs.table.setScrollTop(0)
       })
     },
     onScroll (e) {

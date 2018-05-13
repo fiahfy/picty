@@ -3,8 +3,7 @@ import File from '../utils/file'
 const sortReversed = {
   name: false,
   size: false,
-  mtime: true,
-  createdAt: true
+  mtime: true
 }
 
 export default {

@@ -14,7 +14,6 @@ export default {
   namespaced: true,
   state: {
     files: [],
-    directory: remote.app.getPath('home'),
     directoryInput: '',
     query: '',
     queryInput: '',
@@ -24,15 +23,15 @@ export default {
     sortOptions: {}
   },
   actions: {
-    initDirectory ({ dispatch, state }) {
-      const dirpath = state.directory
+    initDirectory ({ dispatch, rootState }) {
+      const dirpath = rootState.directory
       dispatch('changeDirectory', { dirpath, force: true })
     },
-    changeParentDirectory ({ dispatch, state }) {
-      const dirpath = (new File(state.directory)).parent.path
+    changeParentDirectory ({ dispatch, rootState }) {
+      const dirpath = (new File(rootState.directory)).parent.path
       dispatch('changeDirectory', { dirpath })
     },
-    changeHomeDirectory ({ dispatch, state }) {
+    changeHomeDirectory ({ dispatch }) {
       const dirpath = remote.app.getPath('home')
       dispatch('changeDirectory', { dirpath })
     },
@@ -42,8 +41,8 @@ export default {
         dispatch('changeDirectory', { dirpath })
       }
     },
-    changeDirectory ({ commit, dispatch, state }, { dirpath, force = false }) {
-      if (dirpath === state.directory && !force) {
+    changeDirectory ({ commit, dispatch, state, rootState }, { dirpath, force = false }) {
+      if (dirpath === rootState.directory && !force) {
         return
       }
       const historyIndex = state.historyIndex + 1
@@ -75,21 +74,21 @@ export default {
       const history = state.histories[historyIndex]
       commit('setHistoryIndex', { historyIndex })
 
-      commit('setDirectory', { directory: history.directory })
+      commit('setDirectory', { directory: history.directory }, { root: true })
       commit('setDirectoryInput', { directoryInput: history.directory })
       commit('setQuery', { query: '' })
 
       dispatch('load')
     },
-    load ({ commit, dispatch, state }) {
+    load ({ commit, dispatch, rootState }) {
       try {
         if (watcher) {
           watcher.close()
         }
-        watcher = fs.watch(state.directory, () => {
+        watcher = fs.watch(rootState.directory, () => {
           dispatch('load')
         })
-        const files = File.listFiles(state.directory).filter((file) => file.isDirectory() || file.isImage()).map((file) => file.toObject())
+        const files = File.listFiles(rootState.directory).filter((file) => file.isDirectory() || file.isImage()).map((file) => file.toObject())
         commit('setFiles', { files })
       } catch (e) {
         commit('setFiles', { files: [] })
@@ -97,10 +96,10 @@ export default {
       dispatch('sort')
       dispatch('focusExplorerList', null, { root: true })
     },
-    openDirectory ({ dispatch, state }) {
-      const result = shell.openItem(state.directory)
+    openDirectory ({ dispatch, rootState }) {
+      const result = shell.openItem(rootState.directory)
       if (!result) {
-        dispatch('showMessage', { message: `Invalid directory "${state.directory}"` }, { root: true })
+        dispatch('showMessage', { message: `Invalid directory "${rootState.directory}"` }, { root: true })
       }
     },
     select ({ commit }, { filepath }) {
@@ -136,13 +135,13 @@ export default {
       }
       commit('setHistory', { history, index: state.historyIndex })
     },
-    changeSortKey ({ commit, dispatch, getters, state }, { sortKey }) {
+    changeSortKey ({ commit, dispatch, getters, rootState }, { sortKey }) {
       let sortDescending = false
       if (getters.sortOption.key === sortKey) {
         sortDescending = !getters.sortOption.descending
       }
       const sortOption = { key: sortKey, descending: sortDescending }
-      commit('setSortOption', { sortOption, key: state.directory })
+      commit('setSortOption', { sortOption, key: rootState.directory })
       dispatch('sort')
     },
     sort ({ commit, getters, state }) {
@@ -188,9 +187,6 @@ export default {
   mutations: {
     setFiles (state, { files }) {
       state.files = files
-    },
-    setDirectory (state, { directory }) {
-      state.directory = directory
     },
     setDirectoryInput (state, { directoryInput }) {
       state.directoryInput = directoryInput
