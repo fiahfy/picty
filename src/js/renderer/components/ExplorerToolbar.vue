@@ -7,6 +7,7 @@
     <v-text-field
       v-model="directoryInput"
       :prepend-icon-cb="openDirectory"
+      name="location"
       class="mx-3"
       label="Path"
       prepend-icon="folder"

@@ -32,7 +32,8 @@
       </v-btn>
       <v-text-field
         v-model="queryInput"
-        class="mx-3"
+        name="query"
+        class="mx-3 my-2 pt-0"
         label="Search"
         append-icon="search"
         single-line
@@ -89,3 +90,9 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.bookmark-card /deep/ .input-group--text-field label {
+  top: 0;
+}
+</style>

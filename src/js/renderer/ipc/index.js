@@ -23,7 +23,6 @@ export const addIpcRendererListeners = (store) => {
     }
     const dirpath = filepathes[0]
     store.dispatch('openDirectory', { dirpath })
-    store.dispatch('changeRoute', { name: 'explorer' })
   })
   ipcRenderer.on('openImages', () => {
     const filepathes = remote.dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })

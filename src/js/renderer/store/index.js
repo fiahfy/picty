@@ -12,10 +12,10 @@ import File from '../utils/file'
 Vue.use(Vuex)
 
 const Selector = {
-  locationInput: '.location>input',
-  searchInput: '.search>input',
-  explorerList: '.explorer-list',
-  bookmarkList: '.bookmark-list',
+  locationInput: 'input[name=location]',
+  searchInput: 'input[name=query]',
+  explorerTable: '.explorer-table',
+  bookmarkTable: '.bookmark-table',
   viewer: '.viewer'
 }
 
@@ -66,10 +66,10 @@ export default new Vuex.Store({
       dispatch('select', { selector: Selector.searchInput })
     },
     focusExplorerList ({ dispatch }) {
-      dispatch('focus', { selector: Selector.explorerList })
+      dispatch('focus', { selector: Selector.explorerTable })
     },
     focusBookmarkList ({ dispatch }) {
-      dispatch('focus', { selector: Selector.bookmarkList })
+      dispatch('focus', { selector: Selector.bookmarkTable })
     },
     open ({ dispatch }, { filepathes }) {
       const file = new File(filepathes[0])
@@ -81,6 +81,7 @@ export default new Vuex.Store({
     },
     openDirectory ({ dispatch }, { dirpath }) {
       dispatch('explorer/changeDirectory', { dirpath })
+      dispatch('changeRoute', { name: 'explorer' })
     },
     openImages ({ dispatch }, { filepathes }) {
       dispatch('viewer/show', { filepathes })
@@ -102,9 +103,9 @@ export default new Vuex.Store({
     dismissViewer ({ commit, dispatch, state }) {
       commit('setViewing', { viewing: false })
       if (router.app.$route.name === 'explorer') {
-        dispatch('focus', { selector: Selector.explorerList })
+        dispatch('focus', { selector: Selector.explorerTable })
       } else {
-        dispatch('focus', { selector: Selector.bookmarkList })
+        dispatch('focus', { selector: Selector.bookmarkTable })
       }
       if (state.settings.fullScreen || process.platform !== 'darwin') {
         dispatch('leaveFullScreen')

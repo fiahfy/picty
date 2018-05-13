@@ -60,18 +60,22 @@ export default {
         case 37:
           if (e.target.getAttribute('role') !== 'slider') {
             this.movePrevious()
+            this.resetTimer()
           }
           break
         case 38:
           this.movePrevious()
+          this.resetTimer()
           break
         case 39:
           if (e.target.getAttribute('role') !== 'slider') {
             this.moveNext()
+            this.resetTimer()
           }
           break
         case 40:
           this.moveNext()
+          this.resetTimer()
           break
       }
     },
@@ -90,15 +94,18 @@ export default {
         this.$el.focus()
       }, 2000)
     },
-    showToolbar () {
-      if (this.toolbar === false) {
-        this.toolbar = true
-      }
+    resetTimer () {
       this.clearTimer()
       if (this.$refs.toolbar.isHover()) {
         return
       }
       this.setTimer()
+    },
+    showToolbar () {
+      if (this.toolbar === false) {
+        this.toolbar = true
+      }
+      this.resetTimer()
     },
     ...mapActions({
       dismiss: 'viewer/dismiss',
