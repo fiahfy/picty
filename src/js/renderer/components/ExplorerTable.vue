@@ -44,6 +44,7 @@
           <v-btn
             flat
             icon
+            class="my-0"
           >
             <v-icon>star_outline</v-icon>
           </v-btn>
@@ -107,9 +108,6 @@ export default {
   watch: {
     directory () {
       this.restore()
-      // this.$nextTick(() => {
-      //   this.$el.scrollTop = this.scrollTop
-      // })
     },
     selectedFilepath (value) {
       this.$nextTick(() => {
@@ -128,15 +126,9 @@ export default {
           offsetHeight: this.$refs.table.getOffsetHeight()
         }
         if (el.offsetTop - el.offsetHeight < table.scrollTop) {
-          console.log('t')
           this.$refs.table.setScrollTop(el.offsetTop - el.offsetHeight)
-        } else if (el.offsetTop + el.offsetHeight > table.scrollTop + table.offsetHeight) {
-          // this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight)
-          this.$refs.table.setScrollTop(
-            el.offsetTop + el.offsetHeight
-             - (table.offsetHeight)
-            //  + rowHeight
-          )
+        } else if (el.offsetTop + headerHeight > table.scrollTop + table.offsetHeight) {
+          this.$refs.table.setScrollTop(el.offsetTop + headerHeight - table.offsetHeight)
         }
       })
     }
@@ -179,8 +171,8 @@ export default {
         this.$el.scrollTop = 0
       })
     },
-    onScroll ({ scrollTop }) {
-      this.setScrollTop({ scrollTop })
+    onScroll (e) {
+      this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
     onKeyDown (e) {
       switch (e.keyCode) {
@@ -250,14 +242,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.explorer-table /deep/ .datatable {
-  table-layout: fixed;
-  tr {
-    cursor: pointer;
-    &>td {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+.explorer-table {
+  outline: none;
+  & /deep/ .datatable {
+    table-layout: fixed;
+    tr {
+      cursor: pointer;
+      &>td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 }

@@ -150,12 +150,14 @@ export default {
     }
   },
   mounted () {
-    const backButtonRect = this.$refs.backButton.$el.getBoundingClientRect()
-    this.backMenu.x = backButtonRect.left
-    this.backMenu.y = backButtonRect.top
-    const forwardButtonRect = this.$refs.forwardButton.$el.getBoundingClientRect()
-    this.forwardMenu.x = forwardButtonRect.left
-    this.forwardMenu.y = forwardButtonRect.top
+    this.$nextTick(() => {
+      const backButtonRect = this.$refs.backButton.$el.getBoundingClientRect()
+      this.backMenu.x = backButtonRect.left
+      this.backMenu.y = backButtonRect.top
+      const forwardButtonRect = this.$refs.forwardButton.$el.getBoundingClientRect()
+      this.forwardMenu.x = forwardButtonRect.left
+      this.forwardMenu.y = forwardButtonRect.top
+    })
   },
   methods: {
     onContextMenu (e) {

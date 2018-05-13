@@ -28,7 +28,6 @@
       />
       <slot
         v-bind="props"
-        :selected="props.selected"
         name="items"
       />
       <tr
@@ -64,14 +63,14 @@ export default {
   },
   data () {
     return {
-      selected: [],
       estimatedHeight: 48,
+      threshold: 1024,
+      scrolling: false,
       padding: {
         top: 0,
         bottom: 0
       },
-      renderItems: [],
-      scrolling: false
+      renderItems: []
     }
   },
   computed: {
@@ -88,7 +87,7 @@ export default {
         return this.value
       },
       set (value) {
-        this.$emit('update:value', value)
+        this.$emit('input', value)
       }
     },
     classes () {
@@ -100,23 +99,19 @@ export default {
   },
   watch: {
     items () {
-      this.onScroll()
-      this.$nextTick(() => {
-        this.onScroll()
-      })
+      this.adjustItems()
     }
   },
   mounted () {
-    window.addEventListener('resize', this.onScroll)
+    window.addEventListener('resize', this.onResize)
     this.container = this.$el.querySelector('.table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
-    this.onScroll()
     this.$nextTick(() => {
-      this.onScroll()
+      this.adjustItems()
     })
   },
   beforeDestroy () {
-    window.removeEventListener('resize', this.onScroll)
+    window.removeEventListener('resize', this.onResize)
     this.container.removeEventListener('scroll', this.onScroll)
   },
   methods: {
@@ -131,28 +126,34 @@ export default {
     getOffsetHeight () {
       return this.container.offsetHeight
     },
-    onScroll () {
+    adjustItems () {
       const { scrollTop, offsetHeight } = this.container
       const offset = Math.ceil(offsetHeight / this.estimatedHeight)
-      const top = Math.max(0, Math.floor(scrollTop / this.estimatedHeight) + (this.stickyHeaders ? 0 : -1))
-      const bottom = Math.min(top + offset, this.items.length)
+      const thresholdOffset = Math.ceil(this.threshold / this.estimatedHeight)
+
+      const firstIndex = Math.max(0, Math.floor(scrollTop / this.estimatedHeight) - thresholdOffset)
+      const lastIndex = Math.min(firstIndex + offset + thresholdOffset * 2, this.items.length)
+
       this.scrolling = scrollTop > 0
       this.padding = {
-        top: top * this.estimatedHeight,
-        bottom: (this.items.length - bottom) * this.estimatedHeight
+        top: firstIndex * this.estimatedHeight,
+        bottom: (this.items.length - lastIndex) * this.estimatedHeight
       }
-      this.renderItems = this.items.slice(top, bottom)
-      this.$emit('scroll', {
-        scrollTop,
-        offsetHeight
-      })
+      this.renderItems = this.items.slice(firstIndex, lastIndex)
+    },
+    onResize () {
+      this.adjustItems()
+    },
+    onScroll (e) {
+      this.adjustItems()
+      this.$emit('scroll', e)
     }
   }
 }
 </script>
 
 <style lang="scss">
-.theme--dark .virtual-data-table /deep/ .table__overflow::-webkit-scrollbar-thumb {
+.theme--dark .virtual-data-table.sticky-headers /deep/ .table__overflow::-webkit-scrollbar-thumb {
   background-color: #424242!important;
   &:hover {
     background-color: #505050!important;
@@ -170,7 +171,6 @@ export default {
     overflow-y: scroll;
     &::-webkit-scrollbar {
       width: 14px;
-      -webkit-appearance: none;
     }
     &::-webkit-scrollbar-thumb {
       background-color: #eee;
