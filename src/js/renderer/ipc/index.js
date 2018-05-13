@@ -32,10 +32,10 @@ export const addIpcRendererListeners = (store) => {
     store.dispatch('openImages', { filepathes })
   })
   ipcRenderer.on('openLocation', () => {
-    store.dispatch('focusLocationInput')
+    store.dispatch('focusDirectoryInput')
   })
   ipcRenderer.on('search', () => {
-    store.dispatch('focusSearchInput')
+    store.dispatch('focusQueryInput')
   })
   ipcRenderer.on('backDirectory', () => {
     store.dispatch('explorer/backDirectory')

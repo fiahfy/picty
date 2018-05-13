@@ -12,8 +12,8 @@ import File from '../utils/file'
 Vue.use(Vuex)
 
 const Selector = {
-  locationInput: 'input[name=location]',
-  searchInput: 'input[name=query]',
+  directoryInput: 'input[name=directory]',
+  queryInput: 'input[name=query]',
   explorerTable: '.explorer-table',
   bookmarkTable: '.bookmark-table',
   viewer: '.viewer'
@@ -58,13 +58,14 @@ export default new Vuex.Store({
         }
       })
     },
-    focusLocationInput ({ dispatch }) {
-      dispatch('focus', { selector: Selector.locationInput })
-      dispatch('select', { selector: Selector.locationInput })
+    focusDirectoryInput ({ dispatch }) {
+      dispatch('focus', { selector: Selector.directoryInput })
+      dispatch('select', { selector: Selector.directoryInput })
+      dispatch('changeRoute', { name: 'explorer' })
     },
-    focusSearchInput ({ dispatch }) {
-      dispatch('focus', { selector: Selector.searchInput })
-      dispatch('select', { selector: Selector.searchInput })
+    focusQueryInput ({ dispatch }) {
+      dispatch('focus', { selector: Selector.queryInput })
+      dispatch('select', { selector: Selector.queryInput })
     },
     focusExplorerList ({ dispatch }) {
       dispatch('focus', { selector: Selector.explorerTable })
