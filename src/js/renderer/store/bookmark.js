@@ -10,7 +10,6 @@ export default {
   namespaced: true,
   state: {
     items: [],
-    bookmarks: [],
     query: '',
     queryInput: '',
     filepath: '',
@@ -21,26 +20,26 @@ export default {
     }
   },
   actions: {
-    bookmark ({ commit, dispatch, getters, state }, { filepath }) {
+    bookmark ({ commit, dispatch, getters, rootState }, { filepath }) {
       if (!filepath || getters.isBookmarked({ filepath })) {
         return
       }
       const bookmarks = [
-        ...state.bookmarks,
+        ...rootState.bookmarks,
         {
           path: filepath,
           createdAt: new Date()
         }
       ]
-      commit('setBookmarks', { bookmarks })
+      commit('setBookmarks', { bookmarks }, { root: true })
       dispatch('load')
     },
-    deleteBookmark ({ commit, dispatch, state }, { filepath }) {
-      const bookmarks = state.bookmarks.filter((bookmark) => {
+    deleteBookmark ({ commit, dispatch, rootState }, { filepath }) {
+      const bookmarks = rootState.bookmarks.filter((bookmark) => {
         // TODO:
         return (typeof bookmark === 'string') ? bookmark !== filepath : bookmark.path !== filepath
       })
-      commit('setBookmarks', { bookmarks })
+      commit('setBookmarks', { bookmarks }, { root: true })
       dispatch('load')
     },
     toggleBookmark ({ dispatch, getters }, { filepath }) {
@@ -50,8 +49,8 @@ export default {
         dispatch('bookmark', { filepath })
       }
     },
-    load ({ commit, dispatch, state }) {
-      const items = state.bookmarks.map((bookmark) => {
+    load ({ commit, dispatch, rootState }) {
+      const items = rootState.bookmarks.map((bookmark) => {
         // TODO:
         const file = (typeof bookmark === 'string') ? (new File(bookmark).toObject()) : (new File(bookmark.path).toObject())
         file.bookmarked = true
@@ -144,9 +143,6 @@ export default {
     setItems (state, { items }) {
       state.items = items
     },
-    setBookmarks (state, { bookmarks }) {
-      state.bookmarks = bookmarks
-    },
     setQuery (state, { query }) {
       state.query = query
     },
@@ -179,9 +175,9 @@ export default {
         return state.filepath === filepath
       }
     },
-    isBookmarked (state) {
+    isBookmarked (state, getters, rootState) {
       return ({ filepath }) => {
-        return state.bookmarks.findIndex((bookmark) => {
+        return rootState.bookmarks.findIndex((bookmark) => {
           // TODO:
           return (typeof bookmark === 'string') ? bookmark === filepath : bookmark.path === filepath
         }) > -1

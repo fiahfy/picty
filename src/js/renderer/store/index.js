@@ -22,6 +22,7 @@ const Selector = {
 export default new Vuex.Store({
   state: {
     directory: remote.app.getPath('home'),
+    bookmarks: [],
     message: '',
     viewing: false,
     fullScreen: false
@@ -118,6 +119,9 @@ export default new Vuex.Store({
     setDirectory (state, { directory }) {
       state.directory = directory
     },
+    setBookmarks (state, { bookmarks }) {
+      state.bookmarks = bookmarks
+    },
     setMessage (state, { message }) {
       state.message = message
     },
@@ -143,7 +147,7 @@ export default new Vuex.Store({
     createPersistedState({
       paths: [
         'directory',
-        'bookmark.bookmarks',
+        'bookmarks',
         'settings'
       ]
     })
