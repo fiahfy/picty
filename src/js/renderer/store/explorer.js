@@ -17,7 +17,7 @@ export default {
     directoryInput: '',
     query: '',
     queryInput: '',
-    selectedFilepath: '',
+    filepath: '',
     histories: [],
     historyIndex: -1,
     sortOptions: {}
@@ -36,8 +36,8 @@ export default {
       dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
-      if (state.selectedFilepath && (new File(state.selectedFilepath)).isDirectory()) {
-        const dirpath = state.selectedFilepath
+      if (state.filepath && (new File(state.filepath)).isDirectory()) {
+        const dirpath = state.filepath
         dispatch('changeDirectory', { dirpath })
       }
     },
@@ -50,7 +50,7 @@ export default {
         directory: dirpath,
         scrollTop: 0
       }]
-      commit('setSelectedFilepath', { selectedFilepath: '' })
+      commit('setFilepath', { filepath: '' })
       commit('setHistories', { histories })
       commit('setHistoryIndex', { historyIndex })
 
@@ -105,7 +105,7 @@ export default {
       }
     },
     select ({ commit }, { filepath }) {
-      commit('setSelectedFilepath', { selectedFilepath: filepath })
+      commit('setFilepath', { filepath })
     },
     selectIndex ({ dispatch, getters }, { index }) {
       if (index < 0 || index > getters.filteredItems.length - 1) {
@@ -199,8 +199,8 @@ export default {
     setQueryInput (state, { queryInput }) {
       state.queryInput = queryInput
     },
-    setSelectedFilepath (state, { selectedFilepath }) {
-      state.selectedFilepath = selectedFilepath
+    setFilepath (state, { filepath }) {
+      state.filepath = filepath
     },
     setHistory (state, { history, index }) {
       state.histories = [
@@ -256,7 +256,7 @@ export default {
     },
     isSelected (state) {
       return ({ filepath }) => {
-        return state.selectedFilepath === filepath
+        return state.filepath === filepath
       }
     }
   }

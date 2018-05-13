@@ -9,11 +9,11 @@ const sortReversed = {
 export default {
   namespaced: true,
   state: {
-    files: [],
+    items: [],
     bookmarks: [],
     query: '',
     queryInput: '',
-    selectedFilepath: '',
+    filepath: '',
     scrollTop: 0,
     sortOption: {
       key: 'name',
@@ -51,32 +51,32 @@ export default {
       }
     },
     load ({ commit, dispatch, state }) {
-      const files = state.bookmarks.map((bookmark) => {
+      const items = state.bookmarks.map((bookmark) => {
         // TODO:
         const file = (typeof bookmark === 'string') ? (new File(bookmark).toObject()) : (new File(bookmark.path).toObject())
         file.bookmarked = true
         file.createdAt = new Date(bookmark.createdAt || 0)
         return file
       })
-      commit('setFiles', { files })
+      commit('setItems', { items })
       dispatch('sort')
       dispatch('focusBookmarkTable', null, { root: true })
     },
     select ({ commit }, { filepath }) {
-      commit('setSelectedFilepath', { selectedFilepath: filepath })
+      commit('setFilepath', { filepath })
     },
     selectIndex ({ dispatch, getters }, { index }) {
-      if (index < 0 || index > getters.filteredFiles.length - 1) {
+      if (index < 0 || index > getters.filteredItems.length - 1) {
         return
       }
-      const filepath = getters.filteredFiles[index].path
+      const filepath = getters.filteredItems[index].path
       dispatch('select', { filepath })
     },
     selectFirst ({ dispatch }) {
       dispatch('selectIndex', { index: 0 })
     },
     selectLast ({ dispatch, getters }) {
-      dispatch('selectIndex', { index: getters.filteredFiles.length - 1 })
+      dispatch('selectIndex', { index: getters.filteredItems.length - 1 })
     },
     selectPrevious ({ dispatch, getters }) {
       dispatch('selectIndex', { index: getters.selectedIndex - 1 })
@@ -98,7 +98,7 @@ export default {
       dispatch('sort')
     },
     sort ({ commit, getters, state }) {
-      const files = state.files.sort((a, b) => {
+      const items = state.items.sort((a, b) => {
         let result = 0
         const key = state.sortOption.key
         if (a[key] > b[key]) {
@@ -116,7 +116,7 @@ export default {
         result = sortReversed[state.sortOption.key] ? -1 * result : result
         return state.sortOption.descending ? -1 * result : result
       })
-      commit('setFiles', { files })
+      commit('setItems', { items })
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
@@ -141,8 +141,8 @@ export default {
     }
   },
   mutations: {
-    setFiles (state, { files }) {
-      state.files = files
+    setItems (state, { items }) {
+      state.items = items
     },
     setBookmarks (state, { bookmarks }) {
       state.bookmarks = bookmarks
@@ -153,8 +153,8 @@ export default {
     setQueryInput (state, { queryInput }) {
       state.queryInput = queryInput
     },
-    setSelectedFilepath (state, { selectedFilepath }) {
-      state.selectedFilepath = selectedFilepath
+    setFilepath (state, { filepath }) {
+      state.filepath = filepath
     },
     setScrollTop (state, { scrollTop }) {
       state.scrollTop = scrollTop
@@ -164,19 +164,19 @@ export default {
     }
   },
   getters: {
-    filteredFiles (state) {
-      return state.files.concat().filter((file) => {
+    filteredItems (state) {
+      return state.items.concat().filter((file) => {
         return file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
       })
     },
     selectedIndex (state, getters) {
-      return getters.filteredFiles.findIndex((file) => {
+      return getters.filteredItems.findIndex((file) => {
         return getters.isSelected({ filepath: file.path })
       })
     },
     isSelected (state) {
       return ({ filepath }) => {
-        return state.selectedFilepath === filepath
+        return state.filepath === filepath
       }
     },
     isBookmarked (state) {

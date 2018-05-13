@@ -93,7 +93,7 @@ export default {
   computed: {
     ...mapState({
       directory: state => state.directory,
-      selectedFilepath: state => state.explorer.selectedFilepath
+      filepath: state => state.explorer.filepath
     }),
     ...mapGetters({
       items: 'explorer/filteredItems',
@@ -107,7 +107,7 @@ export default {
     directory () {
       this.restore()
     },
-    selectedFilepath (value) {
+    filepath (value) {
       this.$nextTick(() => {
         const index = this.selectedIndex
         if (index === -1) {
@@ -176,7 +176,7 @@ export default {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
-          this.showViewer({ filepath: this.selectedFilepath })
+          this.showViewer({ filepath: this.filepath })
           break
         case 38:
           e.preventDefault()
@@ -197,7 +197,7 @@ export default {
         case 68:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.toggleBookmark({ filepath: this.selectedFilepath })
+            this.toggleBookmark({ filepath: this.filepath })
           }
           break
       }
