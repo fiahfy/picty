@@ -54,9 +54,7 @@
           >{{ getIcon(props.item) }}</v-icon>
           <span>{{ props.item.name }}</span>
         </td>
-        <td class="text-xs-right">
-          <template v-if="getSize(props.item) !== null">{{ getSize(props.item) | readableSize }}</template>
-        </td>
+        <td class="text-xs-right">{{ getSize(props.item) | readableSize }}</td>
         <td class="text-xs-right">{{ props.item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
       </tr>
     </template>

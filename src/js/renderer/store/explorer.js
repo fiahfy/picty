@@ -13,13 +13,12 @@ let watcher = null
 export default {
   namespaced: true,
   state: {
-    error: null,
     files: [],
     directory: remote.app.getPath('home'),
     directoryInput: '',
     query: '',
     queryInput: '',
-    selectedFilepath: null,
+    selectedFilepath: '',
     histories: [],
     historyIndex: -1,
     sortOptions: {}
@@ -52,7 +51,7 @@ export default {
         directory: dirpath,
         scrollTop: 0
       }]
-      commit('setSelectedFilepath', { selectedFilepath: null })
+      commit('setSelectedFilepath', { selectedFilepath: '' })
       commit('setHistories', { histories })
       commit('setHistoryIndex', { historyIndex })
 
@@ -91,14 +90,8 @@ export default {
           dispatch('load')
         })
         const files = File.listFiles(state.directory).filter((file) => file.isDirectory() || file.isImage()).map((file) => file.toObject())
-        if (!files.length) {
-          throw new Error('No Images')
-        }
-        commit('setError', { error: null })
         commit('setFiles', { files })
       } catch (e) {
-        const error = e.message === 'No Images' ? e : new Error('Invalid Directory')
-        commit('setError', { error })
         commit('setFiles', { files: [] })
       }
       dispatch('sort')
@@ -204,9 +197,6 @@ export default {
     }
   },
   mutations: {
-    setError (state, { error }) {
-      state.error = error
-    },
     setFiles (state, { files }) {
       state.files = files
     },
@@ -237,12 +227,6 @@ export default {
     },
     setHistoryIndex (state, { historyIndex }) {
       state.historyIndex = historyIndex
-    },
-    setPagination (state, { pagination, key }) {
-      state.paginations = {
-        ...state.paginations,
-        [key]: pagination
-      }
     },
     setSortOption (state, { sortOption, key }) {
       state.sortOptions = {
@@ -275,7 +259,7 @@ export default {
     },
     filteredFiles (state) {
       return state.files.concat().filter((file) => {
-        return file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
+        return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
       })
     },
     selectedIndex (state, getters) {

@@ -44,6 +44,7 @@ export default {
       }
     },
     ...mapActions({
+      changeDirectory: 'explorer/changeDirectory',
       openDirectory: 'explorer/openDirectory'
     })
   }
