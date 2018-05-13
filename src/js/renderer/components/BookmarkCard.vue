@@ -14,19 +14,19 @@
       </v-btn>
       <v-btn
         :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
-        :disabled="!selectedBookmark"
+        :disabled="!selectedFilepath"
         flat
         icon
-        @click="toggleBookmark({ filepath: selectedBookmark })"
+        @click="toggleBookmark({ filepath: selectedFilepath })"
       >
-        <v-icon>{{ isBookmarked({ filepath: selectedBookmark}) ? 'star' : 'star_border' }}</v-icon>
+        <v-icon>{{ isBookmarked({ filepath: selectedFilepath}) ? 'star' : 'star_border' }}</v-icon>
       </v-btn>
       <v-btn
         :title="'View'|accelerator('Enter')"
-        :disabled="!selectedBookmark"
+        :disabled="!selectedFilepath"
         flat
         icon
-        @click="showViewer({ filepath: selectedBookmark })"
+        @click="showViewer({ filepath: selectedFilepath })"
       >
         <v-icon>photo</v-icon>
       </v-btn>
@@ -60,7 +60,7 @@ export default {
       }
     },
     ...mapState({
-      selectedBookmark: state => state.bookmark.selectedBookmark
+      selectedFilepath: state => state.bookmark.selectedFilepath
     }),
     ...mapGetters({
       isBookmarked: 'bookmark/isBookmarked'

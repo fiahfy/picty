@@ -1,5 +1,4 @@
 <template>
-  <div class="bookmark-table" />
   <!-- <div
     :class="classes"
     class="bookmark-list"
@@ -60,29 +59,106 @@
       </mdc-virtual-table-body>
     </mdc-table>
   </div> -->
+  <virtual-data-table
+    ref="table"
+    :headers="headers"
+    :items="files"
+    class="bookmark-table"
+    item-key="path"
+    hide-actions
+    must-sort
+    sticky-headers
+    tabindex="0"
+    @scroll="onScroll"
+    @keydown.native="onKeyDown"
+  >
+    <template
+      slot="headers"
+      slot-scope="props"
+    >
+      <tr>
+        <th
+          v-for="header in props.headers"
+          :key="header.text"
+          :class="getHeaderClass(header)"
+          :style="getHeaderStyle(header)"
+          @click="changeSort(header)"
+        >
+          <v-icon small>arrow_upward</v-icon>
+          {{ header.text }}
+        </th>
+      </tr>
+    </template>
+    <template
+      slot="items"
+      slot-scope="props"
+    >
+      <tr
+        :key="props.item.path"
+        :active="isSelected({ filepath: props.item.path })"
+        @click="select({ filepath: props.item.path })"
+        @dblclick="action({ filepath: props.item.path })"
+        @contextmenu="(e) => onContextMenu(e, props.item)"
+      >
+        <td>
+          <v-btn
+            flat
+            icon
+            class="my-0"
+          >
+            <v-icon>star_outline</v-icon>
+          </v-btn>
+          <v-icon
+            :color="getColor(props.item)"
+            class="pa-1"
+          >{{ getIcon(props.item) }}</v-icon>
+          <span>{{ props.item.name }}</span>
+        </td>
+        <td class="text-xs-right">{{ getSize(props.item) | readableSize }}</td>
+        <td class="text-xs-right">{{ props.item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
+        <td class="text-xs-right">{{ props.item.createdAt | moment('YYYY-MM-DD HH:mm') }}</td>
+      </tr>
+    </template>
+  </virtual-data-table>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import VirtualDataTable from './VirtualDataTable'
 import * as ContextMenu from '../utils/context-menu'
 
 export default {
+  components: {
+    VirtualDataTable
+  },
   data () {
     return {
-      scrolling: false
+      headers: [
+        {
+          text: 'Name',
+          value: 'name'
+        },
+        {
+          text: 'Size',
+          value: 'size',
+          width: 64
+        },
+        {
+          text: 'Date Modified',
+          value: 'mtime',
+          width: 128
+        },
+        {
+          text: 'Bookmark Added',
+          value: 'createdAt',
+          width: 128
+        }
+      ]
     }
   },
   computed: {
-    classes () {
-      return {
-        scrolling: this.scrolling
-      }
-    },
-    icon () {
-      return this.sortOption.order === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'
-    },
     ...mapState({
-      selectedBookmark: state => state.bookmark.selectedBookmark,
+      selectedFilepath: state => state.bookmark.selectedFilepath,
       scrollTop: state => state.bookmark.scrollTop,
       sortOption: state => state.bookmark.sortOption
     }),
@@ -93,51 +169,76 @@ export default {
     })
   },
   watch: {
-    directory () {
-      this.$nextTick(() => {
-        this.$el.scrollTop = this.scrollTop
-      })
-    },
-    selectedBookmark () {
+    selectedFilepath () {
       this.$nextTick(() => {
         const index = this.selectedIndex
         if (index === -1) {
           return
         }
-        const rowHeight = 41
-        const offsetHeight = 41
+        const rowHeight = 48
+        const headerHeight = 58
         const el = {
-          offsetTop: rowHeight * index + offsetHeight,
+          offsetTop: rowHeight * (index + 1),
           offsetHeight: rowHeight
         }
-        if (el.offsetTop - el.offsetHeight < this.$el.scrollTop) {
-          this.$el.scrollTop = el.offsetTop - el.offsetHeight
-        } else if (el.offsetTop + el.offsetHeight > this.$el.scrollTop + this.$el.offsetHeight) {
-          this.$el.scrollTop = el.offsetTop + el.offsetHeight - this.$el.offsetHeight
+        const table = {
+          scrollTop: this.$refs.table.getScrollTop(),
+          offsetHeight: this.$refs.table.getOffsetHeight()
+        }
+        if (el.offsetTop - el.offsetHeight < table.scrollTop) {
+          this.$refs.table.setScrollTop(el.offsetTop - el.offsetHeight)
+        } else if (el.offsetTop + headerHeight > table.scrollTop + table.offsetHeight) {
+          this.$refs.table.setScrollTop(el.offsetTop + headerHeight - table.offsetHeight)
         }
       })
     }
   },
   mounted () {
-    this.$el.addEventListener('scroll', this.scroll)
-    this.$nextTick(() => {
-      this.$el.scrollTop = this.scrollTop
-    })
-  },
-  beforeDestroy () {
-    this.$el.removeEventListener('scroll', this.scroll)
+    this.restore()
   },
   methods: {
-    scroll () {
-      const scrollTop = this.$el.scrollTop
-      this.scrolling = scrollTop > 0
-      this.setScrollTop({ scrollTop })
+    getHeaderClass (header) {
+      return [
+        'column sortable',
+        this.sortOption.descending ? 'desc' : 'asc',
+        header.value === this.sortOption.key ? 'active' : ''
+      ]
     },
-    keydown (e) {
+    getHeaderStyle (header) {
+      return {
+        'box-sizing': 'content-box',
+        width: header.width ? `${header.width}px` : null
+      }
+    },
+    getIcon (file) {
+      return file.directory ? 'folder' : 'photo'
+    },
+    getColor (file) {
+      return file.directory ? 'blue lighten-3' : 'green lighten-3'
+    },
+    getSize (file) {
+      return file.directory ? null : file.size
+    },
+    restore () {
+      const scrollTop = this.scrollTop
+      this.$nextTick(() => {
+        this.$refs.table.setScrollTop(scrollTop)
+      })
+    },
+    changeSort (header) {
+      this.changeSortKey({ sortKey: header.value })
+      this.$nextTick(() => {
+        this.$el.scrollTop = 0
+      })
+    },
+    onScroll (e) {
+      this.setScrollTop({ scrollTop: e.target.scrollTop })
+    },
+    onKeyDown (e) {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
-          this.showViewer({ filepath: this.selectedBookmark })
+          this.showViewer({ filepath: this.selectedFilepath })
           break
         case 38:
           e.preventDefault()
@@ -158,16 +259,10 @@ export default {
         case 68:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.toggleBookmark({ filepath: this.selectedBookmark })
+            this.toggleBookmark({ filepath: this.selectedFilepath })
           }
           break
       }
-    },
-    click (e, sortKey) {
-      this.changeSortKey({ sortKey })
-      this.$nextTick(() => {
-        this.$el.scrollTop = 0
-      })
     },
     contextmenu (e, file) {
       this.select({ filepath: file.path })
@@ -185,7 +280,9 @@ export default {
             this.showViewer({ filepath: file.path })
           },
           accelerator: 'Enter'
-        }
+        },
+        { type: 'separator' },
+        { role: ContextMenu.Role.copy }
       ])
     },
     ...mapMutations({
@@ -207,62 +304,18 @@ export default {
 </script>
 
 <style scoped lang="scss">
-// .bookmark-list {
-//   height: 100%;
-//   outline: none;
-//   overflow-y: scroll;
-//   .mdc-table {
-//     border-spacing: 0;
-//     table-layout: fixed;
-//     width: 100%;
-//     .mdc-table-header {
-//       .mdc-table-row {
-//         cursor: pointer;
-//         height: 40px;
-//         .mdc-table-header-column {
-//           border: 0;
-//           color: var(--mdc-theme-text-secondary-on-background);
-//           font-size: smaller;
-//           font-weight: normal;
-//           line-height: 20px;
-//           padding: 8px;
-//           position: sticky;
-//           top: 0;
-//           vertical-align: bottom;
-//           white-space: nowrap;
-//           z-index: 1;
-//           &.size {
-//             width: 64px;
-//           }
-//           &.date-modified {
-//             width: 128px;
-//           }
-//           .mdc-icon {
-//             padding: 0;
-//             vertical-align: bottom;
-//           }
-//         }
-//         &.shadow {
-//           height: 1px;
-//           .mdc-table-header-column {
-//             padding: 0;
-//             position: sticky;
-//             top: 40px;
-//             z-index: 0;
-//             &:after {
-//               bottom: 0;
-//               content:'';
-//               left: 0;
-//               position: absolute;
-//               width: 100%;
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-//   &.scrolling .mdc-table-row.shadow .mdc-table-header-column:after {
-//     box-shadow: 0 0 3px 1px var(--shadow);
-//   }
-// }
+.bookmark-table {
+  outline: none;
+  & /deep/ .datatable {
+    table-layout: fixed;
+    tr {
+      cursor: pointer;
+      &>td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
 </style>

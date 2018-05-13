@@ -84,7 +84,7 @@ export default {
         },
         {
           text: 'Date Modified',
-          value: 'date_modified',
+          value: 'mtime',
           width: 128
         }
       ]

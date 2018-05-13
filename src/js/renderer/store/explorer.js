@@ -5,7 +5,7 @@ import File from '../utils/file'
 const sortReversed = {
   name: false,
   size: false,
-  date_modified: true
+  mtime: true
 }
 
 let watcher = null
@@ -148,22 +148,11 @@ export default {
     sort ({ commit, getters, state }) {
       const files = state.files.concat().sort((a, b) => {
         let result = 0
-        switch (getters.sortOption.key) {
-          case 'date_modified':
-            if (a.mtime > b.mtime) {
-              result = 1
-            } else if (a.mtime < b.mtime) {
-              result = -1
-            }
-            break
-          case 'size':
-            const size = (file) => file.directory ? -1 : file.size
-            if (size(a) > size(b)) {
-              result = 1
-            } else if (size(a) < size(b)) {
-              result = -1
-            }
-            break
+        const key = getters.sortOption.key
+        if (a[key] > b[key]) {
+          result = 1
+        } else if (a[key] < b[key]) {
+          result = -1
         }
         if (result === 0) {
           if (a.name > b.name) {
