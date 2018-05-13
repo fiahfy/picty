@@ -7,7 +7,15 @@
   >
     <v-layout fill-height>
       <v-flex v-if="message">
-        {{ message }}
+        <v-layout
+          align-center
+          justify-center
+        >
+          <v-flex
+            text-xs-center
+            subheading
+          >{{ message }}</v-flex>
+        </v-layout>
       </v-flex>
       <v-flex
         v-else
