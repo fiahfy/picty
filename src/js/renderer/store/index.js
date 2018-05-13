@@ -67,10 +67,10 @@ export default new Vuex.Store({
       dispatch('focus', { selector: Selector.queryInput })
       dispatch('select', { selector: Selector.queryInput })
     },
-    focusExplorerList ({ dispatch }) {
+    focusExplorerTable ({ dispatch }) {
       dispatch('focus', { selector: Selector.explorerTable })
     },
-    focusBookmarkList ({ dispatch }) {
+    focusBookmarkTable ({ dispatch }) {
       dispatch('focus', { selector: Selector.bookmarkTable })
     },
     open ({ dispatch }, { filepathes }) {

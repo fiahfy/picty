@@ -13,7 +13,7 @@ let watcher = null
 export default {
   namespaced: true,
   state: {
-    files: [],
+    items: [],
     directoryInput: '',
     query: '',
     queryInput: '',
@@ -88,13 +88,15 @@ export default {
         watcher = fs.watch(rootState.directory, () => {
           dispatch('load')
         })
-        const files = File.listFiles(rootState.directory).filter((file) => file.isDirectory() || file.isImage()).map((file) => file.toObject())
-        commit('setFiles', { files })
+        const items = File.listFiles(rootState.directory)
+          .filter((file) => file.isDirectory() || file.isImage())
+          .map((file) => file.toObject())
+        commit('setItems', { items })
       } catch (e) {
-        commit('setFiles', { files: [] })
+        commit('setItems', { items: [] })
       }
       dispatch('sort')
-      dispatch('focusExplorerList', null, { root: true })
+      dispatch('focusExplorerTable', null, { root: true })
     },
     openDirectory ({ dispatch, rootState }) {
       const result = shell.openItem(rootState.directory)
@@ -106,17 +108,17 @@ export default {
       commit('setSelectedFilepath', { selectedFilepath: filepath })
     },
     selectIndex ({ dispatch, getters }, { index }) {
-      if (index < 0 || index > getters.filteredFiles.length - 1) {
+      if (index < 0 || index > getters.filteredItems.length - 1) {
         return
       }
-      const filepath = getters.filteredFiles[index].path
+      const filepath = getters.filteredItems[index].path
       dispatch('select', { filepath })
     },
     selectFirst ({ dispatch }) {
       dispatch('selectIndex', { index: 0 })
     },
     selectLast ({ dispatch, getters }) {
-      dispatch('selectIndex', { index: getters.filteredFiles.length - 1 })
+      dispatch('selectIndex', { index: getters.filteredItems.length - 1 })
     },
     selectPrevious ({ dispatch, getters }) {
       dispatch('selectIndex', { index: getters.selectedIndex - 1 })
@@ -145,7 +147,7 @@ export default {
       dispatch('sort')
     },
     sort ({ commit, getters, state }) {
-      const files = state.files.concat().sort((a, b) => {
+      const items = state.items.concat().sort((a, b) => {
         let result = 0
         const key = getters.sortOption.key
         if (a[key] > b[key]) {
@@ -163,7 +165,7 @@ export default {
         result = sortReversed[getters.sortOption.key] ? -1 * result : result
         return getters.sortOption.descending ? -1 * result : result
       })
-      commit('setFiles', { files })
+      commit('setItems', { items })
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
@@ -185,8 +187,8 @@ export default {
     }
   },
   mutations: {
-    setFiles (state, { files }) {
-      state.files = files
+    setItems (state, { items }) {
+      state.items = items
     },
     setDirectoryInput (state, { directoryInput }) {
       state.directoryInput = directoryInput
@@ -242,13 +244,13 @@ export default {
         descending: false
       }
     },
-    filteredFiles (state) {
-      return state.files.concat().filter((file) => {
+    filteredItems (state) {
+      return state.items.concat().filter((file) => {
         return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
       })
     },
     selectedIndex (state, getters) {
-      return getters.filteredFiles.findIndex((file) => {
+      return getters.filteredItems.findIndex((file) => {
         return getters.isSelected({ filepath: file.path })
       })
     },

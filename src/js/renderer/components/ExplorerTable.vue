@@ -2,7 +2,7 @@
   <virtual-data-table
     ref="table"
     :headers="headers"
-    :items="files"
+    :items="items"
     class="explorer-table"
     item-key="path"
     hide-actions
@@ -96,7 +96,7 @@ export default {
       selectedFilepath: state => state.explorer.selectedFilepath
     }),
     ...mapGetters({
-      files: 'explorer/filteredFiles',
+      items: 'explorer/filteredItems',
       scrollTop: 'explorer/scrollTop',
       sortOption: 'explorer/sortOption',
       selectedIndex: 'explorer/selectedIndex',

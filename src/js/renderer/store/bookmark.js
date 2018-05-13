@@ -60,7 +60,7 @@ export default {
       })
       commit('setFiles', { files })
       dispatch('sort')
-      dispatch('focusBookmarkList', null, { root: true })
+      dispatch('focusBookmarkTable', null, { root: true })
     },
     select ({ commit }, { filepath }) {
       commit('setSelectedFilepath', { selectedFilepath: filepath })
