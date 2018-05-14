@@ -5,6 +5,7 @@
   >
     <v-card-title class="py-2 px-0">
       <v-btn
+        v-long-press="showBackMenu"
         ref="backButton"
         :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
         :disabled="!canBackDirectory"
@@ -15,22 +16,8 @@
       >
         <v-icon>arrow_back</v-icon>
       </v-btn>
-      <v-menu
-        v-model="backMenu.show"
-        :position-x="backMenu.x"
-        :position-y="backMenu.y"
-      >
-        <v-list>
-          <v-list-tile
-            v-for="(directory, index) in backDirectories"
-            :key="index"
-            @click="() => backDirectory({ offset: index })"
-          >
-            <v-list-tile-title>{{ directory }}</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu>
       <v-btn
+        v-long-press="showForwardMenu"
         ref="forwardButton"
         :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
         :disabled="!canForwardDirectory"
@@ -41,21 +28,6 @@
       >
         <v-icon>arrow_forward</v-icon>
       </v-btn>
-      <v-menu
-        v-model="forwardMenu.show"
-        :position-x="forwardMenu.x"
-        :position-y="forwardMenu.y"
-      >
-        <v-list>
-          <v-list-tile
-            v-for="(directory, index) in forwardDirectories"
-            :key="index"
-            @click="() => forwardDirectory({ offset: index })"
-          >
-            <v-list-tile-title>{{ directory }}</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu>
       <v-btn
         :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
         flat
@@ -111,20 +83,6 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '../utils/context-menu'
 
 export default {
-  data () {
-    return {
-      backMenu: {
-        show: false,
-        x: 0,
-        y: 0
-      },
-      forwardMenu: {
-        show: false,
-        x: 0,
-        y: 0
-      }
-    }
-  },
   computed: {
     queryInput: {
       get () {
@@ -150,34 +108,34 @@ export default {
       this.search()
     }
   },
-  mounted () {
-    this.$nextTick(() => {
-      const backButtonRect = this.$refs.backButton.$el.getBoundingClientRect()
-      this.backMenu.x = backButtonRect.left
-      this.backMenu.y = backButtonRect.top
-      const forwardButtonRect = this.$refs.forwardButton.$el.getBoundingClientRect()
-      this.forwardMenu.x = forwardButtonRect.left
-      this.forwardMenu.y = forwardButtonRect.top
-    })
-  },
   methods: {
     onContextMenu (e) {
       ContextMenu.showTextMenu(e)
     },
     onKeyUp (e) {
       if (e.keyCode === 13) {
-        this.search({ query: e.target.value })
+        this.search()
       }
     },
     showBackMenu (e) {
-      e.stopPropagation()
-      e.preventDefault()
-      this.backMenu.show = true
+      ContextMenu.show(e, this.backDirectories.map((directory, index) => {
+        return {
+          label: directory,
+          click: () => {
+            this.backDirectory({ offset: index })
+          }
+        }
+      }))
     },
     showForwardMenu (e) {
-      e.stopPropagation()
-      e.preventDefault()
-      this.forwardMenu.show = true
+      ContextMenu.show(e, this.forwardDirectories.map((directory, index) => {
+        return {
+          label: directory,
+          click: () => {
+            this.forwardDirectory({ offset: index })
+          }
+        }
+      }))
     },
     ...mapActions({
       changeDirectory: 'explorer/changeDirectory',

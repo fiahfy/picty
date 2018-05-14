@@ -78,7 +78,7 @@ export default {
     },
     onKeyUp (e) {
       if (e.keyCode === 13) {
-        this.search({ query: e.target.value })
+        this.search()
       }
     },
     ...mapActions({
