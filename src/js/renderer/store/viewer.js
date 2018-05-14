@@ -6,28 +6,27 @@ export default {
   namespaced: true,
   state: {
     error: null,
-    files: [],
-    currentFile: null,
+    items: [],
+    filepath: '',
     originalScale: 0,
     scale: 0,
     scaling: false
   },
   actions: {
-    show ({ commit, dispatch, rootState }, { filepathes, currentFilepath }) {
+    show ({ commit, dispatch, rootState }, { filepathes, filepath }) {
       try {
-        const files = filepathes.map(filepath => new File(filepath)).filter((file) => file.isImage()).map((file) => file.toObject())
-        if (!files.length) {
+        const items = filepathes.map(filepath => new File(filepath)).filter((file) => file.isImage()).map((file) => file.toObject())
+        if (!items.length) {
           throw new Error('No Images')
         }
-        const currentFile = currentFilepath ? (new File(currentFilepath)).toObject() : files[0]
         commit('setError', { error: null })
-        commit('setFiles', { files })
-        commit('setCurrentFile', { currentFile })
+        commit('setItems', { items })
+        commit('setFilepath', { filepath: filepath || items[0].path })
       } catch (e) {
         const error = e.message === 'No Images' ? e : new Error('Invalid Image')
         commit('setError', { error })
-        commit('setFiles', { files: [] })
-        commit('setCurrentFile', { currentFile: null })
+        commit('setItems', { items: [] })
+        commit('setFilepath', { filepath: null })
       }
       dispatch('showViewer', null, { root: true })
     },
@@ -37,20 +36,20 @@ export default {
     movePrevious ({ commit, getters, state }) {
       let index = getters.currentIndex - 1
       if (index < 0) {
-        index = state.files.length - 1
+        index = state.items.length - 1
       }
-      const currentFile = state.files[index]
-      commit('setCurrentFile', { currentFile })
+      const filepath = state.items[index].path
+      commit('setFilepath', { filepath })
     },
     moveNext ({ commit, getters, state }) {
       let index = getters.currentIndex + 1
-      if (index > state.files.length - 1) {
+      if (index > state.items.length - 1) {
         index = 0
       }
-      const currentFile = state.files[index]
-      commit('setCurrentFile', { currentFile })
+      const filepath = state.items[index].path
+      commit('setFilepath', { filepath })
     },
-    initZoom ({ commit, state }, { scale }) {
+    setupZoom ({ commit, state }, { scale }) {
       commit('setScale', { scale })
       commit('setOriginalScale', { originalScale: scale })
       commit('setScaling', { scaling: false })
@@ -78,14 +77,14 @@ export default {
     setError (state, { error }) {
       state.error = error
     },
-    setFiles (state, { files }) {
-      state.files = files
+    setItems (state, { items }) {
+      state.items = items
     },
-    setCurrentFile (state, { currentFile }) {
-      state.currentFile = currentFile
+    setFilepath (state, { filepath }) {
+      state.filepath = filepath
     },
     setCurrentIndex (state, { currentIndex }) {
-      state.currentFile = state.files[currentIndex]
+      state.filepath = state.items[currentIndex].path
     },
     setOriginalScale (state, { originalScale }) {
       state.originalScale = originalScale
@@ -99,8 +98,8 @@ export default {
   },
   getters: {
     currentIndex (state) {
-      return state.files.findIndex((file) => {
-        return state.currentFile && file.path === state.currentFile.path
+      return state.items.findIndex((file) => {
+        return state.filepath === file.path
       })
     }
   }

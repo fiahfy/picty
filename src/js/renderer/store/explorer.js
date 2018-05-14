@@ -182,7 +182,7 @@ export default {
         dispatch('viewer/show', { filepathes }, { root: true })
       } else {
         const filepathes = File.listFiles(file.parent.path).map(file => file.path)
-        dispatch('viewer/show', { filepathes, currentFilepath: filepath }, { root: true })
+        dispatch('viewer/show', { filepathes, filepath }, { root: true })
       }
     }
   },

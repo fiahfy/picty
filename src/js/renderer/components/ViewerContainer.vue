@@ -26,7 +26,7 @@
         @mouseup="onMouseUp"
       >
         <img
-          :src="`file://${currentFile.path}`"
+          :src="`file://${filepath}`"
           :class="imageClasses"
           :style="imageStyles"
           draggable="false"
@@ -89,14 +89,14 @@ export default {
         }
         return null
       },
-      currentFile: state => state.viewer.currentFile,
+      filepath: state => state.viewer.filepath,
       scale: state => state.viewer.scale,
       scaling: state => state.viewer.scaling,
       imageStretched: state => state.settings.imageStretched
     })
   },
   watch: {
-    currentFile () {
+    filepath () {
       this.loadError = false
     },
     scale (newValue, oldValue) {
@@ -157,13 +157,13 @@ export default {
         width: imageWidth,
         height: imageHeight
       }
-      this.initZoom({ scale })
+      this.setupZoom({ scale })
     },
     onError (e) {
       this.loadError = true
     },
     ...mapActions({
-      initZoom: 'viewer/initZoom'
+      setupZoom: 'viewer/setupZoom'
     })
   }
 }
