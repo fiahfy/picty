@@ -20,6 +20,42 @@ export default {
     }
   },
   actions: {
+    initialize ({ dispatch, rootState }) {
+      dispatch('loadItems')
+    },
+    loadItems ({ commit, dispatch, rootState }) {
+      const items = rootState.bookmarks.map((bookmark) => {
+        // TODO:
+        const file = (typeof bookmark === 'string') ? (new File(bookmark).toObject()) : (new File(bookmark.path).toObject())
+        file.bookmarked = true
+        file.createdAt = new Date(bookmark.createdAt || 0)
+        return file
+      })
+      commit('setItems', { items })
+      dispatch('sortItems')
+      dispatch('focusBookmarkTable', null, { root: true })
+    },
+    sortItems ({ commit, getters, state }) {
+      const items = state.items.sort((a, b) => {
+        let result = 0
+        const key = state.sortOption.key
+        if (a[key] > b[key]) {
+          result = 1
+        } else if (a[key] < b[key]) {
+          result = -1
+        }
+        if (result === 0) {
+          if (a.name > b.name) {
+            result = 1
+          } else if (a.name < b.name) {
+            result = -1
+          }
+        }
+        result = sortReversed[state.sortOption.key] ? -1 * result : result
+        return state.sortOption.descending ? -1 * result : result
+      })
+      commit('setItems', { items })
+    },
     bookmark ({ commit, dispatch, getters, rootState }, { filepath }) {
       if (!filepath || getters.isBookmarked({ filepath })) {
         return
@@ -32,7 +68,7 @@ export default {
         }
       ]
       commit('setBookmarks', { bookmarks }, { root: true })
-      dispatch('load')
+      dispatch('loadItems')
     },
     deleteBookmark ({ commit, dispatch, rootState }, { filepath }) {
       const bookmarks = rootState.bookmarks.filter((bookmark) => {
@@ -40,7 +76,7 @@ export default {
         return (typeof bookmark === 'string') ? bookmark !== filepath : bookmark.path !== filepath
       })
       commit('setBookmarks', { bookmarks }, { root: true })
-      dispatch('load')
+      dispatch('loadItems')
     },
     toggleBookmark ({ dispatch, getters }, { filepath }) {
       if (getters.isBookmarked({ filepath })) {
@@ -48,18 +84,6 @@ export default {
       } else {
         dispatch('bookmark', { filepath })
       }
-    },
-    load ({ commit, dispatch, rootState }) {
-      const items = rootState.bookmarks.map((bookmark) => {
-        // TODO:
-        const file = (typeof bookmark === 'string') ? (new File(bookmark).toObject()) : (new File(bookmark.path).toObject())
-        file.bookmarked = true
-        file.createdAt = new Date(bookmark.createdAt || 0)
-        return file
-      })
-      commit('setItems', { items })
-      dispatch('sort')
-      dispatch('focusBookmarkTable', null, { root: true })
     },
     select ({ commit }, { filepath }) {
       commit('setFilepath', { filepath })
@@ -94,28 +118,7 @@ export default {
       }
       const sortOption = { key: sortKey, descending: sortDescending }
       commit('setSortOption', { sortOption })
-      dispatch('sort')
-    },
-    sort ({ commit, getters, state }) {
-      const items = state.items.sort((a, b) => {
-        let result = 0
-        const key = state.sortOption.key
-        if (a[key] > b[key]) {
-          result = 1
-        } else if (a[key] < b[key]) {
-          result = -1
-        }
-        if (result === 0) {
-          if (a.name > b.name) {
-            result = 1
-          } else if (a.name < b.name) {
-            result = -1
-          }
-        }
-        result = sortReversed[state.sortOption.key] ? -1 * result : result
-        return state.sortOption.descending ? -1 * result : result
-      })
-      commit('setItems', { items })
+      dispatch('sortItems')
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
@@ -162,7 +165,7 @@ export default {
   getters: {
     filteredItems (state) {
       return state.items.concat().filter((file) => {
-        return file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
+        return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
       })
     },
     selectedIndex (state, getters) {

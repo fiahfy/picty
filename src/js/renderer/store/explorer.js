@@ -23,7 +23,7 @@ export default {
     sortOptions: {}
   },
   actions: {
-    initDirectory ({ dispatch, rootState }) {
+    initialize ({ dispatch, rootState }) {
       const dirpath = rootState.directory
       dispatch('changeDirectory', { dirpath, force: true })
     },
@@ -78,15 +78,21 @@ export default {
       commit('setDirectoryInput', { directoryInput: history.directory })
       commit('setQuery', { query: '' })
 
-      dispatch('load')
+      dispatch('loadItems')
     },
-    load ({ commit, dispatch, rootState }) {
+    openDirectory ({ dispatch, rootState }) {
+      const result = shell.openItem(rootState.directory)
+      if (!result) {
+        dispatch('showMessage', { message: `Invalid directory "${rootState.directory}"` }, { root: true })
+      }
+    },
+    loadItems ({ commit, dispatch, rootState }) {
       try {
         if (watcher) {
           watcher.close()
         }
         watcher = fs.watch(rootState.directory, () => {
-          dispatch('load')
+          dispatch('loadItems')
         })
         const items = File.listFiles(rootState.directory)
           .filter((file) => file.isDirectory() || file.isImage())
@@ -95,14 +101,29 @@ export default {
       } catch (e) {
         commit('setItems', { items: [] })
       }
-      dispatch('sort')
+      dispatch('sortItems')
       dispatch('focusExplorerTable', null, { root: true })
     },
-    openDirectory ({ dispatch, rootState }) {
-      const result = shell.openItem(rootState.directory)
-      if (!result) {
-        dispatch('showMessage', { message: `Invalid directory "${rootState.directory}"` }, { root: true })
-      }
+    sortItems ({ commit, getters, state }) {
+      const items = state.items.concat().sort((a, b) => {
+        let result = 0
+        const key = getters.sortOption.key
+        if (a[key] > b[key]) {
+          result = 1
+        } else if (a[key] < b[key]) {
+          result = -1
+        }
+        if (result === 0) {
+          if (a.name > b.name) {
+            result = 1
+          } else if (a.name < b.name) {
+            result = -1
+          }
+        }
+        result = sortReversed[getters.sortOption.key] ? -1 * result : result
+        return getters.sortOption.descending ? -1 * result : result
+      })
+      commit('setItems', { items })
     },
     select ({ commit }, { filepath }) {
       commit('setFilepath', { filepath })
@@ -144,28 +165,7 @@ export default {
       }
       const sortOption = { key: sortKey, descending: sortDescending }
       commit('setSortOption', { sortOption, key: rootState.directory })
-      dispatch('sort')
-    },
-    sort ({ commit, getters, state }) {
-      const items = state.items.concat().sort((a, b) => {
-        let result = 0
-        const key = getters.sortOption.key
-        if (a[key] > b[key]) {
-          result = 1
-        } else if (a[key] < b[key]) {
-          result = -1
-        }
-        if (result === 0) {
-          if (a.name > b.name) {
-            result = 1
-          } else if (a.name < b.name) {
-            result = -1
-          }
-        }
-        result = sortReversed[getters.sortOption.key] ? -1 * result : result
-        return getters.sortOption.descending ? -1 * result : result
-      })
-      commit('setItems', { items })
+      dispatch('sortItems')
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
@@ -238,8 +238,8 @@ export default {
     scrollTop (state) {
       return state.histories[state.historyIndex].scrollTop
     },
-    sortOption (state) {
-      return state.sortOptions[state.directory] || {
+    sortOption (state, getters, rootState) {
+      return state.sortOptions[rootState.directory] || {
         key: 'name',
         descending: false
       }

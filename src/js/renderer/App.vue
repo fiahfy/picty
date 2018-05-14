@@ -50,10 +50,6 @@ export default {
     TitleBar,
     Viewer
   },
-  async asyncData ({ store }) {
-    await store.dispatch('explorer/initDirectory')
-    await store.dispatch('bookmark/load')
-  },
   computed: {
     ...mapState({
       message: state => state.message,
@@ -63,6 +59,10 @@ export default {
     ...mapGetters({
       titleBar: 'titleBar'
     })
+  },
+  created () {
+    this.initializeExplorer()
+    this.initializeBookmark()
   },
   methods: {
     onContextMenu (e) {
@@ -77,7 +77,9 @@ export default {
       this.open({ filepathes })
     },
     ...mapActions({
-      open: 'open'
+      open: 'open',
+      initializeExplorer: 'explorer/initialize',
+      initializeBookmark: 'bookmark/initialize'
     })
   }
 }
