@@ -6,7 +6,7 @@
     @dragover.native.prevent
   >
     <title-bar v-if="titleBar" />
-    <drawer />
+    <activity-bar />
     <v-content class="fill-height">
       <router-view />
     </v-content>
@@ -39,14 +39,14 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import Drawer from './components/Drawer'
+import ActivityBar from './components/ActivityBar'
 import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
 import * as ContextMenu from './utils/context-menu'
 
 export default {
   components: {
-    Drawer,
+    ActivityBar,
     TitleBar,
     Viewer
   },
