@@ -3,6 +3,7 @@
     ref="table"
     :headers="headers"
     :items="items"
+    :no-data-text="noDataText"
     class="bookmark-table"
     item-key="path"
     hide-actions
@@ -91,7 +92,11 @@ export default {
     }
   },
   computed: {
+    noDataText () {
+      return this.query ? 'No matching records found' : 'No data available'
+    },
     ...mapState({
+      query: state => state.bookmark.query,
       filepath: state => state.bookmark.filepath,
       scrollTop: state => state.bookmark.scrollTop,
       order: state => state.bookmark.order
@@ -198,7 +203,7 @@ export default {
           break
       }
     },
-    contextmenu (e, file) {
+    onContextMenu (e, file) {
       this.select({ filepath: file.path })
       ContextMenu.show(e, [
         {

@@ -3,6 +3,7 @@
     ref="table"
     :headers="headers"
     :items="items"
+    :no-data-text="noDataText"
     class="explorer-table"
     item-key="path"
     hide-actions
@@ -91,8 +92,12 @@ export default {
     }
   },
   computed: {
+    noDataText () {
+      return this.query ? 'No matching records found' : 'No data available'
+    },
     ...mapState({
       directory: state => state.directory,
+      query: state => state.explorer.query,
       filepath: state => state.explorer.filepath
     }),
     ...mapGetters({
