@@ -25,10 +25,8 @@ export default {
     },
     loadItems ({ commit, dispatch, rootState }) {
       const items = rootState.bookmarks.map((bookmark) => {
-        // TODO:
-        const file = (typeof bookmark === 'string') ? (new File(bookmark).toObject()) : (new File(bookmark.path).toObject())
+        const file = new File(bookmark).toObject()
         file.bookmarked = true
-        file.createdAt = new Date(bookmark.createdAt || 0)
         return file
       })
       commit('setItems', { items })
@@ -62,19 +60,13 @@ export default {
       }
       const bookmarks = [
         ...rootState.bookmarks,
-        {
-          path: filepath,
-          createdAt: new Date()
-        }
+        filepath
       ]
       commit('setBookmarks', { bookmarks }, { root: true })
       dispatch('loadItems')
     },
     deleteBookmark ({ commit, dispatch, rootState }, { filepath }) {
-      const bookmarks = rootState.bookmarks.filter((bookmark) => {
-        // TODO:
-        return (typeof bookmark === 'string') ? bookmark !== filepath : bookmark.path !== filepath
-      })
+      const bookmarks = rootState.bookmarks.filter((bookmark) => bookmark !== filepath)
       commit('setBookmarks', { bookmarks }, { root: true })
       dispatch('loadItems')
     },
@@ -180,10 +172,7 @@ export default {
     },
     isBookmarked (state, getters, rootState) {
       return ({ filepath }) => {
-        return rootState.bookmarks.findIndex((bookmark) => {
-          // TODO:
-          return (typeof bookmark === 'string') ? bookmark === filepath : bookmark.path === filepath
-        }) > -1
+        return rootState.bookmarks.includes(filepath)
       }
     }
   }
