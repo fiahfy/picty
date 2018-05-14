@@ -2,7 +2,7 @@ import fs from 'fs'
 import { remote, shell } from 'electron'
 import File from '../utils/file'
 
-const sortReversed = {
+const reversed = {
   name: false,
   size: false,
   mtime: true
@@ -20,7 +20,7 @@ export default {
     filepath: '',
     histories: [],
     historyIndex: -1,
-    sortOptions: {}
+    orders: {}
   },
   actions: {
     initialize ({ dispatch, rootState }) {
@@ -105,12 +105,12 @@ export default {
       dispatch('focusExplorerTable', null, { root: true })
     },
     sortItems ({ commit, getters, state }) {
+      const { by, descending } = getters.order
       const items = state.items.concat().sort((a, b) => {
         let result = 0
-        const key = getters.sortOption.key
-        if (a[key] > b[key]) {
+        if (a[by] > b[by]) {
           result = 1
-        } else if (a[key] < b[key]) {
+        } else if (a[by] < b[by]) {
           result = -1
         }
         if (result === 0) {
@@ -120,8 +120,8 @@ export default {
             result = -1
           }
         }
-        result = sortReversed[getters.sortOption.key] ? -1 * result : result
-        return getters.sortOption.descending ? -1 * result : result
+        result = reversed[by] ? -1 * result : result
+        return descending ? -1 * result : result
       })
       commit('setItems', { items })
     },
@@ -158,13 +158,13 @@ export default {
       }
       commit('setHistory', { history, index: state.historyIndex })
     },
-    changeSortKey ({ commit, dispatch, getters, rootState }, { sortKey }) {
-      let sortDescending = false
-      if (getters.sortOption.key === sortKey) {
-        sortDescending = !getters.sortOption.descending
+    changeOrderBy ({ commit, dispatch, getters, rootState }, { orderBy }) {
+      let descending = false
+      if (getters.order.by === orderBy) {
+        descending = !getters.order.descending
       }
-      const sortOption = { key: sortKey, descending: sortDescending }
-      commit('setSortOption', { sortOption, key: rootState.directory })
+      const order = { by: orderBy, descending }
+      commit('setOrder', { order, directory: rootState.directory })
       dispatch('sortItems')
     },
     action ({ commit, dispatch, state }, { filepath }) {
@@ -215,10 +215,10 @@ export default {
     setHistoryIndex (state, { historyIndex }) {
       state.historyIndex = historyIndex
     },
-    setSortOption (state, { sortOption, key }) {
-      state.sortOptions = {
-        ...state.sortOptions,
-        [key]: sortOption
+    setOrder (state, { order, directory }) {
+      state.orders = {
+        ...state.orders,
+        [directory]: order
       }
     }
   },
@@ -238,9 +238,9 @@ export default {
     scrollTop (state) {
       return state.histories[state.historyIndex].scrollTop
     },
-    sortOption (state, getters, rootState) {
-      return state.sortOptions[rootState.directory] || {
-        key: 'name',
+    order (state, getters, rootState) {
+      return state.orders[rootState.directory] || {
+        by: 'name',
         descending: false
       }
     },

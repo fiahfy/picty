@@ -1,6 +1,6 @@
 import File from '../utils/file'
 
-const sortReversed = {
+const reversed = {
   name: false,
   size: false,
   mtime: true
@@ -14,8 +14,8 @@ export default {
     queryInput: '',
     filepath: '',
     scrollTop: 0,
-    sortOption: {
-      key: 'name',
+    order: {
+      by: 'name',
       descending: false
     }
   },
@@ -36,12 +36,12 @@ export default {
       dispatch('focusBookmarkTable', null, { root: true })
     },
     sortItems ({ commit, getters, state }) {
+      const { by, descending } = state.order
       const items = state.items.sort((a, b) => {
         let result = 0
-        const key = state.sortOption.key
-        if (a[key] > b[key]) {
+        if (a[by] > b[by]) {
           result = 1
-        } else if (a[key] < b[key]) {
+        } else if (a[by] < b[by]) {
           result = -1
         }
         if (result === 0) {
@@ -51,8 +51,8 @@ export default {
             result = -1
           }
         }
-        result = sortReversed[state.sortOption.key] ? -1 * result : result
-        return state.sortOption.descending ? -1 * result : result
+        result = reversed[by] ? -1 * result : result
+        return descending ? -1 * result : result
       })
       commit('setItems', { items })
     },
@@ -111,13 +111,13 @@ export default {
       const query = state.queryInput
       commit('setQuery', { query })
     },
-    changeSortKey ({ commit, dispatch, state }, { sortKey }) {
-      let sortDescending = false
-      if (state.sortOption.key === sortKey) {
-        sortDescending = !state.sortOption.descending
+    changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
+      let descending = false
+      if (state.order.by === orderBy) {
+        descending = !state.order.descending
       }
-      const sortOption = { key: sortKey, descending: sortDescending }
-      commit('setSortOption', { sortOption })
+      const order = { by: orderBy, descending }
+      commit('setOrder', { order })
       dispatch('sortItems')
     },
     action ({ commit, dispatch, state }, { filepath }) {
@@ -158,8 +158,8 @@ export default {
     setScrollTop (state, { scrollTop }) {
       state.scrollTop = scrollTop
     },
-    setSortOption (state, { sortOption }) {
-      state.sortOption = sortOption
+    setOrder (state, { order }) {
+      state.order = order
     }
   },
   getters: {

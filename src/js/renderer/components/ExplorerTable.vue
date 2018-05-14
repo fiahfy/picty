@@ -98,7 +98,7 @@ export default {
     ...mapGetters({
       items: 'explorer/filteredItems',
       scrollTop: 'explorer/scrollTop',
-      sortOption: 'explorer/sortOption',
+      order: 'explorer/order',
       selectedIndex: 'explorer/selectedIndex',
       isSelected: 'explorer/isSelected'
     })
@@ -138,8 +138,8 @@ export default {
     getHeaderClass (header) {
       return [
         'column sortable',
-        this.sortOption.descending ? 'desc' : 'asc',
-        header.value === this.sortOption.key ? 'active' : ''
+        this.order.descending ? 'desc' : 'asc',
+        header.value === this.order.by ? 'active' : ''
       ]
     },
     getHeaderStyle (header) {
@@ -164,7 +164,7 @@ export default {
       })
     },
     changeSort (header) {
-      this.changeSortKey({ sortKey: header.value })
+      this.changeOrderBy({ orderBy: header.value })
       this.$nextTick(() => {
         this.$refs.table.setScrollTop(0)
       })
@@ -230,7 +230,7 @@ export default {
       selectPrevious: 'explorer/selectPrevious',
       selectNext: 'explorer/selectNext',
       setScrollTop: 'explorer/setScrollTop',
-      changeSortKey: 'explorer/changeSortKey',
+      changeOrderBy: 'explorer/changeOrderBy',
       action: 'explorer/action',
       showViewer: 'explorer/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'

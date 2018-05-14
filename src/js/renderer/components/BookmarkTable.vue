@@ -94,7 +94,7 @@ export default {
     ...mapState({
       filepath: state => state.bookmark.filepath,
       scrollTop: state => state.bookmark.scrollTop,
-      sortOption: state => state.bookmark.sortOption
+      order: state => state.bookmark.order
     }),
     ...mapGetters({
       items: 'bookmark/filteredItems',
@@ -134,8 +134,8 @@ export default {
     getHeaderClass (header) {
       return [
         'column sortable',
-        this.sortOption.descending ? 'desc' : 'asc',
-        header.value === this.sortOption.key ? 'active' : ''
+        this.order.descending ? 'desc' : 'asc',
+        header.value === this.order.by ? 'active' : ''
       ]
     },
     getHeaderStyle (header) {
@@ -160,7 +160,7 @@ export default {
       })
     },
     changeSort (header) {
-      this.changeSortKey({ sortKey: header.value })
+      this.changeOrderBy({ orderBy: header.value })
       this.$nextTick(() => {
         this.$el.scrollTop = 0
       })
@@ -229,7 +229,7 @@ export default {
       selectLast: 'bookmark/selectLast',
       selectPrevious: 'bookmark/selectPrevious',
       selectNext: 'bookmark/selectNext',
-      changeSortKey: 'bookmark/changeSortKey',
+      changeOrderBy: 'bookmark/changeOrderBy',
       action: 'bookmark/action',
       showViewer: 'bookmark/showViewer'
     })
