@@ -17,59 +17,30 @@
       slot="headers"
       slot-scope="props"
     >
-      <tr>
-        <th
-          v-for="header in props.headers"
-          :key="header.text"
-          :class="getHeaderClass(header)"
-          :style="getHeaderStyle(header)"
-          @click="changeSort(header)"
-        >
-          <v-icon small>arrow_upward</v-icon>
-          {{ header.text }}
-        </th>
-      </tr>
+      <explorer-table-header-row :headers="props.headers" />
     </template>
     <template
       slot="items"
       slot-scope="props"
     >
-      <tr
+      <explorer-table-row
         :key="props.item.path"
-        :active="isSelected({ filepath: props.item.path })"
-        @click="select({ filepath: props.item.path })"
-        @dblclick="action({ filepath: props.item.path })"
-        @contextmenu="(e) => onContextMenu(e, props.item)"
-      >
-        <td>
-          <v-btn
-            flat
-            icon
-            class="my-0"
-            @click="toggleBookmark({ filepath: props.item.path })"
-          >
-            <v-icon :color="getStarColor(props.item)">{{ getStarIcon(props.item) }}</v-icon>
-          </v-btn>
-          <v-icon
-            :color="getFileColor(props.item)"
-            class="pa-1"
-          >{{ getFileIcon(props.item) }}</v-icon>
-          <span>{{ props.item.name }}</span>
-        </td>
-        <td class="text-xs-right">{{ getFileSize(props.item) | readableSize }}</td>
-        <td class="text-xs-right">{{ props.item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
-      </tr>
+        :item="props.item"
+      />
     </template>
   </virtual-data-table>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
+import ExplorerTableHeaderRow from './ExplorerTableHeaderRow'
+import ExplorerTableRow from './ExplorerTableRow'
 import VirtualDataTable from './VirtualDataTable'
-import * as ContextMenu from '../utils/context-menu'
 
 export default {
   components: {
+    ExplorerTableHeaderRow,
+    ExplorerTableRow,
     VirtualDataTable
   },
   data () {
@@ -104,17 +75,14 @@ export default {
     ...mapGetters({
       items: 'explorer/filteredItems',
       scrollTop: 'explorer/scrollTop',
-      order: 'explorer/order',
-      selectedIndex: 'explorer/selectedIndex',
-      isSelected: 'explorer/isSelected',
-      isBookmarked: 'explorer/isBookmarked'
+      selectedIndex: 'explorer/selectedIndex'
     })
   },
   watch: {
     directory () {
       this.restore()
     },
-    filepath (value) {
+    filepath () {
       this.$nextTick(() => {
         const index = this.selectedIndex
         if (index === -1) {
@@ -142,44 +110,10 @@ export default {
     this.restore()
   },
   methods: {
-    getHeaderClass (header) {
-      return [
-        'column sortable',
-        this.order.descending ? 'desc' : 'asc',
-        header.value === this.order.by ? 'active' : ''
-      ]
-    },
-    getHeaderStyle (header) {
-      return {
-        'box-sizing': 'content-box',
-        width: header.width ? `${header.width}px` : null
-      }
-    },
-    getStarColor (item) {
-      return this.isBookmarked({ filepath: item.path }) ? 'yellow' : 'grey'
-    },
-    getStarIcon (item) {
-      return this.isBookmarked({ filepath: item.path }) ? 'star' : 'star_outline'
-    },
-    getFileIcon (item) {
-      return item.directory ? 'folder' : 'photo'
-    },
-    getFileColor (item) {
-      return item.directory ? 'blue lighten-3' : 'green lighten-3'
-    },
-    getFileSize (item) {
-      return item.directory ? null : item.size
-    },
     restore () {
       const scrollTop = this.scrollTop
       this.$nextTick(() => {
         this.$refs.table.setScrollTop(scrollTop)
-      })
-    },
-    changeSort (header) {
-      this.changeOrderBy({ orderBy: header.value })
-      this.$nextTick(() => {
-        this.$refs.table.setScrollTop(0)
       })
     },
     onScroll (e) {
@@ -215,36 +149,12 @@ export default {
           break
       }
     },
-    onContextMenu (e, file) {
-      this.select({ filepath: file.path })
-      ContextMenu.show(e, [
-        {
-          label: 'Bookmark',
-          click: () => {
-            this.toggleBookmark({ filepath: file.path })
-          },
-          accelerator: 'CmdOrCtrl+D'
-        },
-        {
-          label: 'View',
-          click: () => {
-            this.showViewer({ filepath: file.path })
-          },
-          accelerator: 'Enter'
-        },
-        { type: 'separator' },
-        { role: ContextMenu.Role.copy }
-      ])
-    },
     ...mapActions({
-      select: 'explorer/select',
       selectFirst: 'explorer/selectFirst',
       selectLast: 'explorer/selectLast',
       selectPrevious: 'explorer/selectPrevious',
       selectNext: 'explorer/selectNext',
       setScrollTop: 'explorer/setScrollTop',
-      changeOrderBy: 'explorer/changeOrderBy',
-      action: 'explorer/action',
       showViewer: 'explorer/showViewer',
       toggleBookmark: 'explorer/toggleBookmark'
     })
@@ -257,17 +167,6 @@ export default {
   outline: none;
   & /deep/ .datatable {
     table-layout: fixed;
-    tr {
-      cursor: pointer;
-      &>td {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        &>span {
-          line-height: 48px;
-        }
-      }
-    }
   }
 }
 </style>

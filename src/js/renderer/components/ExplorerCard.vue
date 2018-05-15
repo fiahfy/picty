@@ -62,6 +62,7 @@
       >
         <v-icon>photo</v-icon>
       </v-btn>
+      <v-spacer />
       <v-text-field
         v-model="queryInput"
         name="query"
