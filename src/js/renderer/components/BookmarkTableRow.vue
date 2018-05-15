@@ -21,6 +21,7 @@
       >{{ fileIcon }}</v-icon>
       <span>{{ item.name }}</span>
     </td>
+    <td>{{ item.dirpath }}</td>
     <td class="text-xs-right">{{ fileSize | readableSize }}</td>
     <td class="text-xs-right">{{ item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
   </tr>

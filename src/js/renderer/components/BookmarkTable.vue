@@ -51,6 +51,10 @@ export default {
           value: 'name'
         },
         {
+          text: 'Directory',
+          value: 'dirpath'
+        },
+        {
           text: 'Size',
           value: 'size',
           width: 64
