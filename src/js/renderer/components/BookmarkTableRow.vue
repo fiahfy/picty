@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     starColor () {
-      return this.isBookmarked({ filepath: this.item.path }) ? 'yellow' : 'grey'
+      return this.isBookmarked({ filepath: this.item.path }) ? 'yellow darken-2' : 'grey'
     },
     starIcon () {
       return this.isBookmarked({ filepath: this.item.path }) ? 'star' : 'star_outline'

@@ -51,3 +51,9 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.explorer-toolbar /deep/ .input-group--text-field label {
+  margin-left: 0;
+}
+</style>
