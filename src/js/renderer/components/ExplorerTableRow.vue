@@ -7,19 +7,21 @@
     @contextmenu="onContextMenu"
   >
     <td>
-      <v-btn
-        flat
-        icon
-        class="my-0"
-        @click="toggleBookmark({ filepath: item.path })"
-      >
-        <v-icon :color="starColor">{{ starIcon }}</v-icon>
-      </v-btn>
-      <v-icon
-        :color="fileColor"
-        class="pa-1"
-      >{{ fileIcon }}</v-icon>
-      <span>{{ item.name }}</span>
+      <v-layout class="align-center">
+        <v-btn
+          flat
+          icon
+          class="my-0"
+          @click="toggleBookmark({ filepath: item.path })"
+        >
+          <v-icon :color="starColor">{{ starIcon }}</v-icon>
+        </v-btn>
+        <v-icon
+          :color="fileColor"
+          class="pa-1"
+        >{{ fileIcon }}</v-icon>
+        <span>{{ item.name }}</span>
+      </v-layout>
     </td>
     <td class="text-xs-right">{{ fileSize | readableSize }}</td>
     <td class="text-xs-right">{{ item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
@@ -93,12 +95,15 @@ export default {
 <style scoped lang="scss">
 .explorer-table-row {
   cursor: pointer;
-  &>td {
+  td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    &>span {
-      line-height: 48px;
+    span {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }
