@@ -48,15 +48,15 @@
             class="my-0"
             @click="toggleBookmark({ filepath: props.item.path })"
           >
-            <v-icon>{{ isBookmarked({ filepath: props.item.path }) ? 'star' : 'star_outline' }}</v-icon>
+            <v-icon :color="getStarColor(props.item)">{{ getStarIcon(props.item) }}</v-icon>
           </v-btn>
           <v-icon
-            :color="getColor(props.item)"
+            :color="getFileColor(props.item)"
             class="pa-1"
-          >{{ getIcon(props.item) }}</v-icon>
+          >{{ getFileIcon(props.item) }}</v-icon>
           <span>{{ props.item.name }}</span>
         </td>
-        <td class="text-xs-right">{{ getSize(props.item) | readableSize }}</td>
+        <td class="text-xs-right">{{ getFileSize(props.item) | readableSize }}</td>
         <td class="text-xs-right">{{ props.item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
       </tr>
     </template>
@@ -155,14 +155,20 @@ export default {
         width: header.width ? `${header.width}px` : null
       }
     },
-    getIcon (file) {
-      return file.directory ? 'folder' : 'photo'
+    getStarColor (item) {
+      return this.isBookmarked({ filepath: item.path }) ? 'yellow' : 'grey'
     },
-    getColor (file) {
-      return file.directory ? 'blue lighten-3' : 'green lighten-3'
+    getStarIcon (item) {
+      return this.isBookmarked({ filepath: item.path }) ? 'star' : 'star_outline'
     },
-    getSize (file) {
-      return file.directory ? null : file.size
+    getFileIcon (item) {
+      return item.directory ? 'folder' : 'photo'
+    },
+    getFileColor (item) {
+      return item.directory ? 'blue lighten-3' : 'green lighten-3'
+    },
+    getFileSize (item) {
+      return item.directory ? null : item.size
     },
     restore () {
       const scrollTop = this.scrollTop

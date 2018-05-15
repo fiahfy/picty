@@ -153,7 +153,7 @@ export default {
 </script>
 
 <style lang="scss">
-.theme--dark .virtual-data-table.sticky-headers /deep/ .table__overflow::-webkit-scrollbar-thumb {
+.theme--dark .virtual-data-table.sticky-headers .table__overflow::-webkit-scrollbar-thumb {
   background-color: #424242!important;
   &:hover {
     background-color: #505050!important;
