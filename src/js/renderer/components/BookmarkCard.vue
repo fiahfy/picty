@@ -5,7 +5,7 @@
   >
     <v-card-title class="py-2 px-0">
       <v-btn
-        :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
+        :title="'Star'|accelerator('CmdOrCtrl+D')"
         :disabled="!filepath"
         flat
         icon

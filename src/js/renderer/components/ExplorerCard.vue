@@ -45,7 +45,7 @@
         <v-icon>home</v-icon>
       </v-btn>
       <v-btn
-        :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
+        :title="'Star'|accelerator('CmdOrCtrl+D')"
         :disabled="!filepath"
         flat
         icon

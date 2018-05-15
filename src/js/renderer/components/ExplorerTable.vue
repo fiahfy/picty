@@ -254,9 +254,12 @@ export default {
     tr {
       cursor: pointer;
       &>td {
-        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        white-space: nowrap;
+        &>span {
+          line-height: 48px;
+        }
       }
     }
   }
