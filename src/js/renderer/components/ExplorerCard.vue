@@ -6,8 +6,7 @@
     <v-card-title class="py-2 px-0">
       <v-btn
         v-long-press="showBackMenu"
-        ref="backButton"
-        :title="'Back directory'|accelerator('CmdOrCtrl+Left')"
+        :title="'Back'|accelerator('CmdOrCtrl+Left')"
         :disabled="!canBackDirectory"
         flat
         icon
@@ -18,8 +17,7 @@
       </v-btn>
       <v-btn
         v-long-press="showForwardMenu"
-        ref="forwardButton"
-        :title="'Forward directory'|accelerator('CmdOrCtrl+Right')"
+        :title="'Forward'|accelerator('CmdOrCtrl+Right')"
         :disabled="!canForwardDirectory"
         flat
         icon
@@ -29,15 +27,23 @@
         <v-icon>arrow_forward</v-icon>
       </v-btn>
       <v-btn
-        :title="'Change parent directory'|accelerator('CmdOrCtrl+Shift+P')"
+        :title="'Up'|accelerator('CmdOrCtrl+Shift+P')"
         flat
         icon
-        @click="changeParentDirectory"
+        @click="upDirectory"
       >
         <v-icon>arrow_upward</v-icon>
       </v-btn>
       <v-btn
-        :title="'Change home directory'|accelerator('CmdOrCtrl+Shift+H')"
+        title="Reload"
+        flat
+        icon
+        @click="reloadDirectory"
+      >
+        <v-icon>refresh</v-icon>
+      </v-btn>
+      <v-btn
+        :title="'Home'|accelerator('CmdOrCtrl+Shift+H')"
         flat
         icon
         @click="changeHomeDirectory"
@@ -140,10 +146,11 @@ export default {
     },
     ...mapActions({
       changeDirectory: 'explorer/changeDirectory',
-      changeParentDirectory: 'explorer/changeParentDirectory',
+      upDirectory: 'explorer/upDirectory',
       changeHomeDirectory: 'explorer/changeHomeDirectory',
       backDirectory: 'explorer/backDirectory',
       forwardDirectory: 'explorer/forwardDirectory',
+      reloadDirectory: 'explorer/reloadDirectory',
       search: 'explorer/search',
       showViewer: 'explorer/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'

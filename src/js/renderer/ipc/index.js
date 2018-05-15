@@ -43,8 +43,8 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('forwardDirectory', () => {
     store.dispatch('explorer/forwardDirectory')
   })
-  ipcRenderer.on('changeParentDirectory', () => {
-    store.dispatch('explorer/changeParentDirectory')
+  ipcRenderer.on('upDirectory', () => {
+    store.dispatch('explorer/upDirectory')
   })
   ipcRenderer.on('changeHomeDirectory', () => {
     store.dispatch('explorer/changeHomeDirectory')

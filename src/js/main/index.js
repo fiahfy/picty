@@ -51,11 +51,11 @@ const createTemplate = () => {
       submenu: [
         { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { mainWindow.webContents.send('openLocation') } },
         { type: 'separator' },
-        { label: 'Back Directory', accelerator: 'CmdOrCtrl+Left', click: () => { mainWindow.webContents.send('backDirectory') } },
-        { label: 'Forward Directory', accelerator: 'CmdOrCtrl+Right', click: () => { mainWindow.webContents.send('forwardDirectory') } },
-        { label: 'Change Parent Directory', accelerator: 'CmdOrCtrl+Shift+P', click: () => { mainWindow.webContents.send('changeParentDirectory') } },
-        { label: 'Change Home Directory', accelerator: 'CmdOrCtrl+Shift+H', click: () => { mainWindow.webContents.send('changeHomeDirectory') } },
-        { label: 'Open Current Directory', click: () => { mainWindow.webContents.send('openCurrentDirectory') } }
+        { label: 'Back', accelerator: 'CmdOrCtrl+Left', click: () => { mainWindow.webContents.send('backDirectory') } },
+        { label: 'Forward', accelerator: 'CmdOrCtrl+Right', click: () => { mainWindow.webContents.send('forwardDirectory') } },
+        { label: 'Up', accelerator: 'CmdOrCtrl+Shift+P', click: () => { mainWindow.webContents.send('upDirectory') } },
+        { label: 'Home', accelerator: 'CmdOrCtrl+Shift+H', click: () => { mainWindow.webContents.send('changeHomeDirectory') } },
+        { label: 'Open', click: () => { mainWindow.webContents.send('openCurrentDirectory') } }
       ]
     },
     {

@@ -27,7 +27,7 @@ export default {
       const dirpath = rootState.directory
       dispatch('changeDirectory', { dirpath, force: true })
     },
-    changeParentDirectory ({ dispatch, rootState }) {
+    upDirectory ({ dispatch, rootState }) {
       const dirpath = (new File(rootState.directory)).parent.path
       dispatch('changeDirectory', { dirpath })
     },
@@ -69,6 +69,9 @@ export default {
       }
       const historyIndex = state.historyIndex + 1 + offset
       dispatch('restoreDirectory', { historyIndex })
+    },
+    reloadDirectory ({ dispatch }) {
+      dispatch('restoreDirectory', { historyIndex: 0 })
     },
     restoreDirectory ({ commit, dispatch, state }, { historyIndex }) {
       const history = state.histories[historyIndex]
