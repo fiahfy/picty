@@ -54,29 +54,6 @@ export default {
       })
       commit('setItems', { items })
     },
-    bookmark ({ commit, dispatch, getters, rootState }, { filepath }) {
-      if (!filepath || getters.isBookmarked({ filepath })) {
-        return
-      }
-      const bookmarks = [
-        ...rootState.bookmarks,
-        filepath
-      ]
-      commit('setBookmarks', { bookmarks }, { root: true })
-      dispatch('loadItems')
-    },
-    deleteBookmark ({ commit, dispatch, rootState }, { filepath }) {
-      const bookmarks = rootState.bookmarks.filter((bookmark) => bookmark !== filepath)
-      commit('setBookmarks', { bookmarks }, { root: true })
-      dispatch('loadItems')
-    },
-    toggleBookmark ({ dispatch, getters }, { filepath }) {
-      if (getters.isBookmarked({ filepath })) {
-        dispatch('deleteBookmark', { filepath })
-      } else {
-        dispatch('bookmark', { filepath })
-      }
-    },
     select ({ commit }, { filepath }) {
       commit('setFilepath', { filepath })
     },
@@ -132,6 +109,9 @@ export default {
       } else {
         dispatch('viewer/show', { filepathes: [filepath] }, { root: true })
       }
+    },
+    toggleBookmark ({ dispatch }, { filepath }) {
+      dispatch('toggleBookmark', { filepath }, { root: true })
     }
   },
   mutations: {

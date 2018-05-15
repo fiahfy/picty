@@ -38,7 +38,7 @@ export default class MenuBuilder {
         label: 'View',
         submenu: [
           { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { this.window.sendMessage('showExplorer') } },
-          { label: 'Bookmark', accelerator: 'CmdOrCtrl+Shift+B', click: () => { this.window.sendMessage('showBookmark') } },
+          { label: 'Starred', accelerator: 'CmdOrCtrl+Shift+B', click: () => { this.window.sendMessage('showBookmark') } },
           { type: 'separator' },
           { role: 'reload' },
           { role: 'forcereload' },

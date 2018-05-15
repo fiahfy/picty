@@ -113,6 +113,27 @@ export default new Vuex.Store({
       if (state.settings.fullScreen || process.platform !== 'darwin') {
         dispatch('leaveFullScreen')
       }
+    },
+    bookmark ({ commit, state }, { filepath }) {
+      if (state.bookmarks.includes(filepath)) {
+        return
+      }
+      const bookmarks = [
+        ...state.bookmarks,
+        filepath
+      ]
+      commit('setBookmarks', { bookmarks })
+    },
+    deleteBookmark ({ commit, state }, { filepath }) {
+      const bookmarks = state.bookmarks.filter((bookmark) => bookmark !== filepath)
+      commit('setBookmarks', { bookmarks })
+    },
+    toggleBookmark ({ dispatch, state }, { filepath }) {
+      if (state.bookmarks.includes(filepath)) {
+        dispatch('deleteBookmark', { filepath })
+      } else {
+        dispatch('bookmark', { filepath })
+      }
     }
   },
   mutations: {

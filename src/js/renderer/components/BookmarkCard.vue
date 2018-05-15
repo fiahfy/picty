@@ -5,14 +5,6 @@
   >
     <v-card-title class="py-2 px-0">
       <v-btn
-        title="Refresh"
-        flat
-        icon
-        @click="load"
-      >
-        <v-icon>refresh</v-icon>
-      </v-btn>
-      <v-btn
         :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
         :disabled="!filepath"
         flat
@@ -82,7 +74,6 @@ export default {
       }
     },
     ...mapActions({
-      load: 'bookmark/load',
       search: 'bookmark/search',
       showViewer: 'bookmark/showViewer',
       toggleBookmark: 'bookmark/toggleBookmark'

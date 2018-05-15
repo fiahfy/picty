@@ -29,7 +29,7 @@ export default {
     return {
       items: [
         { name: 'explorer', icon: 'view_list', title: `explorer (${buildText('CmdOrCtrl+Shift+E')})` },
-        { name: 'bookmark', icon: 'star', title: `bookmark (${buildText('CmdOrCtrl+Shift+B')})` },
+        { name: 'bookmark', icon: 'star', title: `starred (${buildText('CmdOrCtrl+Shift+B')})` },
         { name: 'settings', icon: 'settings', title: `settings (${buildText('CmdOrCtrl+,')})` }
       ]
     }

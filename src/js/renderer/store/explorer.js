@@ -184,6 +184,9 @@ export default {
         const filepathes = File.listFiles(file.parent.path).map(file => file.path)
         dispatch('viewer/show', { filepathes, filepath }, { root: true })
       }
+    },
+    toggleBookmark ({ dispatch }, { filepath }) {
+      dispatch('toggleBookmark', { filepath }, { root: true })
     }
   },
   mutations: {
@@ -257,6 +260,11 @@ export default {
     isSelected (state) {
       return ({ filepath }) => {
         return state.filepath === filepath
+      }
+    },
+    isBookmarked (state, getters, rootState) {
+      return ({ filepath }) => {
+        return rootState.bookmarks.includes(filepath)
       }
     }
   }

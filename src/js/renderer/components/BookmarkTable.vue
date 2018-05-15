@@ -46,8 +46,9 @@
             flat
             icon
             class="my-0"
+            @click="toggleBookmark({ filepath: props.item.path })"
           >
-            <v-icon>star_outline</v-icon>
+            <v-icon>{{ isBookmarked({ filepath: props.item.path }) ? 'star' : 'star_outline' }}</v-icon>
           </v-btn>
           <v-icon
             :color="getColor(props.item)"
@@ -104,7 +105,8 @@ export default {
     ...mapGetters({
       items: 'bookmark/filteredItems',
       selectedIndex: 'bookmark/selectedIndex',
-      isSelected: 'bookmark/isSelected'
+      isSelected: 'bookmark/isSelected',
+      isBookmarked: 'explorer/isBookmarked'
     })
   },
   watch: {
@@ -133,6 +135,7 @@ export default {
     }
   },
   mounted () {
+    this.loadItems()
     this.restore()
   },
   methods: {
@@ -228,7 +231,7 @@ export default {
       setScrollTop: 'bookmark/setScrollTop'
     }),
     ...mapActions({
-      toggleBookmark: 'bookmark/toggleBookmark',
+      loadItems: 'bookmark/loadItems',
       select: 'bookmark/select',
       selectFirst: 'bookmark/selectFirst',
       selectLast: 'bookmark/selectLast',
@@ -236,7 +239,8 @@ export default {
       selectNext: 'bookmark/selectNext',
       changeOrderBy: 'bookmark/changeOrderBy',
       action: 'bookmark/action',
-      showViewer: 'bookmark/showViewer'
+      showViewer: 'bookmark/showViewer',
+      toggleBookmark: 'bookmark/toggleBookmark'
     })
   }
 }

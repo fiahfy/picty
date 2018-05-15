@@ -46,8 +46,9 @@
             flat
             icon
             class="my-0"
+            @click="toggleBookmark({ filepath: props.item.path })"
           >
-            <v-icon>star_outline</v-icon>
+            <v-icon>{{ isBookmarked({ filepath: props.item.path }) ? 'star' : 'star_outline' }}</v-icon>
           </v-btn>
           <v-icon
             :color="getColor(props.item)"
@@ -105,7 +106,8 @@ export default {
       scrollTop: 'explorer/scrollTop',
       order: 'explorer/order',
       selectedIndex: 'explorer/selectedIndex',
-      isSelected: 'explorer/isSelected'
+      isSelected: 'explorer/isSelected',
+      isBookmarked: 'explorer/isBookmarked'
     })
   },
   watch: {
@@ -238,7 +240,7 @@ export default {
       changeOrderBy: 'explorer/changeOrderBy',
       action: 'explorer/action',
       showViewer: 'explorer/showViewer',
-      toggleBookmark: 'bookmark/toggleBookmark'
+      toggleBookmark: 'explorer/toggleBookmark'
     })
   }
 }
