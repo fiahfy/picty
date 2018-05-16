@@ -12,15 +12,17 @@ import File from '../utils/file'
 Vue.use(Vuex)
 
 const Selector = {
-  locationInput: '.location>input',
-  searchInput: '.search>input',
-  explorerList: '.explorer-list',
-  bookmarkList: '.bookmark-list',
+  directoryInput: 'input[name=directory]',
+  queryInput: 'input[name=query]',
+  explorerTable: '.explorer-table',
+  bookmarkTable: '.bookmark-table',
   viewer: '.viewer'
 }
 
 export default new Vuex.Store({
   state: {
+    directory: remote.app.getPath('home'),
+    bookmarks: [],
     message: '',
     viewing: false,
     fullScreen: false
@@ -57,19 +59,20 @@ export default new Vuex.Store({
         }
       })
     },
-    focusLocationInput ({ dispatch }) {
-      dispatch('focus', { selector: Selector.locationInput })
-      dispatch('select', { selector: Selector.locationInput })
+    focusDirectoryInput ({ dispatch }) {
+      dispatch('focus', { selector: Selector.directoryInput })
+      dispatch('select', { selector: Selector.directoryInput })
+      dispatch('changeRoute', { name: 'explorer' })
     },
-    focusSearchInput ({ dispatch }) {
-      dispatch('focus', { selector: Selector.searchInput })
-      dispatch('select', { selector: Selector.searchInput })
+    focusQueryInput ({ dispatch }) {
+      dispatch('focus', { selector: Selector.queryInput })
+      dispatch('select', { selector: Selector.queryInput })
     },
-    focusExplorerList ({ dispatch }) {
-      dispatch('focus', { selector: Selector.explorerList })
+    focusExplorerTable ({ dispatch }) {
+      dispatch('focus', { selector: Selector.explorerTable })
     },
-    focusBookmarkList ({ dispatch }) {
-      dispatch('focus', { selector: Selector.bookmarkList })
+    focusBookmarkTable ({ dispatch }) {
+      dispatch('focus', { selector: Selector.bookmarkTable })
     },
     open ({ dispatch }, { filepathes }) {
       const file = new File(filepathes[0])
@@ -81,6 +84,7 @@ export default new Vuex.Store({
     },
     openDirectory ({ dispatch }, { dirpath }) {
       dispatch('explorer/changeDirectory', { dirpath })
+      dispatch('changeRoute', { name: 'explorer' })
     },
     openImages ({ dispatch }, { filepathes }) {
       dispatch('viewer/show', { filepathes })
@@ -102,16 +106,43 @@ export default new Vuex.Store({
     dismissViewer ({ commit, dispatch, state }) {
       commit('setViewing', { viewing: false })
       if (router.app.$route.name === 'explorer') {
-        dispatch('focus', { selector: Selector.explorerList })
+        dispatch('focus', { selector: Selector.explorerTable })
       } else {
-        dispatch('focus', { selector: Selector.bookmarkList })
+        dispatch('focus', { selector: Selector.bookmarkTable })
       }
       if (state.settings.fullScreen || process.platform !== 'darwin') {
         dispatch('leaveFullScreen')
       }
+    },
+    bookmark ({ commit, state }, { filepath }) {
+      if (state.bookmarks.includes(filepath)) {
+        return
+      }
+      const bookmarks = [
+        ...state.bookmarks,
+        filepath
+      ]
+      commit('setBookmarks', { bookmarks })
+    },
+    deleteBookmark ({ commit, state }, { filepath }) {
+      const bookmarks = state.bookmarks.filter((bookmark) => bookmark !== filepath)
+      commit('setBookmarks', { bookmarks })
+    },
+    toggleBookmark ({ dispatch, state }, { filepath }) {
+      if (state.bookmarks.includes(filepath)) {
+        dispatch('deleteBookmark', { filepath })
+      } else {
+        dispatch('bookmark', { filepath })
+      }
     }
   },
   mutations: {
+    setDirectory (state, { directory }) {
+      state.directory = directory
+    },
+    setBookmarks (state, { bookmarks }) {
+      state.bookmarks = bookmarks
+    },
     setMessage (state, { message }) {
       state.message = message
     },
@@ -136,8 +167,8 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       paths: [
-        'explorer.directory',
-        'bookmark.bookmarks',
+        'directory',
+        'bookmarks',
         'settings'
       ]
     })

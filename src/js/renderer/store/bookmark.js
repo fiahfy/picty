@@ -1,72 +1,74 @@
 import File from '../utils/file'
 
-const sortOrderDefaults = {
-  name: 'asc',
-  size: 'asc',
-  date_modified: 'desc'
+const reversed = {
+  name: false,
+  size: false,
+  mtime: true
 }
 
 export default {
   namespaced: true,
   state: {
-    files: [],
-    bookmarks: [],
+    items: [],
     query: '',
     queryInput: '',
-    selectedBookmark: null,
+    filepath: '',
     scrollTop: 0,
-    sortOption: {
-      key: 'name',
-      order: 'asc'
+    order: {
+      by: 'name',
+      descending: false
     }
   },
   actions: {
-    bookmark ({ commit, dispatch, getters, state }, { filepath }) {
-      if (!filepath || getters.isBookmarked({ filepath })) {
-        return
-      }
-      const bookmarks = [
-        ...state.bookmarks,
-        filepath
-      ]
-      commit('setBookmarks', { bookmarks })
-      dispatch('load')
+    initialize ({ dispatch, rootState }) {
+      dispatch('loadItems')
     },
-    deleteBookmark ({ commit, dispatch, state }, { filepath }) {
-      const bookmarks = state.bookmarks.filter((bookmark) => {
-        return bookmark !== filepath
+    loadItems ({ commit, dispatch, rootState }) {
+      const items = rootState.bookmarks.map((bookmark) => {
+        const file = new File(bookmark).toObject()
+        file.bookmarked = true
+        return file
       })
-      commit('setBookmarks', { bookmarks })
-      dispatch('load')
+      commit('setItems', { items })
+      dispatch('sortItems')
+      dispatch('focusBookmarkTable', null, { root: true })
     },
-    toggleBookmark ({ dispatch, getters }, { filepath }) {
-      if (getters.isBookmarked({ filepath })) {
-        dispatch('deleteBookmark', { filepath })
-      } else {
-        dispatch('bookmark', { filepath })
-      }
-    },
-    load ({ commit, dispatch, state }) {
-      const files = state.bookmarks.map((bookmark) => (new File(bookmark).toObject()))
-      commit('setFiles', { files })
-      dispatch('sort')
-      dispatch('focusBookmarkList', null, { root: true })
+    sortItems ({ commit, getters, state }) {
+      const { by, descending } = state.order
+      const items = state.items.sort((a, b) => {
+        let result = 0
+        if (a[by] > b[by]) {
+          result = 1
+        } else if (a[by] < b[by]) {
+          result = -1
+        }
+        if (result === 0) {
+          if (a.name > b.name) {
+            result = 1
+          } else if (a.name < b.name) {
+            result = -1
+          }
+        }
+        result = reversed[by] ? -1 * result : result
+        return descending ? -1 * result : result
+      })
+      commit('setItems', { items })
     },
     select ({ commit }, { filepath }) {
-      commit('setSelectedBookmark', { selectedBookmark: filepath })
+      commit('setFilepath', { filepath })
     },
     selectIndex ({ dispatch, getters }, { index }) {
-      if (index < 0 || index > getters.filteredFiles.length - 1) {
+      if (index < 0 || index > getters.filteredItems.length - 1) {
         return
       }
-      const filepath = getters.filteredFiles[index].path
+      const filepath = getters.filteredItems[index].path
       dispatch('select', { filepath })
     },
     selectFirst ({ dispatch }) {
       dispatch('selectIndex', { index: 0 })
     },
     selectLast ({ dispatch, getters }) {
-      dispatch('selectIndex', { index: getters.filteredFiles.length - 1 })
+      dispatch('selectIndex', { index: getters.filteredItems.length - 1 })
     },
     selectPrevious ({ dispatch, getters }) {
       dispatch('selectIndex', { index: getters.selectedIndex - 1 })
@@ -78,45 +80,14 @@ export default {
       const query = state.queryInput
       commit('setQuery', { query })
     },
-    changeSortKey ({ commit, dispatch, state }, { sortKey }) {
-      let sortOrder = sortOrderDefaults[sortKey]
-      if (state.sortOption.key === sortKey) {
-        sortOrder = state.sortOption.order === 'asc' ? 'desc' : 'asc'
+    changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
+      let descending = false
+      if (state.order.by === orderBy) {
+        descending = !state.order.descending
       }
-      const sortOption = { key: sortKey, order: sortOrder }
-      commit('setSortOption', { sortOption })
-      dispatch('sort')
-    },
-    sort ({ commit, getters, state }) {
-      const files = state.files.sort((a, b) => {
-        let result = 0
-        switch (state.sortOption.key) {
-          case 'date_modified':
-            if (a.mtime > b.mtime) {
-              result = 1
-            } else if (a.mtime < b.mtime) {
-              result = -1
-            }
-            break
-          case 'size':
-            const size = (file) => file.directory ? -1 : file.size
-            if (size(a) > size(b)) {
-              result = 1
-            } else if (size(a) < size(b)) {
-              result = -1
-            }
-            break
-        }
-        if (result === 0) {
-          if (a.name > b.name) {
-            result = 1
-          } else if (a.name < b.name) {
-            result = -1
-          }
-        }
-        return state.sortOption.order === 'asc' ? result : -1 * result
-      })
-      commit('setFiles', { files })
+      const order = { by: orderBy, descending }
+      commit('setOrder', { order })
+      dispatch('sortItems')
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
@@ -138,14 +109,14 @@ export default {
       } else {
         dispatch('viewer/show', { filepathes: [filepath] }, { root: true })
       }
+    },
+    toggleBookmark ({ dispatch }, { filepath }) {
+      dispatch('toggleBookmark', { filepath }, { root: true })
     }
   },
   mutations: {
-    setFiles (state, { files }) {
-      state.files = files
-    },
-    setBookmarks (state, { bookmarks }) {
-      state.bookmarks = bookmarks
+    setItems (state, { items }) {
+      state.items = items
     },
     setQuery (state, { query }) {
       state.query = query
@@ -153,35 +124,35 @@ export default {
     setQueryInput (state, { queryInput }) {
       state.queryInput = queryInput
     },
-    setSelectedBookmark (state, { selectedBookmark }) {
-      state.selectedBookmark = selectedBookmark
+    setFilepath (state, { filepath }) {
+      state.filepath = filepath
     },
     setScrollTop (state, { scrollTop }) {
       state.scrollTop = scrollTop
     },
-    setSortOption (state, { sortOption }) {
-      state.sortOption = sortOption
+    setOrder (state, { order }) {
+      state.order = order
     }
   },
   getters: {
-    filteredFiles (state) {
-      return state.files.concat().filter((file) => {
-        return file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
+    filteredItems (state) {
+      return state.items.concat().filter((file) => {
+        return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
       })
     },
     selectedIndex (state, getters) {
-      return getters.filteredFiles.findIndex((file) => {
+      return getters.filteredItems.findIndex((file) => {
         return getters.isSelected({ filepath: file.path })
       })
     },
     isSelected (state) {
       return ({ filepath }) => {
-        return state.selectedBookmark === filepath
+        return state.filepath === filepath
       }
     },
-    isBookmarked (state) {
+    isBookmarked (state, getters, rootState) {
       return ({ filepath }) => {
-        return state.bookmarks.indexOf(filepath) > -1
+        return rootState.bookmarks.includes(filepath)
       }
     }
   }

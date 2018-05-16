@@ -1,72 +1,34 @@
 <template>
-  <div class="explorer">
-    <explorer-menu-bar />
-    <divider />
-    <div class="container">
-      <div
-        v-if="message"
-        class="message"
+  <v-container
+    class="explorer"
+    fill-height
+    fluid
+    pa-0
+  >
+    <v-layout column>
+      <explorer-toolbar />
+      <explorer-card />
+      <v-container
+        fluid
+        pa-0
+        overflow-hidden
       >
-        {{ message }}
-      </div>
-      <explorer-list />
-    </div>
-  </div>
+        <explorer-table class="fill-height" />
+      </v-container>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
-import ExplorerList from '../components/ExplorerList'
-import ExplorerMenuBar from '../components/ExplorerMenuBar'
-import Divider from '../components/Divider'
+import ExplorerToolbar from '../components/ExplorerToolbar'
+import ExplorerCard from '../components/ExplorerCard'
+import ExplorerTable from '../components/ExplorerTable'
 
 export default {
   components: {
-    ExplorerList,
-    ExplorerMenuBar,
-    Divider
-  },
-  computed: {
-    message () {
-      if (this.error) {
-        return this.error.message
-      }
-      if (!this.files.length) {
-        return 'No Results'
-      }
-      return ''
-    },
-    ...mapState({
-      error: state => state.explorer.error
-    }),
-    ...mapGetters({
-      files: 'explorer/filteredFiles'
-    })
+    ExplorerToolbar,
+    ExplorerCard,
+    ExplorerTable
   }
 }
 </script>
-
-<style scoped lang="scss">
-.explorer {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  .container {
-    flex: 1;
-    overflow-y: auto;
-    position: relative;
-    .message {
-      align-items: center;
-      bottom: 0;
-      color: var(--mdc-theme-text-secondary-on-background);
-      display: flex;
-      justify-content: center;
-      left: 0;
-      pointer-events: none;
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-  }
-}
-</style>

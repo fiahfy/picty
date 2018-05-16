@@ -1,225 +1,122 @@
 <template>
   <div
-    :class="classes"
-    class="viewer mdc-theme--background"
+    class="viewer"
     tabindex="0"
-    @keydown="keydown"
-    @mousemove="mousemove"
+    @keydown="onKeyDown"
   >
-    <div
-      v-if="message"
-      class="message"
-    >
-      {{ message }}
-    </div>
-    <div
-      v-else
-      ref="wrapper"
-      class="wrapper"
-      @mousemove="imageMousemove"
-      @mousedown="imageMousedown"
-      @mouseup="imageMouseup"
-    >
-      <img
-        :src="currentFile.path"
-        :class="imageClasses"
-        :style="styles"
-        draggable="false"
-        @load="imageLoad"
-        @error="imageError"
-      >
-    </div>
-    <control-bar :class="controlBarClasses" />
+    <viewer-container
+      :class="containerClasses"
+      class="fill-height"
+    />
+    <viewer-toolbar
+      ref="toolbar"
+      :class="toolbarClasses"
+    />
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
-import ControlBar from './ControlBar'
+import { mapActions } from 'vuex'
+import ViewerContainer from './ViewerContainer'
+import ViewerToolbar from './ViewerToolbar'
 
 export default {
   components: {
-    ControlBar
+    ViewerContainer,
+    ViewerToolbar
   },
   data () {
     return {
-      hasLoadError: false,
-      dragging: false,
-      horizontalCentered: true,
-      verticalCentered: true,
-      originalSize: {
-        width: 0,
-        height: 0
-      },
-      controlBarHidden: null
+      toolbar: null
     }
   },
   computed: {
-    message () {
-      return this.error ? this.error.message : ''
-    },
-    styles () {
-      return this.scaling ? {
-        width: this.originalSize.width * this.scale + 'px',
-        height: this.originalSize.height * this.scale + 'px'
-      } : {}
-    },
-    classes () {
+    containerClasses () {
       return {
-        hidden: this.controlBarHidden === true,
-        dragging: this.dragging
+        hidden: this.toolbar === false
       }
     },
-    controlBarClasses () {
+    toolbarClasses () {
       return {
-        'fade-in': this.controlBarHidden === false,
-        'fade-out': this.controlBarHidden === true
+        'fade-in': this.toolbar === true,
+        'fade-out': this.toolbar === false
       }
-    },
-    imageClasses () {
-      return {
-        'horizontal-center': this.horizontalCentered,
-        'vertical-center': this.verticalCentered,
-        scaling: this.scaling,
-        stretched: this.imageStretched
-      }
-    },
-    ...mapState({
-      error: function (state) {
-        if (state.viewer.error) {
-          return state.viewer.error
-        }
-        if (this.hasLoadError) {
-          return new Error('Image Load Failure')
-        }
-        return null
-      },
-      currentFile: state => state.viewer.currentFile,
-      scale: state => state.viewer.scale,
-      scaling: state => state.viewer.scaling,
-      imageStretched: state => state.settings.imageStretched
-    })
-  },
-  watch: {
-    currentFile () {
-      this.hasLoadError = false
-    },
-    scale (newValue, oldValue) {
-      if (this.error) {
-        return
-      }
-      this.$nextTick(() => {
-        var offsetX = 0
-        if (newValue > oldValue && this.$el.clientWidth > this.originalSize.width * oldValue) {
-          offsetX = (this.$el.clientWidth - this.originalSize.width * oldValue) / 2
-        }
-        var offsetY = 0
-        if (newValue > oldValue && this.$el.clientHeight > this.originalSize.height * oldValue) {
-          offsetY = (this.$el.clientHeight - this.originalSize.height * oldValue) / 2
-        }
-
-        this.$refs.wrapper.scrollLeft += (newValue - oldValue) * this.originalSize.width / 2 - offsetX
-        this.$refs.wrapper.scrollTop += (newValue - oldValue) * this.originalSize.height / 2 - offsetY
-
-        this.horizontalCentered = this.$el.clientWidth >= this.originalSize.width * newValue
-        this.verticalCentered = this.$el.clientHeight >= this.originalSize.height * newValue
-      })
     }
   },
   mounted () {
-    this.showControlBar()
+    this.showToolbar()
+    document.body.addEventListener('mousemove', this.onMouseMove)
+  },
+  beforeDestroy () {
+    this.clearTimer()
+    document.body.removeEventListener('mousemove', this.onMouseMove)
   },
   methods: {
-    keydown (e) {
+    onKeyDown (e) {
       switch (e.keyCode) {
         case 27:
           this.dismiss()
           break
         case 37:
-        case 40:
           if (e.target.getAttribute('role') !== 'slider') {
             this.movePrevious()
+            this.resetTimer()
           }
           break
         case 38:
+          this.movePrevious()
+          this.resetTimer()
+          break
         case 39:
           if (e.target.getAttribute('role') !== 'slider') {
             this.moveNext()
+            this.resetTimer()
           }
+          break
+        case 40:
+          this.moveNext()
+          this.resetTimer()
           break
       }
     },
-    mousemove (e) {
-      this.showControlBar()
+    onMouseMove (e) {
+      this.showToolbar()
     },
-    imageMousedown (e) {
-      this.dragging = true
-    },
-    imageMouseup (e) {
-      this.dragging = false
-      this.scrollPosition = null
-    },
-    imageMousemove (e) {
-      if (this.error) {
-        return
-      }
-      if (this.dragging) {
-        const position = { x: e.clientX, y: e.clientY }
-        if (this.scrollPosition) {
-          this.$refs.wrapper.scrollLeft += this.scrollPosition.x - position.x
-          this.$refs.wrapper.scrollTop += this.scrollPosition.y - position.y
-        }
-        this.scrollPosition = position
-      }
-    },
-    imageLoad (e) {
-      const maxWidth = this.$el.clientWidth
-      const maxHeight = this.$el.clientHeight
-      const imageWidth = e.target.naturalWidth
-      const imageHeight = e.target.naturalHeight
-      const scaleX = maxWidth / imageWidth
-      const scaleY = maxHeight / imageHeight
-      let scale = scaleX < scaleY ? scaleX : scaleY
-      if (scale >= 1 && !this.imageStretched) {
-        scale = 1
-      }
-      this.originalSize = {
-        width: imageWidth,
-        height: imageHeight
-      }
-      this.initZoom({ scale })
-    },
-    imageError (e) {
-      this.hasLoadError = true
-    },
-    showControlBar () {
-      if (this.controlBarHidden === true) {
-        this.controlBarHidden = false
-      }
+    clearTimer () {
       if (this.timer) {
         clearTimeout(this.timer)
       }
-      if (this.$el.querySelector('.control-bar:hover')) {
-        return
-      }
+    },
+    setTimer () {
       this.timer = setTimeout(() => {
-        this.controlBarHidden = true
+        this.toolbar = false
+        this.$refs.toolbar.hideMenu()
         this.$el.focus()
       }, 2000)
+    },
+    resetTimer () {
+      this.clearTimer()
+      if (this.$refs.toolbar.isHover()) {
+        return
+      }
+      this.setTimer()
+    },
+    showToolbar () {
+      if (this.toolbar === false) {
+        this.toolbar = true
+      }
+      this.resetTimer()
     },
     ...mapActions({
       dismiss: 'viewer/dismiss',
       movePrevious: 'viewer/movePrevious',
-      moveNext: 'viewer/moveNext',
-      initZoom: 'viewer/initZoom'
+      moveNext: 'viewer/moveNext'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import "@material/animation/functions";
-
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -240,77 +137,19 @@ export default {
     transform: translateY(48px);
   }
 }
-
-.fade-in {
-  animation: mdc-animation-enter(fade-in, 350ms) forwards;
-}
-.fade-out {
-  animation: mdc-animation-enter(fade-out, 350ms) forwards;
-}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
-.viewer {
-  bottom: 0;
-  left: 0;
-  outline: none;
-  position: absolute;
-  right: 0;
-  top:0;
-  &.hidden .wrapper {
+.viewer-container {
+  &.hidden {
     cursor: none;
   }
-  &.dragging .wrapper {
-    cursor: -webkit-grabbing;
+}
+.viewer-toolbar {
+  bottom: 0;
+  position: absolute;
+  &.fade-in {
+    animation: fade-in 350ms forwards;
   }
-  .message {
-    align-items: center;
-    color: var(--mdc-theme-text-secondary-on-background);
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    width: 100%;
-  }
-  .wrapper {
-    bottom:0;
-    cursor: -webkit-grab;
-    left: 0;
-    overflow: auto;
-    position: absolute;
-    right: 0;
-    top:0;
-    img {
-      bottom:0;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top:0;
-      &.horizontal-center {
-        margin-left: auto;
-        margin-right: auto;
-      }
-      &.vertical-center {
-        margin-bottom: auto;
-        margin-top: auto;
-      }
-      &:not(.scaling) {
-        max-height: 100%;
-        max-width: 100%;
-        &.stretched {
-          height: 100%;
-          object-fit: contain;
-          width: 100%;
-        }
-      }
-    }
-  }
-  .control-bar {
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    right: 0;
+  &.fade-out {
+    animation: fade-out 350ms forwards;
   }
 }
 </style>

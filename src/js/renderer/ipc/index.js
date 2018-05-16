@@ -23,7 +23,6 @@ export const addIpcRendererListeners = (store) => {
     }
     const dirpath = filepathes[0]
     store.dispatch('openDirectory', { dirpath })
-    store.dispatch('changeRoute', { name: 'explorer' })
   })
   ipcRenderer.on('openImages', () => {
     const filepathes = remote.dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
@@ -33,10 +32,10 @@ export const addIpcRendererListeners = (store) => {
     store.dispatch('openImages', { filepathes })
   })
   ipcRenderer.on('openLocation', () => {
-    store.dispatch('focusLocationInput')
+    store.dispatch('focusDirectoryInput')
   })
   ipcRenderer.on('search', () => {
-    store.dispatch('focusSearchInput')
+    store.dispatch('focusQueryInput')
   })
   ipcRenderer.on('backDirectory', () => {
     store.dispatch('explorer/backDirectory')
@@ -44,8 +43,8 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('forwardDirectory', () => {
     store.dispatch('explorer/forwardDirectory')
   })
-  ipcRenderer.on('changeParentDirectory', () => {
-    store.dispatch('explorer/changeParentDirectory')
+  ipcRenderer.on('upDirectory', () => {
+    store.dispatch('explorer/upDirectory')
   })
   ipcRenderer.on('changeHomeDirectory', () => {
     store.dispatch('explorer/changeHomeDirectory')

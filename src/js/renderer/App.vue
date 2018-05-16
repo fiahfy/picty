@@ -1,56 +1,56 @@
 <template>
-  <div
-    id="app"
-    :style="styles"
-    class="mdc-theme--background"
-    @contextmenu="contextmenu"
-    @dragover.prevent
-    @drop.prevent="drop"
+  <v-app
+    :dark="darkTheme"
+    @contextmenu.native="onContextMenu"
+    @drop.native.prevent="onDrop"
+    @dragover.native.prevent
   >
-    <template v-if="titleBar">
-      <title-bar />
-      <divider />
-    </template>
-    <div class="container">
-      <viewer v-if="viewing" />
-      <template v-else>
-        <activity-bar />
-        <divider orientation="vertical" />
-        <div class="content">
-          <router-view />
-        </div>
-      </template>
-    </div>
-    <mdc-snackbar :message="message" />
-  </div>
+    <title-bar v-if="titleBar" />
+    <activity-bar />
+    <v-content class="fill-height">
+      <router-view />
+    </v-content>
+    <v-dialog
+      v-if="viewing"
+      value="true"
+      fullscreen
+      hide-overlay
+    >
+      <v-layout
+        column
+        fill-height
+      >
+        <title-bar
+          v-if="titleBar"
+          :app="false"
+        />
+        <v-container
+          card
+          fluid
+          pa-0
+          overflow-hidden
+        >
+          <viewer class="fill-height" />
+        </v-container>
+      </v-layout>
+    </v-dialog>
+  </v-app>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
-import Divider from './components/Divider'
-import MdcSnackbar from './components/MdcSnackbar'
 import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
-import Theme from './theme'
 import * as ContextMenu from './utils/context-menu'
 
 export default {
   components: {
     ActivityBar,
-    Divider,
-    MdcSnackbar,
     TitleBar,
     Viewer
   },
-  async asyncData ({ store }) {
-    await store.dispatch('explorer/initDirectory')
-    await store.dispatch('bookmark/load')
-  },
   computed: {
-    styles () {
-      return this.darkTheme ? Theme.dark : Theme.light
-    },
     ...mapState({
       message: state => state.message,
       viewing: state => state.viewing,
@@ -60,11 +60,15 @@ export default {
       titleBar: 'titleBar'
     })
   },
+  created () {
+    this.initializeExplorer()
+    this.initializeBookmark()
+  },
   methods: {
-    contextmenu (e) {
+    onContextMenu (e) {
       ContextMenu.show(e)
     },
-    drop (e) {
+    onDrop (e) {
       const files = Array.from(e.dataTransfer.files)
       if (!files.length) {
         return
@@ -73,49 +77,20 @@ export default {
       this.open({ filepathes })
     },
     ...mapActions({
-      open: 'open'
+      open: 'open',
+      initializeExplorer: 'explorer/initialize',
+      initializeBookmark: 'bookmark/initialize'
     })
   }
 }
 </script>
 
 <style lang="scss">
+@import '~typeface-roboto/index.css';
 @import '~material-design-icons/iconfont/material-icons.css';
-@import '~material-components-web/material-components-web.scss';
+@import '~vuetify/dist/vuetify.min.css';
 
-::-webkit-scrollbar {
-  width: 14px;
-  -webkit-appearance: none;
-}
-::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbar);
-  &:hover {
-    background-color: var(--scrollbar-hover);
-  }
-  &:active {
-    background-color: var(--scrollbar-active);
-  }
-}
-</style>
-
-<style scoped lang="scss">
-#app {
-  display: flex;
-  flex-direction: column;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  font-size: small;
-  height: 100%;
-  user-select: none;
-  .container {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-    .content {
-      flex: 1;
-      min-width: 256px;
-      overflow: hidden;
-    }
-  }
+html {
+  overflow-y: hidden;
 }
 </style>

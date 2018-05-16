@@ -1,18 +1,36 @@
 <template>
-  <div class="title-bar">Picty</div>
+  <v-system-bar
+    :app="app"
+    class="title-bar"
+    height="22"
+    status
+  >
+    <v-spacer/>
+    <span>{{ title }}</span>
+    <v-spacer/>
+  </v-system-bar>
 </template>
 
+<script>
+import Package from '../../../../package.json'
+
+export default {
+  props: {
+    app: {
+      type: Boolean,
+      default: true
+    }
+  },
+  computed: {
+    title () {
+      return Package.productName
+    }
+  }
+}
+</script>
+
 <style scoped lang="scss">
-.title-bar {
-  box-sizing: border-box;
-  color: var(--mdc-theme-text-primary-on-background);
-  font-size: smaller;
-  height: 23px;
-  line-height: 23px;
-  overflow: hidden;
-  padding: 0 68px;
-  text-align: center;
-  text-overflow: ellipsis;
+.system-bar {
   -webkit-app-region: drag;
 }
 </style>

@@ -1,47 +1,24 @@
 <template>
-  <div class="settings">
-    <h4>General</h4>
-    <div>
-      <mdc-form-field>
-        <mdc-checkbox
-          id="dark-theme"
-          v-model="darkTheme"
-        />
-        <label for="dark-theme">Use dark theme</label>
-      </mdc-form-field>
-    </div>
-
-    <h4>Viewer</h4>
-    <div>
-      <mdc-form-field>
-        <mdc-checkbox
-          id="full-screen"
-          v-model="fullScreen"
-        />
-        <label for="full-screen">View in full screen</label>
-      </mdc-form-field>
-    </div>
-    <div>
-      <mdc-form-field>
-        <mdc-checkbox
-          id="image-stretched"
-          v-model="imageStretched"
-        />
-        <label for="image-stretched">Stretch small image</label>
-      </mdc-form-field>
-    </div>
-  </div>
+  <v-container class="settings">
+    <v-subheader class="pa-0">General</v-subheader>
+    <v-checkbox
+      v-model="darkTheme"
+      label="Use dark theme"
+    />
+    <v-subheader class="pa-0">Viewer</v-subheader>
+    <v-checkbox
+      v-model="fullScreen"
+      label="View in full screen"
+    />
+    <v-checkbox
+      v-model="imageStretched"
+      label="Stretch small image"
+    />
+  </v-container>
 </template>
 
 <script>
-import MdcCheckbox from '../components/MdcCheckbox'
-import MdcFormField from '../components/MdcFormField'
-
 export default {
-  components: {
-    MdcCheckbox,
-    MdcFormField
-  },
   computed: {
     darkTheme: {
       get () {
@@ -70,20 +47,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.settings {
-  margin: 15px;
-  h4 {
-    color: var(--mdc-theme-text-secondary-on-background);
-  }
-  label {
-    cursor: pointer;
-  }
-  .mdc-checkbox {
-    & /deep/ .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate) ~ .mdc-checkbox__background {
-      border-color: var(--mdc-theme-text-secondary-on-background);
-    }
-  }
-}
-</style>

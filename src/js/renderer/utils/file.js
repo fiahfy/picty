@@ -76,7 +76,7 @@ export default class File {
     }
     return {
       ...obj,
-      size: this.size,
+      size: this.isDirectory() ? 0 : this.size,
       mtime: this.mtime,
       exists: true,
       directory: this.isDirectory(),

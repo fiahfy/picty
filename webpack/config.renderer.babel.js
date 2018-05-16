@@ -5,7 +5,7 @@ import { VueLoaderPlugin } from 'vue-loader'
 export default {
   ...config,
   target: 'electron-renderer',
-  entry: './js/renderer.js',
+  entry: './js/renderer/index.js',
   output: {
     path: `${__dirname}/../app/`,
     publicPath: '../',
@@ -23,7 +23,7 @@ export default {
         use: [
           'vue-style-loader',
           'css-loader',
-          'sass-loader?' + `{ "includePaths": ["${__dirname}/../node_modules"] }`
+          'sass-loader'
         ]
       },
       {
