@@ -28,10 +28,10 @@ export default {
   computed: {
     directoryInput: {
       get () {
-        return this.$store.state.explorer.directoryInput
+        return this.$store.state.app.explorer.directoryInput
       },
       set (value) {
-        this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
+        this.$store.commit('app/explorer/setDirectoryInput', { directoryInput: value })
       }
     }
   },
@@ -45,8 +45,8 @@ export default {
       }
     },
     ...mapActions({
-      changeDirectory: 'explorer/changeDirectory',
-      openDirectory: 'explorer/openDirectory'
+      changeDirectory: 'app/explorer/changeDirectory',
+      openDirectory: 'app/explorer/openDirectory'
     })
   }
 }

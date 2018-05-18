@@ -89,9 +89,9 @@ export default {
         }
         return null
       },
-      filepath: state => state.viewer.filepath,
-      scale: state => state.viewer.scale,
-      scaling: state => state.viewer.scaling,
+      filepath: state => state.app.viewer.filepath,
+      scale: state => state.app.viewer.scale,
+      scaling: state => state.app.viewer.scaling,
       imageStretched: state => state.settings.imageStretched
     })
   },
@@ -163,7 +163,7 @@ export default {
       this.loadError = true
     },
     ...mapActions({
-      setupZoom: 'viewer/setupZoom'
+      setupZoom: 'app/viewer/setupZoom'
     })
   }
 }

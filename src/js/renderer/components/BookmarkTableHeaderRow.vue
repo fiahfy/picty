@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     ...mapState({
-      order: state => state.bookmark.order
+      order: state => state.app.bookmark.order
     })
   },
   methods: {
@@ -43,7 +43,7 @@ export default {
       }
     },
     ...mapActions({
-      changeOrderBy: 'bookmark/changeOrderBy'
+      changeOrderBy: 'app/bookmark/changeOrderBy'
     })
   }
 }

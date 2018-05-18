@@ -93,21 +93,21 @@ export default {
   computed: {
     queryInput: {
       get () {
-        return this.$store.state.explorer.queryInput
+        return this.$store.state.app.explorer.queryInput
       },
       set (value) {
-        this.$store.commit('explorer/setQueryInput', { queryInput: value })
+        this.$store.commit('app.explorer/setQueryInput', { queryInput: value })
       }
     },
     ...mapState({
-      filepath: state => state.explorer.filepath
+      filepath: state => state.app.explorer.filepath
     }),
     ...mapGetters({
-      backDirectories: 'explorer/backDirectories',
-      forwardDirectories: 'explorer/forwardDirectories',
-      canBackDirectory: 'explorer/canBackDirectory',
-      canForwardDirectory: 'explorer/canForwardDirectory',
-      isBookmarked: 'bookmark/isBookmarked'
+      backDirectories: 'app/explorer/backDirectories',
+      forwardDirectories: 'app/explorer/forwardDirectories',
+      canBackDirectory: 'app/explorer/canBackDirectory',
+      canForwardDirectory: 'app/explorer/canForwardDirectory',
+      isBookmarked: 'app/explorer/isBookmarked'
     })
   },
   watch: {
@@ -145,15 +145,15 @@ export default {
       }))
     },
     ...mapActions({
-      changeDirectory: 'explorer/changeDirectory',
-      upDirectory: 'explorer/upDirectory',
-      changeHomeDirectory: 'explorer/changeHomeDirectory',
-      backDirectory: 'explorer/backDirectory',
-      forwardDirectory: 'explorer/forwardDirectory',
-      reloadDirectory: 'explorer/reloadDirectory',
-      search: 'explorer/search',
-      showViewer: 'explorer/showViewer',
-      toggleBookmark: 'bookmark/toggleBookmark'
+      changeDirectory: 'app/explorer/changeDirectory',
+      upDirectory: 'app/explorer/upDirectory',
+      changeHomeDirectory: 'app/explorer/changeHomeDirectory',
+      backDirectory: 'app/explorer/backDirectory',
+      forwardDirectory: 'app/explorer/forwardDirectory',
+      reloadDirectory: 'app/explorer/reloadDirectory',
+      search: 'app/explorer/search',
+      showViewer: 'app/explorer/showViewer',
+      toggleBookmark: 'app/explorer/toggleBookmark'
     })
   }
 }

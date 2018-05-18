@@ -123,9 +123,9 @@ export default {
       }
     },
     ...mapState({
-      fullScreen: state => state.fullScreen,
-      maxPage: state => state.viewer.items.length,
-      scale: state => Math.floor(state.viewer.scale * 100)
+      fullScreen: state => state.app.fullScreen,
+      maxPage: state => state.app.viewer.items.length,
+      scale: state => Math.floor(state.app.viewer.scale * 100)
     })
   },
   methods: {
@@ -136,14 +136,14 @@ export default {
       return !!(this.$el.querySelector(':hover') || this.$refs.toolbar.$el.querySelector(':hover'))
     },
     ...mapActions({
-      enterFullScreen: 'enterFullScreen',
-      leaveFullScreen: 'leaveFullScreen',
-      dismiss: 'viewer/dismiss',
-      movePrevious: 'viewer/movePrevious',
-      moveNext: 'viewer/moveNext',
-      zoomIn: 'viewer/zoomIn',
-      zoomOut: 'viewer/zoomOut',
-      resetZoom: 'viewer/resetZoom'
+      enterFullScreen: 'app/enterFullScreen',
+      leaveFullScreen: 'app/leaveFullScreen',
+      dismiss: 'app/viewer/dismiss',
+      movePrevious: 'app/viewer/movePrevious',
+      moveNext: 'app/viewer/moveNext',
+      zoomIn: 'app/viewer/zoomIn',
+      zoomOut: 'app/viewer/zoomOut',
+      resetZoom: 'app/viewer/resetZoom'
     })
   }
 }

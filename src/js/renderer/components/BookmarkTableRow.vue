@@ -57,8 +57,8 @@ export default {
       return this.item.directory ? null : this.item.size
     },
     ...mapGetters({
-      isSelected: 'bookmark/isSelected',
-      isBookmarked: 'bookmark/isBookmarked'
+      isSelected: 'app/bookmark/isSelected',
+      isBookmarked: 'app/bookmark/isBookmarked'
     })
   },
   methods: {
@@ -84,10 +84,10 @@ export default {
       ])
     },
     ...mapActions({
-      select: 'bookmark/select',
-      action: 'bookmark/action',
-      showViewer: 'bookmark/showViewer',
-      toggleBookmark: 'bookmark/toggleBookmark'
+      select: 'app/bookmark/select',
+      action: 'app/bookmark/action',
+      showViewer: 'app/bookmark/showViewer',
+      toggleBookmark: 'app/bookmark/toggleBookmark'
     })
   }
 }

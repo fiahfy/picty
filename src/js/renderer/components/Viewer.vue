@@ -108,9 +108,9 @@ export default {
       this.resetTimer()
     },
     ...mapActions({
-      dismiss: 'viewer/dismiss',
-      movePrevious: 'viewer/movePrevious',
-      moveNext: 'viewer/moveNext'
+      dismiss: 'app/viewer/dismiss',
+      movePrevious: 'app/viewer/movePrevious',
+      moveNext: 'app/viewer/moveNext'
     })
   }
 }
