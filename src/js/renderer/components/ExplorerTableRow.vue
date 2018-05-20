@@ -86,7 +86,7 @@ export default {
       select: 'app/explorer/select',
       action: 'app/explorer/action',
       showViewer: 'app/explorer/showViewer',
-      toggleBookmark: 'app/xplorer/toggleBookmark'
+      toggleBookmark: 'app/explorer/toggleBookmark'
     })
   }
 }

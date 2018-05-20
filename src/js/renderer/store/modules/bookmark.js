@@ -1,4 +1,5 @@
-import File from '~/js/utils/file'
+import { Selector } from './index'
+import File from '../../utils/file'
 
 const reversed = {
   name: false,
@@ -21,19 +22,19 @@ export default {
   },
   actions: {
     initialize ({ dispatch, rootState }) {
-      dispatch('loadItems')
+      dispatch('load')
     },
-    loadItems ({ commit, dispatch, rootState }) {
-      const items = rootState.bookmarks.map((bookmark) => {
+    load ({ commit, dispatch, rootState }) {
+      const items = rootState.bookmark.bookmarks.map((bookmark) => {
         const file = new File(bookmark).toObject()
         file.bookmarked = true
         return file
       })
       commit('setItems', { items })
-      dispatch('sortItems')
-      dispatch('app/focusBookmarkTable', null, { root: true })
+      dispatch('sort')
+      dispatch('app/focus', { selector: Selector.bookmarkTable }, { root: true })
     },
-    sortItems ({ commit, getters, state }) {
+    sort ({ commit, getters, state }) {
       const { by, descending } = state.order
       const items = state.items.sort((a, b) => {
         let result = 0
@@ -81,13 +82,10 @@ export default {
       commit('setQuery', { query })
     },
     changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
-      let descending = false
-      if (state.order.by === orderBy) {
-        descending = !state.order.descending
-      }
+      const descending = state.order.by === orderBy ? !state.order.descending : false
       const order = { by: orderBy, descending }
       commit('setOrder', { order })
-      dispatch('sortItems')
+      dispatch('sort')
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
@@ -111,7 +109,7 @@ export default {
       }
     },
     toggleBookmark ({ dispatch }, { filepath }) {
-      dispatch('toggleBookmark', { filepath }, { root: true })
+      dispatch('bookmark/toggle', { filepath }, { root: true })
     }
   },
   mutations: {
@@ -150,9 +148,9 @@ export default {
         return state.filepath === filepath
       }
     },
-    isBookmarked (state, getters, rootState) {
+    isBookmarked (state, getters, rootState, rootGetters) {
       return ({ filepath }) => {
-        return rootState.bookmarks.includes(filepath)
+        return rootGetters['bookmark/isBookmarked']({ filepath })
       }
     }
   }

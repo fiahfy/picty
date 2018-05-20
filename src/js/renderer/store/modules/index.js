@@ -6,7 +6,7 @@ import explorer from './explorer'
 import bookmark from './bookmark'
 import viewer from './viewer'
 
-const Selector = {
+export const Selector = {
   directoryInput: 'input[name=directory]',
   queryInput: 'input[name=query]',
   explorerTable: '.explorer-table',
@@ -54,21 +54,6 @@ export default {
           el.select()
         }
       })
-    },
-    focusDirectoryInput ({ dispatch }) {
-      dispatch('focus', { selector: Selector.directoryInput })
-      dispatch('select', { selector: Selector.directoryInput })
-      dispatch('changeRoute', { name: 'explorer' })
-    },
-    focusQueryInput ({ dispatch }) {
-      dispatch('focus', { selector: Selector.queryInput })
-      dispatch('select', { selector: Selector.queryInput })
-    },
-    focusExplorerTable ({ dispatch }) {
-      dispatch('focus', { selector: Selector.explorerTable })
-    },
-    focusBookmarkTable ({ dispatch }) {
-      dispatch('focus', { selector: Selector.bookmarkTable })
     },
     open ({ dispatch }, { filepathes }) {
       const file = new File(filepathes[0])

@@ -75,9 +75,9 @@ export default {
       }
     },
     ...mapActions({
-      search: 'bookmark/search',
-      showViewer: 'bookmark/showViewer',
-      toggleBookmark: 'bookmark/toggleBookmark'
+      search: 'app/bookmark/search',
+      showViewer: 'app/bookmark/showViewer',
+      toggleBookmark: 'app/bookmark/toggleBookmark'
     })
   }
 }

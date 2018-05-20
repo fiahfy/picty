@@ -107,7 +107,7 @@ export default {
     }
   },
   mounted () {
-    this.loadItems()
+    this.load()
     this.restore()
   },
   methods: {
@@ -154,7 +154,7 @@ export default {
       setScrollTop: 'app/bookmark/setScrollTop'
     }),
     ...mapActions({
-      loadItems: 'app/bookmark/loadItems',
+      load: 'app/bookmark/load',
       selectFirst: 'app/bookmark/selectFirst',
       selectLast: 'app/bookmark/selectLast',
       selectPrevious: 'app/bookmark/selectPrevious',
