@@ -81,8 +81,8 @@ export default {
     },
     ...mapState({
       error: function (state) {
-        if (state.viewer.error) {
-          return state.viewer.error
+        if (state.app.viewer.error) {
+          return state.app.viewer.error
         }
         if (this.loadError) {
           return new Error('Image Load Failure')

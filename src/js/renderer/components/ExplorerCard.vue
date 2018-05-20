@@ -96,7 +96,7 @@ export default {
         return this.$store.state.app.explorer.queryInput
       },
       set (value) {
-        this.$store.commit('app.explorer/setQueryInput', { queryInput: value })
+        this.$store.commit('app/explorer/setQueryInput', { queryInput: value })
       }
     },
     ...mapState({

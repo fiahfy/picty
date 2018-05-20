@@ -87,21 +87,21 @@ export default {
       commit('setMessage', { message })
       commit('setSnackbar', { snackbar: true })
     },
-    showViewer ({ commit, dispatch, state }) {
+    showViewer ({ commit, dispatch, rootState }) {
       commit('setViewing', { viewing: true })
       dispatch('focus', { selector: Selector.viewer })
-      if (state.settings.fullScreen) {
+      if (rootState.settings.fullScreen) {
         dispatch('enterFullScreen')
       }
     },
-    dismissViewer ({ commit, dispatch, state }) {
+    dismissViewer ({ commit, dispatch, rootState }) {
       commit('setViewing', { viewing: false })
       if (router.app.$route.name === 'explorer') {
         dispatch('focus', { selector: Selector.explorerTable })
       } else {
         dispatch('focus', { selector: Selector.bookmarkTable })
       }
-      if (state.settings.fullScreen || process.platform !== 'darwin') {
+      if (rootState.settings.fullScreen || process.platform !== 'darwin') {
         dispatch('leaveFullScreen')
       }
     }

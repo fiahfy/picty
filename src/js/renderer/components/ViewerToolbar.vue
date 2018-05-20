@@ -116,10 +116,10 @@ export default {
   computed: {
     page: {
       get () {
-        return this.$store.getters['viewer/currentIndex'] + 1
+        return this.$store.getters['app/viewer/currentIndex'] + 1
       },
       set (value) {
-        this.$store.commit('viewer/setCurrentIndex', { currentIndex: value - 1 })
+        this.$store.commit('app/viewer/setCurrentIndex', { currentIndex: value - 1 })
       }
     },
     ...mapState({
