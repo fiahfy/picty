@@ -1,5 +1,5 @@
+import File from '~/utils/file'
 import { Selector } from './index'
-import File from '../../utils/file'
 
 const reversed = {
   name: false,

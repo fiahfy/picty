@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { remote, shell } from 'electron'
+import File from '~/utils/file'
 import { Selector } from './index'
-import File from '../../utils/file'
 
 const reversed = {
   name: false,

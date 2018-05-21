@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import BookmarkCard from '../components/BookmarkCard'
-import BookmarkTable from '../components/BookmarkTable'
+import BookmarkCard from '~/components/BookmarkCard'
+import BookmarkTable from '~/components/BookmarkTable'
 
 export default {
   components: {
