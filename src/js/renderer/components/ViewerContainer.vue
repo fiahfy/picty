@@ -81,17 +81,17 @@ export default {
     },
     ...mapState({
       error: function (state) {
-        if (state.viewer.error) {
-          return state.viewer.error
+        if (state.app.viewer.error) {
+          return state.app.viewer.error
         }
         if (this.loadError) {
           return new Error('Image Load Failure')
         }
         return null
       },
-      filepath: state => state.viewer.filepath,
-      scale: state => state.viewer.scale,
-      scaling: state => state.viewer.scaling,
+      filepath: state => state.app.viewer.filepath,
+      scale: state => state.app.viewer.scale,
+      scaling: state => state.app.viewer.scaling,
       imageStretched: state => state.settings.imageStretched
     })
   },
@@ -163,7 +163,7 @@ export default {
       this.loadError = true
     },
     ...mapActions({
-      setupZoom: 'viewer/setupZoom'
+      setupZoom: 'app/viewer/setupZoom'
     })
   }
 }

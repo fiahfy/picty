@@ -1,6 +1,7 @@
 import fs from 'fs'
 import { remote, shell } from 'electron'
-import File from '../utils/file'
+import { Selector } from './index'
+import File from '../../utils/file'
 
 const reversed = {
   name: false,
@@ -81,21 +82,21 @@ export default {
       commit('setDirectoryInput', { directoryInput: history.directory })
       commit('setQuery', { query: '' })
 
-      dispatch('loadItems')
+      dispatch('load')
     },
     openDirectory ({ dispatch, rootState }) {
       const result = shell.openItem(rootState.directory)
       if (!result) {
-        dispatch('showMessage', { message: `Invalid directory "${rootState.directory}"` }, { root: true })
+        dispatch('app/showMessage', { message: `Invalid directory` }, { root: true })
       }
     },
-    loadItems ({ commit, dispatch, rootState }) {
+    load ({ commit, dispatch, rootState }) {
       try {
         if (watcher) {
           watcher.close()
         }
         watcher = fs.watch(rootState.directory, () => {
-          dispatch('loadItems')
+          dispatch('load')
         })
         const items = File.listFiles(rootState.directory)
           .filter((file) => file.isDirectory() || file.isImage())
@@ -104,10 +105,10 @@ export default {
       } catch (e) {
         commit('setItems', { items: [] })
       }
-      dispatch('sortItems')
-      dispatch('focusExplorerTable', null, { root: true })
+      dispatch('sort')
+      dispatch('app/focus', { selector: Selector.explorerTable }, { root: true })
     },
-    sortItems ({ commit, getters, state }) {
+    sort ({ commit, getters, state }) {
       const { by, descending } = getters.order
       const items = state.items.concat().sort((a, b) => {
         let result = 0
@@ -162,13 +163,10 @@ export default {
       commit('setHistory', { history, index: state.historyIndex })
     },
     changeOrderBy ({ commit, dispatch, getters, rootState }, { orderBy }) {
-      let descending = false
-      if (getters.order.by === orderBy) {
-        descending = !getters.order.descending
-      }
+      const descending = getters.order.by === orderBy ? !getters.order.descending : false
       const order = { by: orderBy, descending }
       commit('setOrder', { order, directory: rootState.directory })
-      dispatch('sortItems')
+      dispatch('sort')
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
@@ -182,14 +180,14 @@ export default {
       const file = new File(filepath)
       if (file.isDirectory()) {
         const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
-        dispatch('viewer/show', { filepathes }, { root: true })
+        dispatch('app/showViewer', { filepathes }, { root: true })
       } else {
         const filepathes = File.listFiles(file.parent.path).map(file => file.path)
-        dispatch('viewer/show', { filepathes, filepath }, { root: true })
+        dispatch('app/showViewer', { filepathes, filepath }, { root: true })
       }
     },
     toggleBookmark ({ dispatch }, { filepath }) {
-      dispatch('toggleBookmark', { filepath }, { root: true })
+      dispatch('bookmark/toggle', { filepath }, { root: true })
     }
   },
   mutations: {
@@ -265,9 +263,9 @@ export default {
         return state.filepath === filepath
       }
     },
-    isBookmarked (state, getters, rootState) {
+    isBookmarked (state, getters, rootState, rootGetters) {
       return ({ filepath }) => {
-        return rootState.bookmarks.includes(filepath)
+        return rootGetters['bookmark/isBookmarked']({ filepath })
       }
     }
   }

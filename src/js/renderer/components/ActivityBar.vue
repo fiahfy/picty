@@ -50,7 +50,7 @@ export default {
       }))
     },
     ...mapActions({
-      changeRoute: 'changeRoute'
+      changeRoute: 'app/changeRoute'
     })
   }
 }

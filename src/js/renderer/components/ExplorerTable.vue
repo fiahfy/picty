@@ -69,13 +69,13 @@ export default {
     },
     ...mapState({
       directory: state => state.directory,
-      query: state => state.explorer.query,
-      filepath: state => state.explorer.filepath
+      query: state => state.app.explorer.query,
+      filepath: state => state.app.explorer.filepath
     }),
     ...mapGetters({
-      items: 'explorer/filteredItems',
-      scrollTop: 'explorer/scrollTop',
-      selectedIndex: 'explorer/selectedIndex'
+      items: 'app/explorer/filteredItems',
+      scrollTop: 'app/explorer/scrollTop',
+      selectedIndex: 'app/explorer/selectedIndex'
     })
   },
   watch: {
@@ -150,13 +150,13 @@ export default {
       }
     },
     ...mapActions({
-      selectFirst: 'explorer/selectFirst',
-      selectLast: 'explorer/selectLast',
-      selectPrevious: 'explorer/selectPrevious',
-      selectNext: 'explorer/selectNext',
-      setScrollTop: 'explorer/setScrollTop',
-      showViewer: 'explorer/showViewer',
-      toggleBookmark: 'explorer/toggleBookmark'
+      selectFirst: 'app/explorer/selectFirst',
+      selectLast: 'app/explorer/selectLast',
+      selectPrevious: 'app/explorer/selectPrevious',
+      selectNext: 'app/explorer/selectNext',
+      setScrollTop: 'app/explorer/setScrollTop',
+      showViewer: 'app/explorer/showViewer',
+      toggleBookmark: 'app/explorer/toggleBookmark'
     })
   }
 }

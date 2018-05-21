@@ -72,13 +72,13 @@ export default {
       return this.query ? 'No matching records found' : 'No data available'
     },
     ...mapState({
-      query: state => state.bookmark.query,
-      filepath: state => state.bookmark.filepath,
-      scrollTop: state => state.bookmark.scrollTop
+      query: state => state.app.bookmark.query,
+      filepath: state => state.app.bookmark.filepath,
+      scrollTop: state => state.app.bookmark.scrollTop
     }),
     ...mapGetters({
-      items: 'bookmark/filteredItems',
-      selectedIndex: 'bookmark/selectedIndex'
+      items: 'app/bookmark/filteredItems',
+      selectedIndex: 'app/bookmark/selectedIndex'
     })
   },
   watch: {
@@ -107,7 +107,7 @@ export default {
     }
   },
   mounted () {
-    this.loadItems()
+    this.load()
     this.restore()
   },
   methods: {
@@ -151,16 +151,16 @@ export default {
       }
     },
     ...mapMutations({
-      setScrollTop: 'bookmark/setScrollTop'
+      setScrollTop: 'app/bookmark/setScrollTop'
     }),
     ...mapActions({
-      loadItems: 'bookmark/loadItems',
-      selectFirst: 'bookmark/selectFirst',
-      selectLast: 'bookmark/selectLast',
-      selectPrevious: 'bookmark/selectPrevious',
-      selectNext: 'bookmark/selectNext',
-      showViewer: 'bookmark/showViewer',
-      toggleBookmark: 'bookmark/toggleBookmark'
+      load: 'app/bookmark/load',
+      selectFirst: 'app/bookmark/selectFirst',
+      selectLast: 'app/bookmark/selectLast',
+      selectPrevious: 'app/bookmark/selectPrevious',
+      selectNext: 'app/bookmark/selectNext',
+      showViewer: 'app/bookmark/showViewer',
+      toggleBookmark: 'app/bookmark/toggleBookmark'
     })
   }
 }

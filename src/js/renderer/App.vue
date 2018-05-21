@@ -10,6 +10,15 @@
     <v-content class="fill-height">
       <router-view />
     </v-content>
+    <v-snackbar
+      v-model="snackbar"
+    >
+      {{ message }}
+      <v-btn
+        flat
+        @click.native="snackbar = false"
+      >Close</v-btn>
+    </v-snackbar>
     <v-dialog
       v-if="viewing"
       value="true"
@@ -51,14 +60,32 @@ export default {
     Viewer
   },
   computed: {
+    snackbar: {
+      get () {
+        return this.$store.state.app.snackbar
+      },
+      set (value) {
+        this.$store.commit('app/setSnackbar', { snackbar: value })
+      }
+    },
     ...mapState({
-      message: state => state.message,
-      viewing: state => state.viewing,
+      message: state => state.app.message,
+      viewing: state => state.app.viewing,
       darkTheme: state => state.settings.darkTheme
     }),
     ...mapGetters({
-      titleBar: 'titleBar'
+      titleBar: 'app/titleBar'
     })
+  },
+  watch: {
+    snackbar (value) {
+      if (value) {
+        return
+      }
+      this.$nextTick(() => {
+        this.showNextMessage()
+      })
+    }
   },
   created () {
     this.initializeExplorer()
@@ -77,9 +104,10 @@ export default {
       this.open({ filepathes })
     },
     ...mapActions({
-      open: 'open',
-      initializeExplorer: 'explorer/initialize',
-      initializeBookmark: 'bookmark/initialize'
+      open: 'app/open',
+      showNextMessage: 'app/showNextMessage',
+      initializeExplorer: 'app/explorer/initialize',
+      initializeBookmark: 'app/bookmark/initialize'
     })
   }
 }

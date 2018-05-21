@@ -47,17 +47,17 @@ export default {
   computed: {
     queryInput: {
       get () {
-        return this.$store.state.bookmark.queryInput
+        return this.$store.state.app.bookmark.queryInput
       },
       set (value) {
-        this.$store.commit('bookmark/setQueryInput', { queryInput: value })
+        this.$store.commit('app/bookmark/setQueryInput', { queryInput: value })
       }
     },
     ...mapState({
-      filepath: state => state.bookmark.filepath
+      filepath: state => state.app.bookmark.filepath
     }),
     ...mapGetters({
-      isBookmarked: 'bookmark/isBookmarked'
+      isBookmarked: 'app/bookmark/isBookmarked'
     })
   },
   watch: {
@@ -75,9 +75,9 @@ export default {
       }
     },
     ...mapActions({
-      search: 'bookmark/search',
-      showViewer: 'bookmark/showViewer',
-      toggleBookmark: 'bookmark/toggleBookmark'
+      search: 'app/bookmark/search',
+      showViewer: 'app/bookmark/showViewer',
+      toggleBookmark: 'app/bookmark/toggleBookmark'
     })
   }
 }

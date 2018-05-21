@@ -1,4 +1,4 @@
-import File from '../utils/file'
+import File from '../../utils/file'
 
 const scales = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
 
@@ -13,7 +13,7 @@ export default {
     scaling: false
   },
   actions: {
-    show ({ commit, dispatch, rootState }, { filepathes, filepath }) {
+    load ({ commit, dispatch }, { filepathes, filepath }) {
       try {
         const items = filepathes.map(filepath => new File(filepath)).filter((file) => file.isImage()).map((file) => file.toObject())
         if (!items.length) {
@@ -28,10 +28,6 @@ export default {
         commit('setItems', { items: [] })
         commit('setFilepath', { filepath: null })
       }
-      dispatch('showViewer', null, { root: true })
-    },
-    dismiss ({ commit, dispatch, rootState }) {
-      dispatch('dismissViewer', null, { root: true })
     },
     movePrevious ({ commit, getters, state }) {
       let index = getters.currentIndex - 1
