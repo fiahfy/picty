@@ -1,5 +1,5 @@
 import { ipcRenderer, remote } from 'electron'
-import { Selector } from '../store/modules'
+import { Selector } from '~/store/modules'
 
 export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('enterFullScreen', () => {

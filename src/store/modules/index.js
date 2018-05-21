@@ -1,7 +1,7 @@
 
 import { remote } from 'electron'
-import router from '../../router'
-import File from '../../utils/file'
+import router from '~/router'
+import File from '~/utils/file'
 import explorer from './explorer'
 import bookmark from './bookmark'
 import viewer from './viewer'

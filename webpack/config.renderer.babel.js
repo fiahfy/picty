@@ -55,6 +55,7 @@ export default {
   resolve: {
     extensions: ['.js', '.json', '.vue'],
     alias: {
+      ...config.resolve.alias,
       vue$: 'vue/dist/vue.esm.js'
     }
   }

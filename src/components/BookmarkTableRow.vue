@@ -33,7 +33,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import * as ContextMenu from '../utils/context-menu'
+import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   props: {

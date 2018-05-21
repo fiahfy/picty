@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import ExplorerToolbar from '../components/ExplorerToolbar'
-import ExplorerCard from '../components/ExplorerCard'
-import ExplorerTable from '../components/ExplorerTable'
+import ExplorerToolbar from '~/components/ExplorerToolbar'
+import ExplorerCard from '~/components/ExplorerCard'
+import ExplorerTable from '~/components/ExplorerTable'
 
 export default {
   components: {
