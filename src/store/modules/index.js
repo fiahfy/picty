@@ -64,7 +64,7 @@ export default {
       }
     },
     openDirectory ({ dispatch }, { dirpath }) {
-      dispatch('showDirectory')
+      dispatch('showDirectory', { dirpath })
     },
     openImages ({ dispatch }, { filepathes }) {
       dispatch('showViewer', { filepathes })

@@ -138,7 +138,7 @@ export default {
     ...mapActions({
       enterFullScreen: 'app/enterFullScreen',
       leaveFullScreen: 'app/leaveFullScreen',
-      dismiss: 'app/viewer/dismiss',
+      dismiss: 'app/dismissViewer',
       movePrevious: 'app/viewer/movePrevious',
       moveNext: 'app/viewer/moveNext',
       zoomIn: 'app/viewer/zoomIn',
