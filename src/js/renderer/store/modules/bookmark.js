@@ -90,11 +90,11 @@ export default {
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
       if (!file.exists()) {
+        dispatch('app/showMessage', { message: `Not found` }, { root: true })
         return
       }
       if (file.isDirectory()) {
-        dispatch('app/explorer/changeDirectory', { dirpath: file.path }, { root: true })
-        dispatch('app/changeRoute', { name: 'explorer' }, { root: true })
+        dispatch('app/showDirectory', { dirpath: file.path }, { root: true })
       } else {
         dispatch('showViewer', { filepath: file.path })
       }
@@ -103,9 +103,9 @@ export default {
       const file = new File(filepath)
       if (file.isDirectory()) {
         const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
-        dispatch('app/viewer/show', { filepathes }, { root: true })
+        dispatch('app/showViewer', { filepathes }, { root: true })
       } else {
-        dispatch('app/viewer/show', { filepathes: [filepath] }, { root: true })
+        dispatch('app/showViewer', { filepathes: [filepath] }, { root: true })
       }
     },
     toggleBookmark ({ dispatch }, { filepath }) {

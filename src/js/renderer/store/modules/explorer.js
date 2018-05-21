@@ -87,7 +87,7 @@ export default {
     openDirectory ({ dispatch, rootState }) {
       const result = shell.openItem(rootState.directory)
       if (!result) {
-        dispatch('showMessage', { message: `Invalid directory "${rootState.directory}"` }, { root: true })
+        dispatch('app/showMessage', { message: `Invalid directory` }, { root: true })
       }
     },
     load ({ commit, dispatch, rootState }) {
@@ -180,10 +180,10 @@ export default {
       const file = new File(filepath)
       if (file.isDirectory()) {
         const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
-        dispatch('app/viewer/show', { filepathes }, { root: true })
+        dispatch('app/showViewer', { filepathes }, { root: true })
       } else {
         const filepathes = File.listFiles(file.parent.path).map(file => file.path)
-        dispatch('app/viewer/show', { filepathes, filepath }, { root: true })
+        dispatch('app/showViewer', { filepathes, filepath }, { root: true })
       }
     },
     toggleBookmark ({ dispatch }, { filepath }) {

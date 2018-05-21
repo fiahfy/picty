@@ -64,11 +64,10 @@ export default {
       }
     },
     openDirectory ({ dispatch }, { dirpath }) {
-      dispatch('explorer/changeDirectory', { dirpath })
-      dispatch('changeRoute', { name: 'explorer' })
+      dispatch('showDirectory')
     },
     openImages ({ dispatch }, { filepathes }) {
-      dispatch('viewer/show', { filepathes })
+      dispatch('showViewer', { filepathes })
     },
     showMessage ({ commit, dispatch, state }, { message }) {
       if (state.snackbar) {
@@ -87,7 +86,12 @@ export default {
       commit('setMessage', { message })
       commit('setSnackbar', { snackbar: true })
     },
-    showViewer ({ commit, dispatch, rootState }) {
+    showDirectory ({ dispatch }, { dirpath }) {
+      dispatch('explorer/changeDirectory', { dirpath })
+      dispatch('changeRoute', { name: 'explorer' })
+    },
+    showViewer ({ commit, dispatch, rootState }, { filepathes, filepath }) {
+      dispatch('viewer/load', { filepathes, filepath })
       commit('setViewing', { viewing: true })
       dispatch('focus', { selector: Selector.viewer })
       if (rootState.settings.fullScreen) {
@@ -95,14 +99,14 @@ export default {
       }
     },
     dismissViewer ({ commit, dispatch, rootState }) {
+      if (rootState.settings.fullScreen || process.platform !== 'darwin') {
+        dispatch('leaveFullScreen')
+      }
       commit('setViewing', { viewing: false })
       if (router.app.$route.name === 'explorer') {
         dispatch('focus', { selector: Selector.explorerTable })
       } else {
         dispatch('focus', { selector: Selector.bookmarkTable })
-      }
-      if (rootState.settings.fullScreen || process.platform !== 'darwin') {
-        dispatch('leaveFullScreen')
       }
     }
   },

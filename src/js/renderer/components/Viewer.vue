@@ -108,7 +108,7 @@ export default {
       this.resetTimer()
     },
     ...mapActions({
-      dismiss: 'app/viewer/dismiss',
+      dismiss: 'app/dismissViewer',
       movePrevious: 'app/viewer/movePrevious',
       moveNext: 'app/viewer/moveNext'
     })
@@ -136,6 +136,9 @@ export default {
     opacity: 0;
     transform: translateY(48px);
   }
+}
+.viewer {
+  outline: none;
 }
 .viewer-container {
   &.hidden {

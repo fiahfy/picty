@@ -13,7 +13,7 @@ export default {
     scaling: false
   },
   actions: {
-    show ({ commit, dispatch }, { filepathes, filepath }) {
+    load ({ commit, dispatch }, { filepathes, filepath }) {
       try {
         const items = filepathes.map(filepath => new File(filepath)).filter((file) => file.isImage()).map((file) => file.toObject())
         if (!items.length) {
@@ -28,10 +28,6 @@ export default {
         commit('setItems', { items: [] })
         commit('setFilepath', { filepath: null })
       }
-      dispatch('app/showViewer', null, { root: true })
-    },
-    dismiss ({ dispatch }) {
-      dispatch('app/dismissViewer', null, { root: true })
     },
     movePrevious ({ commit, getters, state }) {
       let index = getters.currentIndex - 1

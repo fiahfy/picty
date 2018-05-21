@@ -12,7 +12,6 @@
     </v-content>
     <v-snackbar
       v-model="snackbar"
-      :timeout="1000"
     >
       {{ message }}
       <v-btn
@@ -84,7 +83,7 @@ export default {
         return
       }
       this.$nextTick(() => {
-        this.$store.dispatch('showNextMessage')
+        this.showNextMessage()
       })
     }
   },
@@ -106,6 +105,7 @@ export default {
     },
     ...mapActions({
       open: 'app/open',
+      showNextMessage: 'app/showNextMessage',
       initializeExplorer: 'app/explorer/initialize',
       initializeBookmark: 'app/bookmark/initialize'
     })
