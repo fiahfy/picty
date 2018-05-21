@@ -25,7 +25,9 @@
     </td>
     <td>{{ item.dirpath }}</td>
     <td class="text-xs-right">{{ fileSize | readableSize }}</td>
-    <td class="text-xs-right">{{ item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
+    <td class="text-xs-right">
+      <template v-if="item.mtime">{{ item.mtime | moment('YYYY-MM-DD HH:mm') }}</template>
+    </td>
   </tr>
 </template>
 
@@ -48,9 +50,15 @@ export default {
       return this.isBookmarked({ filepath: this.item.path }) ? 'star' : 'star_outline'
     },
     fileIcon () {
+      if (!this.item.exists) {
+        return 'broken_image'
+      }
       return this.item.directory ? 'folder' : 'photo'
     },
     fileColor () {
+      if (!this.item.exists) {
+        return 'grey'
+      }
       return this.item.directory ? 'blue lighten-3' : 'green lighten-3'
     },
     fileSize () {
