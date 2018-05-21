@@ -5,52 +5,6 @@
   >
     <v-card-title class="py-2 px-0">
       <v-btn
-        v-long-press="showBackMenu"
-        :title="'Back'|accelerator('CmdOrCtrl+Left')"
-        :disabled="!canBackDirectory"
-        flat
-        icon
-        @click="backDirectory"
-        @contextmenu="showBackMenu"
-      >
-        <v-icon>arrow_back</v-icon>
-      </v-btn>
-      <v-btn
-        v-long-press="showForwardMenu"
-        :title="'Forward'|accelerator('CmdOrCtrl+Right')"
-        :disabled="!canForwardDirectory"
-        flat
-        icon
-        @click="forwardDirectory"
-        @contextmenu="showForwardMenu"
-      >
-        <v-icon>arrow_forward</v-icon>
-      </v-btn>
-      <v-btn
-        :title="'Up'|accelerator('CmdOrCtrl+Shift+P')"
-        flat
-        icon
-        @click="upDirectory"
-      >
-        <v-icon>arrow_upward</v-icon>
-      </v-btn>
-      <v-btn
-        title="Reload"
-        flat
-        icon
-        @click="reloadDirectory"
-      >
-        <v-icon>refresh</v-icon>
-      </v-btn>
-      <v-btn
-        :title="'Home'|accelerator('CmdOrCtrl+Shift+H')"
-        flat
-        icon
-        @click="changeHomeDirectory"
-      >
-        <v-icon>home</v-icon>
-      </v-btn>
-      <v-btn
         :title="'Star'|accelerator('CmdOrCtrl+D')"
         :disabled="!filepath"
         flat
@@ -103,10 +57,6 @@ export default {
       filepath: state => state.app.explorer.filepath
     }),
     ...mapGetters({
-      backDirectories: 'app/explorer/backDirectories',
-      forwardDirectories: 'app/explorer/forwardDirectories',
-      canBackDirectory: 'app/explorer/canBackDirectory',
-      canForwardDirectory: 'app/explorer/canForwardDirectory',
       isBookmarked: 'app/explorer/isBookmarked'
     })
   },
@@ -124,33 +74,7 @@ export default {
         this.search()
       }
     },
-    showBackMenu (e) {
-      ContextMenu.show(e, this.backDirectories.map((directory, index) => {
-        return {
-          label: directory,
-          click: () => {
-            this.backDirectory({ offset: index })
-          }
-        }
-      }))
-    },
-    showForwardMenu (e) {
-      ContextMenu.show(e, this.forwardDirectories.map((directory, index) => {
-        return {
-          label: directory,
-          click: () => {
-            this.forwardDirectory({ offset: index })
-          }
-        }
-      }))
-    },
     ...mapActions({
-      changeDirectory: 'app/explorer/changeDirectory',
-      upDirectory: 'app/explorer/upDirectory',
-      changeHomeDirectory: 'app/explorer/changeHomeDirectory',
-      backDirectory: 'app/explorer/backDirectory',
-      forwardDirectory: 'app/explorer/forwardDirectory',
-      reloadDirectory: 'app/explorer/reloadDirectory',
       search: 'app/explorer/search',
       showViewer: 'app/explorer/showViewer',
       toggleBookmark: 'app/explorer/toggleBookmark'
