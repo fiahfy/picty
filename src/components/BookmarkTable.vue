@@ -7,7 +7,6 @@
     class="bookmark-table"
     item-key="path"
     hide-actions
-    must-sort
     sticky-headers
     tabindex="0"
     @scroll="onScroll"
