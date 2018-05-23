@@ -11,7 +11,7 @@
       flat
       icon
       @click="backDirectory"
-      @contextmenu="showBackMenu"
+      @contextmenu.stop="showBackMenu"
     >
       <v-icon>arrow_back</v-icon>
     </v-btn>
@@ -22,7 +22,7 @@
       flat
       icon
       @click="forwardDirectory"
-      @contextmenu="showForwardMenu"
+      @contextmenu.stop="showForwardMenu"
     >
       <v-icon>arrow_forward</v-icon>
     </v-btn>
@@ -61,7 +61,7 @@
       hide-details
       full-width
       @keyup="onKeyUp"
-      @contextmenu="onContextMenu"
+      @contextmenu.stop="onContextMenu"
     />
   </v-toolbar>
 </template>

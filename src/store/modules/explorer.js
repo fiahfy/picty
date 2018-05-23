@@ -186,7 +186,7 @@ export default {
         dispatch('app/showViewer', { filepathes, filepath }, { root: true })
       }
     },
-    toggleBookmark ({ dispatch }, { filepath }) {
+    toggleBookmarked ({ dispatch }, { filepath }) {
       dispatch('bookmark/toggle', { filepath }, { root: true })
     }
   },

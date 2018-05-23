@@ -1,10 +1,10 @@
 <template>
   <tr
-    :active="isSelected({ filepath: item.path })"
+    :active="active"
     class="explorer-table-row"
-    @click="select({ filepath: item.path })"
-    @dblclick="action({ filepath: item.path })"
-    @contextmenu="onContextMenu"
+    @click="onClick"
+    @dblclick="onDblClick"
+    @contextmenu.stop="onContextMenu"
   >
     <td>
       <v-layout class="align-center">
@@ -12,7 +12,7 @@
           flat
           icon
           class="my-0"
-          @click="toggleBookmark({ filepath: item.path })"
+          @click="onButtonClick"
         >
           <v-icon :color="starColor">{{ starIcon }}</v-icon>
         </v-btn>
@@ -24,7 +24,9 @@
       </v-layout>
     </td>
     <td class="text-xs-right">{{ fileSize | readableSize }}</td>
-    <td class="text-xs-right">{{ item.mtime | moment('YYYY-MM-DD HH:mm') }}</td>
+    <td class="text-xs-right">
+      <template v-if="item.mtime">{{ item.mtime | moment('YYYY-MM-DD HH:mm') }}</template>
+    </td>
   </tr>
 </template>
 
@@ -40,17 +42,29 @@ export default {
     }
   },
   computed: {
+    active () {
+      return this.isSelected({ filepath: this.item.path })
+    },
+    bookmarked () {
+      return this.isBookmarked({ filepath: this.item.path })
+    },
     starColor () {
-      return this.isBookmarked({ filepath: this.item.path }) ? 'yellow darken-2' : 'grey'
+      return this.bookmarked ? 'yellow darken-2' : 'grey'
     },
     starIcon () {
-      return this.isBookmarked({ filepath: this.item.path }) ? 'star' : 'star_outline'
-    },
-    fileIcon () {
-      return this.item.directory ? 'folder' : 'photo'
+      return this.bookmarked ? 'star' : 'star_outline'
     },
     fileColor () {
-      return this.item.directory ? 'blue lighten-3' : 'green lighten-3'
+      if (this.item.exists) {
+        return this.item.directory ? 'blue lighten-3' : 'green lighten-3'
+      }
+      return 'grey'
+    },
+    fileIcon () {
+      if (this.item.exists) {
+        return this.item.directory ? 'folder' : 'photo'
+      }
+      return 'broken_image'
     },
     fileSize () {
       return this.item.directory ? null : this.item.size
@@ -61,13 +75,19 @@ export default {
     })
   },
   methods: {
+    onClick () {
+      this.select({ filepath: this.item.path })
+    },
+    onDblClick () {
+      this.action({ filepath: this.item.path })
+    },
     onContextMenu (e) {
       this.select({ filepath: this.item.path })
-      ContextMenu.show(e, [
+      let templates = [
         {
-          label: this.isBookmarked({ filepath: this.item.path }) ? 'Unstar' : 'Star',
+          label: this.bookmarked ? 'Unstar' : 'Star',
           click: () => {
-            this.toggleBookmark({ filepath: this.item.path })
+            this.toggleBookmarked({ filepath: this.item.path })
           },
           accelerator: 'CmdOrCtrl+D'
         },
@@ -77,16 +97,25 @@ export default {
             this.showViewer({ filepath: this.item.path })
           },
           accelerator: 'Enter'
-        },
-        { type: 'separator' },
-        { role: ContextMenu.Role.copy }
-      ])
+        }
+      ]
+      if (getSelection().toString()) {
+        templates = [
+          ...templates,
+          { type: 'separator' },
+          { role: ContextMenu.Role.copy }
+        ]
+      }
+      ContextMenu.show(e, templates)
+    },
+    onButtonClick () {
+      this.toggleBookmarked({ filepath: this.item.path })
     },
     ...mapActions({
       select: 'app/explorer/select',
       action: 'app/explorer/action',
       showViewer: 'app/explorer/showViewer',
-      toggleBookmark: 'app/explorer/toggleBookmark'
+      toggleBookmarked: 'app/explorer/toggleBookmarked'
     })
   }
 }

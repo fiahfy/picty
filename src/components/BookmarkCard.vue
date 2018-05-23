@@ -9,7 +9,7 @@
         :disabled="!filepath"
         flat
         icon
-        @click="toggleBookmark({ filepath })"
+        @click="toggleBookmarked({ filepath })"
       >
         <v-icon>{{ isBookmarked({ filepath}) ? 'star' : 'star_border' }}</v-icon>
       </v-btn>
@@ -33,7 +33,7 @@
         hide-details
         clearable
         @keyup="onKeyUp"
-        @contextmenu="onContextMenu"
+        @contextmenu.stop="onContextMenu"
       />
     </v-card-title>
   </v-card>
@@ -77,7 +77,7 @@ export default {
     ...mapActions({
       search: 'app/bookmark/search',
       showViewer: 'app/bookmark/showViewer',
-      toggleBookmark: 'app/bookmark/toggleBookmark'
+      toggleBookmarked: 'app/bookmark/toggleBookmarked'
     })
   }
 }

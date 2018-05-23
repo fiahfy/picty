@@ -143,7 +143,7 @@ export default {
         case 68:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.toggleBookmark({ filepath: this.filepath })
+            this.toggleBookmarked({ filepath: this.filepath })
           }
           break
       }
@@ -155,7 +155,7 @@ export default {
       selectNext: 'app/explorer/selectNext',
       setScrollTop: 'app/explorer/setScrollTop',
       showViewer: 'app/explorer/showViewer',
-      toggleBookmark: 'app/explorer/toggleBookmark'
+      toggleBookmarked: 'app/explorer/toggleBookmarked'
     })
   }
 }
