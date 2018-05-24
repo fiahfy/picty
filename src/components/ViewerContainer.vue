@@ -26,12 +26,12 @@
         @mouseup="onMouseUp"
       >
         <img
-          :src="`file://${filepath}`"
+          :src="imageSrc"
           :class="imageClasses"
           :style="imageStyles"
           draggable="false"
-          @load="onLoad"
-          @error="onError"
+          @load="onImageLoad"
+          @error="onImageError"
         >
       </v-flex>
     </v-layout>
@@ -57,13 +57,16 @@ export default {
     }
   },
   computed: {
-    message () {
-      return this.error ? this.error.message : ''
-    },
     classes () {
       return {
         dragging: this.dragging
       }
+    },
+    message () {
+      return this.error ? this.error.message : ''
+    },
+    imageSrc () {
+      return `file://${this.filepath}`
     },
     imageClasses () {
       return {
@@ -142,7 +145,7 @@ export default {
         this.scrollPosition = position
       }
     },
-    onLoad (e) {
+    onImageLoad (e) {
       const maxWidth = this.$el.clientWidth
       const maxHeight = this.$el.clientHeight
       const imageWidth = e.target.naturalWidth
@@ -159,7 +162,7 @@ export default {
       }
       this.setupZoom({ scale })
     },
-    onError (e) {
+    onImageError (e) {
       this.loadError = true
     },
     ...mapActions({

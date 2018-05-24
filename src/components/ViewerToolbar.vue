@@ -8,7 +8,7 @@
       :title="'View previous image'|accelerator('Left')"
       flat
       icon
-      @click="movePrevious"
+      @click="onPreviousClick"
     >
       <v-icon>skip_previous</v-icon>
     </v-btn>
@@ -16,7 +16,7 @@
       :title="'View next image'|accelerator('Right')"
       flat
       icon
-      @click="moveNext"
+      @click="onNextClick"
     >
       <v-icon>skip_next</v-icon>
     </v-btn>
@@ -52,7 +52,7 @@
           :title="'Zoom in'|accelerator('CmdOrCtrl+Plus')"
           flat
           icon
-          @click="zoomIn"
+          @click="onZoomInClick"
         >
           <v-icon>zoom_in</v-icon>
         </v-btn>
@@ -61,14 +61,14 @@
           :title="'Zoom out'|accelerator('CmdOrCtrl+-')"
           flat
           icon
-          @click="zoomOut"
+          @click="onZoomOutClick"
         >
           <v-icon>zoom_out</v-icon>
         </v-btn>
         <v-btn
           :title="'Reset'|accelerator('CmdOrCtrl+0')"
           flat
-          @click="resetZoom"
+          @click="onResetClick"
         >
           Reset
         </v-btn>
@@ -79,7 +79,7 @@
       title="Exit fullscreen"
       flat
       icon
-      @click="leaveFullScreen"
+      @click="onExitFullscreenClick"
     >
       <v-icon>fullscreen_exit</v-icon>
     </v-btn>
@@ -88,7 +88,7 @@
       title="Fullscreen"
       flat
       icon
-      @click="enterFullScreen"
+      @click="onFullscreenClick"
     >
       <v-icon>fullscreen</v-icon>
     </v-btn>
@@ -96,7 +96,7 @@
       :title="'Close'|accelerator('Esc')"
       flat
       icon
-      @click="dismiss"
+      @click="onCloseClick"
     >
       <v-icon>close</v-icon>
     </v-btn>
@@ -129,6 +129,30 @@ export default {
     })
   },
   methods: {
+    onPreviousClick () {
+      this.movePrevious()
+    },
+    onNextClick () {
+      this.moveNext()
+    },
+    onZoomInClick () {
+      this.zoomIn()
+    },
+    onZoomOutClick () {
+      this.zoomOut()
+    },
+    onResetClick () {
+      this.resetZoom()
+    },
+    onExitFullscreenClick () {
+      this.leaveFullScreen()
+    },
+    onFullscreenClick () {
+      this.enterFullScreen()
+    },
+    onCloseClick () {
+      this.dismiss()
+    },
     hideMenu () {
       this.menu = false
     },
