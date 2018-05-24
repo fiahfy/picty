@@ -33,9 +33,7 @@ export default {
   },
   getters: {
     isBookmarked (state) {
-      return ({ filepath }) => {
-        return state.bookmarks.includes(filepath)
-      }
+      return ({ filepath }) => state.bookmarks.includes(filepath)
     }
   }
 }

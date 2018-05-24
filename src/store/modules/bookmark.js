@@ -139,19 +139,13 @@ export default {
       })
     },
     selectedIndex (state, getters) {
-      return getters.filteredItems.findIndex((file) => {
-        return getters.isSelected({ filepath: file.path })
-      })
+      return getters.filteredItems.findIndex((file) => getters.isSelected({ filepath: file.path }))
     },
     isSelected (state) {
-      return ({ filepath }) => {
-        return state.filepath === filepath
-      }
+      return ({ filepath }) => state.filepath === filepath
     },
     isBookmarked (state, getters, rootState, rootGetters) {
-      return ({ filepath }) => {
-        return rootGetters['bookmark/isBookmarked']({ filepath })
-      }
+      return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
     }
   }
 }

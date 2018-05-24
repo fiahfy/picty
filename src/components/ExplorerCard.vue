@@ -6,19 +6,19 @@
     <v-card-title class="py-2 px-0">
       <v-btn
         :title="'Star'|accelerator('CmdOrCtrl+D')"
-        :disabled="!filepath"
+        :disabled="disabled"
         flat
         icon
-        @click="toggleBookmarked({ filepath })"
+        @click="onStarClick"
       >
-        <v-icon>{{ isBookmarked({ filepath }) ? 'star' : 'star_border' }}</v-icon>
+        <v-icon>{{ starIcon }}</v-icon>
       </v-btn>
       <v-btn
         :title="'View'|accelerator('Enter')"
-        :disabled="!filepath"
+        :disabled="disabled"
         flat
         icon
-        @click="showViewer({ filepath })"
+        @click="onPhotoClick"
       >
         <v-icon>photo</v-icon>
       </v-btn>
@@ -32,8 +32,8 @@
         single-line
         hide-details
         clearable
-        @keyup="onKeyUp"
-        @contextmenu.stop="onContextMenu"
+        @keyup="onTextKeyUp"
+        @contextmenu.stop="onTextContextMenu"
       />
     </v-card-title>
   </v-card>
@@ -53,6 +53,12 @@ export default {
         this.$store.commit('app/explorer/setQueryInput', { queryInput: value })
       }
     },
+    disabled () {
+      return !this.filepath
+    },
+    starIcon () {
+      return this.isBookmarked({ filepath: this.filepath }) ? 'star' : 'star_border'
+    },
     ...mapState({
       filepath: state => state.app.explorer.filepath
     }),
@@ -66,10 +72,16 @@ export default {
     }
   },
   methods: {
-    onContextMenu (e) {
+    onStarClick () {
+      this.toggleBookmarked({ filepath: this.filepath })
+    },
+    onPhotoClick () {
+      this.showViewer({ filepath: this.filepath })
+    },
+    onTextContextMenu (e) {
       ContextMenu.showTextMenu(e)
     },
-    onKeyUp (e) {
+    onTextKeyUp (e) {
       if (e.keyCode === 13) {
         this.search()
       }

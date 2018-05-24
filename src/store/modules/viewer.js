@@ -94,9 +94,7 @@ export default {
   },
   getters: {
     currentIndex (state) {
-      return state.items.findIndex((file) => {
-        return state.filepath === file.path
-      })
+      return state.items.findIndex((file) => state.filepath === file.path)
     }
   }
 }
