@@ -133,11 +133,10 @@ export default {
       commit('setFilepath', { filepath })
     },
     selectIndex ({ dispatch, getters }, { index }) {
-      if (index < 0 || index > getters.filteredItems.length - 1) {
-        return
+      const item = getters.filteredItems[index]
+      if (item) {
+        dispatch('select', { filepath: item.filepath })
       }
-      const filepath = getters.filteredItems[index].path
-      dispatch('select', { filepath })
     },
     selectFirst ({ dispatch }) {
       dispatch('selectIndex', { index: 0 })
