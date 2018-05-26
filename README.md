@@ -5,9 +5,9 @@
 
 
 ## Features
-* View images easily
 * Paging/Zooming controller on viewer
 * Bookmark
+* Cross platform support
 * Change theme (Light/Dark)
 
 
