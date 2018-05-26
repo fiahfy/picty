@@ -29,10 +29,12 @@
         column
         fill-height
       >
-        <title-bar
-          v-if="titleBar"
-          :app="false"
-        />
+        <v-flex>
+          <title-bar
+            v-if="titleBar"
+            :app="false"
+          />
+        </v-flex>
         <v-container
           card
           fluid
