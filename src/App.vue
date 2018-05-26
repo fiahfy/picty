@@ -16,7 +16,7 @@
       {{ message }}
       <v-btn
         flat
-        @click.native="snackbar = false"
+        @click.native="onCloseClick"
       >Close</v-btn>
     </v-snackbar>
     <v-dialog
@@ -88,8 +88,7 @@ export default {
     }
   },
   created () {
-    this.initializeExplorer()
-    this.initializeBookmark()
+    this.initialize()
   },
   methods: {
     onContextMenu (e) {
@@ -103,11 +102,13 @@ export default {
       const filepathes = files.map(file => file.path)
       this.open({ filepathes })
     },
+    onCloseClick () {
+      this.snackbar = false
+    },
     ...mapActions({
+      initialize: 'app/initialize',
       open: 'app/open',
-      showNextMessage: 'app/showNextMessage',
-      initializeExplorer: 'app/explorer/initialize',
-      initializeBookmark: 'app/bookmark/initialize'
+      showNextMessage: 'app/showNextMessage'
     })
   }
 }

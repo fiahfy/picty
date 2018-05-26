@@ -17,74 +17,24 @@ export const Selector = {
 export default {
   namespaced: true,
   state: {
-    messages: [],
     message: '',
+    messages: [],
     snackbar: false,
     viewing: false,
     fullScreen: false
   },
   actions: {
-    enterFullScreen () {
-      const browserWindow = remote.getCurrentWindow()
-      browserWindow.setFullScreen(true)
-      browserWindow.setMenuBarVisibility(false)
-    },
-    leaveFullScreen () {
-      const browserWindow = remote.getCurrentWindow()
-      browserWindow.setFullScreen(false)
-      browserWindow.setMenuBarVisibility(true)
-    },
-    changeRoute (_, payload) {
-      router.push(payload)
-    },
-    focus (_, { selector }) {
-      // wait dom updated
-      setTimeout(() => {
-        const el = document.querySelector(selector)
-        if (el) {
-          el.focus()
-        }
-      })
-    },
-    select (_, { selector }) {
-      // wait dom updated
-      setTimeout(() => {
-        const el = document.querySelector(selector)
-        if (el) {
-          el.select()
-        }
-      })
+    initialize ({ dispatch }) {
+      dispatch('explorer/initialize')
+      dispatch('bookmark/initialize')
     },
     open ({ dispatch }, { filepathes }) {
       const file = new File(filepathes[0])
       if (filepathes.length === 1 && file.isDirectory()) {
-        dispatch('openDirectory', { dirpath: file.path })
+        dispatch('showDirectory', { dirpath: file.path })
       } else {
-        dispatch('openImages', { filepathes })
+        dispatch('showViewer', { filepathes })
       }
-    },
-    openDirectory ({ dispatch }, { dirpath }) {
-      dispatch('showDirectory', { dirpath })
-    },
-    openImages ({ dispatch }, { filepathes }) {
-      dispatch('showViewer', { filepathes })
-    },
-    showMessage ({ commit, dispatch, state }, { message }) {
-      if (state.snackbar) {
-        commit('setMessages', { messages: [...state.messages, message] })
-        return
-      }
-      commit('setMessage', { message })
-      commit('setSnackbar', { snackbar: true })
-    },
-    showNextMessage ({ commit, state }) {
-      if (!state.messages.length) {
-        return
-      }
-      const message = state.messages[0]
-      commit('setMessages', { messages: state.messages.slice(1) })
-      commit('setMessage', { message })
-      commit('setSnackbar', { snackbar: true })
     },
     showDirectory ({ dispatch }, { dirpath }) {
       dispatch('explorer/changeDirectory', { dirpath })
@@ -108,6 +58,54 @@ export default {
       } else {
         dispatch('focus', { selector: Selector.bookmarkTable })
       }
+    },
+    focus (_, { selector }) {
+      // wait dom updated
+      setTimeout(() => {
+        const el = document.querySelector(selector)
+        if (el) {
+          el.focus()
+        }
+      })
+    },
+    select (_, { selector }) {
+      // wait dom updated
+      setTimeout(() => {
+        const el = document.querySelector(selector)
+        if (el) {
+          el.select()
+        }
+      })
+    },
+    changeRoute (_, payload) {
+      router.push(payload)
+    },
+    showMessage ({ commit, dispatch, state }, { message }) {
+      if (state.snackbar) {
+        commit('setMessages', { messages: [...state.messages, message] })
+        return
+      }
+      commit('setMessage', { message })
+      commit('setSnackbar', { snackbar: true })
+    },
+    showNextMessage ({ commit, state }) {
+      if (!state.messages.length) {
+        return
+      }
+      const message = state.messages[0]
+      commit('setMessage', { message })
+      commit('setMessages', { messages: state.messages.slice(1) })
+      commit('setSnackbar', { snackbar: true })
+    },
+    enterFullScreen () {
+      const browserWindow = remote.getCurrentWindow()
+      browserWindow.setFullScreen(true)
+      browserWindow.setMenuBarVisibility(false)
+    },
+    leaveFullScreen () {
+      const browserWindow = remote.getCurrentWindow()
+      browserWindow.setFullScreen(false)
+      browserWindow.setMenuBarVisibility(true)
     }
   },
   mutations: {

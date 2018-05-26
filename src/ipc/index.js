@@ -14,14 +14,14 @@ export const addIpcRendererListeners = (store) => {
       return
     }
     const dirpath = filepathes[0]
-    store.dispatch('app/openDirectory', { dirpath })
+    store.dispatch('app/showDirectory', { dirpath })
   })
   ipcRenderer.on('openImages', () => {
     const filepathes = remote.dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
     if (!filepathes.length) {
       return
     }
-    store.dispatch('app/openImages', { filepathes })
+    store.dispatch('app/showViewer', { filepathes })
   })
   ipcRenderer.on('search', () => {
     store.dispatch('app/focus', { selector: Selector.queryInput })
