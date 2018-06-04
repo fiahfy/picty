@@ -12,6 +12,11 @@ export default {
     scale: 0,
     scaling: false
   },
+  getters: {
+    currentIndex (state) {
+      return state.items.findIndex((file) => state.filepath === file.path)
+    }
+  },
   actions: {
     load ({ commit, dispatch }, { filepathes, filepath }) {
       try {
@@ -90,11 +95,6 @@ export default {
     },
     setScaling (state, { scaling }) {
       state.scaling = scaling
-    }
-  },
-  getters: {
-    currentIndex (state) {
-      return state.items.findIndex((file) => state.filepath === file.path)
     }
   }
 }

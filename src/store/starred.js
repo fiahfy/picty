@@ -20,6 +20,22 @@ export default {
       descending: false
     }
   },
+  getters: {
+    filteredItems (state) {
+      return state.items.concat().filter((file) => {
+        return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
+      })
+    },
+    selectedIndex (state, getters) {
+      return getters.filteredItems.findIndex((file) => getters.isSelected({ filepath: file.path }))
+    },
+    isSelected (state) {
+      return ({ filepath }) => state.filepath === filepath
+    },
+    isStarred (state, getters, rootState, rootGetters) {
+      return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
+    }
+  },
   actions: {
     initialize ({ dispatch }) {
       dispatch('load')
@@ -125,22 +141,6 @@ export default {
     },
     setOrder (state, { order }) {
       state.order = order
-    }
-  },
-  getters: {
-    filteredItems (state) {
-      return state.items.concat().filter((file) => {
-        return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
-      })
-    },
-    selectedIndex (state, getters) {
-      return getters.filteredItems.findIndex((file) => getters.isSelected({ filepath: file.path }))
-    },
-    isSelected (state) {
-      return ({ filepath }) => state.filepath === filepath
-    },
-    isStarred (state, getters, rootState, rootGetters) {
-      return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
     }
   }
 }

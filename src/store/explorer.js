@@ -23,6 +23,43 @@ export default {
     historyIndex: -1,
     orders: {}
   },
+  getters: {
+    backDirectories (state) {
+      return state.histories.slice(0, state.historyIndex).reverse().map(history => history.directory)
+    },
+    forwardDirectories (state) {
+      return state.histories.slice(state.historyIndex + 1, state.histories.length).map(history => history.directory)
+    },
+    canBackDirectory (state) {
+      return state.historyIndex > 0
+    },
+    canForwardDirectory (state) {
+      return state.historyIndex < state.histories.length - 1
+    },
+    scrollTop (state) {
+      return state.histories[state.historyIndex].scrollTop
+    },
+    order (state, getters, rootState) {
+      return state.orders[rootState.directory] || {
+        by: 'name',
+        descending: false
+      }
+    },
+    filteredItems (state) {
+      return state.items.concat().filter((file) => {
+        return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
+      })
+    },
+    selectedIndex (state, getters) {
+      return getters.filteredItems.findIndex((file) => getters.isSelected({ filepath: file.path }))
+    },
+    isSelected (state) {
+      return ({ filepath }) => state.filepath === filepath
+    },
+    isStarred (state, getters, rootState, rootGetters) {
+      return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
+    }
+  },
   actions: {
     initialize ({ dispatch, rootState }) {
       const dirpath = rootState.directory
@@ -223,43 +260,6 @@ export default {
         ...state.orders,
         [directory]: order
       }
-    }
-  },
-  getters: {
-    backDirectories (state) {
-      return state.histories.slice(0, state.historyIndex).reverse().map(history => history.directory)
-    },
-    forwardDirectories (state) {
-      return state.histories.slice(state.historyIndex + 1, state.histories.length).map(history => history.directory)
-    },
-    canBackDirectory (state) {
-      return state.historyIndex > 0
-    },
-    canForwardDirectory (state) {
-      return state.historyIndex < state.histories.length - 1
-    },
-    scrollTop (state) {
-      return state.histories[state.historyIndex].scrollTop
-    },
-    order (state, getters, rootState) {
-      return state.orders[rootState.directory] || {
-        by: 'name',
-        descending: false
-      }
-    },
-    filteredItems (state) {
-      return state.items.concat().filter((file) => {
-        return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
-      })
-    },
-    selectedIndex (state, getters) {
-      return getters.filteredItems.findIndex((file) => getters.isSelected({ filepath: file.path }))
-    },
-    isSelected (state) {
-      return ({ filepath }) => state.filepath === filepath
-    },
-    isStarred (state, getters, rootState, rootGetters) {
-      return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
     }
   }
 }
