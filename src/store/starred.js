@@ -72,8 +72,8 @@ export default {
     selectNext ({ dispatch, getters }) {
       dispatch('selectIndex', { index: getters.selectedIndex + 1 })
     },
-    search ({ commit, state }) {
-      const query = state.queryInput
+    search ({ commit, state }, { query }) {
+      commit('setQueryInput', { queryInput: query })
       commit('setQuery', { query })
     },
     changeOrderBy ({ commit, dispatch, state }, { orderBy }) {

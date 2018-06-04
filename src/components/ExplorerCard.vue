@@ -67,8 +67,8 @@ export default {
     })
   },
   watch: {
-    queryInput () {
-      this.search()
+    queryInput (value) {
+      this.search({ query: value })
     }
   },
   methods: {
@@ -83,7 +83,7 @@ export default {
     },
     onTextKeyUp (e) {
       if (e.keyCode === 13) {
-        this.search()
+        this.search({ query: e.target.value })
       }
     },
     ...mapActions({

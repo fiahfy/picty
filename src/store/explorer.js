@@ -150,8 +150,8 @@ export default {
     selectNext ({ dispatch, getters, state }) {
       dispatch('selectIndex', { index: getters.selectedIndex + 1 })
     },
-    search ({ commit, state }) {
-      const query = state.queryInput
+    search ({ commit, state }, { query }) {
+      commit('setQueryInput', { queryInput: query })
       commit('setQuery', { query })
     },
     setScrollTop ({ commit, state }, { scrollTop }) {

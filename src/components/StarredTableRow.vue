@@ -86,25 +86,33 @@ export default {
       this.select({ filepath: this.item.path })
       let templates = [
         {
-          label: this.starred ? 'Unstar' : 'Star',
-          click: () => {
-            this.toggleStarred({ filepath: this.item.path })
-          },
-          accelerator: 'CmdOrCtrl+D'
-        },
-        {
           label: 'View',
           click: () => {
             this.showViewer({ filepath: this.item.path })
           },
           accelerator: 'Enter'
+        },
+        {
+          label: this.starred ? 'Unstar' : 'Star',
+          click: () => {
+            this.toggleStarred({ filepath: this.item.path })
+          },
+          accelerator: 'CmdOrCtrl+D'
         }
       ]
-      if (getSelection().toString()) {
+      const text = getSelection().toString()
+      if (text) {
         templates = [
           ...templates,
           { type: 'separator' },
-          { role: ContextMenu.Role.copy }
+          { role: ContextMenu.Role.copy },
+          {
+            label: `Search "${text}"`,
+            click: () => {
+              this.search({ query: text })
+            },
+            accelerator: 'CmdOrCtrl+F'
+          }
         ]
       }
       ContextMenu.show(e, templates)
@@ -114,6 +122,7 @@ export default {
     },
     ...mapActions({
       select: 'starred/select',
+      search: 'starred/search',
       action: 'starred/action',
       showViewer: 'starred/showViewer',
       toggleStarred: 'starred/toggleStarred'
