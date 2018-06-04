@@ -1,5 +1,5 @@
+import { Selector } from '~/store'
 import File from '~/utils/file'
-import { Selector } from './index'
 
 const reversed = {
   name: false,
@@ -21,18 +21,14 @@ export default {
     }
   },
   actions: {
-    initialize ({ dispatch, rootState }) {
+    initialize ({ dispatch }) {
       dispatch('load')
     },
     load ({ commit, dispatch, rootState }) {
-      const items = rootState.bookmark.bookmarks.map((bookmark) => {
-        const file = new File(bookmark).toObject()
-        file.bookmarked = true
-        return file
-      })
+      const items = rootState.bookmark.bookmarks.map((bookmark) => new File(bookmark).toObject())
       commit('setItems', { items })
       dispatch('sort')
-      dispatch('app/focus', { selector: Selector.bookmarkTable }, { root: true })
+      dispatch('focus', { selector: Selector.starredTable }, { root: true })
     },
     sort ({ commit, getters, state }) {
       const { by, descending } = state.order
@@ -89,11 +85,11 @@ export default {
     action ({ commit, dispatch, state }, { filepath }) {
       const file = new File(filepath)
       if (!file.exists()) {
-        dispatch('app/showMessage', { message: `Not found` }, { root: true })
+        dispatch('showMessage', { message: `Not found` }, { root: true })
         return
       }
       if (file.isDirectory()) {
-        dispatch('app/showDirectory', { dirpath: file.path }, { root: true })
+        dispatch('showDirectory', { dirpath: file.path }, { root: true })
       } else {
         dispatch('showViewer', { filepath: file.path })
       }
@@ -102,12 +98,12 @@ export default {
       const file = new File(filepath)
       if (file.isDirectory()) {
         const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
-        dispatch('app/showViewer', { filepathes }, { root: true })
+        dispatch('showViewer', { filepathes }, { root: true })
       } else {
-        dispatch('app/showViewer', { filepathes: [filepath] }, { root: true })
+        dispatch('showViewer', { filepathes: [filepath] }, { root: true })
       }
     },
-    toggleBookmarked ({ dispatch }, { filepath }) {
+    toggleStarred ({ dispatch }, { filepath }) {
       dispatch('bookmark/toggle', { filepath }, { root: true })
     }
   },
@@ -143,7 +139,7 @@ export default {
     isSelected (state) {
       return ({ filepath }) => state.filepath === filepath
     },
-    isBookmarked (state, getters, rootState, rootGetters) {
+    isStarred (state, getters, rootState, rootGetters) {
       return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
     }
   }

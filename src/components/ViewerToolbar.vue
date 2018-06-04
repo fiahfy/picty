@@ -116,16 +116,16 @@ export default {
   computed: {
     page: {
       get () {
-        return this.$store.getters['app/viewer/currentIndex'] + 1
+        return this.$store.getters['viewer/currentIndex'] + 1
       },
       set (value) {
-        this.$store.commit('app/viewer/setCurrentIndex', { currentIndex: value - 1 })
+        this.$store.commit('viewer/setCurrentIndex', { currentIndex: value - 1 })
       }
     },
     ...mapState({
-      fullScreen: state => state.app.fullScreen,
-      maxPage: state => state.app.viewer.items.length,
-      scale: state => Math.floor(state.app.viewer.scale * 100)
+      fullScreen: state => state.fullScreen,
+      maxPage: state => state.viewer.items.length,
+      scale: state => Math.floor(state.viewer.scale * 100)
     })
   },
   methods: {
@@ -160,14 +160,14 @@ export default {
       return !!(this.$el.querySelector(':hover') || this.$refs.toolbar.$el.querySelector(':hover'))
     },
     ...mapActions({
-      enterFullScreen: 'app/enterFullScreen',
-      leaveFullScreen: 'app/leaveFullScreen',
-      dismiss: 'app/dismissViewer',
-      movePrevious: 'app/viewer/movePrevious',
-      moveNext: 'app/viewer/moveNext',
-      zoomIn: 'app/viewer/zoomIn',
-      zoomOut: 'app/viewer/zoomOut',
-      resetZoom: 'app/viewer/resetZoom'
+      enterFullScreen: 'enterFullScreen',
+      leaveFullScreen: 'leaveFullScreen',
+      dismiss: 'dismissViewer',
+      movePrevious: 'viewer/movePrevious',
+      moveNext: 'viewer/moveNext',
+      zoomIn: 'viewer/zoomIn',
+      zoomOut: 'viewer/zoomOut',
+      resetZoom: 'viewer/resetZoom'
     })
   }
 }

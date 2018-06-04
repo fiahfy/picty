@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { remote, shell } from 'electron'
+import { Selector } from '~/store'
 import File from '~/utils/file'
-import { Selector } from './index'
 
 const reversed = {
   name: false,
@@ -87,7 +87,7 @@ export default {
     openDirectory ({ dispatch, rootState }) {
       const result = shell.openItem(rootState.directory)
       if (!result) {
-        dispatch('app/showMessage', { message: `Invalid directory` }, { root: true })
+        dispatch('showMessage', { message: `Invalid directory` }, { root: true })
       }
     },
     load ({ commit, dispatch, rootState }) {
@@ -106,7 +106,7 @@ export default {
         commit('setItems', { items: [] })
       }
       dispatch('sort')
-      dispatch('app/focus', { selector: Selector.explorerTable }, { root: true })
+      dispatch('focus', { selector: Selector.explorerTable }, { root: true })
     },
     sort ({ commit, getters, state }) {
       const { by, descending } = getters.order
@@ -179,13 +179,13 @@ export default {
       const file = new File(filepath)
       if (file.isDirectory()) {
         const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
-        dispatch('app/showViewer', { filepathes }, { root: true })
+        dispatch('showViewer', { filepathes }, { root: true })
       } else {
         const filepathes = File.listFiles(file.parent.path).map(file => file.path)
-        dispatch('app/showViewer', { filepathes, filepath }, { root: true })
+        dispatch('showViewer', { filepathes, filepath }, { root: true })
       }
     },
-    toggleBookmarked ({ dispatch }, { filepath }) {
+    toggleStarred ({ dispatch }, { filepath }) {
       dispatch('bookmark/toggle', { filepath }, { root: true })
     }
   },
@@ -258,7 +258,7 @@ export default {
     isSelected (state) {
       return ({ filepath }) => state.filepath === filepath
     },
-    isBookmarked (state, getters, rootState, rootGetters) {
+    isStarred (state, getters, rootState, rootGetters) {
       return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
     }
   }

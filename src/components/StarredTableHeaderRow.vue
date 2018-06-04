@@ -1,5 +1,5 @@
 <template>
-  <tr class="bookmark-table-header-row">
+  <tr class="starred-table-header-row">
     <th
       v-for="header in headers"
       :key="header.text"
@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     ...mapState({
-      order: state => state.app.bookmark.order
+      order: state => state.starred.order
     })
   },
   methods: {
@@ -46,7 +46,7 @@ export default {
       this.changeOrderBy({ orderBy: header.value })
     },
     ...mapActions({
-      changeOrderBy: 'app/bookmark/changeOrderBy'
+      changeOrderBy: 'starred/changeOrderBy'
     })
   }
 }

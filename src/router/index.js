@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Explorer from '~/pages/Explorer'
-import Bookmark from '~/pages/Bookmark'
+import Starred from '~/pages/Starred'
 import Settings from '~/pages/Settings'
 
 Vue.use(Router)
@@ -14,9 +14,9 @@ export default new Router({
       component: Explorer
     },
     {
-      path: '/bookmark',
-      name: 'bookmark',
-      component: Bookmark
+      path: '/starred',
+      name: 'starred',
+      component: Starred
     },
     {
       path: '/settings',

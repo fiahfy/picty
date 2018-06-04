@@ -47,23 +47,23 @@ export default {
   computed: {
     queryInput: {
       get () {
-        return this.$store.state.app.explorer.queryInput
+        return this.$store.state.explorer.queryInput
       },
       set (value) {
-        this.$store.commit('app/explorer/setQueryInput', { queryInput: value })
+        this.$store.commit('explorer/setQueryInput', { queryInput: value })
       }
     },
     disabled () {
       return !this.filepath
     },
     starIcon () {
-      return this.isBookmarked({ filepath: this.filepath }) ? 'star' : 'star_border'
+      return this.isStarred({ filepath: this.filepath }) ? 'star' : 'star_border'
     },
     ...mapState({
-      filepath: state => state.app.explorer.filepath
+      filepath: state => state.explorer.filepath
     }),
     ...mapGetters({
-      isBookmarked: 'app/explorer/isBookmarked'
+      isStarred: 'explorer/isStarred'
     })
   },
   watch: {
@@ -73,7 +73,7 @@ export default {
   },
   methods: {
     onStarClick () {
-      this.toggleBookmarked({ filepath: this.filepath })
+      this.toggleStarred({ filepath: this.filepath })
     },
     onPhotoClick () {
       this.showViewer({ filepath: this.filepath })
@@ -87,9 +87,9 @@ export default {
       }
     },
     ...mapActions({
-      search: 'app/explorer/search',
-      showViewer: 'app/explorer/showViewer',
-      toggleBookmarked: 'app/explorer/toggleBookmarked'
+      search: 'explorer/search',
+      showViewer: 'explorer/showViewer',
+      toggleStarred: 'explorer/toggleStarred'
     })
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="bookmark-card"
+    class="starred-card"
     flat
   >
     <v-card-title class="py-2 px-0">
@@ -47,23 +47,23 @@ export default {
   computed: {
     queryInput: {
       get () {
-        return this.$store.state.app.bookmark.queryInput
+        return this.$store.state.starred.queryInput
       },
       set (value) {
-        this.$store.commit('app/bookmark/setQueryInput', { queryInput: value })
+        this.$store.commit('starred/setQueryInput', { queryInput: value })
       }
     },
     disabled () {
       return !this.filepath
     },
     starIcon () {
-      return this.isBookmarked({ filepath: this.filepath }) ? 'star' : 'star_border'
+      return this.isStarred({ filepath: this.filepath }) ? 'star' : 'star_border'
     },
     ...mapState({
-      filepath: state => state.app.bookmark.filepath
+      filepath: state => state.starred.filepath
     }),
     ...mapGetters({
-      isBookmarked: 'app/bookmark/isBookmarked'
+      isStarred: 'starred/isStarred'
     })
   },
   watch: {
@@ -73,7 +73,7 @@ export default {
   },
   methods: {
     onStarClick () {
-      this.toggleBookmarked({ filepath: this.filepath })
+      this.toggleStarred({ filepath: this.filepath })
     },
     onPhotoClick () {
       this.showViewer({ filepath: this.filepath })
@@ -87,16 +87,16 @@ export default {
       }
     },
     ...mapActions({
-      search: 'app/bookmark/search',
-      showViewer: 'app/bookmark/showViewer',
-      toggleBookmarked: 'app/bookmark/toggleBookmarked'
+      search: 'starred/search',
+      showViewer: 'starred/showViewer',
+      toggleStarred: 'starred/toggleStarred'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.bookmark-card /deep/ .input-group--text-field label {
+.starred-card /deep/ .input-group--text-field label {
   top: 0;
 }
 </style>

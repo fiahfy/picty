@@ -1,7 +1,7 @@
 <template>
   <tr
     :active="active"
-    class="bookmark-table-row"
+    class="starred-table-row"
     @click="onClick"
     @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
@@ -46,14 +46,14 @@ export default {
     active () {
       return this.isSelected({ filepath: this.item.path })
     },
-    bookmarked () {
-      return this.isBookmarked({ filepath: this.item.path })
+    starred () {
+      return this.isStarred({ filepath: this.item.path })
     },
     starColor () {
-      return this.bookmarked ? 'yellow darken-2' : 'grey'
+      return this.starred ? 'yellow darken-2' : 'grey'
     },
     starIcon () {
-      return this.bookmarked ? 'star' : 'star_outline'
+      return this.starred ? 'star' : 'star_outline'
     },
     fileColor () {
       if (this.item.exists) {
@@ -71,8 +71,8 @@ export default {
       return this.item.directory ? null : this.item.size
     },
     ...mapGetters({
-      isSelected: 'app/bookmark/isSelected',
-      isBookmarked: 'app/bookmark/isBookmarked'
+      isSelected: 'starred/isSelected',
+      isStarred: 'starred/isStarred'
     })
   },
   methods: {
@@ -86,9 +86,9 @@ export default {
       this.select({ filepath: this.item.path })
       let templates = [
         {
-          label: this.bookmarked ? 'Unstar' : 'Star',
+          label: this.starred ? 'Unstar' : 'Star',
           click: () => {
-            this.toggleBookmarked({ filepath: this.item.path })
+            this.toggleStarred({ filepath: this.item.path })
           },
           accelerator: 'CmdOrCtrl+D'
         },
@@ -110,20 +110,20 @@ export default {
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
-      this.toggleBookmarked({ filepath: this.item.path })
+      this.toggleStarred({ filepath: this.item.path })
     },
     ...mapActions({
-      select: 'app/bookmark/select',
-      action: 'app/bookmark/action',
-      showViewer: 'app/bookmark/showViewer',
-      toggleBookmarked: 'app/bookmark/toggleBookmarked'
+      select: 'starred/select',
+      action: 'starred/action',
+      showViewer: 'starred/showViewer',
+      toggleStarred: 'starred/toggleStarred'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.bookmark-table-row {
+.starred-table-row {
   cursor: pointer;
   td {
     overflow: hidden;

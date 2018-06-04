@@ -68,13 +68,13 @@ export default {
     },
     ...mapState({
       directory: state => state.directory,
-      query: state => state.app.explorer.query,
-      filepath: state => state.app.explorer.filepath
+      query: state => state.explorer.query,
+      filepath: state => state.explorer.filepath
     }),
     ...mapGetters({
-      items: 'app/explorer/filteredItems',
-      scrollTop: 'app/explorer/scrollTop',
-      selectedIndex: 'app/explorer/selectedIndex'
+      items: 'explorer/filteredItems',
+      scrollTop: 'explorer/scrollTop',
+      selectedIndex: 'explorer/selectedIndex'
     })
   },
   watch: {
@@ -143,19 +143,19 @@ export default {
         case 68:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.toggleBookmarked({ filepath: this.filepath })
+            this.toggleStarred({ filepath: this.filepath })
           }
           break
       }
     },
     ...mapActions({
-      selectFirst: 'app/explorer/selectFirst',
-      selectLast: 'app/explorer/selectLast',
-      selectPrevious: 'app/explorer/selectPrevious',
-      selectNext: 'app/explorer/selectNext',
-      setScrollTop: 'app/explorer/setScrollTop',
-      showViewer: 'app/explorer/showViewer',
-      toggleBookmarked: 'app/explorer/toggleBookmarked'
+      selectFirst: 'explorer/selectFirst',
+      selectLast: 'explorer/selectLast',
+      selectPrevious: 'explorer/selectPrevious',
+      selectNext: 'explorer/selectNext',
+      setScrollTop: 'explorer/setScrollTop',
+      showViewer: 'explorer/showViewer',
+      toggleStarred: 'explorer/toggleStarred'
     })
   }
 }

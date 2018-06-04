@@ -4,7 +4,7 @@
     :headers="headers"
     :items="items"
     :no-data-text="noDataText"
-    class="bookmark-table"
+    class="starred-table"
     item-key="path"
     hide-actions
     sticky-headers
@@ -16,13 +16,13 @@
       slot="headers"
       slot-scope="props"
     >
-      <bookmark-table-header-row :headers="props.headers" />
+      <starred-table-header-row :headers="props.headers" />
     </template>
     <template
       slot="items"
       slot-scope="props"
     >
-      <bookmark-table-row
+      <starred-table-row
         :key="props.item.path"
         :item="props.item"
       />
@@ -32,14 +32,14 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import BookmarkTableHeaderRow from './BookmarkTableHeaderRow'
-import BookmarkTableRow from './BookmarkTableRow'
+import StarredTableHeaderRow from './StarredTableHeaderRow'
+import StarredTableRow from './StarredTableRow'
 import VirtualDataTable from './VirtualDataTable'
 
 export default {
   components: {
-    BookmarkTableHeaderRow,
-    BookmarkTableRow,
+    StarredTableHeaderRow,
+    StarredTableRow,
     VirtualDataTable
   },
   data () {
@@ -71,13 +71,13 @@ export default {
       return this.query ? 'No matching records found' : 'No data available'
     },
     ...mapState({
-      query: state => state.app.bookmark.query,
-      filepath: state => state.app.bookmark.filepath,
-      scrollTop: state => state.app.bookmark.scrollTop
+      query: state => state.starred.query,
+      filepath: state => state.starred.filepath,
+      scrollTop: state => state.starred.scrollTop
     }),
     ...mapGetters({
-      items: 'app/bookmark/filteredItems',
-      selectedIndex: 'app/bookmark/selectedIndex'
+      items: 'starred/filteredItems',
+      selectedIndex: 'starred/selectedIndex'
     })
   },
   watch: {
@@ -144,29 +144,29 @@ export default {
         case 68:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.toggleBookmarked({ filepath: this.filepath })
+            this.toggleStarred({ filepath: this.filepath })
           }
           break
       }
     },
     ...mapMutations({
-      setScrollTop: 'app/bookmark/setScrollTop'
+      setScrollTop: 'starred/setScrollTop'
     }),
     ...mapActions({
-      load: 'app/bookmark/load',
-      selectFirst: 'app/bookmark/selectFirst',
-      selectLast: 'app/bookmark/selectLast',
-      selectPrevious: 'app/bookmark/selectPrevious',
-      selectNext: 'app/bookmark/selectNext',
-      showViewer: 'app/bookmark/showViewer',
-      toggleBookmarked: 'app/bookmark/toggleBookmarked'
+      load: 'starred/load',
+      selectFirst: 'starred/selectFirst',
+      selectLast: 'starred/selectLast',
+      selectPrevious: 'starred/selectPrevious',
+      selectNext: 'starred/selectNext',
+      showViewer: 'starred/showViewer',
+      toggleStarred: 'starred/toggleStarred'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.bookmark-table {
+.starred-table {
   outline: none;
   & /deep/ .datatable {
     table-layout: fixed;

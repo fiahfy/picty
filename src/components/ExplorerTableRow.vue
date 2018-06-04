@@ -45,14 +45,14 @@ export default {
     active () {
       return this.isSelected({ filepath: this.item.path })
     },
-    bookmarked () {
-      return this.isBookmarked({ filepath: this.item.path })
+    starred () {
+      return this.isStarred({ filepath: this.item.path })
     },
     starColor () {
-      return this.bookmarked ? 'yellow darken-2' : 'grey'
+      return this.starred ? 'yellow darken-2' : 'grey'
     },
     starIcon () {
-      return this.bookmarked ? 'star' : 'star_outline'
+      return this.starred ? 'star' : 'star_outline'
     },
     fileColor () {
       if (this.item.exists) {
@@ -70,8 +70,8 @@ export default {
       return this.item.directory ? null : this.item.size
     },
     ...mapGetters({
-      isSelected: 'app/explorer/isSelected',
-      isBookmarked: 'app/explorer/isBookmarked'
+      isSelected: 'explorer/isSelected',
+      isStarred: 'explorer/isStarred'
     })
   },
   methods: {
@@ -85,9 +85,9 @@ export default {
       this.select({ filepath: this.item.path })
       let templates = [
         {
-          label: this.bookmarked ? 'Unstar' : 'Star',
+          label: this.starred ? 'Unstar' : 'Star',
           click: () => {
-            this.toggleBookmarked({ filepath: this.item.path })
+            this.toggleStarred({ filepath: this.item.path })
           },
           accelerator: 'CmdOrCtrl+D'
         },
@@ -109,13 +109,13 @@ export default {
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
-      this.toggleBookmarked({ filepath: this.item.path })
+      this.toggleStarred({ filepath: this.item.path })
     },
     ...mapActions({
-      select: 'app/explorer/select',
-      action: 'app/explorer/action',
-      showViewer: 'app/explorer/showViewer',
-      toggleBookmarked: 'app/explorer/toggleBookmarked'
+      select: 'explorer/select',
+      action: 'explorer/action',
+      showViewer: 'explorer/showViewer',
+      toggleStarred: 'explorer/toggleStarred'
     })
   }
 }

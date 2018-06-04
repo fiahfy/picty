@@ -27,9 +27,9 @@ export default {
   data () {
     return {
       items: [
-        { name: 'explorer', icon: 'view_list', title: `explorer (${buildText('CmdOrCtrl+Shift+E')})` },
-        { name: 'bookmark', icon: 'star', title: `starred (${buildText('CmdOrCtrl+Shift+B')})` },
-        { name: 'settings', icon: 'settings', title: `settings (${buildText('CmdOrCtrl+,')})` }
+        { name: 'explorer', icon: 'view_list', title: `Explorer (${buildText('CmdOrCtrl+Shift+E')})` },
+        { name: 'starred', icon: 'star', title: `Starred (${buildText('CmdOrCtrl+Shift+B')})` },
+        { name: 'settings', icon: 'settings', title: `Settings (${buildText('CmdOrCtrl+,')})` }
       ]
     }
   },

@@ -74,10 +74,10 @@ export default {
   computed: {
     directoryInput: {
       get () {
-        return this.$store.state.app.explorer.directoryInput
+        return this.$store.state.explorer.directoryInput
       },
       set (value) {
-        this.$store.commit('app/explorer/setDirectoryInput', { directoryInput: value })
+        this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
       }
     },
     backDisabled () {
@@ -87,10 +87,10 @@ export default {
       return !this.canForwardDirectory
     },
     ...mapGetters({
-      backDirectories: 'app/explorer/backDirectories',
-      forwardDirectories: 'app/explorer/forwardDirectories',
-      canBackDirectory: 'app/explorer/canBackDirectory',
-      canForwardDirectory: 'app/explorer/canForwardDirectory'
+      backDirectories: 'explorer/backDirectories',
+      forwardDirectories: 'explorer/forwardDirectories',
+      canBackDirectory: 'explorer/canBackDirectory',
+      canForwardDirectory: 'explorer/canForwardDirectory'
     })
   },
   methods: {
@@ -141,13 +141,13 @@ export default {
       this.openDirectory()
     },
     ...mapActions({
-      upDirectory: 'app/explorer/upDirectory',
-      changeHomeDirectory: 'app/explorer/changeHomeDirectory',
-      changeDirectory: 'app/explorer/changeDirectory',
-      backDirectory: 'app/explorer/backDirectory',
-      forwardDirectory: 'app/explorer/forwardDirectory',
-      reloadDirectory: 'app/explorer/reloadDirectory',
-      openDirectory: 'app/explorer/openDirectory'
+      upDirectory: 'explorer/upDirectory',
+      changeHomeDirectory: 'explorer/changeHomeDirectory',
+      changeDirectory: 'explorer/changeDirectory',
+      backDirectory: 'explorer/backDirectory',
+      forwardDirectory: 'explorer/forwardDirectory',
+      reloadDirectory: 'explorer/reloadDirectory',
+      openDirectory: 'explorer/openDirectory'
     })
   }
 }

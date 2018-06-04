@@ -33,7 +33,7 @@ const createTemplate = () => {
       label: 'View',
       submenu: [
         { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { mainWindow.webContents.send('showExplorer') } },
-        { label: 'Starred', accelerator: 'CmdOrCtrl+Shift+B', click: () => { mainWindow.webContents.send('showBookmark') } },
+        { label: 'Starred', accelerator: 'CmdOrCtrl+Shift+B', click: () => { mainWindow.webContents.send('showStarred') } },
         { type: 'separator' },
         { role: 'reload' },
         { role: 'forcereload' },
