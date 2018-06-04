@@ -3,6 +3,7 @@ import * as File from '~/utils/file'
 
 const reversed = {
   name: false,
+  dirname: false,
   size: false,
   mtime: true
 }
@@ -10,7 +11,7 @@ const reversed = {
 export default {
   namespaced: true,
   state: {
-    items: [],
+    files: [],
     query: '',
     queryInput: '',
     filepath: '',
@@ -21,34 +22,34 @@ export default {
     }
   },
   getters: {
-    filteredItems (state) {
-      return state.items.concat().filter((file) => {
+    filteredFiles (state) {
+      return state.files.concat().filter((file) => {
         return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
       })
     },
-    selectedIndex (state, getters) {
-      return getters.filteredItems.findIndex((file) => getters.isSelected({ filepath: file.path }))
+    selectedFileIndex (state, getters) {
+      return getters.filteredFiles.findIndex((file) => getters.isSelectedFile({ filepath: file.path }))
     },
-    isSelected (state) {
+    isSelectedFile (state) {
       return ({ filepath }) => state.filepath === filepath
     },
-    isStarred (state, getters, rootState, rootGetters) {
+    isStarredFile (state, getters, rootState, rootGetters) {
       return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
     }
   },
   actions: {
     initialize ({ dispatch }) {
-      dispatch('load')
+      dispatch('loadFiles')
     },
-    load ({ commit, dispatch, rootState }) {
-      const items = rootState.bookmark.bookmarks.map((bookmark) => File.get(bookmark))
-      commit('setItems', { items })
-      dispatch('sort')
+    loadFiles ({ commit, dispatch, rootState }) {
+      const files = rootState.bookmark.bookmarks.map((bookmark) => File.get(bookmark))
+      commit('setFiles', { files })
+      dispatch('sortFiles')
       dispatch('focus', { selector: Selector.starredTable }, { root: true })
     },
-    sort ({ commit, getters, state }) {
+    sortFiles ({ commit, getters, state }) {
       const { by, descending } = state.order
-      const items = state.items.sort((a, b) => {
+      const files = state.files.sort((a, b) => {
         let result = 0
         if (a[by] > b[by]) {
           result = 1
@@ -65,28 +66,28 @@ export default {
         result = reversed[by] ? -1 * result : result
         return descending ? -1 * result : result
       })
-      commit('setItems', { items })
+      commit('setFiles', { files })
     },
-    select ({ commit }, { filepath }) {
+    selectFile ({ commit }, { filepath }) {
       commit('setFilepath', { filepath })
     },
-    selectIndex ({ dispatch, getters }, { index }) {
-      const item = getters.filteredItems[index]
-      if (item) {
-        dispatch('select', { filepath: item.filepath })
+    selectFileIndex ({ dispatch, getters }, { index }) {
+      const file = getters.filteredFiles[index]
+      if (file) {
+        dispatch('selectFile', { filepath: file.path })
       }
     },
-    selectFirst ({ dispatch }) {
-      dispatch('selectIndex', { index: 0 })
+    selectFirstFile ({ dispatch }) {
+      dispatch('selectFileIndex', { index: 0 })
     },
-    selectLast ({ dispatch, getters }) {
-      dispatch('selectIndex', { index: getters.filteredItems.length - 1 })
+    selectLastFile ({ dispatch, getters }) {
+      dispatch('selectFileIndex', { index: getters.filteredFiles.length - 1 })
     },
-    selectPrevious ({ dispatch, getters }) {
-      dispatch('selectIndex', { index: getters.selectedIndex - 1 })
+    selectPreviousFile ({ dispatch, getters }) {
+      dispatch('selectFileIndex', { index: getters.selectedFileIndex - 1 })
     },
-    selectNext ({ dispatch, getters }) {
-      dispatch('selectIndex', { index: getters.selectedIndex + 1 })
+    selectNextFile ({ dispatch, getters }) {
+      dispatch('selectFileIndex', { index: getters.selectedFileIndex + 1 })
     },
     search ({ commit, state }, { query }) {
       commit('setQueryInput', { queryInput: query })
@@ -96,7 +97,7 @@ export default {
       const descending = state.order.by === orderBy ? !state.order.descending : false
       const order = { by: orderBy, descending }
       commit('setOrder', { order })
-      dispatch('sort')
+      dispatch('sortFiles')
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = File.get(filepath)
@@ -124,8 +125,8 @@ export default {
     }
   },
   mutations: {
-    setItems (state, { items }) {
-      state.items = items
+    setFiles (state, { files }) {
+      state.files = files
     },
     setQuery (state, { query }) {
       state.query = query

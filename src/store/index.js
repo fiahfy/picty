@@ -52,7 +52,7 @@ export default new Vuex.Store({
       dispatch('changeRoute', { name: 'explorer' })
     },
     showViewer ({ commit, dispatch, state }, { filepathes, filepath }) {
-      dispatch('viewer/load', { filepathes, filepath })
+      dispatch('viewer/loadFiles', { filepathes, filepath })
       commit('setViewing', { viewing: true })
       dispatch('focus', { selector: Selector.viewer })
       if (state.settings.fullScreen) {

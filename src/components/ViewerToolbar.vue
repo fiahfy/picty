@@ -124,7 +124,7 @@ export default {
     },
     ...mapState({
       fullScreen: state => state.fullScreen,
-      maxPage: state => state.viewer.items.length,
+      maxPage: state => state.viewer.files.length,
       scale: state => Math.floor(state.viewer.scale * 100)
     })
   },

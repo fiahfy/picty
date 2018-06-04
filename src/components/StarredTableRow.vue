@@ -20,13 +20,13 @@
           :color="fileColor"
           class="pa-1"
         >{{ fileIcon }}</v-icon>
-        <span>{{ item.name }}</span>
+        <span>{{ file.name }}</span>
       </v-layout>
     </td>
-    <td>{{ item.dirname }}</td>
+    <td>{{ file.dirname }}</td>
     <td class="text-xs-right">{{ fileSize | readableSize }}</td>
     <td class="text-xs-right">
-      <template v-if="item.mtime">{{ item.mtime | moment('YYYY-MM-DD HH:mm') }}</template>
+      <template v-if="file.mtime">{{ file.mtime | moment('YYYY-MM-DD HH:mm') }}</template>
     </td>
   </tr>
 </template>
@@ -37,17 +37,17 @@ import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   props: {
-    item: {
+    file: {
       type: Object,
       default: () => ({})
     }
   },
   computed: {
     active () {
-      return this.isSelected({ filepath: this.item.path })
+      return this.isSelectedFile({ filepath: this.file.path })
     },
     starred () {
-      return this.isStarred({ filepath: this.item.path })
+      return this.isStarredFile({ filepath: this.file.path })
     },
     starColor () {
       return this.starred ? 'yellow darken-2' : 'grey'
@@ -56,46 +56,46 @@ export default {
       return this.starred ? 'star' : 'star_outline'
     },
     fileColor () {
-      if (this.item.exists) {
-        return this.item.directory ? 'blue lighten-3' : 'green lighten-3'
+      if (this.file.exists) {
+        return this.file.directory ? 'blue lighten-3' : 'green lighten-3'
       }
       return 'grey'
     },
     fileIcon () {
-      if (this.item.exists) {
-        return this.item.directory ? 'folder' : 'photo'
+      if (this.file.exists) {
+        return this.file.directory ? 'folder' : 'photo'
       }
       return 'broken_image'
     },
     fileSize () {
-      return this.item.directory ? null : this.item.size
+      return this.file.directory ? null : this.file.size
     },
     ...mapGetters({
-      isSelected: 'starred/isSelected',
-      isStarred: 'starred/isStarred'
+      isSelectedFile: 'starred/isSelectedFile',
+      isStarredFile: 'starred/isStarredFile'
     })
   },
   methods: {
     onClick () {
-      this.select({ filepath: this.item.path })
+      this.selectFile({ filepath: this.file.path })
     },
     onDblClick () {
-      this.action({ filepath: this.item.path })
+      this.action({ filepath: this.file.path })
     },
     onContextMenu (e) {
-      this.select({ filepath: this.item.path })
+      this.selectFile({ filepath: this.file.path })
       let templates = [
         {
           label: 'View',
           click: () => {
-            this.showViewer({ filepath: this.item.path })
+            this.showViewer({ filepath: this.file.path })
           },
           accelerator: 'Enter'
         },
         {
           label: this.starred ? 'Unstar' : 'Star',
           click: () => {
-            this.toggleStarred({ filepath: this.item.path })
+            this.toggleStarred({ filepath: this.file.path })
           },
           accelerator: 'CmdOrCtrl+D'
         }
@@ -118,10 +118,10 @@ export default {
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
-      this.toggleStarred({ filepath: this.item.path })
+      this.toggleStarred({ filepath: this.file.path })
     },
     ...mapActions({
-      select: 'starred/select',
+      selectFile: 'starred/selectFile',
       search: 'starred/search',
       action: 'starred/action',
       showViewer: 'starred/showViewer',

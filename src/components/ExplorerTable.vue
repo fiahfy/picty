@@ -2,7 +2,7 @@
   <virtual-data-table
     ref="table"
     :headers="headers"
-    :items="items"
+    :items="files"
     :no-data-text="noDataText"
     class="explorer-table"
     item-key="path"
@@ -24,7 +24,7 @@
     >
       <explorer-table-row
         :key="props.item.path"
-        :item="props.item"
+        :file="props.item"
       />
     </template>
   </virtual-data-table>
@@ -72,18 +72,18 @@ export default {
       filepath: state => state.explorer.filepath
     }),
     ...mapGetters({
-      items: 'explorer/filteredItems',
+      files: 'explorer/filteredFiles',
       scrollTop: 'explorer/scrollTop',
-      selectedIndex: 'explorer/selectedIndex'
+      selectedFileIndex: 'explorer/selectedFileIndex'
     })
   },
   watch: {
     directory () {
       this.restore()
     },
-    filepath () {
+    selectedFileIndex (value) {
       this.$nextTick(() => {
-        const index = this.selectedIndex
+        const index = value
         if (index === -1) {
           return
         }
@@ -127,17 +127,17 @@ export default {
         case 38:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirst()
+            this.selectFirstFile()
           } else {
-            this.selectPrevious()
+            this.selectPreviousFile()
           }
           break
         case 40:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLast()
+            this.selectLastFile()
           } else {
-            this.selectNext()
+            this.selectNextFile()
           }
           break
         case 68:
@@ -149,10 +149,10 @@ export default {
       }
     },
     ...mapActions({
-      selectFirst: 'explorer/selectFirst',
-      selectLast: 'explorer/selectLast',
-      selectPrevious: 'explorer/selectPrevious',
-      selectNext: 'explorer/selectNext',
+      selectFirstFile: 'explorer/selectFirstFile',
+      selectLastFile: 'explorer/selectLastFile',
+      selectPreviousFile: 'explorer/selectPreviousFile',
+      selectNextFile: 'explorer/selectNextFile',
       setScrollTop: 'explorer/setScrollTop',
       showViewer: 'explorer/showViewer',
       toggleStarred: 'explorer/toggleStarred'

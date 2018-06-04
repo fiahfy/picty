@@ -2,7 +2,7 @@
   <virtual-data-table
     ref="table"
     :headers="headers"
-    :items="items"
+    :items="files"
     :no-data-text="noDataText"
     class="starred-table"
     item-key="path"
@@ -24,7 +24,7 @@
     >
       <starred-table-row
         :key="props.item.path"
-        :item="props.item"
+        :file="props.item"
       />
     </template>
   </virtual-data-table>
@@ -76,14 +76,14 @@ export default {
       scrollTop: state => state.starred.scrollTop
     }),
     ...mapGetters({
-      items: 'starred/filteredItems',
-      selectedIndex: 'starred/selectedIndex'
+      files: 'starred/filteredFiles',
+      selectedFileIndex: 'starred/selectedFileIndex'
     })
   },
   watch: {
-    filepath () {
+    selectedFileIndex (value) {
       this.$nextTick(() => {
-        const index = this.selectedIndex
+        const index = value
         if (index === -1) {
           return
         }
@@ -106,7 +106,7 @@ export default {
     }
   },
   mounted () {
-    this.load()
+    this.loadFiles()
     this.restore()
   },
   methods: {
@@ -128,17 +128,17 @@ export default {
         case 38:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirst()
+            this.selectFirstFile()
           } else {
-            this.selectPrevious()
+            this.selectPreviousFile()
           }
           break
         case 40:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLast()
+            this.selectLastFile()
           } else {
-            this.selectNext()
+            this.selectNextFile()
           }
           break
         case 68:
@@ -153,11 +153,11 @@ export default {
       setScrollTop: 'starred/setScrollTop'
     }),
     ...mapActions({
-      load: 'starred/load',
-      selectFirst: 'starred/selectFirst',
-      selectLast: 'starred/selectLast',
-      selectPrevious: 'starred/selectPrevious',
-      selectNext: 'starred/selectNext',
+      loadFiles: 'starred/loadFiles',
+      selectFirstFile: 'starred/selectFirstFile',
+      selectLastFile: 'starred/selectLastFile',
+      selectPreviousFile: 'starred/selectPreviousFile',
+      selectNextFile: 'starred/selectNextFile',
       showViewer: 'starred/showViewer',
       toggleStarred: 'starred/toggleStarred'
     })

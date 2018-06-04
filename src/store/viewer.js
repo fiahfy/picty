@@ -6,7 +6,7 @@ export default {
   namespaced: true,
   state: {
     error: null,
-    items: [],
+    files: [],
     filepath: '',
     originalScale: 0,
     scale: 0,
@@ -14,40 +14,40 @@ export default {
   },
   getters: {
     currentIndex (state) {
-      return state.items.findIndex((file) => state.filepath === file.path)
+      return state.files.findIndex((file) => state.filepath === file.path)
     }
   },
   actions: {
-    load ({ commit, dispatch, rootGetters }, { filepathes, filepath }) {
+    loadFiles ({ commit, dispatch, rootGetters }, { filepathes, filepath }) {
       try {
-        const items = filepathes.map(filepath => File.get(filepath)).filter((file) => rootGetters['settings/isAllowedFile']({ filepath: file.path }))
-        if (!items.length) {
+        const files = filepathes.map(filepath => File.get(filepath)).filter((file) => rootGetters['settings/isAllowedFile']({ filepath: file.path }))
+        if (!files.length) {
           throw new Error('No Images')
         }
         commit('setError', { error: null })
-        commit('setItems', { items })
-        commit('setFilepath', { filepath: filepath || items[0].path })
+        commit('setFiles', { files })
+        commit('setFilepath', { filepath: filepath || files[0].path })
       } catch (e) {
         const error = e.message === 'No Images' ? e : new Error('Invalid Image')
         commit('setError', { error })
-        commit('setItems', { items: [] })
+        commit('setFiles', { files: [] })
         commit('setFilepath', { filepath: null })
       }
     },
     movePrevious ({ commit, getters, state }) {
       let index = getters.currentIndex - 1
       if (index < 0) {
-        index = state.items.length - 1
+        index = state.files.length - 1
       }
-      const filepath = state.items[index].path
+      const filepath = state.files[index].path
       commit('setFilepath', { filepath })
     },
     moveNext ({ commit, getters, state }) {
       let index = getters.currentIndex + 1
-      if (index > state.items.length - 1) {
+      if (index > state.files.length - 1) {
         index = 0
       }
-      const filepath = state.items[index].path
+      const filepath = state.files[index].path
       commit('setFilepath', { filepath })
     },
     setupZoom ({ commit, state }, { scale }) {
@@ -78,14 +78,14 @@ export default {
     setError (state, { error }) {
       state.error = error
     },
-    setItems (state, { items }) {
-      state.items = items
+    setFiles (state, { files }) {
+      state.files = files
     },
     setFilepath (state, { filepath }) {
       state.filepath = filepath
     },
     setCurrentIndex (state, { currentIndex }) {
-      state.filepath = state.items[currentIndex].path
+      state.filepath = state.files[currentIndex].path
     },
     setOriginalScale (state, { originalScale }) {
       state.originalScale = originalScale

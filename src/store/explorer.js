@@ -14,7 +14,7 @@ let watcher = null
 export default {
   namespaced: true,
   state: {
-    items: [],
+    files: [],
     directoryInput: '',
     query: '',
     queryInput: '',
@@ -45,18 +45,18 @@ export default {
         descending: false
       }
     },
-    filteredItems (state) {
-      return state.items.concat().filter((file) => {
+    filteredFiles (state) {
+      return state.files.concat().filter((file) => {
         return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
       })
     },
-    selectedIndex (state, getters) {
-      return getters.filteredItems.findIndex((file) => getters.isSelected({ filepath: file.path }))
+    selectedFileIndex (state, getters) {
+      return getters.filteredFiles.findIndex((file) => getters.isSelectedFile({ filepath: file.path }))
     },
-    isSelected (state) {
+    isSelectedFile (state) {
       return ({ filepath }) => state.filepath === filepath
     },
-    isStarred (state, getters, rootState, rootGetters) {
+    isStarredFile (state, getters, rootState, rootGetters) {
       return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
     }
   },
@@ -119,7 +119,7 @@ export default {
       commit('setDirectoryInput', { directoryInput: history.directory })
       commit('setQuery', { query: '' })
 
-      dispatch('load')
+      dispatch('loadFiles')
     },
     openDirectory ({ dispatch, rootState }) {
       const result = shell.openItem(rootState.directory)
@@ -127,26 +127,26 @@ export default {
         dispatch('showMessage', { message: `Invalid directory` }, { root: true })
       }
     },
-    load ({ commit, dispatch, rootGetters, rootState }) {
+    loadFiles ({ commit, dispatch, rootGetters, rootState }) {
       try {
         if (watcher) {
           watcher.close()
         }
         watcher = fs.watch(rootState.directory, () => {
-          dispatch('load')
+          dispatch('loadFiles')
         })
-        const items = File.listFiles(rootState.directory)
+        const files = File.listFiles(rootState.directory)
           .filter((file) => file.directory || rootGetters['settings/isAllowedFile']({ filepath: file.path }))
-        commit('setItems', { items })
+        commit('setFiles', { files })
       } catch (e) {
-        commit('setItems', { items: [] })
+        commit('setFiles', { files: [] })
       }
-      dispatch('sort')
+      dispatch('sortFiles')
       dispatch('focus', { selector: Selector.explorerTable }, { root: true })
     },
-    sort ({ commit, getters, state }) {
+    sortFiles ({ commit, getters, state }) {
       const { by, descending } = getters.order
-      const items = state.items.concat().sort((a, b) => {
+      const files = state.files.concat().sort((a, b) => {
         let result = 0
         if (a[by] > b[by]) {
           result = 1
@@ -163,28 +163,28 @@ export default {
         result = reversed[by] ? -1 * result : result
         return descending ? -1 * result : result
       })
-      commit('setItems', { items })
+      commit('setFiles', { files })
     },
-    select ({ commit }, { filepath }) {
+    selectFile ({ commit }, { filepath }) {
       commit('setFilepath', { filepath })
     },
-    selectIndex ({ dispatch, getters }, { index }) {
-      const item = getters.filteredItems[index]
-      if (item) {
-        dispatch('select', { filepath: item.filepath })
+    selectFileIndex ({ dispatch, getters }, { index }) {
+      const file = getters.filteredFiles[index]
+      if (file) {
+        dispatch('selectFile', { filepath: file.path })
       }
     },
-    selectFirst ({ dispatch }) {
-      dispatch('selectIndex', { index: 0 })
+    selectFirstFile ({ dispatch }) {
+      dispatch('selectFileIndex', { index: 0 })
     },
-    selectLast ({ dispatch, getters }) {
-      dispatch('selectIndex', { index: getters.filteredItems.length - 1 })
+    selectLastFile ({ dispatch, getters }) {
+      dispatch('selectFileIndex', { index: getters.filteredFiles.length - 1 })
     },
-    selectPrevious ({ dispatch, getters }) {
-      dispatch('selectIndex', { index: getters.selectedIndex - 1 })
+    selectPreviousFile ({ dispatch, getters }) {
+      dispatch('selectFileIndex', { index: getters.selectedFileIndex - 1 })
     },
-    selectNext ({ dispatch, getters, state }) {
-      dispatch('selectIndex', { index: getters.selectedIndex + 1 })
+    selectNextFile ({ dispatch, getters, state }) {
+      dispatch('selectFileIndex', { index: getters.selectedFileIndex + 1 })
     },
     search ({ commit, state }, { query }) {
       commit('setQueryInput', { queryInput: query })
@@ -201,7 +201,7 @@ export default {
       const descending = getters.order.by === orderBy ? !getters.order.descending : false
       const order = { by: orderBy, descending }
       commit('setOrder', { order, directory: rootState.directory })
-      dispatch('sort')
+      dispatch('sortFiles')
     },
     action ({ commit, dispatch, state }, { filepath }) {
       const file = File.get(filepath)
@@ -226,8 +226,8 @@ export default {
     }
   },
   mutations: {
-    setItems (state, { items }) {
-      state.items = items
+    setFiles (state, { files }) {
+      state.files = files
     },
     setDirectoryInput (state, { directoryInput }) {
       state.directoryInput = directoryInput

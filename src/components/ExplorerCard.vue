@@ -57,13 +57,13 @@ export default {
       return !this.filepath
     },
     starIcon () {
-      return this.isStarred({ filepath: this.filepath }) ? 'star' : 'star_border'
+      return this.isStarredFile({ filepath: this.filepath }) ? 'star' : 'star_border'
     },
     ...mapState({
       filepath: state => state.explorer.filepath
     }),
     ...mapGetters({
-      isStarred: 'explorer/isStarred'
+      isStarredFile: 'explorer/isStarredFile'
     })
   },
   watch: {
