@@ -1,5 +1,5 @@
 import { Selector } from '~/store'
-import File from '~/utils/file'
+import * as File from '~/utils/file'
 
 const reversed = {
   name: false,
@@ -41,7 +41,7 @@ export default {
       dispatch('load')
     },
     load ({ commit, dispatch, rootState }) {
-      const items = rootState.bookmark.bookmarks.map((bookmark) => new File(bookmark).toObject())
+      const items = rootState.bookmark.bookmarks.map((bookmark) => File.get(bookmark))
       commit('setItems', { items })
       dispatch('sort')
       dispatch('focus', { selector: Selector.starredTable }, { root: true })
@@ -99,20 +99,20 @@ export default {
       dispatch('sort')
     },
     action ({ commit, dispatch, state }, { filepath }) {
-      const file = new File(filepath)
-      if (!file.exists()) {
+      const file = File.get(filepath)
+      if (!file.exists) {
         dispatch('showMessage', { message: `Not found` }, { root: true })
         return
       }
-      if (file.isDirectory()) {
+      if (file.directory) {
         dispatch('showDirectory', { dirpath: file.path }, { root: true })
       } else {
         dispatch('showViewer', { filepath: file.path })
       }
     },
     showViewer ({ dispatch }, { filepath }) {
-      const file = new File(filepath)
-      if (file.isDirectory()) {
+      const file = File.get(filepath)
+      if (file.directory) {
         const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
         dispatch('showViewer', { filepathes }, { root: true })
       } else {

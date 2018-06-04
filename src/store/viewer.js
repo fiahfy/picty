@@ -1,4 +1,4 @@
-import File from '~/utils/file'
+import * as File from '~/utils/file'
 
 const scales = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
 
@@ -18,9 +18,9 @@ export default {
     }
   },
   actions: {
-    load ({ commit, dispatch }, { filepathes, filepath }) {
+    load ({ commit, dispatch, rootGetters }, { filepathes, filepath }) {
       try {
-        const items = filepathes.map(filepath => new File(filepath)).filter((file) => file.isImage()).map((file) => file.toObject())
+        const items = filepathes.map(filepath => File.get(filepath)).filter((file) => rootGetters['settings/isAllowedFile']({ filepath: file.path }))
         if (!items.length) {
           throw new Error('No Images')
         }

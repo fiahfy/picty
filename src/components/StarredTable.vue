@@ -51,7 +51,7 @@ export default {
         },
         {
           text: 'Directory',
-          value: 'dirpath'
+          value: 'dirname'
         },
         {
           text: 'Size',

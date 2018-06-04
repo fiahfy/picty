@@ -23,7 +23,7 @@
         <span>{{ item.name }}</span>
       </v-layout>
     </td>
-    <td>{{ item.dirpath }}</td>
+    <td>{{ item.dirname }}</td>
     <td class="text-xs-right">{{ fileSize | readableSize }}</td>
     <td class="text-xs-right">
       <template v-if="item.mtime">{{ item.mtime | moment('YYYY-MM-DD HH:mm') }}</template>

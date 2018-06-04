@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { remote, shell } from 'electron'
 import { Selector } from '~/store'
-import File from '~/utils/file'
+import * as File from '~/utils/file'
 
 const reversed = {
   name: false,
@@ -66,7 +66,7 @@ export default {
       dispatch('changeDirectory', { dirpath, force: true })
     },
     upDirectory ({ dispatch, rootState }) {
-      const dirpath = (new File(rootState.directory)).parent.path
+      const dirpath = File.get(rootState.directory).dirname
       dispatch('changeDirectory', { dirpath })
     },
     changeHomeDirectory ({ dispatch }) {
@@ -74,7 +74,7 @@ export default {
       dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
-      if (state.filepath && (new File(state.filepath)).isDirectory()) {
+      if (state.filepath && File.get(state.filepath).directory) {
         const dirpath = state.filepath
         dispatch('changeDirectory', { dirpath })
       }
@@ -108,8 +108,8 @@ export default {
       const historyIndex = state.historyIndex + 1 + offset
       dispatch('restoreDirectory', { historyIndex })
     },
-    reloadDirectory ({ dispatch }) {
-      dispatch('restoreDirectory', { historyIndex: 0 })
+    reloadDirectory ({ dispatch, state }) {
+      dispatch('restoreDirectory', { historyIndex: state.historyIndex })
     },
     restoreDirectory ({ commit, dispatch, state }, { historyIndex }) {
       const history = state.histories[historyIndex]
@@ -127,7 +127,7 @@ export default {
         dispatch('showMessage', { message: `Invalid directory` }, { root: true })
       }
     },
-    load ({ commit, dispatch, rootState }) {
+    load ({ commit, dispatch, rootGetters, rootState }) {
       try {
         if (watcher) {
           watcher.close()
@@ -136,8 +136,7 @@ export default {
           dispatch('load')
         })
         const items = File.listFiles(rootState.directory)
-          .filter((file) => file.isDirectory() || file.isImage())
-          .map((file) => file.toObject())
+          .filter((file) => file.directory || rootGetters['settings/isAllowedFile']({ filepath: file.path }))
         commit('setItems', { items })
       } catch (e) {
         commit('setItems', { items: [] })
@@ -205,20 +204,20 @@ export default {
       dispatch('sort')
     },
     action ({ commit, dispatch, state }, { filepath }) {
-      const file = new File(filepath)
-      if (file.isDirectory()) {
+      const file = File.get(filepath)
+      if (file.directory) {
         dispatch('changeDirectory', { dirpath: file.path })
       } else {
         dispatch('showViewer', { filepath: file.path })
       }
     },
     showViewer ({ dispatch }, { filepath }) {
-      const file = new File(filepath)
-      if (file.isDirectory()) {
+      const file = File.get(filepath)
+      if (file.directory) {
         const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
         dispatch('showViewer', { filepathes }, { root: true })
       } else {
-        const filepathes = File.listFiles(file.parent.path).map(file => file.path)
+        const filepathes = File.listFiles(file.dirname).map(file => file.path)
         dispatch('showViewer', { filepathes, filepath }, { root: true })
       }
     },

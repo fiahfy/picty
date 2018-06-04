@@ -4,7 +4,7 @@ import createPersistedState from 'vuex-persistedstate'
 import Package from '~~/package.json'
 import { remote } from 'electron'
 import router from '~/router'
-import File from '~/utils/file'
+import * as File from '~/utils/file'
 import explorer from './explorer'
 import starred from './starred'
 import viewer from './viewer'
@@ -40,8 +40,8 @@ export default new Vuex.Store({
       dispatch('starred/initialize')
     },
     open ({ dispatch }, { filepathes }) {
-      const file = new File(filepathes[0])
-      if (filepathes.length === 1 && file.isDirectory()) {
+      const file = File.get(filepathes[0])
+      if (filepathes.length === 1 && file.directory) {
         dispatch('showDirectory', { dirpath: file.path })
       } else {
         dispatch('showViewer', { filepathes })
