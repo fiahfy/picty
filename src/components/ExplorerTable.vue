@@ -69,7 +69,7 @@ export default {
     ...mapState({
       directory: state => state.directory,
       query: state => state.explorer.query,
-      filepath: state => state.explorer.filepath
+      selectedFilepath: state => state.explorer.selectedFilepath
     }),
     ...mapGetters({
       files: 'explorer/filteredFiles',
@@ -122,7 +122,7 @@ export default {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
-          this.showViewer({ filepath: this.filepath })
+          this.viewFile({ filepath: this.selectedFilepath })
           break
         case 38:
           e.preventDefault()
@@ -143,7 +143,7 @@ export default {
         case 68:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.toggleStarred({ filepath: this.filepath })
+            this.toggleFileStarred({ filepath: this.selectedFilepath })
           }
           break
       }
@@ -154,8 +154,8 @@ export default {
       selectPreviousFile: 'explorer/selectPreviousFile',
       selectNextFile: 'explorer/selectNextFile',
       setScrollTop: 'explorer/setScrollTop',
-      showViewer: 'explorer/showViewer',
-      toggleStarred: 'explorer/toggleStarred'
+      viewFile: 'explorer/viewFile',
+      toggleFileStarred: 'explorer/toggleFileStarred'
     })
   }
 }

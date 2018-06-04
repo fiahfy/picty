@@ -14,7 +14,7 @@ export const addIpcRendererListeners = (store) => {
       return
     }
     const dirpath = filepathes[0]
-    store.dispatch('showDirectory', { dirpath })
+    store.dispatch('openDirectory', { dirpath })
   })
   ipcRenderer.on('openImages', () => {
     const filepathes = remote.dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
@@ -53,8 +53,8 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('changeHomeDirectory', () => {
     store.dispatch('explorer/changeHomeDirectory')
   })
-  ipcRenderer.on('openCurrentDirectory', () => {
-    store.dispatch('explorer/openDirectory')
+  ipcRenderer.on('browseCurrentDirectory', () => {
+    store.dispatch('explorer/browseDirectory')
   })
   ipcRenderer.on('zoomIn', () => {
     store.dispatch('viewer/zoomIn')

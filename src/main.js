@@ -55,7 +55,7 @@ const createTemplate = () => {
         { label: 'Forward', accelerator: 'CmdOrCtrl+Right', click: () => { mainWindow.webContents.send('forwardDirectory') } },
         { label: 'Up', accelerator: 'CmdOrCtrl+Shift+P', click: () => { mainWindow.webContents.send('upDirectory') } },
         { label: 'Home', accelerator: 'CmdOrCtrl+Shift+H', click: () => { mainWindow.webContents.send('changeHomeDirectory') } },
-        { label: 'Open', click: () => { mainWindow.webContents.send('openCurrentDirectory') } }
+        { label: 'Browse', click: () => { mainWindow.webContents.send('browseCurrentDirectory') } }
       ]
     },
     {

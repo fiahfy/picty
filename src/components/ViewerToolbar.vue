@@ -116,10 +116,10 @@ export default {
   computed: {
     page: {
       get () {
-        return this.$store.getters['viewer/currentIndex'] + 1
+        return this.$store.getters['viewer/currentFileIndex'] + 1
       },
       set (value) {
-        this.$store.commit('viewer/setCurrentIndex', { currentIndex: value - 1 })
+        this.$store.dispatch('viewer/moveFileIndex', { index: value - 1 })
       }
     },
     ...mapState({
@@ -130,10 +130,10 @@ export default {
   },
   methods: {
     onPreviousClick () {
-      this.movePrevious()
+      this.movePreviousFile()
     },
     onNextClick () {
-      this.moveNext()
+      this.moveNextFile()
     },
     onZoomInClick () {
       this.zoomIn()
@@ -163,8 +163,8 @@ export default {
       enterFullScreen: 'enterFullScreen',
       leaveFullScreen: 'leaveFullScreen',
       dismiss: 'dismissViewer',
-      movePrevious: 'viewer/movePrevious',
-      moveNext: 'viewer/moveNext',
+      movePreviousFile: 'viewer/movePreviousFile',
+      moveNextFile: 'viewer/moveNextFile',
       zoomIn: 'viewer/zoomIn',
       zoomOut: 'viewer/zoomOut',
       resetZoom: 'viewer/resetZoom'

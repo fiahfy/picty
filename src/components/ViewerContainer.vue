@@ -66,7 +66,7 @@ export default {
       return this.error ? this.error.message : ''
     },
     imageSrc () {
-      return `file://${this.filepath}`
+      return `file://${this.currentFilepath}`
     },
     imageClasses () {
       return {
@@ -92,14 +92,14 @@ export default {
         }
         return null
       },
-      filepath: state => state.viewer.filepath,
+      currentFilepath: state => state.viewer.currentFilepath,
       scale: state => state.viewer.scale,
       scaling: state => state.viewer.scaling,
       imageStretched: state => state.settings.imageStretched
     })
   },
   watch: {
-    filepath () {
+    currentFilepath () {
       this.loadError = false
     },
     scale (newValue, oldValue) {

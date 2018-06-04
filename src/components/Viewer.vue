@@ -59,22 +59,22 @@ export default {
           break
         case 37:
           if (e.target.getAttribute('role') !== 'slider') {
-            this.movePrevious()
+            this.movePreviousFile()
             this.resetTimer()
           }
           break
         case 38:
-          this.movePrevious()
+          this.movePreviousFile()
           this.resetTimer()
           break
         case 39:
           if (e.target.getAttribute('role') !== 'slider') {
-            this.moveNext()
+            this.moveNextFile()
             this.resetTimer()
           }
           break
         case 40:
-          this.moveNext()
+          this.moveNextFile()
           this.resetTimer()
           break
       }
@@ -109,8 +109,8 @@ export default {
     },
     ...mapActions({
       dismiss: 'dismissViewer',
-      movePrevious: 'viewer/movePrevious',
-      moveNext: 'viewer/moveNext'
+      movePreviousFile: 'viewer/movePreviousFile',
+      moveNextFile: 'viewer/moveNextFile'
     })
   }
 }

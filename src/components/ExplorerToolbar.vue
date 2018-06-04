@@ -138,7 +138,7 @@ export default {
       }
     },
     prependIconCallback () {
-      this.openDirectory()
+      this.browseDirectory()
     },
     ...mapActions({
       upDirectory: 'explorer/upDirectory',
@@ -147,7 +147,7 @@ export default {
       backDirectory: 'explorer/backDirectory',
       forwardDirectory: 'explorer/forwardDirectory',
       reloadDirectory: 'explorer/reloadDirectory',
-      openDirectory: 'explorer/openDirectory'
+      browseDirectory: 'explorer/browseDirectory'
     })
   }
 }

@@ -80,7 +80,7 @@ export default {
       this.selectFile({ filepath: this.file.path })
     },
     onDblClick () {
-      this.action({ filepath: this.file.path })
+      this.openFile({ filepath: this.file.path })
     },
     onContextMenu (e) {
       this.selectFile({ filepath: this.file.path })
@@ -88,14 +88,14 @@ export default {
         {
           label: 'View',
           click: () => {
-            this.showViewer({ filepath: this.file.path })
+            this.viewFile({ filepath: this.file.path })
           },
           accelerator: 'Enter'
         },
         {
           label: this.starred ? 'Unstar' : 'Star',
           click: () => {
-            this.toggleStarred({ filepath: this.file.path })
+            this.toggleFileStarred({ filepath: this.file.path })
           },
           accelerator: 'CmdOrCtrl+D'
         }
@@ -109,7 +109,7 @@ export default {
           {
             label: `Search "${text}"`,
             click: () => {
-              this.search({ query: text })
+              this.searchFiles({ query: text })
             },
             accelerator: 'CmdOrCtrl+F'
           }
@@ -118,14 +118,14 @@ export default {
       ContextMenu.show(e, templates)
     },
     onButtonClick () {
-      this.toggleStarred({ filepath: this.file.path })
+      this.toggleFileStarred({ filepath: this.file.path })
     },
     ...mapActions({
       selectFile: 'starred/selectFile',
-      search: 'starred/search',
-      action: 'starred/action',
-      showViewer: 'starred/showViewer',
-      toggleStarred: 'starred/toggleStarred'
+      searchFiles: 'starred/searchFiles',
+      openFile: 'starred/openFile',
+      viewFile: 'starred/viewFile',
+      toggleFileStarred: 'starred/toggleFileStarred'
     })
   }
 }

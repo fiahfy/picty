@@ -7,14 +7,14 @@ export default {
   state: {
     error: null,
     files: [],
-    filepath: '',
+    currentFilepath: '',
     originalScale: 0,
     scale: 0,
     scaling: false
   },
   getters: {
-    currentIndex (state) {
-      return state.files.findIndex((file) => state.filepath === file.path)
+    currentFileIndex (state) {
+      return state.files.findIndex((file) => state.currentFilepath === file.path)
     }
   },
   actions: {
@@ -26,29 +26,33 @@ export default {
         }
         commit('setError', { error: null })
         commit('setFiles', { files })
-        commit('setFilepath', { filepath: filepath || files[0].path })
+        commit('setCurrentFilepath', { currentFilepath: filepath || files[0].path })
       } catch (e) {
         const error = e.message === 'No Images' ? e : new Error('Invalid Image')
         commit('setError', { error })
         commit('setFiles', { files: [] })
-        commit('setFilepath', { filepath: null })
+        commit('setCurrentFilepath', { currentFilepath: null })
       }
     },
-    movePrevious ({ commit, getters, state }) {
-      let index = getters.currentIndex - 1
+    movePreviousFile ({ dispatch, getters, state }) {
+      let index = getters.currentFileIndex - 1
       if (index < 0) {
         index = state.files.length - 1
       }
-      const filepath = state.files[index].path
-      commit('setFilepath', { filepath })
+      dispatch('moveFileIndex', { index })
     },
-    moveNext ({ commit, getters, state }) {
-      let index = getters.currentIndex + 1
+    moveNextFile ({ dispatch, getters, state }) {
+      let index = getters.currentFileIndex + 1
       if (index > state.files.length - 1) {
         index = 0
       }
-      const filepath = state.files[index].path
-      commit('setFilepath', { filepath })
+      dispatch('moveFileIndex', { index })
+    },
+    moveFileIndex ({ commit, state }, { index }) {
+      const file = state.files[index]
+      if (file) {
+        commit('setCurrentFilepath', { currentFilepath: file.path })
+      }
     },
     setupZoom ({ commit, state }, { scale }) {
       commit('setScale', { scale })
@@ -81,11 +85,8 @@ export default {
     setFiles (state, { files }) {
       state.files = files
     },
-    setFilepath (state, { filepath }) {
-      state.filepath = filepath
-    },
-    setCurrentIndex (state, { currentIndex }) {
-      state.filepath = state.files[currentIndex].path
+    setCurrentFilepath (state, { currentFilepath }) {
+      state.currentFilepath = currentFilepath
     },
     setOriginalScale (state, { originalScale }) {
       state.originalScale = originalScale

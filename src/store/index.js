@@ -42,12 +42,12 @@ export default new Vuex.Store({
     open ({ dispatch }, { filepathes }) {
       const file = File.get(filepathes[0])
       if (filepathes.length === 1 && file.directory) {
-        dispatch('showDirectory', { dirpath: file.path })
+        dispatch('openDirectory', { dirpath: file.path })
       } else {
         dispatch('showViewer', { filepathes })
       }
     },
-    showDirectory ({ dispatch }, { dirpath }) {
+    openDirectory ({ dispatch }, { dirpath }) {
       dispatch('explorer/changeDirectory', { dirpath })
       dispatch('changeRoute', { name: 'explorer' })
     },

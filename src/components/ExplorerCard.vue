@@ -54,13 +54,13 @@ export default {
       }
     },
     disabled () {
-      return !this.filepath
+      return !this.selectedFilepath
     },
     starIcon () {
-      return this.isStarredFile({ filepath: this.filepath }) ? 'star' : 'star_border'
+      return this.isStarredFile({ filepath: this.selectedFilepath }) ? 'star' : 'star_border'
     },
     ...mapState({
-      filepath: state => state.explorer.filepath
+      selectedFilepath: state => state.explorer.selectedFilepath
     }),
     ...mapGetters({
       isStarredFile: 'explorer/isStarredFile'
@@ -68,28 +68,28 @@ export default {
   },
   watch: {
     queryInput (value) {
-      this.search({ query: value })
+      this.searchFiles({ query: value })
     }
   },
   methods: {
     onStarClick () {
-      this.toggleStarred({ filepath: this.filepath })
+      this.toggleFileStarred({ filepath: this.selectedFilepath })
     },
     onPhotoClick () {
-      this.showViewer({ filepath: this.filepath })
+      this.viewFile({ filepath: this.selectedFilepath })
     },
     onTextContextMenu (e) {
       ContextMenu.showTextMenu(e)
     },
     onTextKeyUp (e) {
       if (e.keyCode === 13) {
-        this.search({ query: e.target.value })
+        this.searchFiles({ query: e.target.value })
       }
     },
     ...mapActions({
-      search: 'explorer/search',
-      showViewer: 'explorer/showViewer',
-      toggleStarred: 'explorer/toggleStarred'
+      searchFiles: 'explorer/searchFiles',
+      viewFile: 'explorer/viewFile',
+      toggleFileStarred: 'explorer/toggleFileStarred'
     })
   }
 }

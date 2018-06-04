@@ -72,7 +72,7 @@ export default {
     },
     ...mapState({
       query: state => state.starred.query,
-      filepath: state => state.starred.filepath,
+      selectedFilepath: state => state.starred.selectedFilepath,
       scrollTop: state => state.starred.scrollTop
     }),
     ...mapGetters({
@@ -123,7 +123,7 @@ export default {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
-          this.showViewer({ filepath: this.filepath })
+          this.viewFile({ filepath: this.selectedFilepath })
           break
         case 38:
           e.preventDefault()
@@ -144,7 +144,7 @@ export default {
         case 68:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.toggleStarred({ filepath: this.filepath })
+            this.toggleFileStarred({ filepath: this.selectedFilepath })
           }
           break
       }
@@ -158,8 +158,8 @@ export default {
       selectLastFile: 'starred/selectLastFile',
       selectPreviousFile: 'starred/selectPreviousFile',
       selectNextFile: 'starred/selectNextFile',
-      showViewer: 'starred/showViewer',
-      toggleStarred: 'starred/toggleStarred'
+      viewFile: 'starred/viewFile',
+      toggleFileStarred: 'starred/toggleFileStarred'
     })
   }
 }

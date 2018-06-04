@@ -12,9 +12,9 @@ export default {
   namespaced: true,
   state: {
     files: [],
+    selectedFilepath: '',
     query: '',
     queryInput: '',
-    filepath: '',
     scrollTop: 0,
     order: {
       by: 'name',
@@ -31,7 +31,7 @@ export default {
       return getters.filteredFiles.findIndex((file) => getters.isSelectedFile({ filepath: file.path }))
     },
     isSelectedFile (state) {
-      return ({ filepath }) => state.filepath === filepath
+      return ({ filepath }) => state.selectedFilepath === filepath
     },
     isStarredFile (state, getters, rootState, rootGetters) {
       return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
@@ -45,7 +45,7 @@ export default {
       const files = rootState.bookmark.bookmarks.map((bookmark) => File.get(bookmark))
       commit('setFiles', { files })
       dispatch('sortFiles')
-      dispatch('focus', { selector: Selector.starredTable }, { root: true })
+      dispatch('focusTable')
     },
     sortFiles ({ commit, getters, state }) {
       const { by, descending } = state.order
@@ -69,7 +69,7 @@ export default {
       commit('setFiles', { files })
     },
     selectFile ({ commit }, { filepath }) {
-      commit('setFilepath', { filepath })
+      commit('setSelectedFilepath', { selectedFilepath: filepath })
     },
     selectFileIndex ({ dispatch, getters }, { index }) {
       const file = getters.filteredFiles[index]
@@ -89,29 +89,23 @@ export default {
     selectNextFile ({ dispatch, getters }) {
       dispatch('selectFileIndex', { index: getters.selectedFileIndex + 1 })
     },
-    search ({ commit, state }, { query }) {
+    searchFiles ({ commit, state }, { query }) {
       commit('setQueryInput', { queryInput: query })
       commit('setQuery', { query })
     },
-    changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
-      const descending = state.order.by === orderBy ? !state.order.descending : false
-      const order = { by: orderBy, descending }
-      commit('setOrder', { order })
-      dispatch('sortFiles')
-    },
-    action ({ commit, dispatch, state }, { filepath }) {
+    openFile ({ commit, dispatch, state }, { filepath }) {
       const file = File.get(filepath)
       if (!file.exists) {
         dispatch('showMessage', { message: `Not found` }, { root: true })
         return
       }
       if (file.directory) {
-        dispatch('showDirectory', { dirpath: file.path }, { root: true })
+        dispatch('openDirectory', { dirpath: file.path }, { root: true })
       } else {
-        dispatch('showViewer', { filepath: file.path })
+        dispatch('viewFile', { filepath: file.path })
       }
     },
-    showViewer ({ dispatch }, { filepath }) {
+    viewFile ({ dispatch }, { filepath }) {
       const file = File.get(filepath)
       if (file.directory) {
         const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
@@ -120,22 +114,31 @@ export default {
         dispatch('showViewer', { filepathes: [filepath] }, { root: true })
       }
     },
-    toggleStarred ({ dispatch }, { filepath }) {
+    changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
+      const descending = state.order.by === orderBy ? !state.order.descending : false
+      const order = { by: orderBy, descending }
+      commit('setOrder', { order })
+      dispatch('sortFiles')
+    },
+    toggleFileStarred ({ dispatch }, { filepath }) {
       dispatch('bookmark/toggle', { filepath }, { root: true })
+    },
+    focusTable ({ dispatch }) {
+      dispatch('focus', { selector: Selector.starredTable }, { root: true })
     }
   },
   mutations: {
     setFiles (state, { files }) {
       state.files = files
     },
+    setSelectedFilepath (state, { selectedFilepath }) {
+      state.selectedFilepath = selectedFilepath
+    },
     setQuery (state, { query }) {
       state.query = query
     },
     setQueryInput (state, { queryInput }) {
       state.queryInput = queryInput
-    },
-    setFilepath (state, { filepath }) {
-      state.filepath = filepath
     },
     setScrollTop (state, { scrollTop }) {
       state.scrollTop = scrollTop

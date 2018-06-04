@@ -15,10 +15,10 @@ export default {
   namespaced: true,
   state: {
     files: [],
+    selectedFilepath: '',
     directoryInput: '',
     query: '',
     queryInput: '',
-    filepath: '',
     histories: [],
     historyIndex: -1,
     orders: {}
@@ -54,7 +54,7 @@ export default {
       return getters.filteredFiles.findIndex((file) => getters.isSelectedFile({ filepath: file.path }))
     },
     isSelectedFile (state) {
-      return ({ filepath }) => state.filepath === filepath
+      return ({ filepath }) => state.selectedFilepath === filepath
     },
     isStarredFile (state, getters, rootState, rootGetters) {
       return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
@@ -74,8 +74,8 @@ export default {
       dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
-      if (state.filepath && File.get(state.filepath).directory) {
-        const dirpath = state.filepath
+      if (state.selectedFilepath && File.get(state.selectedFilepath).directory) {
+        const dirpath = state.selectedFilepath
         dispatch('changeDirectory', { dirpath })
       }
     },
@@ -88,7 +88,7 @@ export default {
         directory: dirpath,
         scrollTop: 0
       }]
-      commit('setFilepath', { filepath: '' })
+      commit('setSelectedFilepath', { selectedFilepath: '' })
       commit('setHistories', { histories })
       commit('setHistoryIndex', { historyIndex })
 
@@ -121,7 +121,7 @@ export default {
 
       dispatch('loadFiles')
     },
-    openDirectory ({ dispatch, rootState }) {
+    browseDirectory ({ dispatch, rootState }) {
       const result = shell.openItem(rootState.directory)
       if (!result) {
         dispatch('showMessage', { message: `Invalid directory` }, { root: true })
@@ -142,7 +142,7 @@ export default {
         commit('setFiles', { files: [] })
       }
       dispatch('sortFiles')
-      dispatch('focus', { selector: Selector.explorerTable }, { root: true })
+      dispatch('focusTable')
     },
     sortFiles ({ commit, getters, state }) {
       const { by, descending } = getters.order
@@ -166,7 +166,7 @@ export default {
       commit('setFiles', { files })
     },
     selectFile ({ commit }, { filepath }) {
-      commit('setFilepath', { filepath })
+      commit('setSelectedFilepath', { selectedFilepath: filepath })
     },
     selectFileIndex ({ dispatch, getters }, { index }) {
       const file = getters.filteredFiles[index]
@@ -186,9 +186,27 @@ export default {
     selectNextFile ({ dispatch, getters, state }) {
       dispatch('selectFileIndex', { index: getters.selectedFileIndex + 1 })
     },
-    search ({ commit, state }, { query }) {
+    searchFiles ({ commit, state }, { query }) {
       commit('setQueryInput', { queryInput: query })
       commit('setQuery', { query })
+    },
+    openFile ({ commit, dispatch, state }, { filepath }) {
+      const file = File.get(filepath)
+      if (file.directory) {
+        dispatch('changeDirectory', { dirpath: file.path })
+      } else {
+        dispatch('viewFile', { filepath: file.path })
+      }
+    },
+    viewFile ({ dispatch }, { filepath }) {
+      const file = File.get(filepath)
+      if (file.directory) {
+        const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
+        dispatch('showViewer', { filepathes }, { root: true })
+      } else {
+        const filepathes = File.listFiles(file.dirname).map(file => file.path)
+        dispatch('showViewer', { filepathes, filepath }, { root: true })
+      }
     },
     setScrollTop ({ commit, state }, { scrollTop }) {
       const history = {
@@ -203,31 +221,19 @@ export default {
       commit('setOrder', { order, directory: rootState.directory })
       dispatch('sortFiles')
     },
-    action ({ commit, dispatch, state }, { filepath }) {
-      const file = File.get(filepath)
-      if (file.directory) {
-        dispatch('changeDirectory', { dirpath: file.path })
-      } else {
-        dispatch('showViewer', { filepath: file.path })
-      }
-    },
-    showViewer ({ dispatch }, { filepath }) {
-      const file = File.get(filepath)
-      if (file.directory) {
-        const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
-        dispatch('showViewer', { filepathes }, { root: true })
-      } else {
-        const filepathes = File.listFiles(file.dirname).map(file => file.path)
-        dispatch('showViewer', { filepathes, filepath }, { root: true })
-      }
-    },
-    toggleStarred ({ dispatch }, { filepath }) {
+    toggleFileStarred ({ dispatch }, { filepath }) {
       dispatch('bookmark/toggle', { filepath }, { root: true })
+    },
+    focusTable ({ dispatch }) {
+      dispatch('focus', { selector: Selector.explorerTable }, { root: true })
     }
   },
   mutations: {
     setFiles (state, { files }) {
       state.files = files
+    },
+    setSelectedFilepath (state, { selectedFilepath }) {
+      state.selectedFilepath = selectedFilepath
     },
     setDirectoryInput (state, { directoryInput }) {
       state.directoryInput = directoryInput
@@ -237,9 +243,6 @@ export default {
     },
     setQueryInput (state, { queryInput }) {
       state.queryInput = queryInput
-    },
-    setFilepath (state, { filepath }) {
-      state.filepath = filepath
     },
     setHistory (state, { history, index }) {
       state.histories = [
