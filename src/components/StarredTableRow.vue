@@ -9,9 +9,9 @@
     <td class="pl-2">
       <v-layout class="align-center">
         <v-btn
+          class="my-0"
           flat
           icon
-          class="my-0"
           @click="onButtonClick"
         >
           <v-icon :color="starColor">{{ starIcon }}</v-icon>

@@ -24,8 +24,8 @@
       v-model="page"
       :min="1"
       :max="maxPage"
-      hide-details
       class="pt-0 px-3"
+      hide-details
     />
     <span class="px-3">{{ page }} / {{ maxPage }}</span>
     <v-menu
