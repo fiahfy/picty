@@ -124,7 +124,7 @@ export default {
     browseDirectory ({ dispatch, rootState }) {
       const result = shell.openItem(rootState.directory)
       if (!result) {
-        dispatch('showMessage', { message: `Invalid directory` }, { root: true })
+        dispatch('showMessage', { color: 'error', text: 'Invalid directory' }, { root: true })
       }
     },
     loadFiles ({ commit, dispatch, rootGetters, rootState }) {

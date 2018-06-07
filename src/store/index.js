@@ -24,7 +24,7 @@ export const Selector = {
 export default new Vuex.Store({
   state: {
     title: Package.productName,
-    message: '',
+    message: null,
     fullScreen: false,
     viewing: false,
     directory: remote.app.getPath('home')
@@ -105,7 +105,7 @@ export default new Vuex.Store({
       document.title = title
       commit('setTitle', { title })
     },
-    showMessage ({ commit, dispatch, state }, { message }) {
+    showMessage ({ commit, dispatch, state }, message) {
       commit('setMessage', { message })
     }
   },

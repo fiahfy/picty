@@ -96,7 +96,7 @@ export default {
     openFile ({ commit, dispatch, state }, { filepath }) {
       const file = File.get(filepath)
       if (!file.exists) {
-        dispatch('showMessage', { message: `Not found` }, { root: true })
+        dispatch('showMessage', { color: 'error', text: 'Not found' }, { root: true })
         return
       }
       if (file.directory) {
@@ -107,6 +107,10 @@ export default {
     },
     viewFile ({ dispatch }, { filepath }) {
       const file = File.get(filepath)
+      if (!file.exists) {
+        dispatch('showMessage', { color: 'error', text: 'Not found' }, { root: true })
+        return
+      }
       if (file.directory) {
         const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
         dispatch('showViewer', { filepathes }, { root: true })

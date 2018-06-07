@@ -1,11 +1,13 @@
 <template>
   <v-snackbar
     v-model="snackbar"
+    :color="color"
     class="notification-bar"
   >
     {{ text }}
     <v-btn
       flat
+      class="ml-3"
       @click.native="onCloseClick"
     >Close</v-btn>
   </v-snackbar>
@@ -18,6 +20,7 @@ export default {
   data () {
     return {
       snackbar: false,
+      color: '',
       text: '',
       messages: []
     }
@@ -41,7 +44,7 @@ export default {
         return
       }
       this.messages.push(value)
-      this.setMessage({ message: '' })
+      this.setMessage({ message: null })
       if (this.snackbar) {
         return
       }
@@ -53,10 +56,13 @@ export default {
       this.snackbar = false
     },
     showSnackbar () {
-      this.text = this.messages.shift()
-      if (this.text) {
-        this.snackbar = true
+      const message = this.messages.shift()
+      if (!message) {
+        return
       }
+      this.snackbar = true
+      this.color = message.color
+      this.text = message.text
     },
     ...mapMutations({
       setMessage: 'setMessage'
