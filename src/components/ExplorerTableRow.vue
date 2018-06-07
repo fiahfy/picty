@@ -6,7 +6,7 @@
     @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
   >
-    <td>
+    <td class="pl-2">
       <v-layout class="align-center">
         <v-btn
           flat
