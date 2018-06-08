@@ -64,16 +64,6 @@ export default {
       titleBar: 'titleBar'
     })
   },
-  watch: {
-    snackbar (value) {
-      if (value) {
-        return
-      }
-      this.$nextTick(() => {
-        this.showNextMessage()
-      })
-    }
-  },
   created () {
     this.initialize()
   },
