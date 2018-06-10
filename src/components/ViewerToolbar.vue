@@ -8,7 +8,7 @@
       :title="'View previous image'|accelerator('Left')"
       flat
       icon
-      @click="movePrevious"
+      @click="onPreviousClick"
     >
       <v-icon>skip_previous</v-icon>
     </v-btn>
@@ -16,7 +16,7 @@
       :title="'View next image'|accelerator('Right')"
       flat
       icon
-      @click="moveNext"
+      @click="onNextClick"
     >
       <v-icon>skip_next</v-icon>
     </v-btn>
@@ -24,8 +24,8 @@
       v-model="page"
       :min="1"
       :max="maxPage"
-      hide-details
       class="pt-0 px-3"
+      hide-details
     />
     <span class="px-3">{{ page }} / {{ maxPage }}</span>
     <v-menu
@@ -52,7 +52,7 @@
           :title="'Zoom in'|accelerator('CmdOrCtrl+Plus')"
           flat
           icon
-          @click="zoomIn"
+          @click="onZoomInClick"
         >
           <v-icon>zoom_in</v-icon>
         </v-btn>
@@ -61,14 +61,14 @@
           :title="'Zoom out'|accelerator('CmdOrCtrl+-')"
           flat
           icon
-          @click="zoomOut"
+          @click="onZoomOutClick"
         >
           <v-icon>zoom_out</v-icon>
         </v-btn>
         <v-btn
           :title="'Reset'|accelerator('CmdOrCtrl+0')"
           flat
-          @click="resetZoom"
+          @click="onResetClick"
         >
           Reset
         </v-btn>
@@ -79,7 +79,7 @@
       title="Exit fullscreen"
       flat
       icon
-      @click="leaveFullScreen"
+      @click="onExitFullscreenClick"
     >
       <v-icon>fullscreen_exit</v-icon>
     </v-btn>
@@ -88,7 +88,7 @@
       title="Fullscreen"
       flat
       icon
-      @click="enterFullScreen"
+      @click="onFullscreenClick"
     >
       <v-icon>fullscreen</v-icon>
     </v-btn>
@@ -96,7 +96,7 @@
       :title="'Close'|accelerator('Esc')"
       flat
       icon
-      @click="dismiss"
+      @click="onCloseClick"
     >
       <v-icon>close</v-icon>
     </v-btn>
@@ -116,19 +116,43 @@ export default {
   computed: {
     page: {
       get () {
-        return this.$store.getters['app/viewer/currentIndex'] + 1
+        return this.$store.getters['viewer/currentFileIndex'] + 1
       },
       set (value) {
-        this.$store.commit('app/viewer/setCurrentIndex', { currentIndex: value - 1 })
+        this.$store.dispatch('viewer/moveFileIndex', { index: value - 1 })
       }
     },
     ...mapState({
-      fullScreen: state => state.app.fullScreen,
-      maxPage: state => state.app.viewer.items.length,
-      scale: state => Math.floor(state.app.viewer.scale * 100)
+      fullScreen: state => state.fullScreen,
+      maxPage: state => state.viewer.files.length,
+      scale: state => Math.floor(state.viewer.scale * 100)
     })
   },
   methods: {
+    onPreviousClick () {
+      this.movePreviousFile()
+    },
+    onNextClick () {
+      this.moveNextFile()
+    },
+    onZoomInClick () {
+      this.zoomIn()
+    },
+    onZoomOutClick () {
+      this.zoomOut()
+    },
+    onResetClick () {
+      this.resetZoom()
+    },
+    onExitFullscreenClick () {
+      this.leaveFullScreen()
+    },
+    onFullscreenClick () {
+      this.enterFullScreen()
+    },
+    onCloseClick () {
+      this.dismiss()
+    },
     hideMenu () {
       this.menu = false
     },
@@ -136,14 +160,14 @@ export default {
       return !!(this.$el.querySelector(':hover') || this.$refs.toolbar.$el.querySelector(':hover'))
     },
     ...mapActions({
-      enterFullScreen: 'app/enterFullScreen',
-      leaveFullScreen: 'app/leaveFullScreen',
-      dismiss: 'app/viewer/dismiss',
-      movePrevious: 'app/viewer/movePrevious',
-      moveNext: 'app/viewer/moveNext',
-      zoomIn: 'app/viewer/zoomIn',
-      zoomOut: 'app/viewer/zoomOut',
-      resetZoom: 'app/viewer/resetZoom'
+      enterFullScreen: 'enterFullScreen',
+      leaveFullScreen: 'leaveFullScreen',
+      dismiss: 'dismissViewer',
+      movePreviousFile: 'viewer/movePreviousFile',
+      moveNextFile: 'viewer/moveNextFile',
+      zoomIn: 'viewer/zoomIn',
+      zoomOut: 'viewer/zoomOut',
+      resetZoom: 'viewer/resetZoom'
     })
   }
 }

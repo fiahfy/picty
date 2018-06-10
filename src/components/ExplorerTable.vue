@@ -2,12 +2,11 @@
   <virtual-data-table
     ref="table"
     :headers="headers"
-    :items="items"
+    :items="files"
     :no-data-text="noDataText"
     class="explorer-table"
     item-key="path"
     hide-actions
-    must-sort
     sticky-headers
     tabindex="0"
     @scroll="onScroll"
@@ -25,7 +24,7 @@
     >
       <explorer-table-row
         :key="props.item.path"
-        :item="props.item"
+        :file="props.item"
       />
     </template>
   </virtual-data-table>
@@ -69,22 +68,22 @@ export default {
     },
     ...mapState({
       directory: state => state.directory,
-      query: state => state.app.explorer.query,
-      filepath: state => state.app.explorer.filepath
+      query: state => state.explorer.query,
+      selectedFilepath: state => state.explorer.selectedFilepath
     }),
     ...mapGetters({
-      items: 'app/explorer/filteredItems',
-      scrollTop: 'app/explorer/scrollTop',
-      selectedIndex: 'app/explorer/selectedIndex'
+      files: 'explorer/filteredFiles',
+      scrollTop: 'explorer/scrollTop',
+      selectedFileIndex: 'explorer/selectedFileIndex'
     })
   },
   watch: {
     directory () {
       this.restore()
     },
-    filepath () {
+    selectedFileIndex (value) {
       this.$nextTick(() => {
-        const index = this.selectedIndex
+        const index = value
         if (index === -1) {
           return
         }
@@ -123,40 +122,40 @@ export default {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
-          this.showViewer({ filepath: this.filepath })
+          this.viewFile({ filepath: this.selectedFilepath })
           break
         case 38:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirst()
+            this.selectFirstFile()
           } else {
-            this.selectPrevious()
+            this.selectPreviousFile()
           }
           break
         case 40:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLast()
+            this.selectLastFile()
           } else {
-            this.selectNext()
+            this.selectNextFile()
           }
           break
         case 68:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.toggleBookmark({ filepath: this.filepath })
+            this.toggleFileStarred({ filepath: this.selectedFilepath })
           }
           break
       }
     },
     ...mapActions({
-      selectFirst: 'app/explorer/selectFirst',
-      selectLast: 'app/explorer/selectLast',
-      selectPrevious: 'app/explorer/selectPrevious',
-      selectNext: 'app/explorer/selectNext',
-      setScrollTop: 'app/explorer/setScrollTop',
-      showViewer: 'app/explorer/showViewer',
-      toggleBookmark: 'app/explorer/toggleBookmark'
+      selectFirstFile: 'explorer/selectFirstFile',
+      selectLastFile: 'explorer/selectLastFile',
+      selectPreviousFile: 'explorer/selectPreviousFile',
+      selectNextFile: 'explorer/selectNextFile',
+      setScrollTop: 'explorer/setScrollTop',
+      viewFile: 'explorer/viewFile',
+      toggleFileStarred: 'explorer/toggleFileStarred'
     })
   }
 }

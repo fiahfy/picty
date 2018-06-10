@@ -3,6 +3,11 @@ export default {
   state: {
     bookmarks: []
   },
+  getters: {
+    isBookmarked (state) {
+      return ({ filepath }) => state.bookmarks.includes(filepath)
+    }
+  },
   actions: {
     add ({ commit, state }, { filepath }) {
       if (state.bookmarks.includes(filepath)) {
@@ -29,13 +34,6 @@ export default {
   mutations: {
     setBookmarks (state, { bookmarks }) {
       state.bookmarks = bookmarks
-    }
-  },
-  getters: {
-    isBookmarked (state) {
-      return ({ filepath }) => {
-        return state.bookmarks.includes(filepath)
-      }
     }
   }
 }

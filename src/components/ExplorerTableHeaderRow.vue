@@ -5,7 +5,7 @@
       :key="header.text"
       :class="getClass(header)"
       :style="getStyle(header)"
-      @click="changeOrderBy({ orderBy: header.value })"
+      @click="(e) => onHeaderClick(e, header)"
     >
       <v-icon small>arrow_upward</v-icon>
       {{ header.text }}
@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      order: 'app/explorer/order'
+      order: 'explorer/order'
     })
   },
   methods: {
@@ -42,8 +42,11 @@ export default {
         width: header.width ? `${header.width}px` : null
       }
     },
+    onHeaderClick (e, header) {
+      this.changeOrderBy({ orderBy: header.value })
+    },
     ...mapActions({
-      changeOrderBy: 'app/explorer/changeOrderBy'
+      changeOrderBy: 'explorer/changeOrderBy'
     })
   }
 }

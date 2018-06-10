@@ -46,6 +46,9 @@ export default {
   mounted () {
     this.showToolbar()
     document.body.addEventListener('mousemove', this.onMouseMove)
+    this.$nextTick(() => {
+      this.$el.focus()
+    })
   },
   beforeDestroy () {
     this.clearTimer()
@@ -59,22 +62,22 @@ export default {
           break
         case 37:
           if (e.target.getAttribute('role') !== 'slider') {
-            this.movePrevious()
+            this.movePreviousFile()
             this.resetTimer()
           }
           break
         case 38:
-          this.movePrevious()
+          this.movePreviousFile()
           this.resetTimer()
           break
         case 39:
           if (e.target.getAttribute('role') !== 'slider') {
-            this.moveNext()
+            this.moveNextFile()
             this.resetTimer()
           }
           break
         case 40:
-          this.moveNext()
+          this.moveNextFile()
           this.resetTimer()
           break
       }
@@ -108,9 +111,9 @@ export default {
       this.resetTimer()
     },
     ...mapActions({
-      dismiss: 'app/dismissViewer',
-      movePrevious: 'app/viewer/movePrevious',
-      moveNext: 'app/viewer/moveNext'
+      dismiss: 'dismissViewer',
+      movePreviousFile: 'viewer/movePreviousFile',
+      moveNextFile: 'viewer/moveNextFile'
     })
   }
 }

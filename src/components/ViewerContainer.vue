@@ -26,12 +26,12 @@
         @mouseup="onMouseUp"
       >
         <img
-          :src="`file://${filepath}`"
+          :src="imageSrc"
           :class="imageClasses"
           :style="imageStyles"
           draggable="false"
-          @load="onLoad"
-          @error="onError"
+          @load="onImageLoad"
+          @error="onImageError"
         >
       </v-flex>
     </v-layout>
@@ -57,13 +57,16 @@ export default {
     }
   },
   computed: {
-    message () {
-      return this.error ? this.error.message : ''
-    },
     classes () {
       return {
         dragging: this.dragging
       }
+    },
+    message () {
+      return this.error ? this.error.message : ''
+    },
+    imageSrc () {
+      return `file://${this.currentFilepath}`
     },
     imageClasses () {
       return {
@@ -81,22 +84,22 @@ export default {
     },
     ...mapState({
       error: function (state) {
-        if (state.app.viewer.error) {
-          return state.app.viewer.error
+        if (state.viewer.error) {
+          return state.viewer.error
         }
         if (this.loadError) {
           return new Error('Image Load Failure')
         }
         return null
       },
-      filepath: state => state.app.viewer.filepath,
-      scale: state => state.app.viewer.scale,
-      scaling: state => state.app.viewer.scaling,
+      currentFilepath: state => state.viewer.currentFilepath,
+      scale: state => state.viewer.scale,
+      scaling: state => state.viewer.scaling,
       imageStretched: state => state.settings.imageStretched
     })
   },
   watch: {
-    filepath () {
+    currentFilepath () {
       this.loadError = false
     },
     scale (newValue, oldValue) {
@@ -142,7 +145,7 @@ export default {
         this.scrollPosition = position
       }
     },
-    onLoad (e) {
+    onImageLoad (e) {
       const maxWidth = this.$el.clientWidth
       const maxHeight = this.$el.clientHeight
       const imageWidth = e.target.naturalWidth
@@ -159,11 +162,11 @@ export default {
       }
       this.setupZoom({ scale })
     },
-    onError (e) {
+    onImageError (e) {
       this.loadError = true
     },
     ...mapActions({
-      setupZoom: 'app/viewer/setupZoom'
+      setupZoom: 'viewer/setupZoom'
     })
   }
 }

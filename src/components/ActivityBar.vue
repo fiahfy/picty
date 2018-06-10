@@ -10,7 +10,7 @@
         v-for="item in items"
         :key="item.name"
         :title="item.title"
-        @click="changeRoute({ name: item.name })"
+        @click="(e) => onItemClick(e, item)"
       >
         <v-list-tile-action>
           <v-icon :color="item.color">{{ item.icon }}</v-icon>
@@ -21,16 +21,15 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import { buildText } from '~/utils/accelerator'
 
 export default {
   data () {
     return {
       items: [
-        { name: 'explorer', icon: 'view_list', title: `explorer (${buildText('CmdOrCtrl+Shift+E')})` },
-        { name: 'bookmark', icon: 'star', title: `starred (${buildText('CmdOrCtrl+Shift+B')})` },
-        { name: 'settings', icon: 'settings', title: `settings (${buildText('CmdOrCtrl+,')})` }
+        { name: 'explorer', icon: 'view_list', title: `Explorer (${buildText('CmdOrCtrl+Shift+E')})` },
+        { name: 'starred', icon: 'star', title: `Starred (${buildText('CmdOrCtrl+Shift+B')})` },
+        { name: 'settings', icon: 'settings', title: `Settings (${buildText('CmdOrCtrl+,')})` }
       ]
     }
   },
@@ -43,15 +42,15 @@ export default {
     this.updateItems(this.$route.name)
   },
   methods: {
+    onItemClick (e, item) {
+      this.$router.push({ name: item.name })
+    },
     updateItems (name) {
       this.items = this.items.map(item => ({
         ...item,
         color: item.name === name ? 'primary' : null
       }))
-    },
-    ...mapActions({
-      changeRoute: 'app/changeRoute'
-    })
+    }
   }
 }
 </script>

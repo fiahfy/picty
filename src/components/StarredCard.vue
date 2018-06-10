@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="explorer-card"
+    class="starred-card"
     flat
   >
     <v-card-title class="py-2 px-0">
@@ -47,10 +47,10 @@ export default {
   computed: {
     queryInput: {
       get () {
-        return this.$store.state.explorer.queryInput
+        return this.$store.state.starred.queryInput
       },
       set (value) {
-        this.$store.commit('explorer/setQueryInput', { queryInput: value })
+        this.$store.commit('starred/setQueryInput', { queryInput: value })
       }
     },
     disabled () {
@@ -60,10 +60,10 @@ export default {
       return this.isStarredFile({ filepath: this.selectedFilepath }) ? 'star' : 'star_border'
     },
     ...mapState({
-      selectedFilepath: state => state.explorer.selectedFilepath
+      selectedFilepath: state => state.starred.selectedFilepath
     }),
     ...mapGetters({
-      isStarredFile: 'explorer/isStarredFile'
+      isStarredFile: 'starred/isStarredFile'
     })
   },
   watch: {
@@ -87,16 +87,16 @@ export default {
       }
     },
     ...mapActions({
-      searchFiles: 'explorer/searchFiles',
-      viewFile: 'explorer/viewFile',
-      toggleFileStarred: 'explorer/toggleFileStarred'
+      searchFiles: 'starred/searchFiles',
+      viewFile: 'starred/viewFile',
+      toggleFileStarred: 'starred/toggleFileStarred'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.explorer-card /deep/ .input-group--text-field label {
+.starred-card /deep/ .input-group--text-field label {
   top: 0;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <tr
     :active="active"
-    class="explorer-table-row"
+    class="starred-table-row"
     @click="onClick"
     @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
@@ -23,6 +23,7 @@
         <span>{{ file.name }}</span>
       </v-layout>
     </td>
+    <td>{{ file.dirname }}</td>
     <td class="text-xs-right">{{ fileSize | readableSize }}</td>
     <td class="text-xs-right">
       <template v-if="file.mtime">{{ file.mtime | moment('YYYY-MM-DD HH:mm') }}</template>
@@ -70,8 +71,8 @@ export default {
       return this.file.directory ? null : this.file.size
     },
     ...mapGetters({
-      isSelectedFile: 'explorer/isSelectedFile',
-      isStarredFile: 'explorer/isStarredFile'
+      isSelectedFile: 'starred/isSelectedFile',
+      isStarredFile: 'starred/isStarredFile'
     })
   },
   methods: {
@@ -120,18 +121,18 @@ export default {
       this.toggleFileStarred({ filepath: this.file.path })
     },
     ...mapActions({
-      selectFile: 'explorer/selectFile',
-      searchFiles: 'explorer/searchFiles',
-      openFile: 'explorer/openFile',
-      viewFile: 'explorer/viewFile',
-      toggleFileStarred: 'explorer/toggleFileStarred'
+      selectFile: 'starred/selectFile',
+      searchFiles: 'starred/searchFiles',
+      openFile: 'starred/openFile',
+      viewFile: 'starred/viewFile',
+      toggleFileStarred: 'starred/toggleFileStarred'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.explorer-table-row {
+.starred-table-row {
   cursor: pointer;
   td {
     overflow: hidden;

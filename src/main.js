@@ -33,7 +33,7 @@ const createTemplate = () => {
       label: 'View',
       submenu: [
         { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { mainWindow.webContents.send('showExplorer') } },
-        { label: 'Starred', accelerator: 'CmdOrCtrl+Shift+B', click: () => { mainWindow.webContents.send('showBookmark') } },
+        { label: 'Starred', accelerator: 'CmdOrCtrl+Shift+B', click: () => { mainWindow.webContents.send('showStarred') } },
         { type: 'separator' },
         { role: 'reload' },
         { role: 'forcereload' },
@@ -55,7 +55,7 @@ const createTemplate = () => {
         { label: 'Forward', accelerator: 'CmdOrCtrl+Right', click: () => { mainWindow.webContents.send('forwardDirectory') } },
         { label: 'Up', accelerator: 'CmdOrCtrl+Shift+P', click: () => { mainWindow.webContents.send('upDirectory') } },
         { label: 'Home', accelerator: 'CmdOrCtrl+Shift+H', click: () => { mainWindow.webContents.send('changeHomeDirectory') } },
-        { label: 'Open', click: () => { mainWindow.webContents.send('openCurrentDirectory') } }
+        { label: 'Browse', click: () => { mainWindow.webContents.send('browseCurrentDirectory') } }
       ]
     },
     {
@@ -138,7 +138,8 @@ const createWindow = () => {
   let url = `file://${__dirname}/app/index.html`
 
   if (process.env.HMR) {
-    url = 'http://localhost:3000/index.html'
+    const port = process.env.PORT || 3000
+    url = `http://localhost:${port}/index.html`
     options.webPreferences = {
       ...options.webPreferences,
       webSecurity: false

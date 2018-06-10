@@ -5,24 +5,24 @@
     dense
   >
     <v-btn
-      v-long-press="showBackMenu"
+      v-long-press="onBackContextMenu"
       :title="'Back'|accelerator('CmdOrCtrl+Left')"
-      :disabled="!canBackDirectory"
+      :disabled="backDisabled"
       flat
       icon
-      @click="backDirectory"
-      @contextmenu="showBackMenu"
+      @click="onBackClick"
+      @contextmenu.stop="onBackContextMenu"
     >
       <v-icon>arrow_back</v-icon>
     </v-btn>
     <v-btn
-      v-long-press="showForwardMenu"
+      v-long-press="onForwardContextMenu"
       :title="'Forward'|accelerator('CmdOrCtrl+Right')"
-      :disabled="!canForwardDirectory"
+      :disabled="forwardDisabled"
       flat
       icon
-      @click="forwardDirectory"
-      @contextmenu="showForwardMenu"
+      @click="onForwardClick"
+      @contextmenu.stop="onForwardContextMenu"
     >
       <v-icon>arrow_forward</v-icon>
     </v-btn>
@@ -30,7 +30,7 @@
       :title="'Up'|accelerator('CmdOrCtrl+Shift+P')"
       flat
       icon
-      @click="upDirectory"
+      @click="onUpwardClick"
     >
       <v-icon>arrow_upward</v-icon>
     </v-btn>
@@ -38,7 +38,7 @@
       title="Reload"
       flat
       icon
-      @click="reloadDirectory"
+      @click="onRefreshClick"
     >
       <v-icon>refresh</v-icon>
     </v-btn>
@@ -46,13 +46,13 @@
       :title="'Home'|accelerator('CmdOrCtrl+Shift+H')"
       flat
       icon
-      @click="changeHomeDirectory"
+      @click="onHomeClick"
     >
       <v-icon>home</v-icon>
     </v-btn>
     <v-text-field
       v-model="directoryInput"
-      :prepend-icon-cb="openDirectory"
+      :prepend-icon-cb="prependIconCallback"
       name="directory"
       class="mx-3"
       label="Path"
@@ -60,8 +60,8 @@
       single-line
       hide-details
       full-width
-      @keyup="onKeyUp"
-      @contextmenu="onContextMenu"
+      @keyup="onTextKeyUp"
+      @contextmenu.stop="onTextContextMenu"
     />
   </v-toolbar>
 </template>
@@ -74,29 +74,30 @@ export default {
   computed: {
     directoryInput: {
       get () {
-        return this.$store.state.app.explorer.directoryInput
+        return this.$store.state.explorer.directoryInput
       },
       set (value) {
-        this.$store.commit('app/explorer/setDirectoryInput', { directoryInput: value })
+        this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
       }
     },
+    backDisabled () {
+      return !this.canBackDirectory
+    },
+    forwardDisabled () {
+      return !this.canForwardDirectory
+    },
     ...mapGetters({
-      backDirectories: 'app/explorer/backDirectories',
-      forwardDirectories: 'app/explorer/forwardDirectories',
-      canBackDirectory: 'app/explorer/canBackDirectory',
-      canForwardDirectory: 'app/explorer/canForwardDirectory'
+      backDirectories: 'explorer/backDirectories',
+      forwardDirectories: 'explorer/forwardDirectories',
+      canBackDirectory: 'explorer/canBackDirectory',
+      canForwardDirectory: 'explorer/canForwardDirectory'
     })
   },
   methods: {
-    onContextMenu (e) {
-      ContextMenu.showTextMenu(e)
+    onBackClick () {
+      this.backDirectory()
     },
-    onKeyUp (e) {
-      if (e.keyCode === 13) {
-        this.changeDirectory({ dirpath: e.target.value })
-      }
-    },
-    showBackMenu (e) {
+    onBackContextMenu (e) {
       ContextMenu.show(e, this.backDirectories.map((directory, index) => {
         return {
           label: directory,
@@ -106,7 +107,10 @@ export default {
         }
       }))
     },
-    showForwardMenu (e) {
+    onForwardClick () {
+      this.forwardDirectory()
+    },
+    onForwardContextMenu (e) {
       ContextMenu.show(e, this.forwardDirectories.map((directory, index) => {
         return {
           label: directory,
@@ -116,14 +120,34 @@ export default {
         }
       }))
     },
+    onUpwardClick () {
+      this.upDirectory()
+    },
+    onRefreshClick () {
+      this.reloadDirectory()
+    },
+    onHomeClick () {
+      this.changeHomeDirectory()
+    },
+    onTextContextMenu (e) {
+      ContextMenu.showTextMenu(e)
+    },
+    onTextKeyUp (e) {
+      if (e.keyCode === 13) {
+        this.changeDirectory({ dirpath: e.target.value })
+      }
+    },
+    prependIconCallback () {
+      this.browseDirectory()
+    },
     ...mapActions({
-      upDirectory: 'app/explorer/upDirectory',
-      changeHomeDirectory: 'app/explorer/changeHomeDirectory',
-      changeDirectory: 'app/explorer/changeDirectory',
-      backDirectory: 'app/explorer/backDirectory',
-      forwardDirectory: 'app/explorer/forwardDirectory',
-      reloadDirectory: 'app/explorer/reloadDirectory',
-      openDirectory: 'app/explorer/openDirectory'
+      upDirectory: 'explorer/upDirectory',
+      changeHomeDirectory: 'explorer/changeHomeDirectory',
+      changeDirectory: 'explorer/changeDirectory',
+      backDirectory: 'explorer/backDirectory',
+      forwardDirectory: 'explorer/forwardDirectory',
+      reloadDirectory: 'explorer/reloadDirectory',
+      browseDirectory: 'explorer/browseDirectory'
     })
   }
 }

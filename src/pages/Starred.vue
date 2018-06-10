@@ -1,31 +1,31 @@
 <template>
   <v-container
-    class="bookmark"
+    class="starred"
     fill-height
     fluid
     pa-0
   >
     <v-layout column>
-      <bookmark-card />
+      <starred-card />
       <v-container
         fluid
         pa-0
         overflow-hidden
       >
-        <bookmark-table class="fill-height" />
+        <starred-table class="fill-height" />
       </v-container>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import BookmarkCard from '~/components/BookmarkCard'
-import BookmarkTable from '~/components/BookmarkTable'
+import StarredCard from '~/components/StarredCard'
+import StarredTable from '~/components/StarredTable'
 
 export default {
   components: {
-    BookmarkCard,
-    BookmarkTable
+    StarredCard,
+    StarredTable
   }
 }
 </script>

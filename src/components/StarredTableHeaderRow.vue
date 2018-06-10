@@ -1,11 +1,11 @@
 <template>
-  <tr class="bookmark-table-header-row">
+  <tr class="starred-table-header-row">
     <th
       v-for="header in headers"
       :key="header.text"
       :class="getClass(header)"
       :style="getStyle(header)"
-      @click="changeOrderBy({ orderBy: header.value })"
+      @click="(e) => onHeaderClick(e, header)"
     >
       <v-icon small>arrow_upward</v-icon>
       {{ header.text }}
@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     ...mapState({
-      order: state => state.app.bookmark.order
+      order: state => state.starred.order
     })
   },
   methods: {
@@ -42,8 +42,11 @@ export default {
         width: header.width ? `${header.width}px` : null
       }
     },
+    onHeaderClick (e, header) {
+      this.changeOrderBy({ orderBy: header.value })
+    },
     ...mapActions({
-      changeOrderBy: 'app/bookmark/changeOrderBy'
+      changeOrderBy: 'starred/changeOrderBy'
     })
   }
 }

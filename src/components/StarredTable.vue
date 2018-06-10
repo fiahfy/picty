@@ -2,12 +2,11 @@
   <virtual-data-table
     ref="table"
     :headers="headers"
-    :items="items"
+    :items="files"
     :no-data-text="noDataText"
-    class="bookmark-table"
+    class="starred-table"
     item-key="path"
     hide-actions
-    must-sort
     sticky-headers
     tabindex="0"
     @scroll="onScroll"
@@ -17,15 +16,15 @@
       slot="headers"
       slot-scope="props"
     >
-      <bookmark-table-header-row :headers="props.headers" />
+      <starred-table-header-row :headers="props.headers" />
     </template>
     <template
       slot="items"
       slot-scope="props"
     >
-      <bookmark-table-row
+      <starred-table-row
         :key="props.item.path"
-        :item="props.item"
+        :file="props.item"
       />
     </template>
   </virtual-data-table>
@@ -33,14 +32,14 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import BookmarkTableHeaderRow from './BookmarkTableHeaderRow'
-import BookmarkTableRow from './BookmarkTableRow'
+import StarredTableHeaderRow from './StarredTableHeaderRow'
+import StarredTableRow from './StarredTableRow'
 import VirtualDataTable from './VirtualDataTable'
 
 export default {
   components: {
-    BookmarkTableHeaderRow,
-    BookmarkTableRow,
+    StarredTableHeaderRow,
+    StarredTableRow,
     VirtualDataTable
   },
   data () {
@@ -52,7 +51,7 @@ export default {
         },
         {
           text: 'Directory',
-          value: 'dirpath'
+          value: 'dirname'
         },
         {
           text: 'Size',
@@ -72,19 +71,19 @@ export default {
       return this.query ? 'No matching records found' : 'No data available'
     },
     ...mapState({
-      query: state => state.app.bookmark.query,
-      filepath: state => state.app.bookmark.filepath,
-      scrollTop: state => state.app.bookmark.scrollTop
+      query: state => state.starred.query,
+      selectedFilepath: state => state.starred.selectedFilepath,
+      scrollTop: state => state.starred.scrollTop
     }),
     ...mapGetters({
-      items: 'app/bookmark/filteredItems',
-      selectedIndex: 'app/bookmark/selectedIndex'
+      files: 'starred/filteredFiles',
+      selectedFileIndex: 'starred/selectedFileIndex'
     })
   },
   watch: {
-    filepath () {
+    selectedFileIndex (value) {
       this.$nextTick(() => {
-        const index = this.selectedIndex
+        const index = value
         if (index === -1) {
           return
         }
@@ -107,7 +106,7 @@ export default {
     }
   },
   mounted () {
-    this.load()
+    this.loadFiles()
     this.restore()
   },
   methods: {
@@ -124,50 +123,50 @@ export default {
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
-          this.showViewer({ filepath: this.filepath })
+          this.viewFile({ filepath: this.selectedFilepath })
           break
         case 38:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirst()
+            this.selectFirstFile()
           } else {
-            this.selectPrevious()
+            this.selectPreviousFile()
           }
           break
         case 40:
           e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLast()
+            this.selectLastFile()
           } else {
-            this.selectNext()
+            this.selectNextFile()
           }
           break
         case 68:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             e.preventDefault()
-            this.toggleBookmark({ filepath: this.filepath })
+            this.toggleFileStarred({ filepath: this.selectedFilepath })
           }
           break
       }
     },
     ...mapMutations({
-      setScrollTop: 'app/bookmark/setScrollTop'
+      setScrollTop: 'starred/setScrollTop'
     }),
     ...mapActions({
-      load: 'app/bookmark/load',
-      selectFirst: 'app/bookmark/selectFirst',
-      selectLast: 'app/bookmark/selectLast',
-      selectPrevious: 'app/bookmark/selectPrevious',
-      selectNext: 'app/bookmark/selectNext',
-      showViewer: 'app/bookmark/showViewer',
-      toggleBookmark: 'app/bookmark/toggleBookmark'
+      loadFiles: 'starred/loadFiles',
+      selectFirstFile: 'starred/selectFirstFile',
+      selectLastFile: 'starred/selectLastFile',
+      selectPreviousFile: 'starred/selectPreviousFile',
+      selectNextFile: 'starred/selectNextFile',
+      viewFile: 'starred/viewFile',
+      toggleFileStarred: 'starred/toggleFileStarred'
     })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.bookmark-table {
+.starred-table {
   outline: none;
   & /deep/ .datatable {
     table-layout: fixed;

@@ -10,15 +10,7 @@
     <v-content class="fill-height">
       <router-view />
     </v-content>
-    <v-snackbar
-      v-model="snackbar"
-    >
-      {{ message }}
-      <v-btn
-        flat
-        @click.native="snackbar = false"
-      >Close</v-btn>
-    </v-snackbar>
+    <notification-bar />
     <v-dialog
       v-if="viewing"
       value="true"
@@ -29,10 +21,12 @@
         column
         fill-height
       >
-        <title-bar
-          v-if="titleBar"
-          :app="false"
-        />
+        <v-flex>
+          <title-bar
+            v-if="titleBar"
+            :app="false"
+          />
+        </v-flex>
         <v-container
           card
           fluid
@@ -49,6 +43,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
+import NotificationBar from './components/NotificationBar'
 import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
 import * as ContextMenu from './utils/context-menu'
@@ -56,40 +51,21 @@ import * as ContextMenu from './utils/context-menu'
 export default {
   components: {
     ActivityBar,
+    NotificationBar,
     TitleBar,
     Viewer
   },
   computed: {
-    snackbar: {
-      get () {
-        return this.$store.state.app.snackbar
-      },
-      set (value) {
-        this.$store.commit('app/setSnackbar', { snackbar: value })
-      }
-    },
     ...mapState({
-      message: state => state.app.message,
-      viewing: state => state.app.viewing,
+      viewing: state => state.viewing,
       darkTheme: state => state.settings.darkTheme
     }),
     ...mapGetters({
-      titleBar: 'app/titleBar'
+      titleBar: 'titleBar'
     })
   },
-  watch: {
-    snackbar (value) {
-      if (value) {
-        return
-      }
-      this.$nextTick(() => {
-        this.showNextMessage()
-      })
-    }
-  },
   created () {
-    this.initializeExplorer()
-    this.initializeBookmark()
+    this.initialize()
   },
   methods: {
     onContextMenu (e) {
@@ -104,10 +80,8 @@ export default {
       this.open({ filepathes })
     },
     ...mapActions({
-      open: 'app/open',
-      showNextMessage: 'app/showNextMessage',
-      initializeExplorer: 'app/explorer/initialize',
-      initializeBookmark: 'app/bookmark/initialize'
+      initialize: 'initialize',
+      open: 'open'
     })
   }
 }
