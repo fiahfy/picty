@@ -17,8 +17,7 @@ export const Selector = {
   directoryInput: 'input[name=directory]',
   queryInput: 'input[name=query]',
   explorerTable: '.explorer-table',
-  starredTable: '.starred-table',
-  viewer: '.viewer'
+  starredTable: '.starred-table'
 }
 
 export default new Vuex.Store({
@@ -54,7 +53,6 @@ export default new Vuex.Store({
     showViewer ({ commit, dispatch, state }, { filepathes, filepath }) {
       dispatch('viewer/loadFiles', { filepathes, filepath })
       commit('setViewing', { viewing: true })
-      dispatch('focus', { selector: Selector.viewer })
       if (state.settings.fullScreen) {
         dispatch('enterFullScreen')
       }

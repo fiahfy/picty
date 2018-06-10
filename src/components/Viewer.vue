@@ -46,6 +46,9 @@ export default {
   mounted () {
     this.showToolbar()
     document.body.addEventListener('mousemove', this.onMouseMove)
+    this.$nextTick(() => {
+      this.$el.focus()
+    })
   },
   beforeDestroy () {
     this.clearTimer()
