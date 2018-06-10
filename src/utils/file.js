@@ -40,9 +40,10 @@ export const listFiles = (dirpath, options = { recursive: false }) => {
       if (!options.recursive || !file.directory) {
         return [...carry, file]
       }
-      const files = file.listFiles(filepath, options)
+      const files = listFiles(filepath, options)
       return [...carry, file, ...files]
     } catch (e) {
+      console.error(e)
       return carry
     }
   }, [])
