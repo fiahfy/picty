@@ -6,7 +6,7 @@
     @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
   >
-    <td class="pl-2">
+    <td class="pl-2 ellipsis">
       <v-layout class="align-center">
         <v-btn
           class="my-0"
@@ -20,10 +20,10 @@
           :color="fileColor"
           class="pa-1"
         >{{ fileIcon }}</v-icon>
-        <span>{{ file.name }}</span>
+        <span class="ellipsis">{{ file.name }}</span>
       </v-layout>
     </td>
-    <td>{{ file.dirname }}</td>
+    <td class="ellipsis">{{ file.dirname }}</td>
     <td class="text-xs-right">{{ fileSize | readableSize }}</td>
     <td class="text-xs-right">
       <template v-if="file.mtime">{{ file.mtime | moment('YYYY-MM-DD HH:mm') }}</template>
@@ -134,16 +134,8 @@ export default {
 <style scoped lang="scss">
 .starred-table-row {
   cursor: pointer;
-  td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    span {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+  td span {
+    flex: 1;
   }
 }
 </style>
