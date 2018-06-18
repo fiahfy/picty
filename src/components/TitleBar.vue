@@ -13,8 +13,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Package from '~~/package.json'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   props: {
@@ -24,9 +23,9 @@ export default {
     }
   },
   computed: {
-    title () {
-      return Package.productName
-    },
+    ...mapState({
+      title: state => state.title
+    }),
     ...mapGetters({
       titleBar: 'titleBar'
     })
