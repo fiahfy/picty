@@ -6,10 +6,10 @@ export const get = (filepath) => {
     name: path.basename(filepath),
     path: filepath,
     dirname: path.dirname(filepath),
-    size: null,
-    mtime: null,
     exists: false,
-    directory: false
+    directory: false,
+    mtime: null,
+    size: null
   }
   try {
     const stat = fs.lstatSync(filepath)

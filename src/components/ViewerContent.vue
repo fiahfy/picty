@@ -1,7 +1,7 @@
 <template>
   <v-container
     :class="classes"
-    class="viewer-container"
+    class="viewer-content"
     fluid
     pa-0
   >
@@ -66,7 +66,7 @@ export default {
       return this.error ? this.error.message : ''
     },
     imageSrc () {
-      return `file://${this.currentFilepath}`
+      return this.currentFilepath ? `file://${this.currentFilepath}` : ''
     },
     imageClasses () {
       return {
@@ -176,36 +176,37 @@ export default {
 ::-webkit-scrollbar {
   display: none;
 }
-.viewer-container {
+
+.viewer-content {
   cursor: -webkit-grab;
   &.dragging {
     cursor: -webkit-grabbing;
   }
-}
-.wrapper {
-  overflow: auto;
-  position: relative;
-  img {
-    bottom:0;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top:0;
-    &.horizontal-center {
-      margin-left: auto;
-      margin-right: auto;
-    }
-    &.vertical-center {
-      margin-top: auto;
-      margin-bottom: auto;
-    }
-    &:not(.scaling) {
-      max-height: 100%;
-      max-width: 100%;
-      &.stretched {
-        height: 100%;
-        object-fit: contain;
-        width: 100%;
+  .wrapper {
+    overflow: auto;
+    position: relative;
+    img {
+      bottom:0;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top:0;
+      &.horizontal-center {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      &.vertical-center {
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+      &:not(.scaling) {
+        max-height: 100%;
+        max-width: 100%;
+        &.stretched {
+          height: 100%;
+          object-fit: contain;
+          width: 100%;
+        }
       }
     }
   }

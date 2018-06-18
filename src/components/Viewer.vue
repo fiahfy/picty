@@ -1,28 +1,42 @@
 <template>
-  <div
-    class="viewer"
-    tabindex="0"
+  <v-dialog
+    v-model="viewing"
+    transition="no-transition"
+    fullscreen
+    hide-overlay
     @keydown="onKeyDown"
   >
-    <viewer-container
-      :class="containerClasses"
-      class="fill-height"
-    />
-    <viewer-toolbar
-      ref="toolbar"
-      :class="toolbarClasses"
-    />
-  </div>
+    <v-layout
+      column
+      fill-height
+    >
+      <v-flex>
+        <title-bar :app="false" />
+      </v-flex>
+      <v-container
+        :class="containerClasses"
+        card
+        fluid
+        pa-0
+        overflow-hidden
+      >
+        <viewer-content class="fill-height" />
+        <viewer-toolbar ref="toolbar" />
+      </v-container>
+    </v-layout>
+  </v-dialog>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import ViewerContainer from './ViewerContainer'
+import { mapActions, mapState } from 'vuex'
+import TitleBar from '~/components/TitleBar'
+import ViewerContent from './ViewerContent'
 import ViewerToolbar from './ViewerToolbar'
 
 export default {
   components: {
-    ViewerContainer,
+    TitleBar,
+    ViewerContent,
     ViewerToolbar
   },
   data () {
@@ -33,26 +47,26 @@ export default {
   computed: {
     containerClasses () {
       return {
-        hidden: this.toolbar === false
+        'toolbar-fade-in': this.toolbar === true,
+        'toolbar-fade-out': this.toolbar === false,
+        'toolbar-hidden': this.toolbar === false
       }
     },
-    toolbarClasses () {
-      return {
-        'fade-in': this.toolbar === true,
-        'fade-out': this.toolbar === false
-      }
-    }
-  },
-  mounted () {
-    this.showToolbar()
-    document.body.addEventListener('mousemove', this.onMouseMove)
-    this.$nextTick(() => {
-      this.$el.focus()
+    ...mapState({
+      viewing: state => state.viewing
     })
   },
-  beforeDestroy () {
-    this.clearTimer()
-    document.body.removeEventListener('mousemove', this.onMouseMove)
+  watch: {
+    viewing (value) {
+      if (value) {
+        this.showToolbar()
+        document.body.addEventListener('mousemove', this.onMouseMove)
+      } else {
+        this.toolbar = null
+        this.clearTimer()
+        document.body.removeEventListener('mousemove', this.onMouseMove)
+      }
+    }
   },
   methods: {
     onKeyDown (e) {
@@ -94,7 +108,6 @@ export default {
       this.timer = setTimeout(() => {
         this.toolbar = false
         this.$refs.toolbar.hideMenu()
-        this.$el.focus()
       }, 2000)
     },
     resetTimer () {
@@ -140,22 +153,26 @@ export default {
     transform: translateY(48px);
   }
 }
-.viewer {
-  outline: none;
-}
-.viewer-container {
-  &.hidden {
-    cursor: none;
+
+.container {
+  &.toolbar-hidden {
+    .viewer-content {
+      cursor: none;
+    }
   }
-}
-.viewer-toolbar {
-  bottom: 0;
-  position: absolute;
-  &.fade-in {
-    animation: fade-in 350ms forwards;
+  &.toolbar-fade-in {
+    .viewer-toolbar {
+      animation: fade-in 350ms forwards;
+    }
   }
-  &.fade-out {
-    animation: fade-out 350ms forwards;
+  &.toolbar-fade-out {
+    .viewer-toolbar {
+      animation: fade-out 350ms forwards;
+    }
+  }
+  .viewer-toolbar {
+    bottom: 0;
+    position: absolute;
   }
 }
 </style>
