@@ -36,7 +36,7 @@ export default {
     isSelectedFile (state) {
       return ({ filepath }) => state.selectedFilepath === filepath
     },
-    isStarredFile (state, getters, rootState, rootGetters) {
+    isStarredFile (state, getters, rootGetters) {
       return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
     }
   },
