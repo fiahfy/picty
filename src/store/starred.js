@@ -1,5 +1,7 @@
 import { Selector } from '~/store'
 import * as File from '~/utils/file'
+import * as Worker from '~/utils/worker'
+import FileWorker from '~/workers/file.worker.js'
 
 const reversed = {
   name: false,
@@ -11,6 +13,7 @@ const reversed = {
 export default {
   namespaced: true,
   state: {
+    loading: false,
     files: [],
     selectedFilepath: '',
     query: '',
@@ -41,11 +44,16 @@ export default {
     initialize ({ dispatch }) {
       dispatch('loadFiles')
     },
-    loadFiles ({ commit, dispatch, rootState }) {
-      const files = rootState.bookmark.bookmarks.map((bookmark) => File.get(bookmark))
+    async loadFiles ({ commit, dispatch, rootState, state }) {
+      if (state.loading) {
+        return
+      }
+      commit('setLoading', { loading: true })
+      const files = await Worker.post(FileWorker, { id: 'getFiles', data: [rootState.bookmark.bookmarks] })
       commit('setFiles', { files })
       dispatch('sortFiles')
       dispatch('focusTable')
+      commit('setLoading', { loading: false })
     },
     sortFiles ({ commit, getters, state }) {
       const { by, descending } = state.order
@@ -132,6 +140,9 @@ export default {
     }
   },
   mutations: {
+    setLoading (state, { loading }) {
+      state.loading = loading
+    },
     setFiles (state, { files }) {
       state.files = files
     },

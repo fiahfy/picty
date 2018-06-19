@@ -48,3 +48,7 @@ export const listFiles = (dirpath, options = { recursive: false }) => {
     }
   }, [])
 }
+
+export const getFiles = (filepathes) => {
+  return filepathes.map((filepath) => get(filepath))
+}
