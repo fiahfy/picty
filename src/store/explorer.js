@@ -59,7 +59,7 @@ export default {
     isSelectedFile (state) {
       return ({ filepath }) => state.selectedFilepath === filepath
     },
-    isStarredFile (state, getters, rootGetters) {
+    isStarredFile (state, getters, rootState, rootGetters) {
       return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
     }
   },
@@ -141,6 +141,7 @@ export default {
         return
       }
       commit('setLoading', { loading: true })
+      commit('setFiles', { files: [] })
       try {
         if (watcher) {
           watcher.close()
@@ -152,6 +153,7 @@ export default {
           .filter((file) => file.directory || rootGetters['settings/isAllowedFile']({ filepath: file.path }))
         commit('setFiles', { files })
       } catch (e) {
+        console.error(e)
         commit('setFiles', { files: [] })
       }
       dispatch('sortFiles')
@@ -215,11 +217,9 @@ export default {
     async viewFile ({ dispatch }, { filepath }) {
       const file = File.get(filepath)
       if (file.directory) {
-        const filepathes = (await Worker.post(FileWorker, { id: 'listFiles', data: [filepath, { recursive: true }] })).map(file => file.path)
-        dispatch('showViewer', { filepathes }, { root: true })
+        dispatch('showViewer', { dirpath: file.path }, { root: true })
       } else {
-        const filepathes = (await Worker.post(FileWorker, { id: 'listFiles', data: [file.dirname] })).map(file => file.path)
-        dispatch('showViewer', { filepathes, filepath }, { root: true })
+        dispatch('showViewer', { filepath: file.path }, { root: true })
       }
     },
     setScrollTop ({ commit, state }, { scrollTop }) {

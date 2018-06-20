@@ -68,9 +68,13 @@ export default {
   },
   computed: {
     noDataText () {
+      if (this.loading) {
+        return 'Loading...'
+      }
       return this.query ? 'No matching records found' : 'No data available'
     },
     ...mapState({
+      loading: state => state.starred.loading,
       query: state => state.starred.query,
       selectedFilepath: state => state.starred.selectedFilepath,
       scrollTop: state => state.starred.scrollTop

@@ -1,10 +1,13 @@
 import * as File from '~/utils/file'
+import * as Worker from '~/utils/worker'
+import FileWorker from '~/workers/file.worker.js'
 
 const scales = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
 
 export default {
   namespaced: true,
   state: {
+    loading: false,
     error: null,
     files: [],
     currentFilepath: '',
@@ -18,21 +21,37 @@ export default {
     }
   },
   actions: {
-    loadFiles ({ commit, dispatch, rootGetters }, { filepathes, filepath }) {
+    async loadFiles ({ commit, dispatch, rootGetters }, { dirpath, filepath, filepathes }) {
+      commit('setLoading', { loading: true })
+      commit('setError', { error: null })
+      commit('setFiles', { files: [] })
+      commit('setCurrentFilepath', { currentFilepath: '' })
       try {
-        const files = filepathes.map(filepath => File.get(filepath)).filter((file) => rootGetters['settings/isAllowedFile']({ filepath: file.path }))
-        if (!files.length) {
-          throw new Error('No Images')
+        let files = []
+        let currentFilepath = ''
+        if (dirpath) {
+          files = await Worker.post(FileWorker, { id: 'listFiles', data: [dirpath, { recursive: true }] })
+        } else if (filepath) {
+          const file = File.get(filepath)
+          files = await Worker.post(FileWorker, { id: 'listFiles', data: [file.dirname] })
+          currentFilepath = filepath
+        } else {
+          files = await Worker.post(FileWorker, { id: 'getFiles', data: [filepathes] })
+        }
+        files = files.filter((file) => rootGetters['settings/isAllowedFile']({ filepath: file.path }))
+        if (files.length && !currentFilepath) {
+          currentFilepath = files[0].path
         }
         commit('setError', { error: null })
         commit('setFiles', { files })
-        commit('setCurrentFilepath', { currentFilepath: filepath || files[0].path })
+        commit('setCurrentFilepath', { currentFilepath })
       } catch (e) {
-        const error = e.message === 'No Images' ? e : new Error('Invalid Image')
-        commit('setError', { error })
+        console.error(e)
+        commit('setError', { error: e })
         commit('setFiles', { files: [] })
         commit('setCurrentFilepath', { currentFilepath: null })
       }
+      commit('setLoading', { loading: false })
     },
     movePreviousFile ({ dispatch, getters, state }) {
       let index = getters.currentFileIndex - 1
@@ -79,6 +98,9 @@ export default {
     }
   },
   mutations: {
+    setLoading (state, { loading }) {
+      state.loading = loading
+    },
     setError (state, { error }) {
       state.error = error
     },

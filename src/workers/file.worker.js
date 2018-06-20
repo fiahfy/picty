@@ -1,6 +1,10 @@
+
+// process.dlopen = () => {
+//   throw new Error('Load native module is not safe')
+// }
 import * as File from '~/utils/file'
 
-const wait = (millis = 1000) => {
+const wait = (millis = 0) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve()
@@ -9,21 +13,27 @@ const wait = (millis = 1000) => {
 }
 
 onmessage = async ({ data: { id, data } }) => {
-  switch (id) {
-    case 'listFiles': {
-      await wait()
-      const files = File.listFiles(...data)
-      postMessage({ data: files })
-      break
+  try {
+    switch (id) {
+      case 'listFiles': {
+        await wait()
+        const files = File.listFiles(...data)
+        postMessage({ data: files })
+        break
+      }
+      case 'getFiles': {
+        await wait()
+        const files = File.getFiles(...data)
+        postMessage({ data: files })
+        break
+      }
+      default:
+        postMessage({ data: [] })
+        break
     }
-    case 'getFiles': {
-      await wait()
-      const files = File.getFiles(...data)
-      postMessage({ data: files })
-      break
-    }
-    default:
-      postMessage()
-      break
+  } catch (e) {
+    console.error(e)
+    postMessage({ data: [] })
   }
+  close()
 }

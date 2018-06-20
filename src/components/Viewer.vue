@@ -20,6 +20,10 @@
         pa-0
         overflow-hidden
       >
+        <v-progress-linear
+          v-if="loading"
+          :indeterminate="true"
+        />
         <viewer-content class="fill-height" />
         <viewer-toolbar ref="toolbar" />
       </v-container>
@@ -53,7 +57,8 @@ export default {
       }
     },
     ...mapState({
-      viewing: state => state.viewing
+      viewing: state => state.viewing,
+      loading: state => state.viewer.loading
     })
   },
   watch: {
@@ -155,6 +160,7 @@ export default {
 }
 
 .container {
+  position: relative;
   &.toolbar-hidden {
     .viewer-content {
       cursor: none;
@@ -169,6 +175,13 @@ export default {
     .viewer-toolbar {
       animation: fade-out 350ms forwards;
     }
+  }
+  .progress-linear {
+    left: 0;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
   .viewer-toolbar {
     bottom: 0;

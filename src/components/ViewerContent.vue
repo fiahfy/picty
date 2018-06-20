@@ -63,6 +63,15 @@ export default {
       }
     },
     message () {
+      if (this.loading) {
+        return 'Loading...'
+      }
+      if (!this.files.length) {
+        return 'No Images'
+      }
+      if (this.loadError) {
+        return 'Invalid Image'
+      }
       return this.error ? this.error.message : ''
     },
     imageSrc () {
@@ -83,15 +92,9 @@ export default {
       } : {}
     },
     ...mapState({
-      error: function (state) {
-        if (state.viewer.error) {
-          return state.viewer.error
-        }
-        if (this.loadError) {
-          return new Error('Image Load Failure')
-        }
-        return null
-      },
+      loading: state => state.viewer.loading,
+      error: state => state.viewer.error,
+      files: state => state.viewer.files,
       currentFilepath: state => state.viewer.currentFilepath,
       scale: state => state.viewer.scale,
       scaling: state => state.viewer.scaling,
@@ -103,7 +106,7 @@ export default {
       this.loadError = false
     },
     scale (newValue, oldValue) {
-      if (this.error) {
+      if (this.message) {
         return
       }
       this.$nextTick(() => {
@@ -133,7 +136,7 @@ export default {
       this.scrollPosition = null
     },
     onMouseMove (e) {
-      if (this.error) {
+      if (this.message) {
         return
       }
       if (this.dragging) {

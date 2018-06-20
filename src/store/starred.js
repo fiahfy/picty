@@ -36,7 +36,7 @@ export default {
     isSelectedFile (state) {
       return ({ filepath }) => state.selectedFilepath === filepath
     },
-    isStarredFile (state, getters, rootGetters) {
+    isStarredFile (state, getters, rootState, rootGetters) {
       return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
     }
   },
@@ -49,6 +49,7 @@ export default {
         return
       }
       commit('setLoading', { loading: true })
+      commit('setFiles', { files: [] })
       const files = await Worker.post(FileWorker, { id: 'getFiles', data: [rootState.bookmark.bookmarks] })
       commit('setFiles', { files })
       dispatch('sortFiles')
@@ -120,10 +121,9 @@ export default {
         return
       }
       if (file.directory) {
-        const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
-        dispatch('showViewer', { filepathes }, { root: true })
+        dispatch('showViewer', { dirpath: file.path }, { root: true })
       } else {
-        dispatch('showViewer', { filepathes: [filepath] }, { root: true })
+        dispatch('showViewer', { filepathes: [file.path] }, { root: true })
       }
     },
     changeOrderBy ({ commit, dispatch, state }, { orderBy }) {

@@ -50,14 +50,17 @@ export default new Vuex.Store({
       dispatch('explorer/changeDirectory', { dirpath })
       dispatch('changeRoute', { name: 'explorer' })
     },
-    showViewer ({ commit, dispatch, state }, { filepathes, filepath }) {
-      dispatch('viewer/loadFiles', { filepathes, filepath })
+    showViewer ({ commit, dispatch, state }, payload) {
+      dispatch('viewer/loadFiles', payload)
       commit('setViewing', { viewing: true })
       if (state.settings.fullScreen) {
         dispatch('enterFullScreen')
       }
     },
     dismissViewer ({ commit, dispatch, state }) {
+      if (state.viewer.loading) {
+        return
+      }
       if (state.settings.fullScreen || process.platform !== 'darwin') {
         dispatch('leaveFullScreen')
       }
