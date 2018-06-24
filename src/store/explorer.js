@@ -219,7 +219,7 @@ export default {
         dispatch('viewFile', { filepath: file.path })
       }
     },
-    async viewFile ({ dispatch }, { filepath }) {
+    viewFile ({ dispatch }, { filepath }) {
       const file = File.get(filepath)
       if (file.directory) {
         dispatch('showViewer', { dirpath: file.path }, { root: true })
