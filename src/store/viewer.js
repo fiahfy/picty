@@ -23,7 +23,7 @@ export default {
     }
   },
   actions: {
-    async loadFiles ({ commit, dispatch, rootGetters }, { dirpath, filepath, filepathes }) {
+    async loadFiles ({ commit, dispatch, rootGetters, rootState }, { dirpath, filepath, filepathes }) {
       commit('setLoading', { loading: true })
       commit('setError', { error: null })
       commit('setFiles', { files: [] })
@@ -32,7 +32,7 @@ export default {
         let files = []
         let currentFilepath = ''
         if (dirpath) {
-          files = await Worker.post(worker, { id: 'listFiles', data: [dirpath, { recursive: true }] })
+          files = await Worker.post(worker, { id: 'listFiles', data: [dirpath, { recursive: rootState.settings.recursive }] })
         } else if (filepath) {
           const file = File.get(filepath)
           files = await Worker.post(worker, { id: 'listFiles', data: [file.dirname] })
