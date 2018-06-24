@@ -1,10 +1,6 @@
-export const post = (Worker, args) => {
+export const post = (worker, args) => {
   return new Promise((resolve, reject) => {
     try {
-      process.dlopen = () => {
-        throw new Error('Load native module is not safe')
-      }
-      const worker = new Worker()
       worker.onmessage = ({ data: { id, data } }) => {
         resolve(data)
       }
@@ -18,11 +14,9 @@ export const post = (Worker, args) => {
   })
 }
 
-export const postAsync = (Worker, args, callback) => {
-  const worker = new Worker()
+export const postAsync = (worker, args, callback) => {
   worker.onmessage = ({ data: { id, data } }) => {
     callback(data)
   }
   worker.postMessage(args)
-  return worker
 }

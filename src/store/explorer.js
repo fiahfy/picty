@@ -11,6 +11,8 @@ const reversed = {
   mtime: true
 }
 
+const worker = new FileWorker()
+
 let watcher = null
 
 export default {
@@ -141,7 +143,6 @@ export default {
         return
       }
       commit('setLoading', { loading: true })
-      commit('setFiles', { files: [] })
       try {
         if (watcher) {
           watcher.close()
@@ -149,8 +150,12 @@ export default {
         watcher = fs.watch(rootState.directory, () => {
           dispatch('loadFiles')
         })
-        const files = (await Worker.post(FileWorker, { id: 'listFiles', data: [rootState.directory] }))
-          .filter((file) => file.directory || rootGetters['settings/isAllowedFile']({ filepath: file.path }))
+        const timer = setTimeout(() => {
+          commit('setFiles', { files: [] })
+        }, 1000)
+        let files = await Worker.post(worker, { id: 'listFiles', data: [rootState.directory] })
+        files = files.filter((file) => file.directory || rootGetters['settings/isAllowedFile']({ filepath: file.path }))
+        clearTimeout(timer)
         commit('setFiles', { files })
       } catch (e) {
         console.error(e)

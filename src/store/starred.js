@@ -3,6 +3,8 @@ import * as File from '~/utils/file'
 import * as Worker from '~/utils/worker'
 import FileWorker from '~/workers/file.worker.js'
 
+const worker = new FileWorker()
+
 const reversed = {
   name: false,
   dirname: false,
@@ -49,8 +51,11 @@ export default {
         return
       }
       commit('setLoading', { loading: true })
-      commit('setFiles', { files: [] })
-      const files = await Worker.post(FileWorker, { id: 'getFiles', data: [rootState.bookmark.bookmarks] })
+      const timer = setTimeout(() => {
+        commit('setFiles', { files: [] })
+      }, 1000)
+      const files = await Worker.post(worker, { id: 'getFiles', data: [rootState.bookmark.bookmarks] })
+      clearTimeout(timer)
       commit('setFiles', { files })
       dispatch('sortFiles')
       dispatch('focusTable')

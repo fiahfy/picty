@@ -6,28 +6,27 @@
     hide-overlay
     @keydown="onKeyDown"
   >
-    <v-layout
-      column
-      fill-height
-    >
-      <v-flex>
-        <title-bar :app="false" />
-      </v-flex>
-      <v-container
-        :class="containerClasses"
-        card
-        fluid
-        pa-0
-        overflow-hidden
+    <v-card>
+      <v-layout
+        column
+        fill-height
       >
-        <v-progress-linear
-          v-if="loading"
-          :indeterminate="true"
-        />
-        <viewer-content class="fill-height" />
-        <viewer-toolbar ref="toolbar" />
-      </v-container>
-    </v-layout>
+        <title-bar :app="false" />
+        <v-container
+          :class="containerClasses"
+          fluid
+          pa-0
+          overflow-hidden
+        >
+          <v-progress-linear
+            v-if="loading"
+            :indeterminate="true"
+          />
+          <viewer-content class="fill-height" />
+          <viewer-toolbar ref="toolbar" />
+        </v-container>
+      </v-layout>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -159,33 +158,36 @@ export default {
   }
 }
 
-.container {
-  position: relative;
-  &.toolbar-hidden {
-    .viewer-content {
-      cursor: none;
+.card {
+  height: 100%!important;
+  .container {
+    position: relative;
+    &.toolbar-hidden {
+      .viewer-content {
+        cursor: none;
+      }
     }
-  }
-  &.toolbar-fade-in {
+    &.toolbar-fade-in {
+      .viewer-toolbar {
+        animation: fade-in 350ms forwards;
+      }
+    }
+    &.toolbar-fade-out {
+      .viewer-toolbar {
+        animation: fade-out 350ms forwards;
+      }
+    }
+    .progress-linear {
+      left: 0;
+      margin: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
     .viewer-toolbar {
-      animation: fade-in 350ms forwards;
+      bottom: 0;
+      position: absolute;
     }
-  }
-  &.toolbar-fade-out {
-    .viewer-toolbar {
-      animation: fade-out 350ms forwards;
-    }
-  }
-  .progress-linear {
-    left: 0;
-    margin: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-  .viewer-toolbar {
-    bottom: 0;
-    position: absolute;
   }
 }
 </style>

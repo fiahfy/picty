@@ -4,6 +4,8 @@ import FileWorker from '~/workers/file.worker.js'
 
 const scales = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
 
+const worker = new FileWorker()
+
 export default {
   namespaced: true,
   state: {
@@ -30,13 +32,13 @@ export default {
         let files = []
         let currentFilepath = ''
         if (dirpath) {
-          files = await Worker.post(FileWorker, { id: 'listFiles', data: [dirpath, { recursive: true }] })
+          files = await Worker.post(worker, { id: 'listFiles', data: [dirpath, { recursive: true }] })
         } else if (filepath) {
           const file = File.get(filepath)
-          files = await Worker.post(FileWorker, { id: 'listFiles', data: [file.dirname] })
+          files = await Worker.post(worker, { id: 'listFiles', data: [file.dirname] })
           currentFilepath = filepath
         } else {
-          files = await Worker.post(FileWorker, { id: 'getFiles', data: [filepathes] })
+          files = await Worker.post(worker, { id: 'getFiles', data: [filepathes] })
         }
         files = files.filter((file) => rootGetters['settings/isAllowedFile']({ filepath: file.path }))
         if (files.length && !currentFilepath) {
