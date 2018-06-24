@@ -11,7 +11,7 @@
         column
         fill-height
       >
-        <title-bar :app="false" />
+        <title-bar />
         <v-container
           :class="containerClasses"
           fluid
