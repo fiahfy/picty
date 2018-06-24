@@ -67,10 +67,10 @@ export default {
         return 'Loading...'
       }
       if (!this.files.length) {
-        return 'No Images'
+        return 'No images'
       }
       if (this.loadError) {
-        return 'Invalid Image'
+        return 'Invalid image'
       }
       return this.error ? this.error.message : ''
     },
