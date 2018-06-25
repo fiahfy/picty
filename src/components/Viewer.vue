@@ -1,58 +1,89 @@
 <template>
-  <div
-    class="viewer"
-    tabindex="0"
+  <v-dialog
+    v-model="viewing"
+    transition="no-transition"
+    fullscreen
+    hide-overlay
     @keydown="onKeyDown"
   >
-    <viewer-container
-      :class="containerClasses"
-      class="fill-height"
-    />
-    <viewer-toolbar
-      ref="toolbar"
-      :class="toolbarClasses"
-    />
-  </div>
+    <v-card :class="classes">
+      <v-layout
+        column
+        fill-height
+      >
+        <title-bar />
+        <v-content class="fill-height pl-0">
+          <v-container
+            fill-height
+            fluid
+            pa-0
+          >
+            <v-layout column>
+              <v-progress-linear
+                v-if="loading"
+                :indeterminate="true"
+              />
+              <v-container
+                fluid
+                pa-0
+                overflow-hidden
+              >
+                <viewer-content class="fill-height" />
+              </v-container>
+            </v-layout>
+          </v-container>
+        </v-content>
+      </v-layout>
+    </v-card>
+    <v-bottom-sheet
+      v-model="sheet"
+      hide-overlay
+      persistent
+    >
+      <viewer-toolbar ref="toolbar" />
+    </v-bottom-sheet>
+  </v-dialog>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import ViewerContainer from './ViewerContainer'
+import { mapActions, mapState } from 'vuex'
+import TitleBar from '~/components/TitleBar'
+import ViewerContent from './ViewerContent'
 import ViewerToolbar from './ViewerToolbar'
 
 export default {
   components: {
-    ViewerContainer,
+    TitleBar,
+    ViewerContent,
     ViewerToolbar
   },
   data () {
     return {
-      toolbar: null
+      sheet: false
     }
   },
   computed: {
-    containerClasses () {
+    classes () {
       return {
-        hidden: this.toolbar === false
+        'bottom-sheet-hidden': !this.sheet
       }
     },
-    toolbarClasses () {
-      return {
-        'fade-in': this.toolbar === true,
-        'fade-out': this.toolbar === false
-      }
-    }
-  },
-  mounted () {
-    this.showToolbar()
-    document.body.addEventListener('mousemove', this.onMouseMove)
-    this.$nextTick(() => {
-      this.$el.focus()
+    ...mapState({
+      viewing: state => state.viewing,
+      loading: state => state.viewer.loading
     })
   },
-  beforeDestroy () {
-    this.clearTimer()
-    document.body.removeEventListener('mousemove', this.onMouseMove)
+  watch: {
+    viewing (value) {
+      if (value) {
+        this.showBottomSheet()
+        document.body.addEventListener('mousemove', this.onMouseMove)
+      } else {
+        this.sheet = false
+        this.clearTimer()
+        document.body.removeEventListener('mousemove', this.onMouseMove)
+      }
+    }
   },
   methods: {
     onKeyDown (e) {
@@ -83,7 +114,7 @@ export default {
       }
     },
     onMouseMove (e) {
-      this.showToolbar()
+      this.showBottomSheet()
     },
     clearTimer () {
       if (this.timer) {
@@ -92,9 +123,8 @@ export default {
     },
     setTimer () {
       this.timer = setTimeout(() => {
-        this.toolbar = false
+        this.sheet = false
         this.$refs.toolbar.hideMenu()
-        this.$el.focus()
       }, 2000)
     },
     resetTimer () {
@@ -104,9 +134,9 @@ export default {
       }
       this.setTimer()
     },
-    showToolbar () {
-      if (this.toolbar === false) {
-        this.toolbar = true
+    showBottomSheet () {
+      if (!this.sheet) {
+        this.sheet = true
       }
       this.resetTimer()
     },
@@ -120,42 +150,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(48px);
+.card {
+  height: 100%!important;
+  &.bottom-sheet-hidden {
+    .viewer-content {
+      cursor: none;
+    }
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes fade-out {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(48px);
-  }
-}
-.viewer {
-  outline: none;
-}
-.viewer-container {
-  &.hidden {
-    cursor: none;
-  }
-}
-.viewer-toolbar {
-  bottom: 0;
-  position: absolute;
-  &.fade-in {
-    animation: fade-in 350ms forwards;
-  }
-  &.fade-out {
-    animation: fade-out 350ms forwards;
+  .container .layout {
+    position: relative;
+    .progress-linear {
+      left: 0;
+      margin: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
   }
 }
 </style>

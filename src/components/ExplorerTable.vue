@@ -64,10 +64,14 @@ export default {
   },
   computed: {
     noDataText () {
+      if (this.loading) {
+        return 'Loading...'
+      }
       return this.query ? 'No matching records found' : 'No data available'
     },
     ...mapState({
       directory: state => state.directory,
+      loading: state => state.explorer.loading,
       query: state => state.explorer.query,
       selectedFilepath: state => state.explorer.selectedFilepath
     }),

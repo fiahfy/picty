@@ -1,8 +1,9 @@
 <template>
   <v-system-bar
-    :app="app"
+    v-if="titleBar"
     class="title-bar"
     height="22"
+    app
     status
   >
     <v-spacer/>
@@ -12,25 +13,22 @@
 </template>
 
 <script>
-import Package from '~~/package.json'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
-  props: {
-    app: {
-      type: Boolean,
-      default: true
-    }
-  },
   computed: {
-    title () {
-      return Package.productName
-    }
+    ...mapState({
+      title: state => state.title
+    }),
+    ...mapGetters({
+      titleBar: 'titleBar'
+    })
   }
 }
 </script>
 
 <style scoped lang="scss">
-.system-bar {
+.title-bar {
   -webkit-app-region: drag;
 }
 </style>

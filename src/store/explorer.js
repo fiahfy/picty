@@ -2,6 +2,8 @@ import fs from 'fs'
 import { remote, shell } from 'electron'
 import { Selector } from '~/store'
 import * as File from '~/utils/file'
+import * as Worker from '~/utils/worker'
+import FileWorker from '~/workers/file.worker.js'
 
 const reversed = {
   name: false,
@@ -9,11 +11,14 @@ const reversed = {
   mtime: true
 }
 
+const worker = new FileWorker()
+
 let watcher = null
 
 export default {
   namespaced: true,
   state: {
+    loading: false,
     files: [],
     selectedFilepath: '',
     directoryInput: '',
@@ -80,6 +85,9 @@ export default {
       }
     },
     changeDirectory ({ commit, dispatch, state, rootState }, { dirpath, force = false }) {
+      if (state.loading) {
+        return
+      }
       if (dirpath === rootState.directory && !force) {
         return
       }
@@ -112,6 +120,9 @@ export default {
       dispatch('restoreDirectory', { historyIndex: state.historyIndex })
     },
     restoreDirectory ({ commit, dispatch, state }, { historyIndex }) {
+      if (state.loading) {
+        return
+      }
       const history = state.histories[historyIndex]
       commit('setHistoryIndex', { historyIndex })
 
@@ -127,7 +138,11 @@ export default {
         dispatch('showMessage', { color: 'error', text: 'Invalid directory' }, { root: true })
       }
     },
-    loadFiles ({ commit, dispatch, rootGetters, rootState }) {
+    async loadFiles ({ commit, dispatch, rootGetters, rootState, state }) {
+      if (state.loading) {
+        return
+      }
+      commit('setLoading', { loading: true })
       try {
         if (watcher) {
           watcher.close()
@@ -135,14 +150,20 @@ export default {
         watcher = fs.watch(rootState.directory, () => {
           dispatch('loadFiles')
         })
-        const files = File.listFiles(rootState.directory)
-          .filter((file) => file.directory || rootGetters['settings/isAllowedFile']({ filepath: file.path }))
+        const timer = setTimeout(() => {
+          commit('setFiles', { files: [] })
+        }, 1000)
+        let files = await Worker.post(worker, { id: 'listFiles', data: [rootState.directory] })
+        files = files.filter((file) => file.directory || rootGetters['settings/isAllowedFile']({ filepath: file.path }))
+        clearTimeout(timer)
         commit('setFiles', { files })
       } catch (e) {
+        console.error(e)
         commit('setFiles', { files: [] })
       }
       dispatch('sortFiles')
       dispatch('focusTable')
+      commit('setLoading', { loading: false })
     },
     sortFiles ({ commit, getters, state }) {
       const { by, descending } = getters.order
@@ -201,11 +222,9 @@ export default {
     viewFile ({ dispatch }, { filepath }) {
       const file = File.get(filepath)
       if (file.directory) {
-        const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
-        dispatch('showViewer', { filepathes }, { root: true })
+        dispatch('showViewer', { dirpath: file.path }, { root: true })
       } else {
-        const filepathes = File.listFiles(file.dirname).map(file => file.path)
-        dispatch('showViewer', { filepathes, filepath }, { root: true })
+        dispatch('showViewer', { filepath: file.path }, { root: true })
       }
     },
     setScrollTop ({ commit, state }, { scrollTop }) {
@@ -229,6 +248,9 @@ export default {
     }
   },
   mutations: {
+    setLoading (state, { loading }) {
+      state.loading = loading
+    },
     setFiles (state, { files }) {
       state.files = files
     },

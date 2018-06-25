@@ -1,7 +1,7 @@
 <template>
   <v-container
     :class="classes"
-    class="viewer-container"
+    class="viewer-content"
     fluid
     pa-0
   >
@@ -63,10 +63,19 @@ export default {
       }
     },
     message () {
+      if (this.loading) {
+        return 'Loading...'
+      }
+      if (!this.files.length) {
+        return 'No images'
+      }
+      if (this.loadError) {
+        return 'Invalid image'
+      }
       return this.error ? this.error.message : ''
     },
     imageSrc () {
-      return `file://${this.currentFilepath}`
+      return this.currentFilepath ? `file://${this.currentFilepath}` : ''
     },
     imageClasses () {
       return {
@@ -83,15 +92,9 @@ export default {
       } : {}
     },
     ...mapState({
-      error: function (state) {
-        if (state.viewer.error) {
-          return state.viewer.error
-        }
-        if (this.loadError) {
-          return new Error('Image Load Failure')
-        }
-        return null
-      },
+      loading: state => state.viewer.loading,
+      error: state => state.viewer.error,
+      files: state => state.viewer.files,
       currentFilepath: state => state.viewer.currentFilepath,
       scale: state => state.viewer.scale,
       scaling: state => state.viewer.scaling,
@@ -103,7 +106,7 @@ export default {
       this.loadError = false
     },
     scale (newValue, oldValue) {
-      if (this.error) {
+      if (this.message) {
         return
       }
       this.$nextTick(() => {
@@ -133,7 +136,7 @@ export default {
       this.scrollPosition = null
     },
     onMouseMove (e) {
-      if (this.error) {
+      if (this.message) {
         return
       }
       if (this.dragging) {
@@ -176,36 +179,37 @@ export default {
 ::-webkit-scrollbar {
   display: none;
 }
-.viewer-container {
+
+.viewer-content {
   cursor: -webkit-grab;
   &.dragging {
     cursor: -webkit-grabbing;
   }
-}
-.wrapper {
-  overflow: auto;
-  position: relative;
-  img {
-    bottom:0;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top:0;
-    &.horizontal-center {
-      margin-left: auto;
-      margin-right: auto;
-    }
-    &.vertical-center {
-      margin-top: auto;
-      margin-bottom: auto;
-    }
-    &:not(.scaling) {
-      max-height: 100%;
-      max-width: 100%;
-      &.stretched {
-        height: 100%;
-        object-fit: contain;
-        width: 100%;
+  .wrapper {
+    overflow: auto;
+    position: relative;
+    img {
+      bottom:0;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top:0;
+      &.horizontal-center {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      &.vertical-center {
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+      &:not(.scaling) {
+        max-height: 100%;
+        max-width: 100%;
+        &.stretched {
+          height: 100%;
+          object-fit: contain;
+          width: 100%;
+        }
       }
     }
   }

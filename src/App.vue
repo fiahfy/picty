@@ -5,43 +5,20 @@
     @drop.native.prevent="onDrop"
     @dragover.native.prevent
   >
-    <title-bar v-if="titleBar" />
-    <activity-bar />
-    <v-content class="fill-height">
-      <router-view />
-    </v-content>
-    <notification-bar />
-    <v-dialog
-      v-if="viewing"
-      value="true"
-      fullscreen
-      hide-overlay
-    >
-      <v-layout
-        column
-        fill-height
-      >
-        <v-flex>
-          <title-bar
-            v-if="titleBar"
-            :app="false"
-          />
-        </v-flex>
-        <v-container
-          card
-          fluid
-          pa-0
-          overflow-hidden
-        >
-          <viewer class="fill-height" />
-        </v-container>
-      </v-layout>
-    </v-dialog>
+    <title-bar />
+    <template v-if="!viewing">
+      <activity-bar />
+      <v-content class="fill-height">
+        <router-view />
+      </v-content>
+      <notification-bar />
+    </template>
+    <viewer />
   </v-app>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import ActivityBar from './components/ActivityBar'
 import NotificationBar from './components/NotificationBar'
 import TitleBar from './components/TitleBar'
@@ -59,9 +36,6 @@ export default {
     ...mapState({
       viewing: state => state.viewing,
       darkTheme: state => state.settings.darkTheme
-    }),
-    ...mapGetters({
-      titleBar: 'titleBar'
     })
   },
   created () {
@@ -94,5 +68,11 @@ export default {
 
 html {
   overflow-y: hidden;
+}
+
+.no-transition {
+  &-leave-active, &-enter-active {
+    transition: none;
+  }
 }
 </style>

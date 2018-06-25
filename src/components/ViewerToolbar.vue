@@ -12,6 +12,7 @@
     >
       <v-icon>skip_previous</v-icon>
     </v-btn>
+
     <v-btn
       :title="'View next image'|accelerator('Right')"
       flat
@@ -20,14 +21,19 @@
     >
       <v-icon>skip_next</v-icon>
     </v-btn>
-    <v-slider
-      v-model="page"
-      :min="1"
-      :max="maxPage"
-      class="pt-0 px-3"
-      hide-details
-    />
-    <span class="px-3">{{ page }} / {{ maxPage }}</span>
+
+    <v-spacer v-if="loading" />
+    <template v-else>
+      <v-slider
+        v-model="page"
+        :min="1"
+        :max="maxPage"
+        class="pt-0 px-3"
+        hide-details
+      />
+      <span class="px-3">{{ page }} / {{ maxPage }}</span>
+    </template>
+
     <v-menu
       :close-on-content-click="false"
       v-model="menu"
@@ -74,6 +80,7 @@
         </v-btn>
       </v-toolbar>
     </v-menu>
+
     <v-btn
       v-if="fullScreen"
       title="Exit fullscreen"
@@ -92,6 +99,7 @@
     >
       <v-icon>fullscreen</v-icon>
     </v-btn>
+
     <v-btn
       :title="'Close'|accelerator('Esc')"
       flat
@@ -124,6 +132,7 @@ export default {
     },
     ...mapState({
       fullScreen: state => state.fullScreen,
+      loading: state => state.viewer.loading,
       maxPage: state => state.viewer.files.length,
       scale: state => Math.floor(state.viewer.scale * 100)
     })

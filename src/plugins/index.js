@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import { createSimpleTransition } from 'vuetify/es5/util/helpers'
 import VueMoment from 'vue-moment'
 import VueLongPress from 'vue-long-press-directive'
 import { buildText } from '~/utils/accelerator'
@@ -10,6 +11,9 @@ Vue.use(Vuetify, {
     accent: '#ff4081'
   }
 })
+
+const noTransition = createSimpleTransition('no-transition')
+Vue.component('no-transition', noTransition)
 
 Vue.use(VueMoment)
 
