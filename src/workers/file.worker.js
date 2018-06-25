@@ -1,24 +1,24 @@
 import * as File from '~/utils/file'
 
-onmessage = async ({ data: { id, data } }) => {
+onmessage = ({ data: { id, data } }) => {
   try {
     switch (id) {
       case 'listFiles': {
         const files = File.listFiles(...data)
-        postMessage({ data: files })
+        postMessage(files)
         break
       }
       case 'getFiles': {
         const files = File.getFiles(...data)
-        postMessage({ data: files })
+        postMessage(files)
         break
       }
       default:
-        postMessage({ data: [] })
+        postMessage([])
         break
     }
   } catch (e) {
     console.error(e)
-    postMessage({ data: [] })
+    postMessage([])
   }
 }

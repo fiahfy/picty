@@ -1,7 +1,7 @@
 export const post = (worker, args) => {
   return new Promise((resolve, reject) => {
     try {
-      worker.onmessage = ({ data: { id, data } }) => {
+      worker.onmessage = ({ data }) => {
         resolve(data)
       }
       worker.onerror = (e) => {
@@ -12,11 +12,4 @@ export const post = (worker, args) => {
       reject(e)
     }
   })
-}
-
-export const postAsync = (worker, args, callback) => {
-  worker.onmessage = ({ data: { id, data } }) => {
-    callback(data)
-  }
-  worker.postMessage(args)
 }
