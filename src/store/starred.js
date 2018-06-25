@@ -1,5 +1,9 @@
 import { Selector } from '~/store'
 import * as File from '~/utils/file'
+import * as Worker from '~/utils/worker'
+import FileWorker from '~/workers/file.worker.js'
+
+const worker = new FileWorker()
 
 const reversed = {
   name: false,
@@ -11,6 +15,7 @@ const reversed = {
 export default {
   namespaced: true,
   state: {
+    loading: false,
     files: [],
     selectedFilepath: '',
     query: '',
@@ -41,11 +46,20 @@ export default {
     initialize ({ dispatch }) {
       dispatch('loadFiles')
     },
-    loadFiles ({ commit, dispatch, rootState }) {
-      const files = rootState.bookmark.bookmarks.map((bookmark) => File.get(bookmark))
+    async loadFiles ({ commit, dispatch, rootState, state }) {
+      if (state.loading) {
+        return
+      }
+      commit('setLoading', { loading: true })
+      const timer = setTimeout(() => {
+        commit('setFiles', { files: [] })
+      }, 1000)
+      const files = await Worker.post(worker, { id: 'getFiles', data: [rootState.bookmark.bookmarks] })
+      clearTimeout(timer)
       commit('setFiles', { files })
       dispatch('sortFiles')
       dispatch('focusTable')
+      commit('setLoading', { loading: false })
     },
     sortFiles ({ commit, getters, state }) {
       const { by, descending } = state.order
@@ -112,10 +126,9 @@ export default {
         return
       }
       if (file.directory) {
-        const filepathes = File.listFiles(filepath, { recursive: true }).map(file => file.path)
-        dispatch('showViewer', { filepathes }, { root: true })
+        dispatch('showViewer', { dirpath: file.path }, { root: true })
       } else {
-        dispatch('showViewer', { filepathes: [filepath] }, { root: true })
+        dispatch('showViewer', { filepathes: [file.path] }, { root: true })
       }
     },
     changeOrderBy ({ commit, dispatch, state }, { orderBy }) {
@@ -132,6 +145,9 @@ export default {
     }
   },
   mutations: {
+    setLoading (state, { loading }) {
+      state.loading = loading
+    },
     setFiles (state, { files }) {
       state.files = files
     },

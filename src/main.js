@@ -4,13 +4,17 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
 let mainWindow
 
+const send = (...args) => {
+  mainWindow && mainWindow.webContents.send(...args)
+}
+
 const createTemplate = () => {
   const template = [
     {
       label: 'File',
       submenu: [
-        { label: 'Open...', accelerator: 'CmdOrCtrl+O', click: () => { mainWindow.webContents.send('openDirectory') } },
-        { label: 'Open Images...', accelerator: 'CmdOrCtrl+Shift+O', click: () => { mainWindow.webContents.send('openImages') } }
+        { label: 'Open...', accelerator: 'CmdOrCtrl+O', click: () => { send('openDirectory') } },
+        { label: 'Open Images...', accelerator: 'CmdOrCtrl+Shift+O', click: () => { send('openImages') } }
       ]
     },
     {
@@ -26,14 +30,14 @@ const createTemplate = () => {
         { role: 'delete' },
         { role: 'selectall' },
         { type: 'separator' },
-        { label: 'Search...', accelerator: 'CmdOrCtrl+F', click: () => { mainWindow.webContents.send('search') } }
+        { label: 'Search...', accelerator: 'CmdOrCtrl+F', click: () => { send('search') } }
       ]
     },
     {
       label: 'View',
       submenu: [
-        { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { mainWindow.webContents.send('showExplorer') } },
-        { label: 'Starred', accelerator: 'CmdOrCtrl+Shift+B', click: () => { mainWindow.webContents.send('showStarred') } },
+        { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { send('showExplorer') } },
+        { label: 'Starred', accelerator: 'CmdOrCtrl+Shift+B', click: () => { send('showStarred') } },
         { type: 'separator' },
         { role: 'reload' },
         { role: 'forcereload' },
@@ -49,21 +53,21 @@ const createTemplate = () => {
     {
       label: 'Explorer',
       submenu: [
-        { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { mainWindow.webContents.send('openLocation') } },
+        { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => { send('openLocation') } },
         { type: 'separator' },
-        { label: 'Back', accelerator: 'CmdOrCtrl+Left', click: () => { mainWindow.webContents.send('backDirectory') } },
-        { label: 'Forward', accelerator: 'CmdOrCtrl+Right', click: () => { mainWindow.webContents.send('forwardDirectory') } },
-        { label: 'Up', accelerator: 'CmdOrCtrl+Shift+P', click: () => { mainWindow.webContents.send('upDirectory') } },
-        { label: 'Home', accelerator: 'CmdOrCtrl+Shift+H', click: () => { mainWindow.webContents.send('changeHomeDirectory') } },
-        { label: 'Browse', click: () => { mainWindow.webContents.send('browseCurrentDirectory') } }
+        { label: 'Back', accelerator: 'CmdOrCtrl+Left', click: () => { send('backDirectory') } },
+        { label: 'Forward', accelerator: 'CmdOrCtrl+Right', click: () => { send('forwardDirectory') } },
+        { label: 'Up', accelerator: 'CmdOrCtrl+Shift+P', click: () => { send('upDirectory') } },
+        { label: 'Home', accelerator: 'CmdOrCtrl+Shift+H', click: () => { send('changeHomeDirectory') } },
+        { label: 'Browse', click: () => { send('browseCurrentDirectory') } }
       ]
     },
     {
       label: 'Viewer',
       submenu: [
-        { label: 'Zoom In', accelerator: 'CmdOrCtrl+Plus', click: () => { mainWindow.webContents.send('zoomIn') } },
-        { label: 'Zoom Out', accelerator: 'CmdOrCtrl+-', click: () => { mainWindow.webContents.send('zoomOut') } },
-        { label: 'Reset Zoom', accelerator: 'CmdOrCtrl+0', click: () => { mainWindow.webContents.send('resetZoom') } }
+        { label: 'Zoom In', accelerator: 'CmdOrCtrl+Plus', click: () => { send('zoomIn') } },
+        { label: 'Zoom Out', accelerator: 'CmdOrCtrl+-', click: () => { send('zoomOut') } },
+        { label: 'Reset Zoom', accelerator: 'CmdOrCtrl+0', click: () => { send('resetZoom') } }
       ]
     },
     {
@@ -87,7 +91,7 @@ const createTemplate = () => {
       submenu: [
         { role: 'about' },
         { type: 'separator' },
-        { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => { mainWindow.webContents.send('showSettings') } },
+        { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => { send('showSettings') } },
         { type: 'separator' },
         { role: 'services', submenu: [] },
         { type: 'separator' },
@@ -132,7 +136,10 @@ const createWindow = () => {
 
   const options = {
     ...windowState,
-    titleBarStyle: 'hidden'
+    titleBarStyle: 'hidden',
+    webPreferences: {
+      nodeIntegrationInWorker: true
+    }
   }
 
   let url = `file://${__dirname}/app/index.html`
@@ -168,11 +175,15 @@ const createWindow = () => {
   })
 
   mainWindow.on('enter-full-screen', () => {
-    mainWindow.webContents.send('enterFullScreen')
+    send('enterFullScreen')
   })
 
   mainWindow.on('leave-full-screen', () => {
-    mainWindow.webContents.send('leaveFullScreen')
+    send('leaveFullScreen')
+  })
+
+  mainWindow.on('app-command', (e, cmd) => {
+    send('appCommand', cmd)
   })
 }
 

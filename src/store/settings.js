@@ -5,6 +5,7 @@ export default {
   state: {
     darkTheme: false,
     fullScreen: false,
+    recursive: false,
     imageStretched: false,
     allowedExtensions: [
       '.jpeg',
@@ -29,6 +30,9 @@ export default {
     },
     setFullScreen (state, { fullScreen }) {
       state.fullScreen = fullScreen
+    },
+    setRecursive (state, { recursive }) {
+      state.recursive = recursive
     },
     setImageStretched (state, { imageStretched }) {
       state.imageStretched = imageStretched

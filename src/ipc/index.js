@@ -8,9 +8,19 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('leaveFullScreen', () => {
     store.commit('setFullScreen', { fullScreen: false })
   })
+  ipcRenderer.on('appCommand', (e, cmd) => {
+    switch (cmd) {
+      case 'browser-backward':
+        store.dispatch('explorer/backDirectory')
+        break
+      case 'browser-forward':
+        store.dispatch('explorer/forwardDirectory')
+        break
+    }
+  })
   ipcRenderer.on('openDirectory', () => {
     const filepathes = remote.dialog.showOpenDialog({ properties: ['openDirectory'] })
-    if (!filepathes.length) {
+    if (!filepathes || !filepathes.length) {
       return
     }
     const dirpath = filepathes[0]
@@ -18,7 +28,7 @@ export const addIpcRendererListeners = (store) => {
   })
   ipcRenderer.on('openImages', () => {
     const filepathes = remote.dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
-    if (!filepathes.length) {
+    if (!filepathes || !filepathes.length) {
       return
     }
     store.dispatch('showViewer', { filepathes })

@@ -6,24 +6,42 @@
     hide-overlay
     @keydown="onKeyDown"
   >
-    <v-layout
-      column
-      fill-height
-    >
-      <v-flex>
-        <title-bar :app="false" />
-      </v-flex>
-      <v-container
-        :class="containerClasses"
-        card
-        fluid
-        pa-0
-        overflow-hidden
+    <v-card :class="classes">
+      <v-layout
+        column
+        fill-height
       >
-        <viewer-content class="fill-height" />
-        <viewer-toolbar ref="toolbar" />
-      </v-container>
-    </v-layout>
+        <title-bar />
+        <v-content class="fill-height pl-0">
+          <v-container
+            fill-height
+            fluid
+            pa-0
+          >
+            <v-layout column>
+              <v-progress-linear
+                v-if="loading"
+                :indeterminate="true"
+              />
+              <v-container
+                fluid
+                pa-0
+                overflow-hidden
+              >
+                <viewer-content class="fill-height" />
+              </v-container>
+            </v-layout>
+          </v-container>
+        </v-content>
+      </v-layout>
+    </v-card>
+    <v-bottom-sheet
+      v-model="sheet"
+      hide-overlay
+      persistent
+    >
+      <viewer-toolbar ref="toolbar" />
+    </v-bottom-sheet>
   </v-dialog>
 </template>
 
@@ -41,28 +59,27 @@ export default {
   },
   data () {
     return {
-      toolbar: null
+      sheet: false
     }
   },
   computed: {
-    containerClasses () {
+    classes () {
       return {
-        'toolbar-fade-in': this.toolbar === true,
-        'toolbar-fade-out': this.toolbar === false,
-        'toolbar-hidden': this.toolbar === false
+        'bottom-sheet-hidden': !this.sheet
       }
     },
     ...mapState({
-      viewing: state => state.viewing
+      viewing: state => state.viewing,
+      loading: state => state.viewer.loading
     })
   },
   watch: {
     viewing (value) {
       if (value) {
-        this.showToolbar()
+        this.showBottomSheet()
         document.body.addEventListener('mousemove', this.onMouseMove)
       } else {
-        this.toolbar = null
+        this.sheet = false
         this.clearTimer()
         document.body.removeEventListener('mousemove', this.onMouseMove)
       }
@@ -97,7 +114,7 @@ export default {
       }
     },
     onMouseMove (e) {
-      this.showToolbar()
+      this.showBottomSheet()
     },
     clearTimer () {
       if (this.timer) {
@@ -106,7 +123,7 @@ export default {
     },
     setTimer () {
       this.timer = setTimeout(() => {
-        this.toolbar = false
+        this.sheet = false
         this.$refs.toolbar.hideMenu()
       }, 2000)
     },
@@ -117,9 +134,9 @@ export default {
       }
       this.setTimer()
     },
-    showToolbar () {
-      if (this.toolbar === false) {
-        this.toolbar = true
+    showBottomSheet () {
+      if (!this.sheet) {
+        this.sheet = true
       }
       this.resetTimer()
     },
@@ -133,46 +150,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(48px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes fade-out {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(48px);
-  }
-}
-
-.container {
-  &.toolbar-hidden {
+.card {
+  height: 100%!important;
+  &.bottom-sheet-hidden {
     .viewer-content {
       cursor: none;
     }
   }
-  &.toolbar-fade-in {
-    .viewer-toolbar {
-      animation: fade-in 350ms forwards;
+  .container .layout {
+    position: relative;
+    .progress-linear {
+      left: 0;
+      margin: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
     }
-  }
-  &.toolbar-fade-out {
-    .viewer-toolbar {
-      animation: fade-out 350ms forwards;
-    }
-  }
-  .viewer-toolbar {
-    bottom: 0;
-    position: absolute;
   }
 }
 </style>
