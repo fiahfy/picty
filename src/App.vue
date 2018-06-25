@@ -6,11 +6,13 @@
     @dragover.native.prevent
   >
     <title-bar />
-    <activity-bar />
-    <v-content class="fill-height">
-      <router-view />
-    </v-content>
-    <notification-bar />
+    <template v-if="!viewing">
+      <activity-bar />
+      <v-content class="fill-height">
+        <router-view />
+      </v-content>
+      <notification-bar />
+    </template>
     <viewer />
   </v-app>
 </template>
@@ -32,6 +34,7 @@ export default {
   },
   computed: {
     ...mapState({
+      viewing: state => state.viewing,
       darkTheme: state => state.settings.darkTheme
     })
   },
