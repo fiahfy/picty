@@ -181,6 +181,10 @@ const createWindow = () => {
   mainWindow.on('leave-full-screen', () => {
     send('leaveFullScreen')
   })
+
+  mainWindow.on('app-command', (e, cmd) => {
+    send('appCommand', cmd)
+  })
 }
 
 app.on('ready', () => {
