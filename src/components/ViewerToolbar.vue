@@ -183,17 +183,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.viewer-toolbar {
-  & /deep/ .input-group--slider {
-    left: 0;
-    margin: 0!important;
-    padding: 0!important;
-    position: absolute;
-    right: 0;
-    top: 1px;
-    .slider {
-      height: 0;
-    }
+.viewer-toolbar /deep/ .input-group--slider {
+  left: 0;
+  margin: 0!important;
+  padding: 0!important;
+  position: absolute;
+  right: 0;
+  top: 1px;
+  .slider {
+    height: 0;
   }
 }
 </style>
