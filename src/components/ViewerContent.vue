@@ -75,7 +75,10 @@ export default {
       return this.error ? this.error.message : ''
     },
     imageSrc () {
-      return this.currentFilepath ? `file://${this.currentFilepath}` : ''
+      if (!this.currentFilepath) {
+        return ''
+      }
+      return encodeURI(`file://${this.currentFilepath}`).replace(/[?#]/g, encodeURIComponent)
     },
     imageClasses () {
       return {
