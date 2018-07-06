@@ -94,9 +94,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.starred-card /deep/ .input-group--text-field label {
-  top: 0;
-}
-</style>

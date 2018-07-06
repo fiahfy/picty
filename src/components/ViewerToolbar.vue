@@ -22,17 +22,17 @@
       <v-icon>skip_next</v-icon>
     </v-btn>
 
-    <v-spacer v-if="loading" />
-    <template v-else>
-      <v-slider
-        v-model="page"
-        :min="1"
-        :max="maxPage"
-        class="pt-0 px-3"
-        hide-details
-      />
-      <span class="px-3">{{ page }} / {{ maxPage }}</span>
-    </template>
+    <v-slider
+      v-if="!loading"
+      v-model="page"
+      :min="1"
+      :max="maxPage"
+      class="pt-0 px-3"
+      hide-details
+      thumb-label
+    />
+
+    <v-spacer />
 
     <v-menu
       :close-on-content-click="false"
@@ -181,3 +181,17 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.viewer-toolbar /deep/ .v-input--slider {
+  left: 0;
+  margin: 0!important;
+  padding: 0!important;
+  position: absolute;
+  right: 0;
+  top: 1px;
+  .v-slider {
+    height: 0;
+  }
+}
+</style>

@@ -94,9 +94,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.explorer-card /deep/ .input-group--text-field label {
-  top: 0;
-}
-</style>

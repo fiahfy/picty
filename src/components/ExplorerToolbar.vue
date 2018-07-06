@@ -52,14 +52,13 @@
     </v-btn>
     <v-text-field
       v-model="directoryInput"
-      :prepend-icon-cb="prependIconCallback"
       name="directory"
-      class="mx-3"
+      class="ml-3"
       label="Path"
       prepend-icon="folder"
       single-line
       hide-details
-      full-width
+      @click:prepend="onPrependClick"
       @keyup="onTextKeyUp"
       @contextmenu.stop="onTextContextMenu"
     />
@@ -137,7 +136,7 @@ export default {
         this.changeDirectory({ dirpath: e.target.value })
       }
     },
-    prependIconCallback () {
+    onPrependClick () {
       this.browseDirectory()
     },
     ...mapActions({
@@ -152,9 +151,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.explorer-toolbar /deep/ .input-group--text-field label {
-  margin-left: 0;
-}
-</style>

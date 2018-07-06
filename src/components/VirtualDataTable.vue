@@ -104,7 +104,7 @@ export default {
   },
   mounted () {
     window.addEventListener('resize', this.onResize)
-    this.container = this.$el.querySelector('.table__overflow')
+    this.container = this.$el.querySelector('.v-table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
     this.$nextTick(() => {
       this.adjustItems()
@@ -153,7 +153,7 @@ export default {
 </script>
 
 <style lang="scss">
-.theme--dark .virtual-data-table.sticky-headers .table__overflow::-webkit-scrollbar-thumb {
+.theme--dark .virtual-data-table.sticky-headers .v-table__overflow::-webkit-scrollbar-thumb {
   background-color: #424242!important;
   &:hover {
     background-color: #505050!important;
@@ -166,7 +166,7 @@ export default {
 
 <style scoped lang="scss">
 .virtual-data-table.sticky-headers {
-  & /deep/ .table__overflow {
+  & /deep/ .v-table__overflow {
     height: 100%;
     overflow-y: scroll;
     &::-webkit-scrollbar {
@@ -181,7 +181,7 @@ export default {
         background-color: #ccc;
       }
     }
-    .datatable>thead {
+    .v-datatable>thead {
       background: inherit;
       &>tr {
         background: inherit;
@@ -191,7 +191,7 @@ export default {
           top: 0;
           z-index: 1;
         }
-        &.datatable__progress>th {
+        &.v-datatable__progress>th {
           top: 56px;
           z-index: 0;
           &:after {
@@ -206,9 +206,9 @@ export default {
       }
     }
   }
-  &.scrolling /deep/ .datatable>thead>tr {
+  &.scrolling /deep/ .v-datatable>thead>tr {
     border-bottom: none;
-    &.datatable__progress>th:after {
+    &.v-datatable__progress>th:after {
       height: 10px;
     }
   }
