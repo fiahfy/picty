@@ -4,16 +4,6 @@
     flat
     dense
   >
-    <v-slider
-      v-if="!loading"
-      v-model="page"
-      :min="1"
-      :max="maxPage"
-      class="pt-0 px-3"
-      hide-details
-      thumb-label
-    />
-
     <v-btn
       :title="'View previous image'|accelerator('Left')"
       flat
@@ -31,6 +21,16 @@
     >
       <v-icon>skip_next</v-icon>
     </v-btn>
+
+    <v-slider
+      v-if="!loading"
+      v-model="page"
+      :min="1"
+      :max="maxPage"
+      class="pt-0 px-3"
+      hide-details
+      thumb-label
+    />
 
     <v-spacer />
 
@@ -183,14 +183,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.viewer-toolbar /deep/ .input-group--slider {
+.viewer-toolbar /deep/ .v-input--slider {
   left: 0;
   margin: 0!important;
   padding: 0!important;
   position: absolute;
   right: 0;
   top: 1px;
-  .slider {
+  .v-slider {
     height: 0;
   }
 }

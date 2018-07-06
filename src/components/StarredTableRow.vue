@@ -134,8 +134,13 @@ export default {
 <style scoped lang="scss">
 .starred-table-row {
   cursor: pointer;
-  td span {
-    flex: 1;
+  td {
+    .v-icon {
+      user-select: none;
+    }
+    span {
+      flex: 1;
+    }
   }
 }
 </style>

@@ -46,7 +46,7 @@ export default {
 <style scoped lang="scss">
 .layout {
   position: relative;
-  .progress-linear {
+  .v-progress-linear {
     left: 0;
     margin: 0;
     position: absolute;

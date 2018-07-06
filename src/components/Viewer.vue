@@ -150,7 +150,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.card {
+.v-card {
   height: 100%!important;
   &.bottom-sheet-hidden {
     .viewer-content {
@@ -159,7 +159,7 @@ export default {
   }
   .container .layout {
     position: relative;
-    .progress-linear {
+    .v-progress-linear {
       left: 0;
       margin: 0;
       position: absolute;
