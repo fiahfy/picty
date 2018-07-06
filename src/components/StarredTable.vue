@@ -172,7 +172,7 @@ export default {
 <style scoped lang="scss">
 .starred-table {
   outline: none;
-  & /deep/ .datatable {
+  & /deep/ .v-datatable {
     table-layout: fixed;
   }
 }
