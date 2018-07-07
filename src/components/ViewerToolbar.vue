@@ -22,6 +22,8 @@
       <v-icon>skip_next</v-icon>
     </v-btn>
 
+    <span class="px-3">{{ page }} / {{ maxPage }}</span>
+
     <v-slider
       v-if="!loading"
       v-model="page"
@@ -29,7 +31,6 @@
       :max="maxPage"
       class="pt-0 px-3"
       hide-details
-      thumb-label
     />
 
     <v-spacer />

@@ -8,6 +8,7 @@
     <v-layout fill-height>
       <v-flex v-if="message">
         <v-layout
+          fill-height
           align-center
           justify-center
         >
@@ -40,6 +41,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import fileUrl from 'file-url'
 
 export default {
   data () {
@@ -75,10 +77,7 @@ export default {
       return this.error ? this.error.message : ''
     },
     imageSrc () {
-      if (!this.currentFilepath) {
-        return ''
-      }
-      return encodeURI(`file://${this.currentFilepath}`).replace(/[?#]/g, encodeURIComponent)
+      return this.currentFilepath ? fileUrl(this.currentFilepath) : ''
     },
     imageClasses () {
       return {
