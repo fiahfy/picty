@@ -29,7 +29,7 @@
       v-model="page"
       :min="1"
       :max="maxPage"
-      class="pt-0 px-3"
+      class="px-3"
       hide-details
     />
 
@@ -186,8 +186,6 @@ export default {
 <style scoped lang="scss">
 .viewer-toolbar /deep/ .v-input--slider {
   left: 0;
-  margin: 0!important;
-  padding: 0!important;
   position: absolute;
   right: 0;
   top: 1px;
