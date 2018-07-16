@@ -6511,9 +6511,9 @@ vue-long-press-directive@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/vue-long-press-directive/-/vue-long-press-directive-1.0.2.tgz#97720c599185b7b10b7292d75739a4c26a78da4c"
 
-vue-moment@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/vue-moment/-/vue-moment-3.2.0.tgz#28cd2b313831ae83953f646ac4785a2cc724e412"
+vue-moment@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/vue-moment/-/vue-moment-4.0.0.tgz#20809d1e7d7fca63d556fb8d008b95993d32f5ea"
   dependencies:
     moment "^2.11.1"
 
