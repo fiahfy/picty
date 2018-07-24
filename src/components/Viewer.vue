@@ -68,10 +68,12 @@ export default {
         'bottom-sheet-hidden': !this.sheet
       }
     },
-    ...mapState({
-      viewing: state => state.viewing,
-      loading: state => state.viewer.loading
-    })
+    ...mapState([
+      'viewing'
+    ]),
+    ...mapState('local/viewer', [
+      'loading'
+    ])
   },
   watch: {
     viewing (value) {
@@ -89,7 +91,7 @@ export default {
     onKeyDown (e) {
       switch (e.keyCode) {
         case 27:
-          this.dismiss()
+          this.dismissViewer()
           break
         case 37:
           if (e.target.getAttribute('role') !== 'slider') {
@@ -140,11 +142,13 @@ export default {
       }
       this.resetTimer()
     },
-    ...mapActions({
-      dismiss: 'dismissViewer',
-      movePreviousFile: 'viewer/movePreviousFile',
-      moveNextFile: 'viewer/moveNextFile'
-    })
+    ...mapActions([
+      'dismissViewer'
+    ]),
+    ...mapActions('local/viewer', [
+      'movePreviousFile',
+      'moveNextFile'
+    ])
   }
 }
 </script>

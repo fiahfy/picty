@@ -70,10 +70,10 @@ export default {
     fileSize () {
       return this.file.directory ? null : this.file.size
     },
-    ...mapGetters({
-      isSelectedFile: 'starred/isSelectedFile',
-      isStarredFile: 'starred/isStarredFile'
-    })
+    ...mapGetters('local/starred', [
+      'isSelectedFile',
+      'isStarredFile'
+    ])
   },
   methods: {
     onClick () {
@@ -120,13 +120,13 @@ export default {
     onButtonClick () {
       this.toggleFileStarred({ filepath: this.file.path })
     },
-    ...mapActions({
-      selectFile: 'starred/selectFile',
-      searchFiles: 'starred/searchFiles',
-      openFile: 'starred/openFile',
-      viewFile: 'starred/viewFile',
-      toggleFileStarred: 'starred/toggleFileStarred'
-    })
+    ...mapActions('local/starred', [
+      'selectFile',
+      'searchFiles',
+      'openFile',
+      'viewFile',
+      'toggleFileStarred'
+    ])
   }
 }
 </script>

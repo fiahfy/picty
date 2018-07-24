@@ -5,9 +5,7 @@ import { remote } from 'electron'
 import Package from '~~/package.json'
 import router from '~/router'
 import * as File from '~/utils/file'
-import explorer from './explorer'
-import starred from './starred'
-import viewer from './viewer'
+import local from './local'
 import bookmark from './bookmark'
 import settings from './settings'
 
@@ -35,8 +33,8 @@ export default new Vuex.Store({
   },
   actions: {
     initialize ({ dispatch }) {
-      dispatch('explorer/initialize')
-      dispatch('starred/initialize')
+      dispatch('local/explorer/initialize')
+      dispatch('local/starred/initialize')
     },
     open ({ dispatch }, { filepathes }) {
       const file = File.get(filepathes[0])
@@ -47,18 +45,18 @@ export default new Vuex.Store({
       }
     },
     openDirectory ({ dispatch }, { dirpath }) {
-      dispatch('explorer/changeDirectory', { dirpath })
+      dispatch('local/explorer/changeDirectory', { dirpath })
       dispatch('changeRoute', { name: 'explorer' })
     },
     showViewer ({ commit, dispatch, state }, payload) {
-      dispatch('viewer/loadFiles', payload)
+      dispatch('local/viewer/loadFiles', payload)
       commit('setViewing', { viewing: true })
       if (state.settings.fullScreen) {
         dispatch('enterFullScreen')
       }
     },
     dismissViewer ({ commit, dispatch, state }) {
-      if (state.viewer.loading) {
+      if (state.local.viewer.loading) {
         return
       }
       if (state.settings.fullScreen || process.platform !== 'darwin') {
@@ -128,9 +126,7 @@ export default new Vuex.Store({
     }
   },
   modules: {
-    explorer,
-    starred,
-    viewer,
+    local,
     bookmark,
     settings
   },

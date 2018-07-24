@@ -73,10 +73,10 @@ export default {
   computed: {
     directoryInput: {
       get () {
-        return this.$store.state.explorer.directoryInput
+        return this.$store.state.local.explorer.directoryInput
       },
       set (value) {
-        this.$store.commit('explorer/setDirectoryInput', { directoryInput: value })
+        this.$store.commit('local/explorer/setDirectoryInput', { directoryInput: value })
       }
     },
     backDisabled () {
@@ -85,12 +85,12 @@ export default {
     forwardDisabled () {
       return !this.canForwardDirectory
     },
-    ...mapGetters({
-      backDirectories: 'explorer/backDirectories',
-      forwardDirectories: 'explorer/forwardDirectories',
-      canBackDirectory: 'explorer/canBackDirectory',
-      canForwardDirectory: 'explorer/canForwardDirectory'
-    })
+    ...mapGetters('local/explorer', [
+      'backDirectories',
+      'forwardDirectories',
+      'canBackDirectory',
+      'canForwardDirectory'
+    ])
   },
   methods: {
     onBackClick () {
@@ -139,15 +139,15 @@ export default {
     onPrependClick () {
       this.browseDirectory()
     },
-    ...mapActions({
-      upDirectory: 'explorer/upDirectory',
-      changeHomeDirectory: 'explorer/changeHomeDirectory',
-      changeDirectory: 'explorer/changeDirectory',
-      backDirectory: 'explorer/backDirectory',
-      forwardDirectory: 'explorer/forwardDirectory',
-      reloadDirectory: 'explorer/reloadDirectory',
-      browseDirectory: 'explorer/browseDirectory'
-    })
+    ...mapActions('local/explorer', [
+      'upDirectory',
+      'changeHomeDirectory',
+      'changeDirectory',
+      'backDirectory',
+      'forwardDirectory',
+      'reloadDirectory',
+      'browseDirectory'
+    ])
   }
 }
 </script>

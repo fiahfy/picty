@@ -63,7 +63,7 @@
         >
           <v-icon>zoom_in</v-icon>
         </v-btn>
-        <span class="px-3">{{ scale }}%</span>
+        <span class="px-3">{{ percentage }}%</span>
         <v-btn
           :title="'Zoom out'|accelerator('CmdOrCtrl+-')"
           flat
@@ -125,18 +125,26 @@ export default {
   computed: {
     page: {
       get () {
-        return this.$store.getters['viewer/currentFileIndex'] + 1
+        return this.$store.getters['local/viewer/currentFileIndex'] + 1
       },
       set (value) {
-        this.$store.dispatch('viewer/moveFileIndex', { index: value - 1 })
+        this.$store.dispatch('local/viewer/moveFileIndex', { index: value - 1 })
       }
     },
-    ...mapState({
-      fullScreen: state => state.fullScreen,
-      loading: state => state.viewer.loading,
-      maxPage: state => state.viewer.files.length,
-      scale: state => Math.floor(state.viewer.scale * 100)
-    })
+    maxPage () {
+      return this.files.length
+    },
+    percentage () {
+      return Math.floor(this.scale * 100)
+    },
+    ...mapState([
+      'fullScreen'
+    ]),
+    ...mapState('local/viewer', [
+      'loading',
+      'files',
+      'scale'
+    ])
   },
   methods: {
     onPreviousClick () {
@@ -161,7 +169,7 @@ export default {
       this.enterFullScreen()
     },
     onCloseClick () {
-      this.dismiss()
+      this.dismissViewer()
     },
     hideMenu () {
       this.menu = false
@@ -169,16 +177,18 @@ export default {
     isHover () {
       return !!(this.$el.querySelector(':hover') || this.$refs.toolbar.$el.querySelector(':hover'))
     },
-    ...mapActions({
-      enterFullScreen: 'enterFullScreen',
-      leaveFullScreen: 'leaveFullScreen',
-      dismiss: 'dismissViewer',
-      movePreviousFile: 'viewer/movePreviousFile',
-      moveNextFile: 'viewer/moveNextFile',
-      zoomIn: 'viewer/zoomIn',
-      zoomOut: 'viewer/zoomOut',
-      resetZoom: 'viewer/resetZoom'
-    })
+    ...mapActions([
+      'enterFullScreen',
+      'leaveFullScreen',
+      'dismissViewer'
+    ]),
+    ...mapActions('local/viewer', [
+      'movePreviousFile',
+      'moveNextFile',
+      'zoomIn',
+      'zoomOut',
+      'resetZoom'
+    ])
   }
 }
 </script>

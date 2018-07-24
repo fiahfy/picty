@@ -33,9 +33,9 @@ export default {
     StarredTable
   },
   computed: {
-    ...mapState({
-      loading: state => state.starred.loading
-    })
+    ...mapState('local/starred', [
+      'loading'
+    ])
   }
 }
 </script>

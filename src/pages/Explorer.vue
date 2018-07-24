@@ -36,9 +36,9 @@ export default {
     ExplorerTable
   },
   computed: {
-    ...mapState({
-      loading: state => state.explorer.loading
-    })
+    ...mapState('local/explorer', [
+      'loading'
+    ])
   }
 }
 </script>

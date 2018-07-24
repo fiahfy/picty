@@ -24,9 +24,9 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      order: state => state.starred.order
-    })
+    ...mapState('local/starred', [
+      'order'
+    ])
   },
   methods: {
     getClass (header) {
@@ -45,9 +45,9 @@ export default {
     onHeaderClick (e, header) {
       this.changeOrderBy({ orderBy: header.value })
     },
-    ...mapActions({
-      changeOrderBy: 'starred/changeOrderBy'
-    })
+    ...mapActions('local/starred', [
+      'changeOrderBy'
+    ])
   }
 }
 </script>

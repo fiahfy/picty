@@ -69,10 +69,10 @@ export default {
     fileSize () {
       return this.file.directory ? null : this.file.size
     },
-    ...mapGetters({
-      isSelectedFile: 'explorer/isSelectedFile',
-      isStarredFile: 'explorer/isStarredFile'
-    })
+    ...mapGetters('local/explorer', [
+      'isSelectedFile',
+      'isStarredFile'
+    ])
   },
   methods: {
     onClick () {
@@ -119,13 +119,13 @@ export default {
     onButtonClick () {
       this.toggleFileStarred({ filepath: this.file.path })
     },
-    ...mapActions({
-      selectFile: 'explorer/selectFile',
-      searchFiles: 'explorer/searchFiles',
-      openFile: 'explorer/openFile',
-      viewFile: 'explorer/viewFile',
-      toggleFileStarred: 'explorer/toggleFileStarred'
-    })
+    ...mapActions('local/explorer', [
+      'selectFile',
+      'searchFiles',
+      'openFile',
+      'viewFile',
+      'toggleFileStarred'
+    ])
   }
 }
 </script>

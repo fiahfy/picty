@@ -2,7 +2,7 @@
   <virtual-data-table
     ref="table"
     :headers="headers"
-    :items="files"
+    :items="filteredFiles"
     :no-data-text="noDataText"
     class="explorer-table"
     item-key="path"
@@ -69,17 +69,19 @@ export default {
       }
       return this.query ? 'No matching records found' : 'No data available'
     },
-    ...mapState({
-      directory: state => state.directory,
-      loading: state => state.explorer.loading,
-      query: state => state.explorer.query,
-      selectedFilepath: state => state.explorer.selectedFilepath
-    }),
-    ...mapGetters({
-      files: 'explorer/filteredFiles',
-      scrollTop: 'explorer/scrollTop',
-      selectedFileIndex: 'explorer/selectedFileIndex'
-    })
+    ...mapState([
+      'directory'
+    ]),
+    ...mapState('local/explorer', [
+      'loading',
+      'query',
+      'selectedFilepath'
+    ]),
+    ...mapGetters('local/explorer', [
+      'filteredFiles',
+      'scrollTop',
+      'selectedFileIndex'
+    ])
   },
   watch: {
     directory () {
@@ -152,15 +154,15 @@ export default {
           break
       }
     },
-    ...mapActions({
-      selectFirstFile: 'explorer/selectFirstFile',
-      selectLastFile: 'explorer/selectLastFile',
-      selectPreviousFile: 'explorer/selectPreviousFile',
-      selectNextFile: 'explorer/selectNextFile',
-      setScrollTop: 'explorer/setScrollTop',
-      viewFile: 'explorer/viewFile',
-      toggleFileStarred: 'explorer/toggleFileStarred'
-    })
+    ...mapActions('local/explorer', [
+      'selectFirstFile',
+      'selectLastFile',
+      'selectPreviousFile',
+      'selectNextFile',
+      'setScrollTop',
+      'viewFile',
+      'toggleFileStarred'
+    ])
   }
 }
 </script>

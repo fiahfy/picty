@@ -2,7 +2,7 @@
   <virtual-data-table
     ref="table"
     :headers="headers"
-    :items="files"
+    :items="filteredFiles"
     :no-data-text="noDataText"
     class="starred-table"
     item-key="path"
@@ -73,16 +73,16 @@ export default {
       }
       return this.query ? 'No matching records found' : 'No data available'
     },
-    ...mapState({
-      loading: state => state.starred.loading,
-      query: state => state.starred.query,
-      selectedFilepath: state => state.starred.selectedFilepath,
-      scrollTop: state => state.starred.scrollTop
-    }),
-    ...mapGetters({
-      files: 'starred/filteredFiles',
-      selectedFileIndex: 'starred/selectedFileIndex'
-    })
+    ...mapState('local/starred', [
+      'loading',
+      'query',
+      'selectedFilepath',
+      'scrollTop'
+    ]),
+    ...mapGetters('local/starred', [
+      'filteredFiles',
+      'selectedFileIndex'
+    ])
   },
   watch: {
     selectedFileIndex (value) {
@@ -153,18 +153,18 @@ export default {
           break
       }
     },
-    ...mapMutations({
-      setScrollTop: 'starred/setScrollTop'
-    }),
-    ...mapActions({
-      loadFiles: 'starred/loadFiles',
-      selectFirstFile: 'starred/selectFirstFile',
-      selectLastFile: 'starred/selectLastFile',
-      selectPreviousFile: 'starred/selectPreviousFile',
-      selectNextFile: 'starred/selectNextFile',
-      viewFile: 'starred/viewFile',
-      toggleFileStarred: 'starred/toggleFileStarred'
-    })
+    ...mapMutations('local/starred', [
+      'setScrollTop'
+    ]),
+    ...mapActions('local/starred', [
+      'loadFiles',
+      'selectFirstFile',
+      'selectLastFile',
+      'selectPreviousFile',
+      'selectNextFile',
+      'viewFile',
+      'toggleFileStarred'
+    ])
   }
 }
 </script>

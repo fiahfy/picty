@@ -47,10 +47,10 @@ export default {
   computed: {
     queryInput: {
       get () {
-        return this.$store.state.starred.queryInput
+        return this.$store.state.local.starred.queryInput
       },
       set (value) {
-        this.$store.commit('starred/setQueryInput', { queryInput: value })
+        this.$store.commit('local/starred/setQueryInput', { queryInput: value })
       }
     },
     disabled () {
@@ -59,12 +59,12 @@ export default {
     starIcon () {
       return this.isStarredFile({ filepath: this.selectedFilepath }) ? 'star' : 'star_border'
     },
-    ...mapState({
-      selectedFilepath: state => state.starred.selectedFilepath
-    }),
-    ...mapGetters({
-      isStarredFile: 'starred/isStarredFile'
-    })
+    ...mapState('local/starred', [
+      'selectedFilepath'
+    ]),
+    ...mapGetters('local/starred', [
+      'isStarredFile'
+    ])
   },
   watch: {
     queryInput (value) {
@@ -86,11 +86,11 @@ export default {
         this.searchFiles({ query: e.target.value })
       }
     },
-    ...mapActions({
-      searchFiles: 'starred/searchFiles',
-      viewFile: 'starred/viewFile',
-      toggleFileStarred: 'starred/toggleFileStarred'
-    })
+    ...mapActions('local/starred', [
+      'searchFiles',
+      'viewFile',
+      'toggleFileStarred'
+    ])
   }
 }
 </script>
