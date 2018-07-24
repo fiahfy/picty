@@ -3,6 +3,7 @@
     ref="table"
     :headers="headers"
     :items="filteredFiles"
+    :loading="loading"
     :no-data-text="noDataText"
     class="explorer-table"
     item-key="path"
@@ -12,21 +13,21 @@
     @scroll="onScroll"
     @keydown.native="onKeyDown"
   >
-    <template
+    <explorer-table-header-row
       slot="headers"
       slot-scope="props"
-    >
-      <explorer-table-header-row :headers="props.headers" />
-    </template>
-    <template
+      :headers="props.headers"
+    />
+    <explorer-table-row
       slot="items"
       slot-scope="props"
-    >
-      <explorer-table-row
-        :key="props.item.path"
-        :file="props.item"
-      />
-    </template>
+      :key="props.item.path"
+      :file="props.item"
+    />
+    <v-progress-linear
+      slot="progress"
+      indeterminate
+    />
   </virtual-data-table>
 </template>
 

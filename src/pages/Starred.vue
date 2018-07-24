@@ -6,10 +6,6 @@
     pa-0
   >
     <v-layout column>
-      <v-progress-linear
-        v-if="loading"
-        :indeterminate="true"
-      />
       <starred-card />
       <v-container
         fluid
@@ -23,7 +19,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import StarredCard from '~/components/StarredCard'
 import StarredTable from '~/components/StarredTable'
 
@@ -31,11 +26,6 @@ export default {
   components: {
     StarredCard,
     StarredTable
-  },
-  computed: {
-    ...mapState('local/starred', [
-      'loading'
-    ])
   }
 }
 </script>
