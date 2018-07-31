@@ -1,6 +1,7 @@
 <template>
   <v-toolbar
     class="viewer-toolbar"
+    color="transparent"
     flat
     dense
   >

@@ -37,10 +37,13 @@
     </v-card>
     <v-bottom-sheet
       v-model="sheet"
+      class="elevation-0"
       hide-overlay
       persistent
     >
-      <viewer-toolbar ref="toolbar" />
+      <v-layout class="pt-3">
+        <viewer-toolbar ref="toolbar" />
+      </v-layout>
     </v-bottom-sheet>
   </v-dialog>
 </template>
@@ -170,6 +173,12 @@ export default {
       right: 0;
       top: 0;
     }
+  }
+}
+.v-bottom-sheet {
+  box-shadow: none;
+  .layout {
+    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5));
   }
 }
 </style>
