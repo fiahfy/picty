@@ -103,11 +103,11 @@ export default {
     selectNextFile ({ dispatch, getters }) {
       dispatch('selectFileIndex', { index: getters.selectedFileIndex + 1 })
     },
-    searchFiles ({ commit, state }, { query }) {
+    searchFiles ({ commit }, { query }) {
       commit('setQueryInput', { queryInput: query })
       commit('setQuery', { query })
     },
-    openFile ({ commit, dispatch, state }, { filepath }) {
+    openFile ({ dispatch }, { filepath }) {
       const file = File.get(filepath)
       if (!file.exists) {
         dispatch('showMessage', { color: 'error', text: 'Not found' }, { root: true })

@@ -1,6 +1,6 @@
 <template>
   <v-toolbar
-    class="viewer-toolbar"
+    class="viewer-bottom-toolbar"
     color="transparent"
     flat
     dense
@@ -23,7 +23,7 @@
       <v-icon>skip_next</v-icon>
     </v-btn>
 
-    <span class="px-3">{{ page }} / {{ maxPage }}</span>
+    <span class="px-3 ellipsis">{{ page }} / {{ maxPage }}</span>
 
     <v-slider
       v-if="!loading"
@@ -84,31 +84,12 @@
     </v-menu>
 
     <v-btn
-      v-if="fullScreen"
-      title="Exit fullscreen"
-      flat
-      icon
-      @click="onExitFullscreenClick"
-    >
-      <v-icon>fullscreen_exit</v-icon>
-    </v-btn>
-    <v-btn
-      v-else
-      title="Fullscreen"
+      :title="fullScreen ? 'Exit fullscreen' : 'Fullscreen'"
       flat
       icon
       @click="onFullscreenClick"
     >
-      <v-icon>fullscreen</v-icon>
-    </v-btn>
-
-    <v-btn
-      :title="'Close'|accelerator('Esc')"
-      flat
-      icon
-      @click="onCloseClick"
-    >
-      <v-icon>close</v-icon>
+      <v-icon>{{ fullScreen ? 'fullscreen_exit' : 'fullscreen' }}</v-icon>
     </v-btn>
   </v-toolbar>
 </template>
@@ -129,7 +110,7 @@ export default {
         return this.$store.getters['local/viewer/currentFileIndex'] + 1
       },
       set (value) {
-        this.$store.dispatch('local/viewer/moveFileIndex', { index: value - 1 })
+        this.$store.dispatch('local/viewer/moveFile', { index: value - 1 })
       }
     },
     maxPage () {
@@ -163,14 +144,8 @@ export default {
     onResetClick () {
       this.resetZoom()
     },
-    onExitFullscreenClick () {
-      this.leaveFullScreen()
-    },
     onFullscreenClick () {
-      this.enterFullScreen()
-    },
-    onCloseClick () {
-      this.dismissViewer()
+      this.toggleFullScreen()
     },
     hideMenu () {
       this.menu = false
@@ -178,28 +153,25 @@ export default {
     isHover () {
       return !!(this.$el.querySelector(':hover') || this.$refs.toolbar.$el.querySelector(':hover'))
     },
-    ...mapActions([
-      'enterFullScreen',
-      'leaveFullScreen',
-      'dismissViewer'
-    ]),
     ...mapActions('local/viewer', [
       'movePreviousFile',
       'moveNextFile',
       'zoomIn',
       'zoomOut',
-      'resetZoom'
+      'resetZoom',
+      'toggleFullScreen'
     ])
   }
 }
 </script>
 
 <style scoped lang="scss">
-.viewer-toolbar /deep/ .v-input--slider {
+.viewer-bottom-toolbar /deep/ .v-input--slider {
   left: 0;
   position: absolute;
   right: 0;
   top: 1px;
+  z-index: 1;
   .v-slider {
     height: 0;
   }

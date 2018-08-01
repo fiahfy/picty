@@ -6,7 +6,10 @@
     hide-overlay
     @keydown="onKeyDown"
   >
-    <v-card :class="classes">
+    <v-card
+      :class="classes"
+      dark
+    >
       <v-layout
         column
         fill-height
@@ -32,19 +35,15 @@
               </v-container>
             </v-layout>
           </v-container>
+          <v-layout class="top-overlay pb-5">
+            <viewer-top-toolbar ref="top-toolbar" />
+          </v-layout>
+          <v-layout class="bottom-overlay pt-5">
+            <viewer-bottom-toolbar ref="bottom-toolbar" />
+          </v-layout>
         </v-content>
       </v-layout>
     </v-card>
-    <v-bottom-sheet
-      v-model="sheet"
-      class="elevation-0"
-      hide-overlay
-      persistent
-    >
-      <v-layout class="pt-3">
-        <viewer-toolbar ref="toolbar" />
-      </v-layout>
-    </v-bottom-sheet>
   </v-dialog>
 </template>
 
@@ -52,23 +51,27 @@
 import { mapActions, mapState } from 'vuex'
 import TitleBar from '~/components/TitleBar'
 import ViewerContent from './ViewerContent'
-import ViewerToolbar from './ViewerToolbar'
+import ViewerBottomToolbar from './ViewerBottomToolbar'
+import ViewerTopToolbar from './ViewerTopToolbar'
 
 export default {
   components: {
     TitleBar,
     ViewerContent,
-    ViewerToolbar
+    ViewerBottomToolbar,
+    ViewerTopToolbar
   },
   data () {
     return {
-      sheet: false
+      toolbar: null
     }
   },
   computed: {
     classes () {
       return {
-        'bottom-sheet-hidden': !this.sheet
+        'toolbar-hidden': this.toolbar === false,
+        'toolbar-fade-in': this.toolbar === true,
+        'toolbar-fade-out': this.toolbar === false
       }
     },
     ...mapState([
@@ -81,10 +84,10 @@ export default {
   watch: {
     viewing (value) {
       if (value) {
-        this.showBottomSheet()
+        this.showToolbar()
         document.body.addEventListener('mousemove', this.onMouseMove)
       } else {
-        this.sheet = false
+        this.toolbar = null
         this.clearTimer()
         document.body.removeEventListener('mousemove', this.onMouseMove)
       }
@@ -119,7 +122,7 @@ export default {
       }
     },
     onMouseMove (e) {
-      this.showBottomSheet()
+      this.showToolbar()
     },
     clearTimer () {
       if (this.timer) {
@@ -128,20 +131,20 @@ export default {
     },
     setTimer () {
       this.timer = setTimeout(() => {
-        this.sheet = false
-        this.$refs.toolbar.hideMenu()
+        this.toolbar = false
+        this.$refs['bottom-toolbar'].hideMenu()
       }, 2000)
     },
     resetTimer () {
       this.clearTimer()
-      if (this.$refs.toolbar.isHover()) {
+      if (this.$refs['top-toolbar'].isHover() || this.$refs['bottom-toolbar'].isHover()) {
         return
       }
       this.setTimer()
     },
-    showBottomSheet () {
-      if (!this.sheet) {
-        this.sheet = true
+    showToolbar () {
+      if (this.toolbar === false) {
+        this.toolbar = true
       }
       this.resetTimer()
     },
@@ -157,11 +160,38 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 .v-card {
   height: 100%!important;
-  &.bottom-sheet-hidden {
+  &.toolbar-hidden {
     .viewer-content {
       cursor: none;
+    }
+  }
+  &.toolbar-fade-in {
+    .top-overlay, .bottom-overlay {
+      animation: fade-in .3s forwards;
+    }
+  }
+  &.toolbar-fade-out {
+    .top-overlay, .bottom-overlay {
+      animation: fade-out .3s forwards;
     }
   }
   .container .layout {
@@ -174,11 +204,19 @@ export default {
       top: 0;
     }
   }
-}
-.v-bottom-sheet {
-  box-shadow: none;
-  .layout {
+  .top-overlay {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .bottom-overlay {
     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5));
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
   }
 }
 </style>
