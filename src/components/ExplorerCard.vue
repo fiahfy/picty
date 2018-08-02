@@ -5,15 +5,6 @@
   >
     <v-card-title class="py-2 px-0">
       <v-btn
-        :title="'Star'|accelerator('CmdOrCtrl+D')"
-        :disabled="disabled"
-        flat
-        icon
-        @click="onStarClick"
-      >
-        <v-icon>{{ starIcon }}</v-icon>
-      </v-btn>
-      <v-btn
         :title="'View'|accelerator('Enter')"
         :disabled="disabled"
         flat
@@ -40,7 +31,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -56,14 +47,8 @@ export default {
     disabled () {
       return !this.selectedFilepath
     },
-    starIcon () {
-      return this.isStarredFile({ filepath: this.selectedFilepath }) ? 'star' : 'star_border'
-    },
     ...mapState('local/explorer', [
       'selectedFilepath'
-    ]),
-    ...mapGetters('local/explorer', [
-      'isStarredFile'
     ])
   },
   watch: {
@@ -72,9 +57,6 @@ export default {
     }
   },
   methods: {
-    onStarClick () {
-      this.toggleFileStarred({ filepath: this.selectedFilepath })
-    },
     onPhotoClick () {
       this.viewFile({ filepath: this.selectedFilepath })
     },
@@ -88,8 +70,7 @@ export default {
     },
     ...mapActions('local/explorer', [
       'searchFiles',
-      'viewFile',
-      'toggleFileStarred'
+      'viewFile'
     ])
   }
 }
