@@ -69,7 +69,7 @@ export default {
   data () {
     return {
       estimatedHeight: 48,
-      threshold: 1024,
+      threshold: 0,
       scrolling: false,
       padding: {
         top: 0,
