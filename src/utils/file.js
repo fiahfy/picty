@@ -3,13 +3,12 @@ import path from 'path'
 
 export const get = (filepath) => {
   let obj = {
-    name: path.basename(filepath),
     path: filepath,
+    name: path.basename(filepath),
     dirname: path.dirname(filepath),
     exists: false,
     directory: false,
-    mtime: null,
-    size: null
+    modified_at: null
   }
   try {
     const stat = fs.lstatSync(filepath)
@@ -17,8 +16,7 @@ export const get = (filepath) => {
       ...obj,
       exists: true,
       directory: stat.isDirectory(),
-      mtime: stat.mtime,
-      size: stat.isDirectory() ? 0 : stat.size
+      modified_at: stat.mtime
     }
   } catch (e) {
     if (e.code === 'ENOENT') {

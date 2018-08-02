@@ -7,8 +7,8 @@ import FileWorker from '~/workers/file.worker.js'
 
 const reversed = {
   name: false,
-  size: false,
-  mtime: true
+  rating: true,
+  modified_at: true
 }
 
 const worker = new FileWorker()
@@ -60,9 +60,6 @@ export default {
     },
     isSelectedFile (state) {
       return ({ filepath }) => state.selectedFilepath === filepath
-    },
-    isStarredFile (state, getters, rootState, rootGetters) {
-      return ({ filepath }) => rootGetters['bookmark/isBookmarked']({ filepath })
     }
   },
   actions: {
@@ -155,6 +152,12 @@ export default {
         }, 1000)
         let files = await Worker.post(worker, { id: 'listFiles', data: [rootState.directory] })
         files = files.filter((file) => file.directory || rootGetters['settings/isAllowedFile']({ filepath: file.path }))
+          .map((file) => {
+            return {
+              ...file,
+              rating: rootGetters['rating/getRating']({ filepath: file.path })
+            }
+          })
         clearTimeout(timer)
         commit('setFiles', { files })
       } catch (e) {
@@ -211,6 +214,10 @@ export default {
       commit('setQueryInput', { queryInput: query })
       commit('setQuery', { query })
     },
+    updateFile ({ commit }, { file }) {
+      commit('rating/setRating', { filepath: file.path, rating: file.rating }, { root: true })
+      commit('setFile', { filepath: file.path, file })
+    },
     openFile ({ dispatch }, { filepath }) {
       const file = File.get(filepath)
       if (file.directory) {
@@ -240,9 +247,6 @@ export default {
       commit('setOrder', { order, directory: rootState.directory })
       dispatch('sortFiles')
     },
-    toggleFileStarred ({ dispatch }, { filepath }) {
-      dispatch('bookmark/toggle', { filepath }, { root: true })
-    },
     focusTable ({ dispatch }) {
       dispatch('focus', { selector: Selector.explorerTable }, { root: true })
     }
@@ -253,6 +257,9 @@ export default {
     },
     setFiles (state, { files }) {
       state.files = files
+    },
+    setFile (state, { filepath, file }) {
+      state.files = state.files.map((current) => current.path !== filepath ? current : { ...current, ...file })
     },
     setSelectedFilepath (state, { selectedFilepath }) {
       state.selectedFilepath = selectedFilepath

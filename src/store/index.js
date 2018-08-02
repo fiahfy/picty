@@ -7,6 +7,7 @@ import router from '~/router'
 import * as File from '~/utils/file'
 import local from './local'
 import bookmark from './bookmark'
+import rating from './rating'
 import settings from './settings'
 
 Vue.use(Vuex)
@@ -14,8 +15,7 @@ Vue.use(Vuex)
 export const Selector = {
   directoryInput: 'input[name=directory]',
   queryInput: 'input[name=query]',
-  explorerTable: '.explorer-table',
-  starredTable: '.starred-table'
+  explorerTable: '.explorer-table'
 }
 
 export default new Vuex.Store({
@@ -33,8 +33,8 @@ export default new Vuex.Store({
   },
   actions: {
     initialize ({ dispatch }) {
+      dispatch('migrate')
       dispatch('local/explorer/initialize')
-      dispatch('local/starred/initialize')
     },
     open ({ dispatch }, { filepathes }) {
       const file = File.get(filepathes[0])
@@ -65,8 +65,6 @@ export default new Vuex.Store({
       commit('setViewing', { viewing: false })
       if (router.app.$route.name === 'explorer') {
         dispatch('focus', { selector: Selector.explorerTable })
-      } else {
-        dispatch('focus', { selector: Selector.starredTable })
       }
     },
     enterFullScreen () {
@@ -106,6 +104,13 @@ export default new Vuex.Store({
     },
     showMessage ({ commit }, message) {
       commit('setMessage', { message })
+    },
+    migrate ({ state, commit }) {
+      // TODO: remove later
+      state.bookmark.bookmarks.forEach((bookmark) => {
+        commit('rating/setRating', { filepath: bookmark, rating: 2.5 })
+      })
+      commit('bookmark/setBookmarks', { bookmarks: [] })
     }
   },
   mutations: {
@@ -128,6 +133,7 @@ export default new Vuex.Store({
   modules: {
     local,
     bookmark,
+    rating,
     settings
   },
   plugins: [
@@ -135,6 +141,7 @@ export default new Vuex.Store({
       paths: [
         'directory',
         'bookmark',
+        'rating',
         'settings'
       ]
     })
