@@ -51,14 +51,14 @@ export default {
           value: 'name'
         },
         {
-          text: 'Size',
-          value: 'size',
-          width: 64
+          text: 'Rating',
+          value: 'rating',
+          width: 190
         },
         {
           text: 'Date Modified',
-          value: 'mtime',
-          width: 128
+          value: 'modified_at',
+          width: 110
         }
       ]
     }
@@ -147,12 +147,6 @@ export default {
             this.selectNextFile()
           }
           break
-        case 68:
-          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
-            this.toggleFileStarred({ filepath: this.selectedFilepath })
-          }
-          break
       }
     },
     ...mapActions('local/explorer', [
@@ -161,8 +155,7 @@ export default {
       'selectPreviousFile',
       'selectNextFile',
       'setScrollTop',
-      'viewFile',
-      'toggleFileStarred'
+      'viewFile'
     ])
   }
 }
