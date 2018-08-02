@@ -108,7 +108,7 @@ export default new Vuex.Store({
     migrate ({ state, commit }) {
       // TODO: remove later
       state.bookmark.bookmarks.forEach((bookmark) => {
-        commit('rating/setRating', { filepath: bookmark, rating: 2.5 })
+        commit('rating/setRating', { filepath: bookmark, rating: 1 })
       })
       commit('bookmark/setBookmarks', { bookmarks: [] })
     }
