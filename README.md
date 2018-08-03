@@ -6,7 +6,7 @@
 
 ## Features
 * Paging/Zooming controller on viewer
-* Bookmark
+* Rating images
 * Cross platform support
 * Change theme (Light/Dark)
 
@@ -14,6 +14,7 @@
 ## Screenshots
 ![screenshot](./build/screenshots/screenshot1.png?raw=true)
 ![screenshot](./build/screenshots/screenshot2.png?raw=true)
+![screenshot](./build/screenshots/screenshot3.png?raw=true)
 
 
 ## Installation
