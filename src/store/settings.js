@@ -1,5 +1,9 @@
 import path from 'path'
 
+export const defaultExtensions = [
+  'JPEG', 'JPG', 'PNG', 'GIF', 'WEBP', 'BMP'
+]
+
 export default {
   namespaced: true,
   state: {
@@ -7,21 +11,17 @@ export default {
     fullScreen: false,
     recursive: false,
     imageStretched: false,
-    allowedExtensions: [
-      '.jpeg',
-      '.jpg',
-      '.png',
-      '.gif',
-      '.webp',
-      '.tif',
-      '.bmp',
-      '.jxr',
-      '.psd'
-    ]
+    extensions: [...defaultExtensions]
   },
   getters: {
-    isAllowedFile (state) {
-      return ({ filepath }) => state.allowedExtensions.includes(path.extname(filepath).toLowerCase())
+    isAvailableFile (state) {
+      return ({ filepath }) => {
+        const ext = path.extname(filepath).toUpperCase()
+        if (!ext) {
+          return false
+        }
+        return state.extensions.includes(ext.slice(1))
+      }
     }
   },
   mutations: {
@@ -36,6 +36,9 @@ export default {
     },
     setImageStretched (state, { imageStretched }) {
       state.imageStretched = imageStretched
+    },
+    setExtensions (state, { extensions }) {
+      state.extensions = extensions
     }
   }
 }

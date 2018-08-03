@@ -20,10 +20,13 @@ export default {
   getters: {
     currentFileIndex (state) {
       return state.files.findIndex((file) => state.currentFilepath === file.path)
+    },
+    currentFile (state) {
+      return state.files.find((file) => state.currentFilepath === file.path)
     }
   },
   actions: {
-    async loadFiles ({ commit, dispatch, rootGetters, rootState }, { dirpath, filepath, filepathes }) {
+    async loadFiles ({ commit, rootGetters, rootState }, { dirpath, filepath, filepathes }) {
       commit('setLoading', { loading: true })
       commit('setError', { error: null })
       commit('setFiles', { files: [] })
@@ -40,8 +43,8 @@ export default {
         } else {
           files = await Worker.post(worker, { id: 'getFiles', data: [filepathes] })
         }
-        files = files.filter((file) => rootGetters['settings/isAllowedFile']({ filepath: file.path }))
-        if (files.length && !currentFilepath) {
+        files = files.filter((file) => rootGetters['settings/isAvailableFile']({ filepath: file.path }))
+        if (files.length && (!currentFilepath || !files.find((file) => file.path === currentFilepath))) {
           currentFilepath = files[0].path
         }
         commit('setError', { error: null })
@@ -60,22 +63,22 @@ export default {
       if (index < 0) {
         index = state.files.length - 1
       }
-      dispatch('moveFileIndex', { index })
+      dispatch('moveFile', { index })
     },
     moveNextFile ({ dispatch, getters, state }) {
       let index = getters.currentFileIndex + 1
       if (index > state.files.length - 1) {
         index = 0
       }
-      dispatch('moveFileIndex', { index })
+      dispatch('moveFile', { index })
     },
-    moveFileIndex ({ commit, state }, { index }) {
+    moveFile ({ commit, state }, { index }) {
       const file = state.files[index]
       if (file) {
         commit('setCurrentFilepath', { currentFilepath: file.path })
       }
     },
-    setupZoom ({ commit, state }, { scale }) {
+    setupZoom ({ commit }, { scale }) {
       commit('setScale', { scale })
       commit('setOriginalScale', { originalScale: scale })
       commit('setScaling', { scaling: false })
@@ -97,6 +100,16 @@ export default {
     resetZoom ({ commit, state }) {
       commit('setScale', { scale: state.originalScale })
       commit('setScaling', { scaling: false })
+    },
+    toggleFullScreen ({ dispatch, rootState }) {
+      if (rootState.fullScreen) {
+        dispatch('leaveFullScreen', null, { root: true })
+      } else {
+        dispatch('enterFullScreen', null, { root: true })
+      }
+    },
+    dismiss ({ dispatch }) {
+      dispatch('dismissViewer', null, { root: true })
     }
   },
   mutations: {

@@ -6,26 +6,23 @@
     @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
   >
-    <td class="pl-2 ellipsis">
+    <td>
       <v-layout class="align-center">
-        <v-btn
-          class="my-0"
-          flat
-          icon
-          @click="onButtonClick"
-        >
-          <v-icon :color="starColor">{{ starIcon }}</v-icon>
-        </v-btn>
         <v-icon
-          :color="fileColor"
+          :color="color"
           class="pa-1"
-        >{{ fileIcon }}</v-icon>
+        >{{ icon }}</v-icon>
         <span class="ellipsis">{{ file.name }}</span>
       </v-layout>
     </td>
-    <td class="text-xs-right">{{ fileSize | readableSize }}</td>
     <td class="text-xs-right">
-      <template v-if="file.mtime">{{ file.mtime | moment('YYYY-MM-DD HH:mm') }}</template>
+      <v-rating
+        v-model="rating"
+        half-increments
+      />
+    </td>
+    <td class="text-xs-right">
+      <template v-if="file.modified_at">{{ file.modified_at | moment('YYYY-MM-DD HH:mm') }}</template>
     </td>
   </tr>
 </template>
@@ -42,37 +39,36 @@ export default {
     }
   },
   computed: {
+    rating: {
+      get () {
+        return this.file.rating
+      },
+      set (value) {
+        const file = {
+          ...this.file,
+          rating: value
+        }
+        this.$store.dispatch('local/explorer/updateFile', { file })
+      }
+    },
     active () {
       return this.isSelectedFile({ filepath: this.file.path })
     },
-    starred () {
-      return this.isStarredFile({ filepath: this.file.path })
-    },
-    starColor () {
-      return this.starred ? 'yellow darken-2' : 'grey'
-    },
-    starIcon () {
-      return this.starred ? 'star' : 'star_outline'
-    },
-    fileColor () {
+    color () {
       if (this.file.exists) {
         return this.file.directory ? 'blue lighten-3' : 'green lighten-3'
       }
       return 'grey'
     },
-    fileIcon () {
+    icon () {
       if (this.file.exists) {
         return this.file.directory ? 'folder' : 'photo'
       }
       return 'broken_image'
     },
-    fileSize () {
-      return this.file.directory ? null : this.file.size
-    },
-    ...mapGetters({
-      isSelectedFile: 'explorer/isSelectedFile',
-      isStarredFile: 'explorer/isStarredFile'
-    })
+    ...mapGetters('local/explorer', [
+      'isSelectedFile'
+    ])
   },
   methods: {
     onClick () {
@@ -90,13 +86,6 @@ export default {
             this.viewFile({ filepath: this.file.path })
           },
           accelerator: 'Enter'
-        },
-        {
-          label: this.starred ? 'Unstar' : 'Star',
-          click: () => {
-            this.toggleFileStarred({ filepath: this.file.path })
-          },
-          accelerator: 'CmdOrCtrl+D'
         }
       ]
       const text = getSelection().toString()
@@ -116,16 +105,12 @@ export default {
       }
       ContextMenu.show(e, templates)
     },
-    onButtonClick () {
-      this.toggleFileStarred({ filepath: this.file.path })
-    },
-    ...mapActions({
-      selectFile: 'explorer/selectFile',
-      searchFiles: 'explorer/searchFiles',
-      openFile: 'explorer/openFile',
-      viewFile: 'explorer/viewFile',
-      toggleFileStarred: 'explorer/toggleFileStarred'
-    })
+    ...mapActions('local/explorer', [
+      'selectFile',
+      'searchFiles',
+      'openFile',
+      'viewFile'
+    ])
   }
 }
 </script>
@@ -136,6 +121,9 @@ export default {
   td {
     .v-icon {
       user-select: none;
+    }
+    .v-rating {
+      white-space: nowrap;
     }
     span {
       flex: 1;

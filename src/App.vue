@@ -1,6 +1,6 @@
 <template>
   <v-app
-    :dark="darkTheme"
+    :dark="settings.darkTheme"
     @contextmenu.native="onContextMenu"
     @drop.native.prevent="onDrop"
     @dragover.native.prevent
@@ -33,10 +33,10 @@ export default {
     Viewer
   },
   computed: {
-    ...mapState({
-      viewing: state => state.viewing,
-      darkTheme: state => state.settings.darkTheme
-    })
+    ...mapState([
+      'viewing',
+      'settings'
+    ])
   },
   created () {
     this.initialize()
@@ -53,10 +53,10 @@ export default {
       const filepathes = files.map(file => file.path)
       this.open({ filepathes })
     },
-    ...mapActions({
-      initialize: 'initialize',
-      open: 'open'
-    })
+    ...mapActions([
+      'initialize',
+      'open'
+    ])
   }
 }
 </script>

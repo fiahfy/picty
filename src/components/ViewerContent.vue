@@ -93,15 +93,17 @@ export default {
         height: this.originalSize.height * this.scale + 'px'
       } : {}
     },
-    ...mapState({
-      loading: state => state.viewer.loading,
-      error: state => state.viewer.error,
-      files: state => state.viewer.files,
-      currentFilepath: state => state.viewer.currentFilepath,
-      scale: state => state.viewer.scale,
-      scaling: state => state.viewer.scaling,
-      imageStretched: state => state.settings.imageStretched
-    })
+    ...mapState('settings', [
+      'imageStretched'
+    ]),
+    ...mapState('local/viewer', [
+      'loading',
+      'error',
+      'files',
+      'currentFilepath',
+      'scale',
+      'scaling'
+    ])
   },
   watch: {
     currentFilepath () {
@@ -170,9 +172,9 @@ export default {
     onImageError (e) {
       this.loadError = true
     },
-    ...mapActions({
-      setupZoom: 'viewer/setupZoom'
-    })
+    ...mapActions('local/viewer', [
+      'setupZoom'
+    ])
   }
 }
 </script>

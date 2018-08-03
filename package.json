@@ -1,7 +1,7 @@
 {
   "name": "picty",
   "description": "Simple Image Viewer based on Electron",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
@@ -15,9 +15,9 @@
     "typeface-roboto": "^0.0.54",
     "vue": "^2.4.2",
     "vue-long-press-directive": "^1.0.2",
-    "vue-moment": "^3.0.0",
+    "vue-moment": "^4.0.0",
     "vue-router": "^3.0.1",
-    "vuetify": "^1.0.17",
+    "vuetify": "1.2.0-beta.0",
     "vuex": "^3.0.0",
     "vuex-persistedstate": "^2.0.0",
     "vuex-router-sync": "^5.0.0"

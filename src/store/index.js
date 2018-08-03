@@ -5,10 +5,9 @@ import { remote } from 'electron'
 import Package from '~~/package.json'
 import router from '~/router'
 import * as File from '~/utils/file'
-import explorer from './explorer'
-import starred from './starred'
-import viewer from './viewer'
+import local from './local'
 import bookmark from './bookmark'
+import rating from './rating'
 import settings from './settings'
 
 Vue.use(Vuex)
@@ -16,8 +15,7 @@ Vue.use(Vuex)
 export const Selector = {
   directoryInput: 'input[name=directory]',
   queryInput: 'input[name=query]',
-  explorerTable: '.explorer-table',
-  starredTable: '.starred-table'
+  explorerTable: '.explorer-table'
 }
 
 export default new Vuex.Store({
@@ -35,8 +33,8 @@ export default new Vuex.Store({
   },
   actions: {
     initialize ({ dispatch }) {
-      dispatch('explorer/initialize')
-      dispatch('starred/initialize')
+      dispatch('migrate')
+      dispatch('local/explorer/initialize')
     },
     open ({ dispatch }, { filepathes }) {
       const file = File.get(filepathes[0])
@@ -47,18 +45,18 @@ export default new Vuex.Store({
       }
     },
     openDirectory ({ dispatch }, { dirpath }) {
-      dispatch('explorer/changeDirectory', { dirpath })
+      dispatch('local/explorer/changeDirectory', { dirpath })
       dispatch('changeRoute', { name: 'explorer' })
     },
     showViewer ({ commit, dispatch, state }, payload) {
-      dispatch('viewer/loadFiles', payload)
+      dispatch('local/viewer/loadFiles', payload)
       commit('setViewing', { viewing: true })
       if (state.settings.fullScreen) {
         dispatch('enterFullScreen')
       }
     },
     dismissViewer ({ commit, dispatch, state }) {
-      if (state.viewer.loading) {
+      if (state.local.viewer.loading) {
         return
       }
       if (state.settings.fullScreen || process.platform !== 'darwin') {
@@ -67,8 +65,6 @@ export default new Vuex.Store({
       commit('setViewing', { viewing: false })
       if (router.app.$route.name === 'explorer') {
         dispatch('focus', { selector: Selector.explorerTable })
-      } else {
-        dispatch('focus', { selector: Selector.starredTable })
       }
     },
     enterFullScreen () {
@@ -99,15 +95,22 @@ export default new Vuex.Store({
         }
       })
     },
-    changeRoute ({ dispatch }, payload) {
+    changeRoute (_, payload) {
       router.push(payload)
     },
     changeTitle ({ commit }, { title = Package.productName }) {
       document.title = title
       commit('setTitle', { title })
     },
-    showMessage ({ commit, dispatch, state }, message) {
+    showMessage ({ commit }, message) {
       commit('setMessage', { message })
+    },
+    migrate ({ state, commit }) {
+      // TODO: remove later
+      state.bookmark.bookmarks.forEach((bookmark) => {
+        commit('rating/setRating', { filepath: bookmark, rating: 1 })
+      })
+      commit('bookmark/setBookmarks', { bookmarks: [] })
     }
   },
   mutations: {
@@ -128,10 +131,9 @@ export default new Vuex.Store({
     }
   },
   modules: {
-    explorer,
-    starred,
-    viewer,
+    local,
     bookmark,
+    rating,
     settings
   },
   plugins: [
@@ -139,6 +141,7 @@ export default new Vuex.Store({
       paths: [
         'directory',
         'bookmark',
+        'rating',
         'settings'
       ]
     })

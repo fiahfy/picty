@@ -2,7 +2,8 @@
   <virtual-data-table
     ref="table"
     :headers="headers"
-    :items="files"
+    :items="filteredFiles"
+    :loading="loading"
     :no-data-text="noDataText"
     class="explorer-table"
     item-key="path"
@@ -12,21 +13,21 @@
     @scroll="onScroll"
     @keydown.native="onKeyDown"
   >
-    <template
+    <explorer-table-header-row
       slot="headers"
       slot-scope="props"
-    >
-      <explorer-table-header-row :headers="props.headers" />
-    </template>
-    <template
+      :headers="props.headers"
+    />
+    <explorer-table-row
       slot="items"
       slot-scope="props"
-    >
-      <explorer-table-row
-        :key="props.item.path"
-        :file="props.item"
-      />
-    </template>
+      :key="props.item.path"
+      :file="props.item"
+    />
+    <v-progress-linear
+      slot="progress"
+      indeterminate
+    />
   </virtual-data-table>
 </template>
 
@@ -50,14 +51,14 @@ export default {
           value: 'name'
         },
         {
-          text: 'Size',
-          value: 'size',
-          width: 64
+          text: 'Rating',
+          value: 'rating',
+          width: 190
         },
         {
           text: 'Date Modified',
-          value: 'mtime',
-          width: 128
+          value: 'modified_at',
+          width: 110
         }
       ]
     }
@@ -69,17 +70,19 @@ export default {
       }
       return this.query ? 'No matching records found' : 'No data available'
     },
-    ...mapState({
-      directory: state => state.directory,
-      loading: state => state.explorer.loading,
-      query: state => state.explorer.query,
-      selectedFilepath: state => state.explorer.selectedFilepath
-    }),
-    ...mapGetters({
-      files: 'explorer/filteredFiles',
-      scrollTop: 'explorer/scrollTop',
-      selectedFileIndex: 'explorer/selectedFileIndex'
-    })
+    ...mapState([
+      'directory'
+    ]),
+    ...mapState('local/explorer', [
+      'loading',
+      'query',
+      'selectedFilepath'
+    ]),
+    ...mapGetters('local/explorer', [
+      'filteredFiles',
+      'scrollTop',
+      'selectedFileIndex'
+    ])
   },
   watch: {
     directory () {
@@ -144,23 +147,16 @@ export default {
             this.selectNextFile()
           }
           break
-        case 68:
-          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            e.preventDefault()
-            this.toggleFileStarred({ filepath: this.selectedFilepath })
-          }
-          break
       }
     },
-    ...mapActions({
-      selectFirstFile: 'explorer/selectFirstFile',
-      selectLastFile: 'explorer/selectLastFile',
-      selectPreviousFile: 'explorer/selectPreviousFile',
-      selectNextFile: 'explorer/selectNextFile',
-      setScrollTop: 'explorer/setScrollTop',
-      viewFile: 'explorer/viewFile',
-      toggleFileStarred: 'explorer/toggleFileStarred'
-    })
+    ...mapActions('local/explorer', [
+      'selectFirstFile',
+      'selectLastFile',
+      'selectPreviousFile',
+      'selectNextFile',
+      'setScrollTop',
+      'viewFile'
+    ])
   }
 }
 </script>

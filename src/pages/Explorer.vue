@@ -6,10 +6,6 @@
     pa-0
   >
     <v-layout column>
-      <v-progress-linear
-        v-if="loading"
-        :indeterminate="true"
-      />
       <explorer-toolbar />
       <explorer-card />
       <v-container
@@ -24,7 +20,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import ExplorerToolbar from '~/components/ExplorerToolbar'
 import ExplorerCard from '~/components/ExplorerCard'
 import ExplorerTable from '~/components/ExplorerTable'
@@ -34,11 +29,6 @@ export default {
     ExplorerToolbar,
     ExplorerCard,
     ExplorerTable
-  },
-  computed: {
-    ...mapState({
-      loading: state => state.explorer.loading
-    })
   }
 }
 </script>
