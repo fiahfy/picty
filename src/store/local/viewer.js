@@ -43,8 +43,8 @@ export default {
         } else {
           files = await Worker.post(worker, { id: 'getFiles', data: [filepathes] })
         }
-        files = files.filter((file) => rootGetters['settings/isAllowedFile']({ filepath: file.path }))
-        if (files.length && !currentFilepath) {
+        files = files.filter((file) => rootGetters['settings/isAvailableFile']({ filepath: file.path }))
+        if (files.length && (!currentFilepath || !files.find((file) => file.path === currentFilepath))) {
           currentFilepath = files[0].path
         }
         commit('setError', { error: null })

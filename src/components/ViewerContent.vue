@@ -93,14 +93,16 @@ export default {
         height: this.originalSize.height * this.scale + 'px'
       } : {}
     },
+    ...mapState('settings', [
+      'imageStretched'
+    ]),
     ...mapState('local/viewer', [
       'loading',
       'error',
       'files',
       'currentFilepath',
       'scale',
-      'scaling',
-      'imageStretched'
+      'scaling'
     ])
   },
   watch: {

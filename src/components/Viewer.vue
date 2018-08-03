@@ -102,22 +102,18 @@ export default {
         case 37:
           if (e.target.getAttribute('role') !== 'slider') {
             this.movePreviousFile()
-            this.resetTimer()
           }
           break
         case 38:
           this.movePreviousFile()
-          this.resetTimer()
           break
         case 39:
           if (e.target.getAttribute('role') !== 'slider') {
             this.moveNextFile()
-            this.resetTimer()
           }
           break
         case 40:
           this.moveNextFile()
-          this.resetTimer()
           break
       }
     },

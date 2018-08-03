@@ -151,7 +151,7 @@ export default {
           commit('setFiles', { files: [] })
         }, 1000)
         let files = await Worker.post(worker, { id: 'listFiles', data: [rootState.directory] })
-        files = files.filter((file) => file.directory || rootGetters['settings/isAllowedFile']({ filepath: file.path }))
+        files = files.filter((file) => file.directory || rootGetters['settings/isAvailableFile']({ filepath: file.path }))
           .map((file) => {
             return {
               ...file,
