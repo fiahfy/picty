@@ -5,6 +5,27 @@
       v-model="darkTheme"
       label="Use dark theme"
     />
+    <v-combobox
+      v-model="extensions"
+      :items="defaults"
+      label="Filter extensions"
+      chips
+      multiple
+    >
+      <template
+        slot="selection"
+        slot-scope="data"
+      >
+        <v-chip
+          :selected="data.selected"
+          close
+          @input="onChipInput(data.item)"
+        >
+          {{ data.item }}
+        </v-chip>
+      </template>
+    </v-combobox>
+
     <v-subheader class="pa-0">Viewer</v-subheader>
     <v-checkbox
       v-model="fullScreen"
@@ -22,7 +43,14 @@
 </template>
 
 <script>
+import { defaultExtensions } from '~/store/settings'
+
 export default {
+  data () {
+    return {
+      defaults: defaultExtensions
+    }
+  },
   computed: {
     darkTheme: {
       get () {
@@ -55,6 +83,19 @@ export default {
       set (value) {
         this.$store.commit('settings/setImageStretched', { imageStretched: value })
       }
+    },
+    extensions: {
+      get () {
+        return this.$store.state.settings.extensions.map((item) => item.toUpperCase())
+      },
+      set (value) {
+        this.$store.commit('settings/setExtensions', { extensions: value.map((item) => item.toUpperCase()) })
+      }
+    }
+  },
+  methods: {
+    onChipInput (item) {
+      this.extensions = this.extensions.filter((extension) => extension !== item)
     }
   }
 }
