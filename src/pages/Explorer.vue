@@ -13,7 +13,8 @@
         pa-0
         overflow-hidden
       >
-        <explorer-table class="fill-height" />
+        <!-- <explorer-table class="fill-height" /> -->
+        <explorer-grid-list class="fill-height" />
       </v-container>
     </v-layout>
   </v-container>
@@ -23,12 +24,14 @@
 import ExplorerToolbar from '~/components/ExplorerToolbar'
 import ExplorerCard from '~/components/ExplorerCard'
 import ExplorerTable from '~/components/ExplorerTable'
+import ExplorerGridList from '~/components/ExplorerGridList'
 
 export default {
   components: {
     ExplorerToolbar,
     ExplorerCard,
-    ExplorerTable
+    ExplorerTable,
+    ExplorerGridList
   }
 }
 </script>
