@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
 import fileUrl from 'file-url'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   data () {

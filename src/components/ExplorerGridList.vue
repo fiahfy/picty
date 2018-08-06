@@ -1,13 +1,14 @@
 <template>
   <div class="explorer-grid-list">
     <v-card
+      color="transparent"
       flat
       tile
     >
       <v-container
-        class="py-0 px-1"
+        class="pa-2"
         fluid
-        grid-list-xs
+        grid-list-md
       >
         <v-layout
           row
@@ -16,7 +17,10 @@
           <v-flex
             v-for="file in filteredFiles"
             :key="file.path"
-            xs6 sm4 md3 lg2
+            xs6
+            sm4
+            md3
+            lg2
           >
             <explorer-grid-list-item :file="file" />
           </v-flex>

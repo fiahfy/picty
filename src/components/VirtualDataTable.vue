@@ -157,18 +157,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.theme--dark .virtual-data-table.sticky-headers .v-table__overflow::-webkit-scrollbar-thumb {
-  background-color: #424242!important;
-  &:hover {
-    background-color: #505050!important;
-  }
-  &:active {
-    background-color: #616161!important;
-  }
-}
-</style>
-
 <style scoped lang="scss">
 .virtual-data-table.sticky-headers {
   & /deep/ .v-table__overflow {
@@ -216,6 +204,15 @@ export default {
     &.v-datatable__progress>th:after {
       height: 10px;
     }
+  }
+}
+.theme--dark .virtual-data-table.sticky-headers /deep/ .v-table__overflow::-webkit-scrollbar-thumb {
+  background-color: #424242!important;
+  &:hover {
+    background-color: #505050!important;
+  }
+  &:active {
+    background-color: #616161!important;
   }
 }
 </style>
