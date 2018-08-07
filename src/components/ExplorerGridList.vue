@@ -1,33 +1,39 @@
 <template>
-  <div class="explorer-grid-list">
-    <v-card
-      color="transparent"
-      flat
-      tile
+  <v-container
+    class="explorer-grid-list pa-0"
+    fluid
+    grid-list-md
+  >
+    <v-data-iterator
+      ref="iterator"
+      :items="filteredFiles"
+      :loading="true"
+      :no-data-text="noDataText"
+      class="fill-height"
+      content-tag="v-layout"
+      row
+      wrap
+      item-key="path"
+      hide-actions
+      @scroll="onScroll"
+      @keydown.native="onKeyDown"
     >
-      <v-container
-        class="pa-2"
-        fluid
-        grid-list-md
+      <v-flex
+        slot="item"
+        slot-scope="props"
+        xs6
+        sm4
+        md3
+        lg2
       >
-        <v-layout
-          row
-          wrap
-        >
-          <v-flex
-            v-for="file in filteredFiles"
-            :key="file.path"
-            xs6
-            sm4
-            md3
-            lg2
-          >
-            <explorer-grid-list-item :file="file" />
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-card>
-  </div>
+        <explorer-grid-list-item :file="props.item" />
+      </v-flex>
+      <v-progress-linear
+        slot="progress"
+        indeterminate
+      />
+    </v-data-iterator>
+  </v-container>
 </template>
 
 <script>
@@ -59,6 +65,9 @@ export default {
       'selectedFileIndex'
     ])
   },
+  mounted () {
+    this.$refs.iterator.$el.setAttribute('tabindex', 0)
+  },
   methods: {
     restore () {
       const scrollTop = this.scrollTop
@@ -70,6 +79,7 @@ export default {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
     onKeyDown (e) {
+      console.log(e)
       switch (e.keyCode) {
         case 13:
           e.preventDefault()
@@ -106,7 +116,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.explorer-grid-list {
+.explorer-grid-list .v-data-iterator {
   overflow: auto;
+  & /deep/ .layout {
+    margin: 4px;
+  }
 }
 </style>
