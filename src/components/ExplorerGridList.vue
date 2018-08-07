@@ -4,10 +4,13 @@
     fluid
     grid-list-md
   >
+    <v-progress-linear
+      v-if="loading"
+      indeterminate
+    />
     <v-data-iterator
       ref="iterator"
       :items="filteredFiles"
-      :loading="true"
       :no-data-text="noDataText"
       class="fill-height"
       content-tag="v-layout"
@@ -116,10 +119,20 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.explorer-grid-list .v-data-iterator {
-  overflow: auto;
-  & /deep/ .layout {
-    margin: 4px;
+.explorer-grid-list {
+  position: relative;
+  .v-progress-linear {
+    left: 0;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .v-data-iterator {
+    overflow: auto;
+    & /deep/ .layout {
+      margin: 4px!important;
+    }
   }
 }
 </style>
