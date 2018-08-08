@@ -100,17 +100,13 @@ export default {
           this.dismissViewer()
           break
         case 37:
-          if (e.target.getAttribute('role') !== 'slider') {
-            this.movePreviousFile()
-          }
+          this.movePreviousFile()
           break
         case 38:
           this.movePreviousFile()
           break
         case 39:
-          if (e.target.getAttribute('role') !== 'slider') {
-            this.moveNextFile()
-          }
+          this.moveNextFile()
           break
         case 40:
           this.moveNextFile()
