@@ -1,51 +1,44 @@
 <template>
-  <v-container
-    class="explorer-grid-list pa-0"
-    fluid
-    grid-list-md
+  <div
+    class="explorer-grid-list"
+    tabindex="0"
+    @scroll="onScroll"
+    @keydown="onKeyDown"
   >
-    <v-progress-linear
-      v-if="loading"
-      indeterminate
-    />
-    <v-data-iterator
+    <virtual-data-iterator
       ref="iterator"
       :items="filteredFiles"
+      :loading="loading"
       :no-data-text="noDataText"
-      class="fill-height"
-      content-tag="v-layout"
-      row
-      wrap
+      :estimated-height="231"
+      :sizes="[6, 4, 3, 2, 2]"
       item-key="path"
+      class="grid-list-md"
       hide-actions
-      @scroll="onScroll"
-      @keydown.native="onKeyDown"
+      grid-list-md
     >
-      <v-flex
-        slot="item"
+      <explorer-grid-list-item
+        slot="items"
         slot-scope="props"
-        xs6
-        sm4
-        md3
-        lg2
-      >
-        <explorer-grid-list-item :file="props.item" />
-      </v-flex>
+        :file="props.item"
+      />
       <v-progress-linear
         slot="progress"
         indeterminate
       />
-    </v-data-iterator>
-  </v-container>
+    </virtual-data-iterator>
+  </div>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ExplorerGridListItem from './ExplorerGridListItem'
+import VirtualDataIterator from './VirtualDataIterator'
 
 export default {
   components: {
-    ExplorerGridListItem
+    ExplorerGridListItem,
+    VirtualDataIterator
   },
   computed: {
     noDataText () {
@@ -67,9 +60,6 @@ export default {
       'scrollTop',
       'selectedFileIndex'
     ])
-  },
-  mounted () {
-    this.$refs.iterator.$el.setAttribute('tabindex', 0)
   },
   methods: {
     restore () {
@@ -120,19 +110,6 @@ export default {
 
 <style scoped lang="scss">
 .explorer-grid-list {
-  position: relative;
-  .v-progress-linear {
-    left: 0;
-    margin: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-  .v-data-iterator {
-    overflow: auto;
-    & /deep/ .layout {
-      margin: 4px!important;
-    }
-  }
+  outline: none;
 }
 </style>

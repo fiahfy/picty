@@ -1,6 +1,7 @@
 <template>
   <v-card
     :active="active"
+    :title="file.name"
     class="explorer-grid-list-item"
     @click.native="onClick"
     @dblclick="onDblClick"
