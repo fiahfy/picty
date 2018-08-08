@@ -6,14 +6,32 @@
     <v-card-title class="py-2 px-0">
       <v-btn
         :title="'View'|accelerator('Enter')"
-        :disabled="disabled"
+        :disabled="photoIconDisabled"
         flat
         icon
-        @click="onPhotoClick"
+        @click="onPhotoIconClick"
       >
         <v-icon>photo</v-icon>
       </v-btn>
       <v-spacer />
+      <v-btn
+        :color="listIconColor"
+        title="List"
+        flat
+        icon
+        @click="onListIconClick"
+      >
+        <v-icon>view_headline</v-icon>
+      </v-btn>
+      <v-btn
+        :color="thumbnailIconColor"
+        title="Thumbnail"
+        flat
+        icon
+        @click="onThumbnailIconClick"
+      >
+        <v-icon>view_module</v-icon>
+      </v-btn>
       <v-text-field
         v-model="queryInput"
         name="query"
@@ -31,7 +49,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -44,11 +62,18 @@ export default {
         this.$store.commit('local/explorer/setQueryInput', { queryInput: value })
       }
     },
-    disabled () {
+    photoIconDisabled () {
       return !this.selectedFilepath
     },
+    listIconColor () {
+      return this.display === 'list' ? 'primary' : null
+    },
+    thumbnailIconColor () {
+      return this.display === 'thumbnail' ? 'primary' : null
+    },
     ...mapState('local/explorer', [
-      'selectedFilepath'
+      'selectedFilepath',
+      'display'
     ])
   },
   watch: {
@@ -57,8 +82,14 @@ export default {
     }
   },
   methods: {
-    onPhotoClick () {
+    onPhotoIconClick () {
       this.viewFile({ filepath: this.selectedFilepath })
+    },
+    onListIconClick () {
+      this.setDisplay({ display: 'list' })
+    },
+    onThumbnailIconClick () {
+      this.setDisplay({ display: 'thumbnail' })
     },
     onTextContextMenu (e) {
       ContextMenu.showTextMenu(e)
@@ -68,6 +99,9 @@ export default {
         this.searchFiles({ query: e.target.value })
       }
     },
+    ...mapMutations('local/explorer', [
+      'setDisplay'
+    ]),
     ...mapActions('local/explorer', [
       'searchFiles',
       'viewFile'

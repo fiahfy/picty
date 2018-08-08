@@ -74,6 +74,9 @@ export default {
       return 'broken_image'
     },
     imageSrc () {
+      if (this.file.directory) {
+        return ''
+      }
       return fileUrl(this.file.path)
     },
     ...mapGetters('local/explorer', [

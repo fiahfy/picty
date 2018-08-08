@@ -13,14 +13,21 @@
         pa-0
         overflow-hidden
       >
-        <!-- <explorer-table class="fill-height" /> -->
-        <explorer-grid-list class="fill-height" />
+        <explorer-table
+          v-if="display === 'list'"
+          class="fill-height"
+        />
+        <explorer-grid-list
+          v-else
+          class="fill-height"
+        />
       </v-container>
     </v-layout>
   </v-container>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import ExplorerToolbar from '~/components/ExplorerToolbar'
 import ExplorerCard from '~/components/ExplorerCard'
 import ExplorerTable from '~/components/ExplorerTable'
@@ -32,6 +39,11 @@ export default {
     ExplorerCard,
     ExplorerTable,
     ExplorerGridList
+  },
+  computed: {
+    ...mapState('local/explorer', [
+      'display'
+    ])
   }
 }
 </script>

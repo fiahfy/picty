@@ -238,7 +238,7 @@ export default {
     height: 10px;
   }
 }
-.theme--dark .virtual-data-iterator .v-data-iterator {
+.theme--dark .virtual-data-iterator .v-data-iterator::-webkit-scrollbar-thumb {
   background-color: #424242!important;
   &:hover {
     background-color: #505050!important;

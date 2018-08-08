@@ -24,6 +24,7 @@ export default {
     directoryInput: '',
     query: '',
     queryInput: '',
+    display: 'list',
     histories: [],
     historyIndex: -1,
     orders: {}
@@ -272,6 +273,9 @@ export default {
     },
     setQueryInput (state, { queryInput }) {
       state.queryInput = queryInput
+    },
+    setDisplay (state, { display }) {
+      state.display = display
     },
     setHistory (state, { history, index }) {
       state.histories = [
