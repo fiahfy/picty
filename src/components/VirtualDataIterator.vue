@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import * as Viewport from '~/utils/viewport'
+
 export default {
   props: {
     value: {
@@ -166,23 +168,25 @@ export default {
       return this.container.offsetHeight
     },
     adjustItems () {
+      const size = 12 / this.calculatedSizes[Viewport.getSizeIndex()]
+
       const { scrollTop, offsetHeight } = this.container
       const index = Math.floor(scrollTop / this.estimatedHeight)
       const offset = Math.ceil(offsetHeight / this.estimatedHeight) + 1
 
       let firstIndex = Math.max(0, index - this.threshold)
       let lastIndex = firstIndex + offset + this.threshold
-      if (lastIndex > this.items.length / 4) {
-        lastIndex = this.items.length / 4
+      if (lastIndex > Math.ceil(this.items.length / size)) {
+        lastIndex = Math.ceil(this.items.length / size)
         firstIndex = Math.max(0, lastIndex - offset - this.threshold * 2)
       }
 
       this.scrolling = scrollTop > 0
       this.padding = {
         top: firstIndex * this.estimatedHeight,
-        bottom: (Math.ceil(this.items.length / 4) - lastIndex) * this.estimatedHeight
+        bottom: (Math.ceil(this.items.length / size) - lastIndex) * this.estimatedHeight
       }
-      this.renderItems = this.items.slice(firstIndex * 4, lastIndex * 4)
+      this.renderItems = this.items.slice(firstIndex * size, lastIndex * size)
     },
     onResize () {
       this.adjustItems()

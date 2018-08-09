@@ -9,7 +9,6 @@
   >
     <v-img
       :src="imageSrc"
-      class="white--text"
       height="150"
     />
     <v-card-title class="pt-2 px-2 pb-0">
