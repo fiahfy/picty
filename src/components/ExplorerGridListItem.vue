@@ -1,35 +1,38 @@
 <template>
-  <v-card
-    :active="active"
-    :title="file.name"
+  <v-flex
     class="explorer-grid-list-item"
-    @click.native="onClick"
-    @dblclick="onDblClick"
-    @contextmenu.stop="onContextMenu"
   >
-    <v-img
-      :src="imageSrc"
-      height="150"
-    />
-    <v-card-title class="pt-2 px-2 pb-0">
-      <v-layout class="align-center">
-        <v-icon
-          :color="color"
-          class="pa-1"
-        >{{ icon }}</v-icon>
-        <span class="ellipsis caption">{{ file.name }}</span>
-      </v-layout>
-    </v-card-title>
-    <v-card-actions class="pa-0 text-xs-center">
-      <v-spacer />
-      <v-rating
-        v-model="rating"
-        half-increments
-        small
+    <v-card
+      :active="active"
+      :title="file.name"
+      @click.native="onClick"
+      @dblclick="onDblClick"
+      @contextmenu.stop="onContextMenu"
+    >
+      <v-img
+        :src="imageSrc"
+        height="150"
       />
-      <v-spacer />
-    </v-card-actions>
-  </v-card>
+      <v-card-title class="pt-2 px-2 pb-0">
+        <v-layout class="align-center">
+          <v-icon
+            :color="color"
+            class="pa-1"
+          >{{ icon }}</v-icon>
+          <span class="ellipsis caption">{{ file.name }}</span>
+        </v-layout>
+      </v-card-title>
+      <v-card-actions class="pa-0 text-xs-center">
+        <v-spacer />
+        <v-rating
+          v-model="rating"
+          half-increments
+          small
+        />
+        <v-spacer />
+      </v-card-actions>
+    </v-card>
+  </v-flex>
 </template>
 
 <script>
@@ -128,7 +131,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.explorer-grid-list-item {
+.explorer-grid-list-item .v-card {
   cursor: pointer;
   &[active] {
     background-color: #f5f5f5;
@@ -137,7 +140,7 @@ export default {
     background-color: #eeeeee;
   }
 }
-.theme--dark .explorer-grid-list-item {
+.theme--dark .explorer-grid-list-item .v-card {
   &[active] {
     background-color: #505050;
   }

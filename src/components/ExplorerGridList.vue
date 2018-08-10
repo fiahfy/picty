@@ -1,33 +1,43 @@
 <template>
-  <div
+  <virtual-data-iterator
+    ref="iterator"
+    :items="filteredFiles"
+    :loading="loading"
+    :no-data-text="noDataText"
+    :estimated-height="231"
+    :sizes="[6, 4, 3, 2, 2]"
     class="explorer-grid-list"
+    container-class="grid-list-md"
+    item-key="path"
+    hide-actions
     tabindex="0"
-    @keydown="onKeyDown"
+    @scroll="onScroll"
+    @keydown.native="onKeyDown"
   >
-    <virtual-data-iterator
-      ref="iterator"
-      :items="filteredFiles"
-      :loading="loading"
-      :no-data-text="noDataText"
-      :estimated-height="231"
-      :sizes="[6, 4, 3, 2, 2]"
-      item-key="path"
-      class="grid-list-md"
-      hide-actions
-      grid-list-md
-      @scroll="onScroll"
+    <explorer-grid-list-item
+      slot="items"
+      slot-scope="props"
+      :key="props.item.path"
+      :file="props.item"
+      class="xs6 sm4 md3 lg2"
+    />
+    <v-progress-linear
+      slot="progress"
+      indeterminate
+    />
+    <v-card
+      slot="no-data"
+      class="ma-3 pa-3"
     >
-      <explorer-grid-list-item
-        slot="items"
-        slot-scope="props"
-        :file="props.item"
-      />
-      <v-progress-linear
-        slot="progress"
-        indeterminate
-      />
-    </virtual-data-iterator>
-  </div>
+      {{ noDataText }}
+    </v-card>
+    <v-card
+      slot="no-results"
+      class="ma-3 pa-3"
+    >
+      {{ noDataText }}
+    </v-card>
+  </virtual-data-iterator>
 </template>
 
 <script>

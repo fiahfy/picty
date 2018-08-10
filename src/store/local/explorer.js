@@ -148,9 +148,7 @@ export default {
         watcher = fs.watch(rootState.directory, () => {
           dispatch('loadFiles')
         })
-        const timer = setTimeout(() => {
-          commit('setFiles', { files: [] })
-        }, 1000)
+        commit('setFiles', { files: [] })
         let files = await Worker.post(worker, { id: 'listFiles', data: [rootState.directory] })
         files = files.filter((file) => file.directory || rootGetters['settings/isAvailableFile']({ filepath: file.path }))
           .map((file) => {
@@ -159,7 +157,6 @@ export default {
               rating: rootGetters['rating/getRating']({ filepath: file.path })
             }
           })
-        clearTimeout(timer)
         commit('setFiles', { files })
       } catch (e) {
         console.error(e)

@@ -1,61 +1,57 @@
 <template>
-  <v-container
-    :class="classes"
-    class="virtual-data-iterator"
-    fluid
-    pa-0
-  >
-    <slot
-      v-if="loading"
-      name="progress"
-    />
-    <v-data-iterator
-      ref="iterator"
-      v-bind="$attrs"
-      v-model="model"
-      :pagination.sync="paginationModel"
-      :items="renderItems"
-      :disable-initial-sort="true"
-      content-tag="v-layout"
-      row
-      wrap
+  <div class="virtual-data-iterator">
+    <v-container
+      :class="classes"
+      fluid
+      pa-0
     >
-      <template
-        slot="item"
-        slot-scope="props"
+      <slot
+        v-if="loading"
+        name="progress"
+      />
+      <v-data-iterator
+        ref="iterator"
+        v-bind="$attrs"
+        v-model="model"
+        :pagination.sync="paginationModel"
+        :items="renderItems"
+        :disable-initial-sort="true"
+        content-tag="v-layout"
+        row
+        wrap
       >
-        <v-flex
-          v-if="props.index === 0"
-          :style="{ height: `${padding.top}px` }"
-          class="pa-0"
-          xs12
-        />
-        <v-flex
-          :key="props.item[itemKey]"
-          v-bind="gridAttrs"
+        <template
+          slot="item"
+          slot-scope="props"
         >
+          <v-flex
+            v-if="props.index === 0"
+            :style="{ height: `${padding.top}px` }"
+            class="pa-0"
+            xs12
+          />
           <slot
             v-bind="props"
             name="items"
           />
-        </v-flex>
-        <v-flex
-          v-if="props.index === renderItems.length - 1"
-          :style="{ height: `${padding.bottom}px` }"
-          class="pa-0"
-          xs12
+          <v-flex
+            v-if="props.index === renderItems.length - 1"
+            :style="{ height: `${padding.bottom}px` }"
+            class="pa-0"
+            xs12
+          />
+        </template>
+        <slot
+          slot="no-data"
+          name="no-data"
         />
-      </template>
-      <slot
-        slot="no-data"
-        name="no-data"
-      />
-      <slot
-        slot="no-results"
-        name="no-results"
-      />
-    </v-data-iterator>
-  </v-container>
+        <slot
+          slot="no-results"
+          name="no-results"
+        />
+      </v-data-iterator>
+    </v-container>
+  </div>
 </template>
 
 <script>
@@ -94,6 +90,10 @@ export default {
     sizes: {
       type: [Number, Array],
       default: 6
+    },
+    containerClass: {
+      type: [String],
+      default: ''
     }
   },
   data () {
@@ -125,17 +125,12 @@ export default {
     },
     classes () {
       return {
+        [this.containerClass]: true,
         scrolling: this.scrolling
       }
     },
     calculatedSizes () {
       return Array.isArray(this.sizes) ? this.sizes : Array(5).fill(this.sizes)
-    },
-    gridAttrs () {
-      return ['xs', 'sm', 'md', 'lg', 'xl'].reduce((carry, size, index) => {
-        carry[size + this.calculatedSizes[index]] = true
-        return carry
-      }, {})
     }
   },
   watch: {
@@ -200,7 +195,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.virtual-data-iterator {
+.virtual-data-iterator>.container {
   height: 100%;
   position: relative;
   .v-progress-linear {
