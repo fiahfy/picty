@@ -1,4 +1,4 @@
-const breakpoints = [
+export const breakpoints = [
   600,
   960,
   1280 - 16,
@@ -6,7 +6,7 @@ const breakpoints = [
   Infinity
 ]
 
-const sizes = [
+export const sizes = [
   'xs',
   'sm',
   'md',

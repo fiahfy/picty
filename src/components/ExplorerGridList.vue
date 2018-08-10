@@ -5,7 +5,7 @@
     :loading="loading"
     :no-data-text="noDataText"
     :estimated-height="231"
-    :sizes="[6, 4, 3, 2, 2]"
+    :sizes="sizes"
     class="explorer-grid-list"
     container-class="grid-list-md"
     item-key="path"
@@ -19,7 +19,7 @@
       slot-scope="props"
       :key="props.item.path"
       :file="props.item"
-      class="xs6 sm4 md3 lg2"
+      :class="classes"
     />
     <v-progress-linear
       slot="progress"
@@ -44,11 +44,17 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ExplorerGridListItem from './ExplorerGridListItem'
 import VirtualDataIterator from './VirtualDataIterator'
+import * as Viewport from '~/utils/viewport'
 
 export default {
   components: {
     ExplorerGridListItem,
     VirtualDataIterator
+  },
+  data () {
+    return {
+      sizes: [6, 4, 3, 2, 2]
+    }
   },
   computed: {
     noDataText () {
@@ -56,6 +62,11 @@ export default {
         return 'Loading...'
       }
       return this.query ? 'No matching records found' : 'No data available'
+    },
+    classes () {
+      return Viewport.sizes.map((s, i) => {
+        return s + this.sizes[i]
+      })
     },
     ...mapState([
       'directory'
@@ -81,20 +92,20 @@ export default {
         if (index === -1) {
           return
         }
-        const rowHeight = 48
-        const headerHeight = 58
+        const size = 12 / this.sizes[Viewport.getSizeIndex()]
+        const rowHeight = 231
         const el = {
-          offsetTop: rowHeight * (index + 1),
+          offsetTop: rowHeight * Math.floor(index / size),
           offsetHeight: rowHeight
         }
-        const table = {
+        const iterator = {
           scrollTop: this.$refs.iterator.getScrollTop(),
           offsetHeight: this.$refs.iterator.getOffsetHeight()
         }
-        if (el.offsetTop - el.offsetHeight < table.scrollTop) {
-          this.$refs.iterator.setScrollTop(el.offsetTop - el.offsetHeight)
-        } else if (el.offsetTop + headerHeight > table.scrollTop + table.offsetHeight) {
-          this.$refs.iterator.setScrollTop(el.offsetTop + headerHeight - table.offsetHeight)
+        if (iterator.scrollTop > el.offsetTop) {
+          this.$refs.iterator.setScrollTop(el.offsetTop)
+        } else if (iterator.scrollTop < el.offsetTop + el.offsetHeight - iterator.offsetHeight) {
+          this.$refs.iterator.setScrollTop(el.offsetTop + el.offsetHeight - iterator.offsetHeight)
         }
       })
     }
