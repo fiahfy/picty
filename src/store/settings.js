@@ -1,7 +1,7 @@
 import path from 'path'
 
 export const defaultExtensions = [
-  'JPEG', 'JPG', 'PNG', 'GIF', 'WEBP', 'BMP'
+  'BMP', 'GIF', 'ICO', 'JPEG', 'JPG', 'PNG', 'SVG', 'TIF', 'TIFF', 'WEBP'
 ]
 
 export default {
