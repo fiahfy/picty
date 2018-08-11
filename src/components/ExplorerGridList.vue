@@ -126,28 +126,34 @@ export default {
     onKeyDown (e) {
       switch (e.keyCode) {
         case 13:
-          e.preventDefault()
           this.viewFile({ filepath: this.selectedFilepath })
           break
+        case 37:
+          this.selectPreviousFile()
+          break
         case 38:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectFirstFile()
           } else {
-            this.selectPreviousFile()
+            const index = this.selectedFileIndex - Math.floor(12 / this.sizes[Viewport.getSizeIndex()])
+            this.selectFileIndex({ index })
           }
           break
+        case 39:
+          this.selectNextFile()
+          break
         case 40:
-          e.preventDefault()
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectLastFile()
           } else {
-            this.selectNextFile()
+            const index = this.selectedFileIndex + Math.floor(12 / this.sizes[Viewport.getSizeIndex()])
+            this.selectFileIndex({ index })
           }
           break
       }
     },
     ...mapActions('local/explorer', [
+      'selectFileIndex',
       'selectFirstFile',
       'selectLastFile',
       'selectPreviousFile',
