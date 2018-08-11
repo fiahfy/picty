@@ -61,6 +61,9 @@ export default {
     },
     isSelectedFile (state) {
       return ({ filepath }) => state.selectedFilepath === filepath
+    },
+    isAvailableFile (state, getters, rootState, rootGetters) {
+      return ({ filepath }) => rootGetters['settings/isAvailableFile']({ filepath })
     }
   },
   actions: {

@@ -10,9 +10,17 @@
       @contextmenu.stop="onContextMenu"
     >
       <v-img
-        :src="imageSrc"
+        v-if="imageUrl"
+        :src="imageUrl"
         height="150"
       />
+      <v-layout
+        v-else
+        align-center
+        justify-center
+      >
+        <v-flex class="text-xs-center caption">No image</v-flex>
+      </v-layout>
       <v-card-title class="pt-2 px-2 pb-0">
         <v-layout class="align-center">
           <v-icon
@@ -39,6 +47,7 @@
 import fileUrl from 'file-url'
 import { mapActions, mapGetters } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
+import * as File from '~/utils/file'
 
 export default {
   props: {
@@ -75,14 +84,17 @@ export default {
       }
       return 'broken_image'
     },
-    imageSrc () {
-      if (this.file.directory) {
-        return ''
+    imageUrl () {
+      if (!this.file.directory) {
+        return fileUrl(this.file.path)
       }
-      return fileUrl(this.file.path)
+      const files = File.listFiles(this.file.path)
+      const file = files.find((file) => this.isAvailableFile({ filepath: file.path }))
+      return file ? fileUrl(file.path) : ''
     },
     ...mapGetters('local/explorer', [
-      'isSelectedFile'
+      'isSelectedFile',
+      'isAvailableFile'
     ])
   },
   methods: {
@@ -138,6 +150,9 @@ export default {
   }
   &:hover {
     background-color: #eeeeee;
+  }
+  &>.layout {
+    height: 150px;
   }
 }
 .theme--dark .explorer-grid-list-item .v-card {
