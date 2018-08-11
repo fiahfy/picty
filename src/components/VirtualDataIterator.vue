@@ -1,5 +1,8 @@
 <template>
-  <div class="virtual-data-iterator">
+  <div
+    v-resize="onResize"
+    class="virtual-data-iterator"
+  >
     <v-container
       :class="classes"
       fluid
@@ -139,7 +142,6 @@ export default {
     }
   },
   mounted () {
-    window.addEventListener('resize', this.onResize)
     this.container = this.$el.querySelector('.v-data-iterator')
     this.container.addEventListener('scroll', this.onScroll)
     this.$nextTick(() => {
@@ -147,7 +149,6 @@ export default {
     })
   },
   beforeDestroy () {
-    window.removeEventListener('resize', this.onResize)
     this.container.removeEventListener('scroll', this.onScroll)
   },
   methods: {

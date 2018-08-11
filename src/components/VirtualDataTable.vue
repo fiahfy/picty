@@ -1,5 +1,6 @@
 <template>
   <v-data-table
+    v-resize="onResize"
     ref="table"
     v-bind="$attrs"
     v-model="model"
@@ -118,7 +119,6 @@ export default {
     }
   },
   mounted () {
-    window.addEventListener('resize', this.onResize)
     this.container = this.$el.querySelector('.v-table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
     this.$nextTick(() => {
@@ -126,7 +126,6 @@ export default {
     })
   },
   beforeDestroy () {
-    window.removeEventListener('resize', this.onResize)
     this.container.removeEventListener('scroll', this.onScroll)
   },
   methods: {
