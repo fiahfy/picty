@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -99,12 +99,10 @@ export default {
         this.searchFiles({ query: e.target.value })
       }
     },
-    ...mapMutations('local/explorer', [
-      'setDisplay'
-    ]),
     ...mapActions('local/explorer', [
       'searchFiles',
-      'viewFile'
+      'viewFile',
+      'setDisplay'
     ])
   }
 }

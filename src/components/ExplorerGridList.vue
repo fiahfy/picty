@@ -83,7 +83,7 @@ export default {
     ])
   },
   watch: {
-    directory () {
+    loading () {
       this.restore()
     },
     selectedFileIndex (value) {

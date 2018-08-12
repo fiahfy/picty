@@ -141,6 +141,9 @@ export default {
       return this.container.offsetHeight
     },
     adjustItems () {
+      if (!this.container) {
+        return
+      }
       const { scrollTop, offsetHeight } = this.container
       const index = Math.floor(scrollTop / this.estimatedHeight)
       const offset = Math.ceil(offsetHeight / this.estimatedHeight) + 1

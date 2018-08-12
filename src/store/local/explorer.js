@@ -13,8 +13,6 @@ const reversed = {
 
 const worker = new FileWorker()
 
-let watcher = null
-
 export default {
   namespaced: true,
   state: {
@@ -145,12 +143,6 @@ export default {
       }
       commit('setLoading', { loading: true })
       try {
-        if (watcher) {
-          watcher.close()
-        }
-        watcher = fs.watch(rootState.directory, () => {
-          dispatch('loadFiles')
-        })
         commit('setFiles', { files: [] })
         let files = await Worker.post(worker, { id: 'listFiles', data: [rootState.directory] })
         files = files.filter((file) => file.directory || rootGetters['settings/isAvailableFile']({ filepath: file.path }))
@@ -236,6 +228,9 @@ export default {
       }
     },
     setScrollTop ({ commit, state }, { scrollTop }) {
+      if (state.loading) {
+        return
+      }
       const history = {
         ...state.histories[state.historyIndex],
         scrollTop
@@ -247,6 +242,10 @@ export default {
       const order = { by: orderBy, descending }
       commit('setOrder', { order, directory: rootState.directory })
       dispatch('sortFiles')
+    },
+    setDisplay ({ commit, dispatch }, { display }) {
+      dispatch('setScrollTop', { scrollTop: 0 })
+      commit('setDisplay', { display })
     },
     focusTable ({ dispatch }) {
       dispatch('focus', { selector: Selector.explorerTable }, { root: true })

@@ -164,6 +164,9 @@ export default {
       return this.container.offsetHeight
     },
     adjustItems () {
+      if (!this.container) {
+        return
+      }
       const size = 12 / this.calculatedSizes[Viewport.getSizeIndex()]
 
       const { scrollTop, offsetHeight } = this.container

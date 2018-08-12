@@ -34,6 +34,7 @@
         <v-spacer />
         <v-rating
           v-model="rating"
+          class="ellipsis"
           half-increments
           small
         />
