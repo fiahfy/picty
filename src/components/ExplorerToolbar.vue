@@ -52,9 +52,10 @@
     </v-btn>
     <v-btn
       :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
+      :color="bookmarkColor"
       flat
       icon
-      @click="onHomeClick"
+      @click="onBookmarkClick"
     >
       <v-icon>star</v-icon>
     </v-btn>
@@ -93,11 +94,15 @@ export default {
     forwardDisabled () {
       return !this.canForwardDirectory
     },
+    bookmarkColor () {
+      return this.directoryBookmarked ? 'primary' : null
+    },
     ...mapGetters('local/explorer', [
       'backDirectories',
       'forwardDirectories',
       'canBackDirectory',
-      'canForwardDirectory'
+      'canForwardDirectory',
+      'directoryBookmarked'
     ])
   },
   methods: {
@@ -136,6 +141,9 @@ export default {
     onHomeClick () {
       this.changeHomeDirectory()
     },
+    onBookmarkClick () {
+      this.toggleDirectoryBookmarked()
+    },
     onTextContextMenu (e) {
       ContextMenu.showTextMenu(e)
     },
@@ -154,7 +162,8 @@ export default {
       'backDirectory',
       'forwardDirectory',
       'reloadDirectory',
-      'browseDirectory'
+      'browseDirectory',
+      'toggleDirectoryBookmarked'
     ])
   }
 }

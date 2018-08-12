@@ -119,9 +119,7 @@ export default {
       this.showToolbar()
     },
     clearTimer () {
-      if (this.timer) {
-        clearTimeout(this.timer)
-      }
+      clearTimeout(this.timer)
     },
     setTimer () {
       this.timer = setTimeout(() => {

@@ -1,4 +1,3 @@
-import fs from 'fs'
 import { remote, shell } from 'electron'
 import { Selector } from '~/store'
 import * as File from '~/utils/file'
@@ -40,6 +39,9 @@ export default {
     canForwardDirectory (state) {
       return state.historyIndex < state.histories.length - 1
     },
+    directoryBookmarked (state, getters, rootState, rootGetters) {
+      return rootGetters['bookmark/isBookmarked']({ filepath: rootState.directory })
+    },
     scrollTop (state) {
       return state.histories[state.historyIndex].scrollTop
     },
@@ -55,13 +57,13 @@ export default {
       })
     },
     selectedFileIndex (state, getters) {
-      return getters.filteredFiles.findIndex((file) => getters.isSelectedFile({ filepath: file.path }))
+      return getters.filteredFiles.findIndex((file) => getters.isFileSelected({ filepath: file.path }))
     },
-    isSelectedFile (state) {
+    isFileSelected (state) {
       return ({ filepath }) => state.selectedFilepath === filepath
     },
-    isAvailableFile (state, getters, rootState, rootGetters) {
-      return ({ filepath }) => rootGetters['settings/isAvailableFile']({ filepath })
+    isFileAvailable (state, getters, rootState, rootGetters) {
+      return ({ filepath }) => rootGetters['settings/isFileAvailable']({ filepath })
     }
   },
   actions: {
@@ -137,6 +139,9 @@ export default {
         dispatch('showMessage', { color: 'error', text: 'Invalid directory' }, { root: true })
       }
     },
+    toggleDirectoryBookmarked ({ dispatch, rootState }) {
+      dispatch('bookmark/toggle', { filepath: rootState.directory }, { root: true })
+    },
     async loadFiles ({ commit, dispatch, rootGetters, rootState, state }) {
       if (state.loading) {
         return
@@ -145,7 +150,7 @@ export default {
       try {
         commit('setFiles', { files: [] })
         let files = await Worker.post(worker, { id: 'listFiles', data: [rootState.directory] })
-        files = files.filter((file) => file.directory || rootGetters['settings/isAvailableFile']({ filepath: file.path }))
+        files = files.filter((file) => file.directory || rootGetters['settings/isFileAvailable']({ filepath: file.path }))
           .map((file) => {
             return {
               ...file,

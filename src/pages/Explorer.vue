@@ -47,16 +47,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.layout {
-  position: relative;
-  .v-progress-linear {
-    left: 0;
-    margin: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-}
-</style>

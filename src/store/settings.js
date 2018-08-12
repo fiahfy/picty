@@ -14,7 +14,7 @@ export default {
     extensions: [...defaultExtensions]
   },
   getters: {
-    isAvailableFile (state) {
+    isFileAvailable (state) {
       return ({ filepath }) => {
         const ext = path.extname(filepath).toUpperCase()
         if (!ext) {

@@ -10,7 +10,7 @@
       @contextmenu.stop="onContextMenu"
     >
       <v-img
-        v-if="imageUrl"
+        v-if="imageUrl || loading"
         :src="imageUrl"
         height="150"
       />
@@ -49,12 +49,19 @@ import fileUrl from 'file-url'
 import { mapActions, mapGetters } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 import * as File from '~/utils/file'
+import { clearTimeout } from 'timers';
 
 export default {
   props: {
     file: {
       type: Object,
       default: () => ({})
+    }
+  },
+  data () {
+    return {
+      loading: false,
+      imageUrl: ''
     }
   },
   computed: {
@@ -71,7 +78,7 @@ export default {
       }
     },
     active () {
-      return this.isSelectedFile({ filepath: this.file.path })
+      return this.isFileSelected({ filepath: this.file.path })
     },
     color () {
       if (this.file.exists) {
@@ -85,18 +92,27 @@ export default {
       }
       return 'broken_image'
     },
-    imageUrl () {
+    ...mapGetters('local/explorer', [
+      'isFileSelected',
+      'isFileAvailable'
+    ])
+  },
+  created () {
+    this.loading = true
+    this.timer = setTimeout(() => {
+      console.log('c', this.file.path, this.timer)
       if (!this.file.directory) {
-        return fileUrl(this.file.path)
+        this.imageUrl = fileUrl(this.file.path)
+        return
       }
       const files = File.listFiles(this.file.path)
-      const file = files.find((file) => this.isAvailableFile({ filepath: file.path }))
-      return file ? fileUrl(file.path) : ''
-    },
-    ...mapGetters('local/explorer', [
-      'isSelectedFile',
-      'isAvailableFile'
-    ])
+      const file = files.find((file) => this.isFileAvailable({ filepath: file.path }))
+      this.imageUrl = file ? fileUrl(file.path) : ''
+      this.loading = false
+    }, 3000)
+  },
+  beforeDestroy () {
+    clearTimeout(this.timer)
   },
   methods: {
     onClick () {

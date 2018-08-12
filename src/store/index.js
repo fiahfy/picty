@@ -33,7 +33,6 @@ export default new Vuex.Store({
   },
   actions: {
     initialize ({ dispatch }) {
-      dispatch('migrate')
       dispatch('local/explorer/initialize')
     },
     open ({ dispatch }, { filepathes }) {
@@ -104,13 +103,6 @@ export default new Vuex.Store({
     },
     showMessage ({ commit }, message) {
       commit('setMessage', { message })
-    },
-    migrate ({ state, commit }) {
-      // TODO: remove later
-      state.bookmark.bookmarks.forEach((bookmark) => {
-        commit('rating/setRating', { filepath: bookmark, rating: 1 })
-      })
-      commit('bookmark/setBookmarks', { bookmarks: [] })
     }
   },
   mutations: {

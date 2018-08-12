@@ -43,7 +43,7 @@ export default {
         } else {
           files = await Worker.post(worker, { id: 'getFiles', data: [filepathes] })
         }
-        files = files.filter((file) => rootGetters['settings/isAvailableFile']({ filepath: file.path }))
+        files = files.filter((file) => rootGetters['settings/isFileAvailable']({ filepath: file.path }))
         if (files.length && (!currentFilepath || !files.find((file) => file.path === currentFilepath))) {
           currentFilepath = files[0].path
         }
