@@ -50,6 +50,14 @@
     >
       <v-icon>home</v-icon>
     </v-btn>
+    <v-btn
+      :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
+      flat
+      icon
+      @click="onHomeClick"
+    >
+      <v-icon>star</v-icon>
+    </v-btn>
     <v-text-field
       v-model="directoryInput"
       name="directory"

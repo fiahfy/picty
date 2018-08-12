@@ -9,6 +9,8 @@
     <v-card
       :class="classes"
       dark
+      flat
+      tile
     >
       <v-layout
         column

@@ -2,8 +2,12 @@
   <v-card
     class="explorer-card"
     flat
+    tile
   >
-    <v-card-title class="py-2 px-0">
+    <v-toolbar
+      color="transparent"
+      flat
+    >
       <v-btn
         :title="'View'|accelerator('Enter')"
         :disabled="photoIconDisabled"
@@ -35,7 +39,7 @@
       <v-text-field
         v-model="queryInput"
         name="query"
-        class="mx-3 my-2 pt-0"
+        class="ml-3"
         label="Search"
         append-icon="search"
         single-line
@@ -44,7 +48,7 @@
         @keyup="onTextKeyUp"
         @contextmenu.stop="onTextContextMenu"
       />
-    </v-card-title>
+    </v-toolbar>
   </v-card>
 </template>
 
