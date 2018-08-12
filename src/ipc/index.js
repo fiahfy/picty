@@ -11,10 +11,10 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('appCommand', (e, cmd) => {
     switch (cmd) {
       case 'browser-backward':
-        store.dispatch('explorer/backDirectory')
+        store.dispatch('local/explorer/backDirectory')
         break
       case 'browser-forward':
-        store.dispatch('explorer/forwardDirectory')
+        store.dispatch('local/explorer/forwardDirectory')
         break
     }
   })
@@ -40,6 +40,9 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('showExplorer', () => {
     store.dispatch('changeRoute', { name: 'explorer' })
   })
+  ipcRenderer.on('showBookmark', () => {
+    store.dispatch('changeRoute', { name: 'bookmark' })
+  })
   ipcRenderer.on('showSettings', () => {
     store.dispatch('changeRoute', { name: 'settings' })
   })
@@ -49,19 +52,22 @@ export const addIpcRendererListeners = (store) => {
     store.dispatch('changeRoute', { name: 'explorer' })
   })
   ipcRenderer.on('backDirectory', () => {
-    store.dispatch('explorer/backDirectory')
+    store.dispatch('local/explorer/backDirectory')
   })
   ipcRenderer.on('forwardDirectory', () => {
-    store.dispatch('explorer/forwardDirectory')
+    store.dispatch('local/explorer/forwardDirectory')
   })
   ipcRenderer.on('upDirectory', () => {
-    store.dispatch('explorer/upDirectory')
+    store.dispatch('local/explorer/upDirectory')
   })
   ipcRenderer.on('changeHomeDirectory', () => {
-    store.dispatch('explorer/changeHomeDirectory')
+    store.dispatch('local/explorer/changeHomeDirectory')
   })
-  ipcRenderer.on('browseCurrentDirectory', () => {
-    store.dispatch('explorer/browseDirectory')
+  ipcRenderer.on('bookmarkDirectory', () => {
+    store.dispatch('local/explorer/toggleDirectoryBookmarked')
+  })
+  ipcRenderer.on('browseDirectory', () => {
+    store.dispatch('local/explorer/browseDirectory')
   })
   ipcRenderer.on('zoomIn', () => {
     store.dispatch('viewer/zoomIn')

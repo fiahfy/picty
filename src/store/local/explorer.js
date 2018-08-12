@@ -39,6 +39,9 @@ export default {
     canForwardDirectory (state) {
       return state.historyIndex < state.histories.length - 1
     },
+    canViewFile (state) {
+      return !!state.selectedFilepath
+    },
     directoryBookmarked (state, getters, rootState, rootGetters) {
       return rootGetters['bookmark/isBookmarked']({ filepath: rootState.directory })
     },

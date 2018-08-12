@@ -10,29 +10,29 @@
     >
       <v-btn
         :title="'View'|accelerator('Enter')"
-        :disabled="photoIconDisabled"
+        :disabled="!canViewFile"
         flat
         icon
-        @click="onPhotoIconClick"
+        @click="onViewClick"
       >
         <v-icon>photo</v-icon>
       </v-btn>
       <v-spacer />
       <v-btn
-        :color="listIconColor"
+        :color="listColor"
         title="List"
         flat
         icon
-        @click="onListIconClick"
+        @click="onListClick"
       >
         <v-icon>view_headline</v-icon>
       </v-btn>
       <v-btn
-        :color="thumbnailIconColor"
+        :color="thumbnailColor"
         title="Thumbnail"
         flat
         icon
-        @click="onThumbnailIconClick"
+        @click="onThumbnailClick"
       >
         <v-icon>view_module</v-icon>
       </v-btn>
@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -66,18 +66,18 @@ export default {
         this.$store.commit('local/explorer/setQueryInput', { queryInput: value })
       }
     },
-    photoIconDisabled () {
-      return !this.selectedFilepath
-    },
-    listIconColor () {
+    listColor () {
       return this.display === 'list' ? 'primary' : null
     },
-    thumbnailIconColor () {
+    thumbnailColor () {
       return this.display === 'thumbnail' ? 'primary' : null
     },
     ...mapState('local/explorer', [
       'selectedFilepath',
       'display'
+    ]),
+    ...mapGetters('local/explorer', [
+      'canViewFile'
     ])
   },
   watch: {
@@ -86,13 +86,13 @@ export default {
     }
   },
   methods: {
-    onPhotoIconClick () {
+    onViewClick () {
       this.viewFile({ filepath: this.selectedFilepath })
     },
-    onListIconClick () {
+    onListClick () {
       this.setDisplay({ display: 'list' })
     },
-    onThumbnailIconClick () {
+    onThumbnailClick () {
       this.setDisplay({ display: 'thumbnail' })
     },
     onTextContextMenu (e) {

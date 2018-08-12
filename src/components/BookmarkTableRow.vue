@@ -46,7 +46,7 @@ export default {
     },
     onContextMenu (e) {
       this.selectBookmark({ filepath: this.bookmark.path })
-      const templates = [
+      let templates = [
         {
           label: 'Open',
           click: () => {
@@ -55,9 +55,29 @@ export default {
           accelerator: 'Enter'
         }
       ]
+      const text = getSelection().toString()
+      if (text) {
+        templates = [
+          ...templates,
+          { type: 'separator' },
+          { role: ContextMenu.Role.copy }
+        ]
+      }
+      templates = [
+        ...templates,
+        { type: 'separator' },
+        {
+          label: 'Remove',
+          click: () => {
+            this.removeBookmark()
+          },
+          accelerator: 'CmdOrCtrl+Backspace'
+        }
+      ]
       ContextMenu.show(e, templates)
     },
     ...mapActions('local/bookmark', [
+      'removeBookmark',
       'selectBookmark',
       'openBookmark'
     ])

@@ -12,6 +12,9 @@ export default {
         }
       })
     },
+    canRemoveBookmark (state) {
+      return !!state.selectedBookmarkPath
+    },
     selectedBookmarkIndex (state, getters) {
       return getters.bookmarks.findIndex((bookmark) => getters.isBookmarkSelected({ filepath: bookmark.path }))
     },
@@ -20,6 +23,12 @@ export default {
     }
   },
   actions: {
+    removeBookmark ({ dispatch, getters, state }) {
+      const oldIndex = getters.selectedBookmarkIndex
+      dispatch('bookmark/remove', { filepath: state.selectedBookmarkPath }, { root: true })
+      const index = oldIndex < getters.bookmarks.length ? oldIndex : getters.bookmarks.length - 1
+      dispatch('selectBookmarkIndex', { index })
+    },
     selectBookmark ({ commit }, { filepath }) {
       commit('setSelectedBookmarkPath', { selectedBookmarkPath: filepath })
     },

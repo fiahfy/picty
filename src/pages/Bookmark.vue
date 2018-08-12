@@ -6,6 +6,7 @@
     pa-0
   >
     <v-layout column>
+      <bookmark-card />
       <v-container
         fluid
         pa-0
@@ -20,10 +21,12 @@
 </template>
 
 <script>
+import BookmarkCard from '~/components/BookmarkCard'
 import BookmarkTable from '~/components/BookmarkTable'
 
 export default {
   components: {
+    BookmarkCard,
     BookmarkTable
   }
 }

@@ -87,6 +87,11 @@ export default {
     },
     onKeyDown (e) {
       switch (e.keyCode) {
+        case 8:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.removeBookmark()
+          }
+          break
         case 13:
           this.openBookmark({ filepath: this.selectedBookmarkPath })
           break
@@ -110,6 +115,7 @@ export default {
       'setScrollTop'
     ]),
     ...mapActions('local/bookmark', [
+      'removeBookmark',
       'selectFirstBookmark',
       'selectLastBookmark',
       'selectPreviousBookmark',
