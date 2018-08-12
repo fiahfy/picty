@@ -49,7 +49,6 @@ import fileUrl from 'file-url'
 import { mapActions, mapGetters } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 import * as File from '~/utils/file'
-import { clearTimeout } from 'timers';
 
 export default {
   props: {
@@ -100,16 +99,14 @@ export default {
   created () {
     this.loading = true
     this.timer = setTimeout(() => {
-      console.log('c', this.file.path, this.timer)
-      if (!this.file.directory) {
+      if (this.file.directory) {
+        const file = File.findFile(this.file.path, (filepath) => this.isFileAvailable({ filepath }))
+        this.imageUrl = file ? fileUrl(file.path) : ''
+      } else {
         this.imageUrl = fileUrl(this.file.path)
-        return
       }
-      const files = File.listFiles(this.file.path)
-      const file = files.find((file) => this.isFileAvailable({ filepath: file.path }))
-      this.imageUrl = file ? fileUrl(file.path) : ''
       this.loading = false
-    }, 3000)
+    }, 500)
   },
   beforeDestroy () {
     clearTimeout(this.timer)

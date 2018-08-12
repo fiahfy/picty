@@ -72,7 +72,7 @@ export default {
       dispatch('changeDirectory', { dirpath, force: true })
     },
     upDirectory ({ dispatch, rootState }) {
-      const dirpath = File.get(rootState.directory).dirname
+      const dirpath = File.getFile(rootState.directory).dirname
       dispatch('changeDirectory', { dirpath })
     },
     changeHomeDirectory ({ dispatch }) {
@@ -80,7 +80,7 @@ export default {
       dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
-      if (state.selectedFilepath && File.get(state.selectedFilepath).directory) {
+      if (state.selectedFilepath && File.getFile(state.selectedFilepath).directory) {
         const dirpath = state.selectedFilepath
         dispatch('changeDirectory', { dirpath })
       }
@@ -217,7 +217,7 @@ export default {
       commit('setFile', { filepath: file.path, file })
     },
     openFile ({ dispatch }, { filepath }) {
-      const file = File.get(filepath)
+      const file = File.getFile(filepath)
       if (file.directory) {
         dispatch('changeDirectory', { dirpath: file.path })
       } else {
@@ -225,7 +225,7 @@ export default {
       }
     },
     viewFile ({ dispatch }, { filepath }) {
-      const file = File.get(filepath)
+      const file = File.getFile(filepath)
       if (file.directory) {
         dispatch('showViewer', { dirpath: file.path }, { root: true })
       } else {

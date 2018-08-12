@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-export const get = (filepath) => {
+export const getFile = (filepath) => {
   let obj = {
     path: filepath,
     name: path.basename(filepath),
@@ -26,15 +26,30 @@ export const get = (filepath) => {
   }
 }
 
+export const findFile = (dirpath, callback) => {
+  const filenames = fs.readdirSync(dirpath)
+  const filename = filenames.find((filename) => {
+    if (filename.match(/^\./)) {
+      return false
+    }
+    const filepath = path.join(dirpath, filename)
+    return callback(filepath)
+  })
+  if (!filename) {
+    return null
+  }
+  return getFile(path.join(dirpath, filename))
+}
+
 export const listFiles = (dirpath, options = { recursive: false }) => {
-  const filepathes = fs.readdirSync(dirpath)
-  return filepathes.reduce((carry, filename) => {
+  const filenames = fs.readdirSync(dirpath)
+  return filenames.reduce((carry, filename) => {
     try {
       if (filename.match(/^\./)) {
         return carry
       }
       const filepath = path.join(dirpath, filename)
-      const file = get(filepath)
+      const file = getFile(filepath)
       if (!options.recursive || !file.directory) {
         return [...carry, file]
       }
@@ -48,5 +63,5 @@ export const listFiles = (dirpath, options = { recursive: false }) => {
 }
 
 export const getFiles = (filepathes) => {
-  return filepathes.map((filepath) => get(filepath))
+  return filepathes.map((filepath) => getFile(filepath))
 }

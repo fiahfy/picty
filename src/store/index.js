@@ -36,7 +36,7 @@ export default new Vuex.Store({
       dispatch('local/explorer/initialize')
     },
     open ({ dispatch }, { filepathes }) {
-      const file = File.get(filepathes[0])
+      const file = File.getFile(filepathes[0])
       if (filepathes.length === 1 && file.directory) {
         dispatch('openDirectory', { dirpath: file.path })
       } else {
