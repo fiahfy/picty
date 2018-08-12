@@ -1,15 +1,42 @@
+const reversed = {
+  path: false,
+  added_at: true
+}
+
 export default {
   namespaced: true,
   state: {
     selectedBookmarkPath: null,
-    scrollTop: 0
+    scrollTop: 0,
+    order: {
+      by: 'path',
+      descending: false
+    }
   },
   getters: {
     bookmarks (state, getters, rootState) {
+      const { by, descending } = state.order
       return Object.keys(rootState.bookmark.bookmarks).map((filepath) => {
         return {
-          path: filepath
+          path: filepath,
+          ...rootState.bookmark.bookmarks[filepath]
         }
+      }).sort((a, b) => {
+        let result = 0
+        if (a[by] > b[by]) {
+          result = 1
+        } else if (a[by] < b[by]) {
+          result = -1
+        }
+        if (result === 0) {
+          if (a.path > b.path) {
+            result = 1
+          } else if (a.path < b.path) {
+            result = -1
+          }
+        }
+        result = reversed[by] ? -1 * result : result
+        return descending ? -1 * result : result
       })
     },
     canRemoveBookmark (state) {
@@ -52,6 +79,11 @@ export default {
     },
     openBookmark ({ dispatch }, { filepath }) {
       dispatch('openDirectory', { dirpath: filepath }, { root: true })
+    },
+    changeOrderBy ({ commit, state }, { orderBy }) {
+      const descending = state.order.by === orderBy ? !state.order.descending : false
+      const order = { by: orderBy, descending }
+      commit('setOrder', { order })
     }
   },
   mutations: {
@@ -60,6 +92,9 @@ export default {
     },
     setScrollTop (state, { scrollTop }) {
       state.scrollTop = scrollTop
+    },
+    setOrder (state, { order }) {
+      state.order = order
     }
   }
 }

@@ -6,7 +6,7 @@
     @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
   >
-    <td>
+    <td :title="file.name">
       <v-layout class="align-center">
         <v-icon
           :color="color"

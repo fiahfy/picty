@@ -1,16 +1,21 @@
 <template>
   <virtual-data-table
     ref="table"
+    :headers="headers"
     :items="bookmarks"
     class="bookmark-table"
     item-key="path"
     hide-actions
-    hide-headers
     sticky-headers
     tabindex="0"
     @scroll="onScroll"
     @keydown.native="onKeyDown"
   >
+    <bookmark-table-header-row
+      slot="headers"
+      slot-scope="props"
+      :headers="props.headers"
+    />
     <bookmark-table-row
       slot="items"
       slot-scope="props"
@@ -26,13 +31,30 @@
 
 <script>
 import { mapActions, mapGetters, mapState, mapMutations } from 'vuex'
+import BookmarkTableHeaderRow from './BookmarkTableHeaderRow'
 import BookmarkTableRow from './BookmarkTableRow'
 import VirtualDataTable from './VirtualDataTable'
 
 export default {
   components: {
+    BookmarkTableHeaderRow,
     BookmarkTableRow,
     VirtualDataTable
+  },
+  data () {
+    return {
+      headers: [
+        {
+          text: 'Path',
+          value: 'path'
+        },
+        {
+          text: 'Date Added',
+          value: 'added_at',
+          width: 110
+        }
+      ]
+    }
   },
   computed: {
     ...mapState('local/bookmark', [
@@ -55,7 +77,7 @@ export default {
           return
         }
         const rowHeight = 48
-        const headerHeight = 0
+        const headerHeight = 58
         const el = {
           offsetTop: rowHeight * index,
           offsetHeight: rowHeight

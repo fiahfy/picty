@@ -12,7 +12,9 @@ export default {
     add ({ commit, state }, { filepath }) {
       const bookmarks = {
         ...state.bookmarks,
-        [filepath]: new Date()
+        [filepath]: {
+          added_at: new Date()
+        }
       }
       commit('setBookmarks', { bookmarks })
     },

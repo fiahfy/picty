@@ -6,7 +6,7 @@
     @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
   >
-    <td>
+    <td :title="bookmark.path">
       <v-layout class="align-center">
         <v-icon
           class="pa-1"
@@ -14,6 +14,9 @@
         >folder</v-icon>
         <span class="ellipsis">{{ bookmark.path }}</span>
       </v-layout>
+    </td>
+    <td class="text-xs-right">
+      <template v-if="bookmark.added_at">{{ bookmark.added_at | moment('YYYY-MM-DD HH:mm') }}</template>
     </td>
   </tr>
 </template>
