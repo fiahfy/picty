@@ -167,7 +167,7 @@ export default {
         commit('setFiles', { files: [] })
       }
       dispatch('sortFiles')
-      dispatch('focusTable')
+      dispatch('focus')
       commit('setLoading', { loading: false })
     },
     sortFiles ({ commit, getters, state }) {
@@ -255,9 +255,11 @@ export default {
     setDisplay ({ commit, dispatch }, { display }) {
       dispatch('setScrollTop', { scrollTop: 0 })
       commit('setDisplay', { display })
+      dispatch('focus')
     },
-    focusTable ({ dispatch }) {
-      dispatch('focus', { selector: Selector.explorerTable }, { root: true })
+    focus ({ dispatch, state }) {
+      const selector = state.display === 'list' ? Selector.explorerTable : Selector.explorerGridList
+      dispatch('focus', { selector }, { root: true })
     },
     async loadDirectoryImage ({ commit, dispatch, state }, { filepath }) {
       commit('setDirectoryImagePathes', { directoryImagePathes: { ...state.directoryImagePathes, [filepath]: '' } })
