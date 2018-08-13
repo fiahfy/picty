@@ -10,7 +10,7 @@
       @contextmenu.stop="onContextMenu"
     >
       <v-img
-        v-if="imageUrl || loading"
+        v-if="imageUrl !== null"
         :src="imageUrl"
         height="150"
       />
@@ -46,7 +46,7 @@
 
 <script>
 import fileUrl from 'file-url'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 import * as File from '~/utils/file'
 
@@ -57,12 +57,12 @@ export default {
       default: () => ({})
     }
   },
-  data () {
-    return {
-      loading: false,
-      imageUrl: ''
-    }
-  },
+  // data () {
+  //   return {
+  //     loading: false,
+  //     imageUrl: ''
+  //   }
+  // },
   computed: {
     rating: {
       get () {
@@ -91,22 +91,38 @@ export default {
       }
       return 'broken_image'
     },
+    imageUrl () {
+      if (!this.file.directory) {
+        return fileUrl(this.file.path)
+      }
+      const path = this.directoryImagePathes[this.file.path]
+      if (path === null) {
+        return path
+      }
+      return path ? fileUrl(path) : ''
+    },
+    ...mapState('local/explorer', [
+      'directoryImagePathes'
+    ]),
     ...mapGetters('local/explorer', [
       'isFileSelected',
       'isFileAvailable'
     ])
   },
   created () {
-    this.loading = true
-    this.timer = setTimeout(() => {
-      if (this.file.directory) {
-        const file = File.findFile(this.file.path, (filepath) => this.isFileAvailable({ filepath }))
-        this.imageUrl = file ? fileUrl(file.path) : ''
-      } else {
-        this.imageUrl = fileUrl(this.file.path)
-      }
-      this.loading = false
-    }, 500)
+    if (this.file.directory) {
+      this.loadDirectoryImage({ filepath: this.file.path })
+    }
+    // this.loading = true
+    // this.timer = setTimeout(() => {
+    //   if (this.file.directory) {
+    //     const file = File.findFile(this.file.path, (filepath) => this.isFileAvailable({ filepath }))
+    //     this.imageUrl = file ? fileUrl(file.path) : ''
+    //   } else {
+    //     this.imageUrl = fileUrl(this.file.path)
+    //   }
+    //   this.loading = false
+    // }, 500)
   },
   beforeDestroy () {
     clearTimeout(this.timer)
@@ -150,7 +166,8 @@ export default {
       'selectFile',
       'searchFiles',
       'openFile',
-      'viewFile'
+      'viewFile',
+      'loadDirectoryImage'
     ])
   }
 }

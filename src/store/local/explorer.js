@@ -24,7 +24,8 @@ export default {
     display: 'list',
     histories: [],
     historyIndex: -1,
-    orders: {}
+    orders: {},
+    directoryImagePathes: {}
   },
   getters: {
     backDirectories (state) {
@@ -257,6 +258,32 @@ export default {
     },
     focusTable ({ dispatch }) {
       dispatch('focus', { selector: Selector.explorerTable }, { root: true })
+    },
+    async loadDirectoryImage ({ commit, dispatch, state }, { filepath }) {
+      commit('setDirectoryImagePathes', { directoryImagePathes: { ...state.directoryImagePathes, [filepath]: '' } })
+      if (state.imageLoading) {
+        return
+      }
+      commit('setImageLoading', { imageLoading: true })
+      await dispatch('loadDirectoryImages')
+    },
+    async loadDirectoryImages ({ commit, dispatch, rootGetters, state }) {
+      // console.log('load', state.directoryImagePathes)
+      const filepath = Object.keys(state.directoryImagePathes).find((filepath) => {
+        return state.directoryImagePathes[filepath] === ''
+      })
+      if (!filepath) {
+        commit('setImageLoading', { imageLoading: false })
+        return
+      }
+      console.log(filepath)
+      const files = await Worker.post(worker, { id: 'listFiles', data: [filepath] })
+      // console.log(files)
+      const file = files.find((file) => rootGetters['settings/isFileAvailable']({ filepath: file.path }))
+      const imagePath = file ? file.path : null
+      console.log(filepath, imagePath)
+      commit('setDirectoryImagePathes', { directoryImagePathes: { ...state.directoryImagePathes, [filepath]: imagePath } })
+      await dispatch('loadDirectoryImages')
     }
   },
   mutations: {
@@ -302,6 +329,12 @@ export default {
         ...state.orders,
         [directory]: order
       }
+    },
+    setDirectoryImagePathes (state, { directoryImagePathes }) {
+      state.directoryImagePathes = directoryImagePathes
+    },
+    setImageLoading (state, { imageLoading }) {
+      state.imageLoading = imageLoading
     }
   }
 }
