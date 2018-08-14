@@ -68,12 +68,10 @@ export default {
         return s + this.sizes[i]
       })
     },
-    ...mapState([
-      'directory'
-    ]),
     ...mapState('local/explorer', [
-      'loading',
+      'directory',
       'query',
+      'loading',
       'selectedFilepath'
     ]),
     ...mapGetters('local/explorer', [

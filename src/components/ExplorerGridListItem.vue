@@ -9,18 +9,19 @@
       @dblclick="onDblClick"
       @contextmenu.stop="onContextMenu"
     >
-      <v-img
-        v-if="imageUrl !== null"
-        :src="imageUrl"
-        height="150"
-      />
       <v-layout
-        v-else
+        v-if="message"
         align-center
         justify-center
       >
-        <v-flex class="text-xs-center caption">No image</v-flex>
+        <v-flex class="text-xs-center caption">{{ message }}</v-flex>
       </v-layout>
+      <v-img
+        v-else
+        :src="imageUrl"
+        height="150"
+        @error="onError"
+      />
       <v-card-title class="pt-2 px-2 pb-0">
         <v-layout class="align-center">
           <v-icon
@@ -48,7 +49,6 @@
 import fileUrl from 'file-url'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
-import * as File from '~/utils/file'
 
 export default {
   props: {
@@ -57,12 +57,11 @@ export default {
       default: () => ({})
     }
   },
-  // data () {
-  //   return {
-  //     loading: false,
-  //     imageUrl: ''
-  //   }
-  // },
+  data () {
+    return {
+      error: false
+    }
+  },
   computed: {
     rating: {
       get () {
@@ -101,6 +100,15 @@ export default {
       }
       return path ? fileUrl(path) : ''
     },
+    message () {
+      if (this.error) {
+        return 'Load failed'
+      }
+      if (this.imageUrl === null) {
+        return 'No image'
+      }
+      return ''
+    },
     ...mapState('local/explorer', [
       'directoryImagePathes'
     ]),
@@ -111,18 +119,8 @@ export default {
   },
   created () {
     if (this.file.directory) {
-      this.loadDirectoryImage({ filepath: this.file.path })
+      this.requestDirectoryImage({ filepath: this.file.path })
     }
-    // this.loading = true
-    // this.timer = setTimeout(() => {
-    //   if (this.file.directory) {
-    //     const file = File.findFile(this.file.path, (filepath) => this.isFileAvailable({ filepath }))
-    //     this.imageUrl = file ? fileUrl(file.path) : ''
-    //   } else {
-    //     this.imageUrl = fileUrl(this.file.path)
-    //   }
-    //   this.loading = false
-    // }, 500)
   },
   beforeDestroy () {
     clearTimeout(this.timer)
@@ -162,12 +160,15 @@ export default {
       }
       ContextMenu.show(e, templates)
     },
+    onError () {
+      this.error = true
+    },
     ...mapActions('local/explorer', [
       'selectFile',
       'searchFiles',
       'openFile',
       'viewFile',
-      'loadDirectoryImage'
+      'requestDirectoryImage'
     ])
   }
 }
