@@ -13,6 +13,17 @@ onmessage = ({ data: { id, data } }) => {
         postMessage(files)
         break
       }
+      case 'listFileSets': {
+        const [filepathes] = data
+        const fileSets = filepathes.reduce((carry, filepath) => {
+          return {
+            ...carry,
+            [filepath]: File.listFiles(filepath)
+          }
+        }, {})
+        postMessage(fileSets)
+        break
+      }
       default:
         postMessage([])
         break

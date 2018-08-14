@@ -15,7 +15,8 @@ Vue.use(Vuex)
 export const Selector = {
   directoryInput: 'input[name=directory]',
   queryInput: 'input[name=query]',
-  explorerTable: '.explorer-table'
+  explorerTable: '.explorer-table',
+  explorerGridList: '.explorer-grid-list'
 }
 
 export default new Vuex.Store({
@@ -23,8 +24,7 @@ export default new Vuex.Store({
     title: Package.productName,
     message: null,
     fullScreen: false,
-    viewing: false,
-    directory: remote.app.getPath('home')
+    viewing: false
   },
   getters: {
     titleBar (state) {
@@ -63,7 +63,7 @@ export default new Vuex.Store({
       }
       commit('setViewing', { viewing: false })
       if (router.app.$route.name === 'explorer') {
-        dispatch('focus', { selector: Selector.explorerTable })
+        dispatch('local/explorer/focus')
       }
     },
     enterFullScreen () {
@@ -117,9 +117,6 @@ export default new Vuex.Store({
     },
     setViewing (state, { viewing }) {
       state.viewing = viewing
-    },
-    setDirectory (state, { directory }) {
-      state.directory = directory
     }
   },
   modules: {
@@ -131,7 +128,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       paths: [
-        'directory',
+        'local.explorer.directory',
         'bookmark',
         'rating',
         'settings'

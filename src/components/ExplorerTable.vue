@@ -70,12 +70,10 @@ export default {
       }
       return this.query ? 'No matching records found' : 'No data available'
     },
-    ...mapState([
-      'directory'
-    ]),
     ...mapState('local/explorer', [
-      'loading',
+      'directory',
       'query',
+      'loading',
       'selectedFilepath'
     ]),
     ...mapGetters('local/explorer', [
