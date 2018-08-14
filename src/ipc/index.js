@@ -70,12 +70,12 @@ export const addIpcRendererListeners = (store) => {
     store.dispatch('local/explorer/browseDirectory')
   })
   ipcRenderer.on('zoomIn', () => {
-    store.dispatch('viewer/zoomIn')
+    store.dispatch('local/viewer/zoomIn')
   })
   ipcRenderer.on('zoomOut', () => {
-    store.dispatch('viewer/zoomOut')
+    store.dispatch('local/viewer/zoomOut')
   })
   ipcRenderer.on('resetZoom', () => {
-    store.dispatch('viewer/resetZoom')
+    store.dispatch('local/viewer/resetZoom')
   })
 }
