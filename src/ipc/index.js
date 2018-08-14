@@ -40,6 +40,9 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('showExplorer', () => {
     store.dispatch('changeRoute', { name: 'explorer' })
   })
+  ipcRenderer.on('showBookmark', () => {
+    store.dispatch('changeRoute', { name: 'bookmark' })
+  })
   ipcRenderer.on('showSettings', () => {
     store.dispatch('changeRoute', { name: 'settings' })
   })
@@ -60,7 +63,10 @@ export const addIpcRendererListeners = (store) => {
   ipcRenderer.on('changeHomeDirectory', () => {
     store.dispatch('local/explorer/changeHomeDirectory')
   })
-  ipcRenderer.on('browseCurrentDirectory', () => {
+  ipcRenderer.on('bookmarkDirectory', () => {
+    store.dispatch('local/explorer/toggleDirectoryBookmarked')
+  })
+  ipcRenderer.on('browseDirectory', () => {
     store.dispatch('local/explorer/browseDirectory')
   })
   ipcRenderer.on('zoomIn', () => {

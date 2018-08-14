@@ -1,7 +1,7 @@
 import path from 'path'
 
 export const defaultExtensions = [
-  'JPEG', 'JPG', 'PNG', 'GIF', 'WEBP', 'BMP'
+  'BMP', 'GIF', 'ICO', 'JPEG', 'JPG', 'PNG', 'SVG', 'TIF', 'TIFF', 'WEBP'
 ]
 
 export default {
@@ -14,7 +14,7 @@ export default {
     extensions: [...defaultExtensions]
   },
   getters: {
-    isAvailableFile (state) {
+    isFileAvailable (state) {
       return ({ filepath }) => {
         const ext = path.extname(filepath).toUpperCase()
         if (!ext) {

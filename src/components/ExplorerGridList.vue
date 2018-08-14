@@ -1,66 +1,59 @@
 <template>
-  <virtual-data-table
-    ref="table"
-    :headers="headers"
+  <virtual-data-iterator
+    ref="iterator"
     :items="filteredFiles"
     :loading="loading"
     :no-data-text="noDataText"
-    class="explorer-table"
+    :estimated-height="231"
+    :sizes="sizes"
+    class="explorer-grid-list"
+    container-class="grid-list-md"
     item-key="path"
     hide-actions
-    sticky-headers
     tabindex="0"
     @scroll="onScroll"
     @keydown.native="onKeyDown"
   >
-    <explorer-table-header-row
-      slot="headers"
-      slot-scope="props"
-      :headers="props.headers"
-    />
-    <explorer-table-row
+    <explorer-grid-list-item
       slot="items"
       slot-scope="props"
       :key="props.item.path"
       :file="props.item"
+      :class="classes"
     />
     <v-progress-linear
       slot="progress"
       indeterminate
     />
-  </virtual-data-table>
+    <v-card
+      slot="no-data"
+      class="ma-3 pa-3"
+    >
+      {{ noDataText }}
+    </v-card>
+    <v-card
+      slot="no-results"
+      class="ma-3 pa-3"
+    >
+      {{ noDataText }}
+    </v-card>
+  </virtual-data-iterator>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import ExplorerTableHeaderRow from './ExplorerTableHeaderRow'
-import ExplorerTableRow from './ExplorerTableRow'
-import VirtualDataTable from './VirtualDataTable'
+import ExplorerGridListItem from './ExplorerGridListItem'
+import VirtualDataIterator from './VirtualDataIterator'
+import * as Viewport from '~/utils/viewport'
 
 export default {
   components: {
-    ExplorerTableHeaderRow,
-    ExplorerTableRow,
-    VirtualDataTable
+    ExplorerGridListItem,
+    VirtualDataIterator
   },
   data () {
     return {
-      headers: [
-        {
-          text: 'Name',
-          value: 'name'
-        },
-        {
-          text: 'Rating',
-          value: 'rating',
-          width: 190
-        },
-        {
-          text: 'Date Modified',
-          value: 'modified_at',
-          width: 110
-        }
-      ]
+      sizes: [6, 4, 3, 2, 2]
     }
   },
   computed: {
@@ -69,6 +62,11 @@ export default {
         return 'Loading...'
       }
       return this.query ? 'No matching records found' : 'No data available'
+    },
+    classes () {
+      return Viewport.sizes.map((s, i) => {
+        return s + this.sizes[i]
+      })
     },
     ...mapState('local/explorer', [
       'directory',
@@ -92,20 +90,20 @@ export default {
         if (index === -1) {
           return
         }
-        const rowHeight = 48
-        const headerHeight = 58
+        const size = 12 / this.sizes[Viewport.getSizeIndex()]
+        const rowHeight = 231
         const el = {
-          offsetTop: rowHeight * index,
+          offsetTop: rowHeight * Math.floor(index / size),
           offsetHeight: rowHeight
         }
-        const table = {
-          scrollTop: this.$refs.table.getScrollTop(),
-          offsetHeight: this.$refs.table.getOffsetHeight() - headerHeight
+        const iterator = {
+          scrollTop: this.$refs.iterator.getScrollTop(),
+          offsetHeight: this.$refs.iterator.getOffsetHeight()
         }
-        if (table.scrollTop > el.offsetTop) {
-          this.$refs.table.setScrollTop(el.offsetTop)
-        } else if (table.scrollTop < el.offsetTop + el.offsetHeight - table.offsetHeight) {
-          this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight)
+        if (iterator.scrollTop > el.offsetTop) {
+          this.$refs.iterator.setScrollTop(el.offsetTop)
+        } else if (iterator.scrollTop < el.offsetTop + el.offsetHeight - iterator.offsetHeight) {
+          this.$refs.iterator.setScrollTop(el.offsetTop + el.offsetHeight - iterator.offsetHeight)
         }
       })
     }
@@ -117,7 +115,7 @@ export default {
     restore () {
       const scrollTop = this.scrollTop
       this.$nextTick(() => {
-        this.$refs.table.setScrollTop(scrollTop)
+        this.$refs.iterator.setScrollTop(scrollTop)
       })
     },
     onScroll (e) {
@@ -128,23 +126,32 @@ export default {
         case 13:
           this.viewFile({ filepath: this.selectedFilepath })
           break
+        case 37:
+          this.selectPreviousFile()
+          break
         case 38:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectFirstFile()
           } else {
-            this.selectPreviousFile()
+            const index = this.selectedFileIndex - Math.floor(12 / this.sizes[Viewport.getSizeIndex()])
+            this.selectFileIndex({ index })
           }
+          break
+        case 39:
+          this.selectNextFile()
           break
         case 40:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectLastFile()
           } else {
-            this.selectNextFile()
+            const index = this.selectedFileIndex + Math.floor(12 / this.sizes[Viewport.getSizeIndex()])
+            this.selectFileIndex({ index })
           }
           break
       }
     },
     ...mapActions('local/explorer', [
+      'selectFileIndex',
       'selectFirstFile',
       'selectLastFile',
       'selectPreviousFile',
@@ -157,7 +164,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.explorer-table {
+.explorer-grid-list {
   outline: none;
 }
 </style>

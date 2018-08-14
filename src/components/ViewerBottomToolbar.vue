@@ -27,6 +27,7 @@
 
     <v-slider
       v-if="!loading"
+      ref="slider"
       v-model="page"
       :min="1"
       :max="maxPage"
@@ -127,6 +128,11 @@ export default {
       'files',
       'scale'
     ])
+  },
+  watch: {
+    page () {
+      this.$refs.slider && this.$refs.slider.$el.querySelector('input').blur()
+    }
   },
   methods: {
     onPreviousClick () {

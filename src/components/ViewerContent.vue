@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
 import fileUrl from 'file-url'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   data () {
@@ -180,10 +180,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-::-webkit-scrollbar {
-  display: none;
-}
-
 .viewer-content {
   cursor: -webkit-grab;
   &.dragging {
@@ -192,6 +188,9 @@ export default {
   .wrapper {
     overflow: auto;
     position: relative;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     img {
       bottom:0;
       left: 0;

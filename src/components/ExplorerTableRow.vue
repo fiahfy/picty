@@ -6,7 +6,7 @@
     @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
   >
-    <td>
+    <td :title="file.name">
       <v-layout class="align-center">
         <v-icon
           :color="color"
@@ -52,7 +52,7 @@ export default {
       }
     },
     active () {
-      return this.isSelectedFile({ filepath: this.file.path })
+      return this.isFileSelected({ filepath: this.file.path })
     },
     color () {
       if (this.file.exists) {
@@ -67,7 +67,7 @@ export default {
       return 'broken_image'
     },
     ...mapGetters('local/explorer', [
-      'isSelectedFile'
+      'isFileSelected'
     ])
   },
   methods: {

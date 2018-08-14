@@ -37,6 +37,7 @@ const createTemplate = () => {
       label: 'View',
       submenu: [
         { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => { send('showExplorer') } },
+        { label: 'Bookmark', accelerator: 'CmdOrCtrl+Shift+B', click: () => { send('showBookmark') } },
         { type: 'separator' },
         { role: 'reload' },
         { role: 'forcereload' },
@@ -58,7 +59,8 @@ const createTemplate = () => {
         { label: 'Forward', accelerator: 'CmdOrCtrl+Right', click: () => { send('forwardDirectory') } },
         { label: 'Up', accelerator: 'CmdOrCtrl+Shift+P', click: () => { send('upDirectory') } },
         { label: 'Home', accelerator: 'CmdOrCtrl+Shift+H', click: () => { send('changeHomeDirectory') } },
-        { label: 'Browse', click: () => { send('browseCurrentDirectory') } }
+        { label: 'Bookmark', accelerator: 'CmdOrCtrl+D', click: () => { send('bookmarkDirectory') } },
+        { label: 'Browse', click: () => { send('browseDirectory') } }
       ]
     },
     {

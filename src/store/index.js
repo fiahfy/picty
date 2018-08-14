@@ -15,7 +15,8 @@ Vue.use(Vuex)
 export const Selector = {
   directoryInput: 'input[name=directory]',
   queryInput: 'input[name=query]',
-  explorerTable: '.explorer-table'
+  explorerTable: '.explorer-table',
+  explorerGridList: '.explorer-grid-list'
 }
 
 export default new Vuex.Store({
@@ -23,8 +24,7 @@ export default new Vuex.Store({
     title: Package.productName,
     message: null,
     fullScreen: false,
-    viewing: false,
-    directory: remote.app.getPath('home')
+    viewing: false
   },
   getters: {
     titleBar (state) {
@@ -33,11 +33,10 @@ export default new Vuex.Store({
   },
   actions: {
     initialize ({ dispatch }) {
-      dispatch('migrate')
       dispatch('local/explorer/initialize')
     },
     open ({ dispatch }, { filepathes }) {
-      const file = File.get(filepathes[0])
+      const file = File.getFile(filepathes[0])
       if (filepathes.length === 1 && file.directory) {
         dispatch('openDirectory', { dirpath: file.path })
       } else {
@@ -64,7 +63,7 @@ export default new Vuex.Store({
       }
       commit('setViewing', { viewing: false })
       if (router.app.$route.name === 'explorer') {
-        dispatch('focus', { selector: Selector.explorerTable })
+        dispatch('local/explorer/focus')
       }
     },
     enterFullScreen () {
@@ -104,13 +103,6 @@ export default new Vuex.Store({
     },
     showMessage ({ commit }, message) {
       commit('setMessage', { message })
-    },
-    migrate ({ state, commit }) {
-      // TODO: remove later
-      state.bookmark.bookmarks.forEach((bookmark) => {
-        commit('rating/setRating', { filepath: bookmark, rating: 1 })
-      })
-      commit('bookmark/setBookmarks', { bookmarks: [] })
     }
   },
   mutations: {
@@ -125,9 +117,6 @@ export default new Vuex.Store({
     },
     setViewing (state, { viewing }) {
       state.viewing = viewing
-    },
-    setDirectory (state, { directory }) {
-      state.directory = directory
     }
   },
   modules: {
@@ -139,7 +128,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       paths: [
-        'directory',
+        'local.explorer.directory',
         'bookmark',
         'rating',
         'settings'

@@ -1,30 +1,34 @@
 export default {
   namespaced: true,
   state: {
-    bookmarks: []
+    bookmarks: {}
   },
   getters: {
     isBookmarked (state) {
-      return ({ filepath }) => state.bookmarks.includes(filepath)
+      return ({ filepath }) => !!state.bookmarks[filepath]
     }
   },
   actions: {
     add ({ commit, state }, { filepath }) {
-      if (state.bookmarks.includes(filepath)) {
-        return
-      }
-      const bookmarks = [
+      const bookmarks = {
         ...state.bookmarks,
-        filepath
-      ]
+        [filepath]: {
+          added_at: new Date()
+        }
+      }
       commit('setBookmarks', { bookmarks })
     },
     remove ({ commit, state }, { filepath }) {
-      const bookmarks = state.bookmarks.filter((bookmark) => bookmark !== filepath)
+      const bookmarks = Object.keys(state.bookmarks)
+        .filter((key) => key !== filepath)
+        .reduce((carry, key) => {
+          carry[key] = state.bookmarks[key]
+          return carry
+        }, {})
       commit('setBookmarks', { bookmarks })
     },
-    toggle ({ dispatch, state }, { filepath }) {
-      if (state.bookmarks.includes(filepath)) {
+    toggle ({ dispatch, getters }, { filepath }) {
+      if (getters.isBookmarked({ filepath })) {
         dispatch('remove', { filepath })
       } else {
         dispatch('add', { filepath })
