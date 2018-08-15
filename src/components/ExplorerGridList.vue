@@ -90,10 +90,10 @@ export default {
         if (index === -1) {
           return
         }
-        const size = 12 / this.sizes[Viewport.getSizeIndex()]
+        const offset = this.getItemOffset()
         const rowHeight = 231
         const el = {
-          offsetTop: rowHeight * Math.floor(index / size),
+          offsetTop: rowHeight * Math.floor(index / offset),
           offsetHeight: rowHeight
         }
         const iterator = {
@@ -118,44 +118,49 @@ export default {
         this.$refs.iterator.setScrollTop(scrollTop)
       })
     },
+    getItemOffset () {
+      return 12 / this.sizes[Viewport.getSizeIndex()]
+    },
     onScroll (e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
     onKeyDown (e) {
+      const offset = this.getItemOffset()
       switch (e.keyCode) {
         case 13:
           this.viewFile({ filepath: this.selectedFilepath })
           break
         case 37:
-          this.selectPreviousFile()
+          this.selectLeftFile({ offset })
           break
         case 38:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectFirstFile()
           } else {
             const index = this.selectedFileIndex - Math.floor(12 / this.sizes[Viewport.getSizeIndex()])
-            this.selectFileIndex({ index })
+            this.selectTopFile({ offset })
           }
           break
         case 39:
-          this.selectNextFile()
+          this.selectRightFile({ offset })
           break
         case 40:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectLastFile()
           } else {
             const index = this.selectedFileIndex + Math.floor(12 / this.sizes[Viewport.getSizeIndex()])
-            this.selectFileIndex({ index })
+            this.selectBottomFile({ offset })
           }
           break
       }
     },
     ...mapActions('local/explorer', [
-      'selectFileIndex',
       'selectFirstFile',
       'selectLastFile',
-      'selectPreviousFile',
-      'selectNextFile',
+      'selectLeftFile',
+      'selectTopFile',
+      'selectRightFile',
+      'selectBottomFile',
       'setScrollTop',
       'viewFile'
     ])

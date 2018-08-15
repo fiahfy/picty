@@ -11,6 +11,7 @@ const reversed = {
 }
 
 const worker = new FileWorker()
+const subWorker = new FileWorker()
 
 export default {
   namespaced: true,
@@ -171,7 +172,6 @@ export default {
       dispatch('sortFiles')
       dispatch('focus')
       commit('setLoading', { loading: false })
-      commit('setDirectoryImageLoading', { directoryImageLoading: false })
     },
     sortFiles ({ commit, getters, state }) {
       const { by, descending } = getters.order
@@ -214,6 +214,34 @@ export default {
     },
     selectNextFile ({ dispatch, getters }) {
       dispatch('selectFileIndex', { index: getters.selectedFileIndex + 1 })
+    },
+    selectLeftFile ({ dispatch, getters }, { offset }) {
+      const index = getters.selectedFileIndex - 1
+      if (index % offset === offset - 1) {
+        return
+      }
+      dispatch('selectFileIndex', { index })
+    },
+    selectTopFile ({ dispatch, getters }, { offset }) {
+      const index = getters.selectedFileIndex - offset
+      if (index < 0) {
+        return
+      }
+      dispatch('selectFileIndex', { index })
+    },
+    selectRightFile ({ dispatch, getters }, { offset }) {
+      const index = getters.selectedFileIndex + 1
+      if (index % offset === 0) {
+        return
+      }
+      dispatch('selectFileIndex', { index })
+    },
+    selectBottomFile ({ dispatch, getters }, { offset }) {
+      const index = getters.selectedFileIndex + offset
+      if (index > getters.filteredFiles.length - 1) {
+        return
+      }
+      dispatch('selectFileIndex', { index })
     },
     searchFiles ({ commit }, { query }) {
       commit('setQueryInput', { queryInput: query })
@@ -288,7 +316,7 @@ export default {
         commit('setDirectoryImageLoading', { directoryImageLoading: false })
         return
       }
-      const fileSets = await Worker.post(worker, { id: 'listFileSets', data: [filepathes] })
+      const fileSets = await Worker.post(subWorker, { id: 'listFileSets', data: [filepathes] })
       const directoryImagePathes = Object.keys(fileSets).reduce((carry, filepath) => {
         const file = fileSets[filepath].find((file) => rootGetters['settings/isFileAvailable']({ filepath: file.path }))
         return {
