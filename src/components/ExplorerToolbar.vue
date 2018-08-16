@@ -113,9 +113,7 @@ export default {
       ContextMenu.show(e, this.backDirectories.map((directory, index) => {
         return {
           label: directory,
-          click: () => {
-            this.backDirectory({ offset: index })
-          }
+          click: () => this.backDirectory({ offset: index })
         }
       }))
     },
@@ -126,9 +124,7 @@ export default {
       ContextMenu.show(e, this.forwardDirectories.map((directory, index) => {
         return {
           label: directory,
-          click: () => {
-            this.forwardDirectory({ offset: index })
-          }
+          click: () => this.forwardDirectory({ offset: index })
         }
       }))
     },

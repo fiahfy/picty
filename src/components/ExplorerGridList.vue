@@ -137,7 +137,6 @@ export default {
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectFirstFile()
           } else {
-            const index = this.selectedFileIndex - Math.floor(12 / this.sizes[Viewport.getSizeIndex()])
             this.selectTopFile({ offset })
           }
           break
@@ -148,7 +147,6 @@ export default {
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
             this.selectLastFile()
           } else {
-            const index = this.selectedFileIndex + Math.floor(12 / this.sizes[Viewport.getSizeIndex()])
             this.selectBottomFile({ offset })
           }
           break

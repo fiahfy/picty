@@ -52,9 +52,7 @@ export default {
       let templates = [
         {
           label: 'Open',
-          click: () => {
-            this.openBookmark({ filepath: this.bookmark.path })
-          },
+          click: () => this.openBookmark({ filepath: this.bookmark.path }),
           accelerator: 'Enter'
         }
       ]
@@ -70,10 +68,14 @@ export default {
         ...templates,
         { type: 'separator' },
         {
+          label: 'New Bookmark',
+          click: () => this.showDialog(),
+          accelerator: 'CmdOrCtrl+N'
+        },
+        { type: 'separator' },
+        {
           label: 'Remove',
-          click: () => {
-            this.removeBookmark()
-          },
+          click: () => this.removeBookmark(),
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
@@ -82,7 +84,8 @@ export default {
     ...mapActions('local/bookmark', [
       'removeBookmark',
       'selectBookmark',
-      'openBookmark'
+      'openBookmark',
+      'showDialog'
     ])
   }
 }

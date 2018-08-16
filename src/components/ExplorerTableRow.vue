@@ -82,9 +82,7 @@ export default {
       let templates = [
         {
           label: 'View',
-          click: () => {
-            this.viewFile({ filepath: this.file.path })
-          },
+          click: () => this.viewFile({ filepath: this.file.path }),
           accelerator: 'Enter'
         }
       ]
@@ -96,9 +94,7 @@ export default {
           { role: ContextMenu.Role.copy },
           {
             label: `Search "${text}"`,
-            click: () => {
-              this.searchFiles({ query: text })
-            },
+            click: () => this.searchFiles({ query: text }),
             accelerator: 'CmdOrCtrl+F'
           }
         ]

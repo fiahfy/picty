@@ -10,6 +10,7 @@
     tabindex="0"
     @scroll="onScroll"
     @keydown.native="onKeyDown"
+    @contextmenu.native.stop="onContextMenu"
   >
     <bookmark-table-header-row
       slot="headers"
@@ -34,6 +35,7 @@ import { mapActions, mapGetters, mapState, mapMutations } from 'vuex'
 import BookmarkTableHeaderRow from './BookmarkTableHeaderRow'
 import BookmarkTableRow from './BookmarkTableRow'
 import VirtualDataTable from './VirtualDataTable'
+import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
@@ -131,18 +133,36 @@ export default {
             this.selectNextBookmark()
           }
           break
+        case 78:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.showDialog()
+          }
+          break
       }
+    },
+    onContextMenu (e) {
+      this.unselectBookmark()
+      const templates = [
+        {
+          label: 'New Bookmark',
+          click: () => this.showDialog(),
+          accelerator: 'CmdOrCtrl+N'
+        }
+      ]
+      ContextMenu.show(e, templates)
     },
     ...mapMutations('local/bookmark', [
       'setScrollTop'
     ]),
     ...mapActions('local/bookmark', [
       'removeBookmark',
+      'unselectBookmark',
       'selectFirstBookmark',
       'selectLastBookmark',
       'selectPreviousBookmark',
       'selectNextBookmark',
-      'openBookmark'
+      'openBookmark',
+      'showDialog'
     ])
   }
 }

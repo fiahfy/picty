@@ -11,7 +11,8 @@ export default {
     order: {
       by: 'path',
       descending: false
-    }
+    },
+    dialog: false
   },
   getters: {
     bookmarks (state, getters, rootState) {
@@ -50,6 +51,10 @@ export default {
     }
   },
   actions: {
+    addBookmark ({ dispatch }, { filepath }) {
+      dispatch('bookmark/add', { filepath }, { root: true })
+      dispatch('selectBookmark', { filepath })
+    },
     removeBookmark ({ dispatch, getters, state }) {
       const oldIndex = getters.selectedBookmarkIndex
       dispatch('bookmark/remove', { filepath: state.selectedBookmarkPath }, { root: true })
@@ -58,6 +63,9 @@ export default {
     },
     selectBookmark ({ commit }, { filepath }) {
       commit('setSelectedBookmarkPath', { selectedBookmarkPath: filepath })
+    },
+    unselectBookmark ({ commit }) {
+      commit('setSelectedBookmarkPath', { selectedBookmarkPath: null })
     },
     selectBookmarkIndex ({ dispatch, getters }, { index }) {
       const bookmark = getters.bookmarks[index]
@@ -84,6 +92,12 @@ export default {
       const descending = state.order.by === orderBy ? !state.order.descending : false
       const order = { by: orderBy, descending }
       commit('setOrder', { order })
+    },
+    showDialog ({ commit }) {
+      commit('setDialog', { dialog: true })
+    },
+    dismissDialog ({ commit }) {
+      commit('setDialog', { dialog: false })
     }
   },
   mutations: {
@@ -95,6 +109,9 @@ export default {
     },
     setOrder (state, { order }) {
       state.order = order
+    },
+    setDialog (state, { dialog }) {
+      state.dialog = dialog
     }
   }
 }
