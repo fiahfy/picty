@@ -90,13 +90,6 @@ export default {
       const dirpath = remote.app.getPath('home')
       dispatch('changeDirectory', { dirpath })
     },
-    changeSelectedDirectory ({ dispatch, state }) {
-      const file = getters.getFile({ filepath: state.selectedFilepath })
-      if (file && file.directory) {
-        const dirpath = state.selectedFilepath
-        dispatch('changeDirectory', { dirpath })
-      }
-    },
     changeDirectory ({ commit, dispatch, state }, { dirpath, force = false }) {
       if (state.loading) {
         return
