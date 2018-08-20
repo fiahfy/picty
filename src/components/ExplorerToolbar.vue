@@ -62,7 +62,7 @@
     <v-text-field
       v-model="directoryInput"
       name="directory"
-      class="ml-3"
+      class="ml-3 pt-0"
       label="Path"
       prepend-icon="folder"
       single-line

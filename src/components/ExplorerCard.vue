@@ -39,7 +39,7 @@
       <v-text-field
         v-model="queryInput"
         name="query"
-        class="ml-3"
+        class="ml-3 pt-0"
         label="Search"
         append-icon="search"
         single-line
