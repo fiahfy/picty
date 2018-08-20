@@ -6557,9 +6557,9 @@ vue@^2.4.2:
   version "2.5.17"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
 
-vuetify@1.2.0-beta.0:
-  version "1.2.0-beta.0"
-  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.2.0-beta.0.tgz#01f590fad755f13d18bbb70b95400fd362176671"
+vuetify@1.2.0-beta.2:
+  version "1.2.0-beta.2"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.2.0-beta.2.tgz#f0c2575b46672e068ff4031d3b0b998bb37e8157"
 
 vuex-persistedstate@^2.0.0:
   version "2.5.4"

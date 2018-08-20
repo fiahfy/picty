@@ -31,12 +31,17 @@
           <span class="ellipsis caption">{{ file.name }}</span>
         </v-layout>
       </v-card-title>
-      <v-card-actions class="pa-0 text-xs-center">
+      <v-card-actions
+        class="pa-0 text-xs-center"
+        @click.stop
+        @dblclick.stop
+      >
         <v-spacer />
         <v-rating
           v-model="rating"
           class="ellipsis"
           half-increments
+          clearable
           small
         />
         <v-spacer />

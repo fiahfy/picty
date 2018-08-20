@@ -18,10 +18,15 @@
     <td class="text-xs-right">
       {{ file.views || '' }}
     </td>
-    <td class="text-xs-right">
+    <td
+      class="text-xs-right"
+      @click.stop
+      @dblclick.stop
+    >
       <v-rating
         v-model="rating"
         half-increments
+        clearable
       />
     </td>
     <td class="text-xs-right">
