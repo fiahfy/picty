@@ -193,6 +193,10 @@ export default {
       })
       commit('setFiles', { files })
     },
+    searchFiles ({ commit }, { query }) {
+      commit('setQueryInput', { queryInput: query })
+      commit('setQuery', { query })
+    },
     selectFile ({ commit }, { filepath }) {
       commit('setSelectedFilepath', { selectedFilepath: filepath })
     },
@@ -242,19 +246,6 @@ export default {
       }
       dispatch('selectFileIndex', { index })
     },
-    searchFiles ({ commit }, { query }) {
-      commit('setQueryInput', { queryInput: query })
-      commit('setQuery', { query })
-    },
-    updateFileRating ({ commit, dispatch, getters, rootGetters }, { filepath, rating }) {
-      let file = getters.getFile({ filepath })
-      dispatch('rating/setRating', { filepath: file.path, rating }, { root: true })
-      file = {
-        ...file,
-        rating: rootGetters['rating/getRating']({ filepath: file.path })
-      }
-      commit('setFile', { filepath: file.path, file })
-    },
     openFile ({ dispatch, getters }, { filepath }) {
       const file = getters.getFile({ filepath })
       if (file.directory) {
@@ -263,14 +254,27 @@ export default {
         dispatch('viewFile', { filepath: file.path })
       }
     },
-    viewFile ({ commit, dispatch, getters, rootGetters }, { filepath }) {
-      let file = getters.getFile({ filepath })
+    viewFile ({ dispatch, getters }, { filepath }) {
+      const file = getters.getFile({ filepath })
       if (file.directory) {
         dispatch('showViewer', { dirpath: file.path }, { root: true })
       } else {
         dispatch('showViewer', { filepath: file.path }, { root: true })
       }
-      dispatch('views/incrementViews', { filepath: file.path }, { root: true })
+      dispatch('incrementFileViews', { filepath: file.path })
+    },
+    updateFileRating ({ commit, dispatch, getters, rootGetters }, { filepath, rating }) {
+      dispatch('rating/setRating', { filepath, rating }, { root: true })
+      let file = getters.getFile({ filepath })
+      file = {
+        ...file,
+        rating: rootGetters['rating/getRating']({ filepath: file.path })
+      }
+      commit('setFile', { filepath: file.path, file })
+    },
+    incrementFileViews ({ commit, dispatch, getters, rootGetters }, { filepath }) {
+      dispatch('views/incrementViews', { filepath }, { root: true })
+      let file = getters.getFile({ filepath })
       file = {
         ...file,
         views: rootGetters['views/getViews']({ filepath: file.path })
