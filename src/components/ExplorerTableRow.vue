@@ -16,6 +16,9 @@
       </v-layout>
     </td>
     <td class="text-xs-right">
+      {{ file.views || '' }}
+    </td>
+    <td class="text-xs-right">
       <v-rating
         v-model="rating"
         half-increments
@@ -44,11 +47,7 @@ export default {
         return this.file.rating
       },
       set (value) {
-        const file = {
-          ...this.file,
-          rating: value
-        }
-        this.$store.dispatch('local/explorer/updateFile', { file })
+        this.$store.dispatch('local/explorer/updateFileRating', { filepath: this.file.path, rating: value })
       }
     },
     active () {

@@ -9,7 +9,7 @@ export default {
     }
   },
   actions: {
-    add ({ commit, state }, { filepath }) {
+    addBookmark ({ commit, state }, { filepath }) {
       const bookmarks = {
         ...state.bookmarks,
         [filepath]: {
@@ -18,7 +18,7 @@ export default {
       }
       commit('setBookmarks', { bookmarks })
     },
-    remove ({ commit, state }, { filepath }) {
+    removeBookmark ({ commit, state }, { filepath }) {
       const bookmarks = Object.keys(state.bookmarks)
         .filter((key) => key !== filepath)
         .reduce((carry, key) => {
@@ -27,11 +27,11 @@ export default {
         }, {})
       commit('setBookmarks', { bookmarks })
     },
-    toggle ({ dispatch, getters }, { filepath }) {
+    toggleBookmarked ({ dispatch, getters }, { filepath }) {
       if (getters.isBookmarked({ filepath })) {
-        dispatch('remove', { filepath })
+        dispatch('removeBookmark', { filepath })
       } else {
-        dispatch('add', { filepath })
+        dispatch('addBookmark', { filepath })
       }
     }
   },

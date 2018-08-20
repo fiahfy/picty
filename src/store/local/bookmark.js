@@ -52,12 +52,12 @@ export default {
   },
   actions: {
     addBookmark ({ dispatch }, { filepath }) {
-      dispatch('bookmark/add', { filepath }, { root: true })
+      dispatch('bookmark/addBookmark', { filepath }, { root: true })
       dispatch('selectBookmark', { filepath })
     },
     removeBookmark ({ dispatch, getters, state }) {
       const oldIndex = getters.selectedBookmarkIndex
-      dispatch('bookmark/remove', { filepath: state.selectedBookmarkPath }, { root: true })
+      dispatch('bookmark/removeBookmark', { filepath: state.selectedBookmarkPath }, { root: true })
       const index = oldIndex < getters.bookmarks.length ? oldIndex : getters.bookmarks.length - 1
       dispatch('selectBookmarkIndex', { index })
     },

@@ -8,6 +8,7 @@ import * as File from '~/utils/file'
 import local from './local'
 import bookmark from './bookmark'
 import rating from './rating'
+import views from './views'
 import settings from './settings'
 
 Vue.use(Vuex)
@@ -123,6 +124,7 @@ export default new Vuex.Store({
     local,
     bookmark,
     rating,
+    views,
     settings
   },
   plugins: [
@@ -131,6 +133,7 @@ export default new Vuex.Store({
         'local.explorer.directory',
         'bookmark',
         'rating',
+        'views',
         'settings'
       ]
     })

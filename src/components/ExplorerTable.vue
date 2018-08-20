@@ -51,6 +51,11 @@ export default {
           value: 'name'
         },
         {
+          text: 'Views',
+          value: 'views',
+          width: 50
+        },
+        {
           text: 'Rating',
           value: 'rating',
           width: 190

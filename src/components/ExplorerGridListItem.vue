@@ -68,11 +68,7 @@ export default {
         return this.file.rating
       },
       set (value) {
-        const file = {
-          ...this.file,
-          rating: value
-        }
-        this.$store.dispatch('local/explorer/updateFile', { file })
+        this.$store.dispatch('local/explorer/updateFileRating', { filepath: this.file.path, rating: value })
       }
     },
     active () {

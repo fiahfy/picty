@@ -7,6 +7,7 @@ import FileWorker from '~/workers/file.worker.js'
 const reversed = {
   name: false,
   rating: true,
+  views: true,
   modified_at: true
 }
 
@@ -66,6 +67,9 @@ export default {
     selectedFileIndex (state, getters) {
       return getters.filteredFiles.findIndex((file) => getters.isFileSelected({ filepath: file.path }))
     },
+    getFile (state) {
+      return ({ filepath }) => state.files.find((file) => file.path === filepath)
+    },
     isFileSelected (state) {
       return ({ filepath }) => state.selectedFilepath === filepath
     },
@@ -87,7 +91,8 @@ export default {
       dispatch('changeDirectory', { dirpath })
     },
     changeSelectedDirectory ({ dispatch, state }) {
-      if (state.selectedFilepath && File.getFile(state.selectedFilepath).directory) {
+      const file = getters.getFile({ filepath: state.selectedFilepath })
+      if (file && file.directory) {
         const dirpath = state.selectedFilepath
         dispatch('changeDirectory', { dirpath })
       }
@@ -147,7 +152,7 @@ export default {
       }
     },
     toggleDirectoryBookmarked ({ dispatch, state }) {
-      dispatch('bookmark/toggle', { filepath: state.directory }, { root: true })
+      dispatch('bookmark/toggleBookmarked', { filepath: state.directory }, { root: true })
     },
     async loadFiles ({ commit, dispatch, rootGetters, state }) {
       if (state.loading) {
@@ -161,7 +166,8 @@ export default {
           .map((file) => {
             return {
               ...file,
-              rating: rootGetters['rating/getRating']({ filepath: file.path })
+              rating: rootGetters['rating/getRating']({ filepath: file.path }),
+              views: rootGetters['views/getViews']({ filepath: file.path })
             }
           })
         commit('setFiles', { files })
@@ -247,25 +253,36 @@ export default {
       commit('setQueryInput', { queryInput: query })
       commit('setQuery', { query })
     },
-    updateFile ({ commit }, { file }) {
-      commit('rating/setRating', { filepath: file.path, rating: file.rating }, { root: true })
+    updateFileRating ({ commit, dispatch, getters, rootGetters }, { filepath, rating }) {
+      let file = getters.getFile({ filepath })
+      dispatch('rating/setRating', { filepath: file.path, rating }, { root: true })
+      file = {
+        ...file,
+        rating: rootGetters['rating/getRating']({ filepath: file.path })
+      }
       commit('setFile', { filepath: file.path, file })
     },
-    openFile ({ dispatch }, { filepath }) {
-      const file = File.getFile(filepath)
+    openFile ({ dispatch, getters }, { filepath }) {
+      const file = getters.getFile({ filepath })
       if (file.directory) {
         dispatch('changeDirectory', { dirpath: file.path })
       } else {
         dispatch('viewFile', { filepath: file.path })
       }
     },
-    viewFile ({ dispatch }, { filepath }) {
-      const file = File.getFile(filepath)
+    viewFile ({ commit, dispatch, getters, rootGetters }, { filepath }) {
+      let file = getters.getFile({ filepath })
       if (file.directory) {
         dispatch('showViewer', { dirpath: file.path }, { root: true })
       } else {
         dispatch('showViewer', { filepath: file.path }, { root: true })
       }
+      dispatch('views/incrementViews', { filepath: file.path }, { root: true })
+      file = {
+        ...file,
+        views: rootGetters['views/getViews']({ filepath: file.path })
+      }
+      commit('setFile', { filepath: file.path, file })
     },
     setScrollTop ({ commit, state }, { scrollTop }) {
       if (state.loading) {
