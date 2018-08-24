@@ -263,23 +263,19 @@ export default {
       }
       dispatch('incrementFileViews', { filepath: file.path })
     },
-    updateFileRating ({ commit, dispatch, getters, rootGetters }, { filepath, rating }) {
+    updateFileRating ({ commit, dispatch, rootGetters }, { filepath, rating }) {
       dispatch('rating/setRating', { filepath, rating }, { root: true })
-      let file = getters.getFile({ filepath })
-      file = {
-        ...file,
-        rating: rootGetters['rating/getRating']({ filepath: file.path })
+      const file = {
+        rating: rootGetters['rating/getRating']({ filepath })
       }
-      commit('setFile', { filepath: file.path, file })
+      commit('updateFile', { filepath, file })
     },
-    incrementFileViews ({ commit, dispatch, getters, rootGetters }, { filepath }) {
+    incrementFileViews ({ commit, dispatch, rootGetters }, { filepath }) {
       dispatch('views/incrementViews', { filepath }, { root: true })
-      let file = getters.getFile({ filepath })
-      file = {
-        ...file,
-        views: rootGetters['views/getViews']({ filepath: file.path })
+      const file = {
+        views: rootGetters['views/getViews']({ filepath })
       }
-      commit('setFile', { filepath: file.path, file })
+      commit('updateFile', { filepath, file })
     },
     setScrollTop ({ commit, state }, { scrollTop }) {
       if (state.loading) {
@@ -364,7 +360,7 @@ export default {
     setFiles (state, { files }) {
       state.files = files
     },
-    setFile (state, { filepath, file }) {
+    updateFile (state, { filepath, file }) {
       state.files = state.files.map((current) => current.path !== filepath ? current : { ...current, ...file })
     },
     setSelectedFilepath (state, { selectedFilepath }) {
