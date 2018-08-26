@@ -50,10 +50,19 @@
     >
       <v-icon>home</v-icon>
     </v-btn>
+    <v-btn
+      :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
+      :color="bookmarkColor"
+      flat
+      icon
+      @click="onBookmarkClick"
+    >
+      <v-icon>star</v-icon>
+    </v-btn>
     <v-text-field
       v-model="directoryInput"
       name="directory"
-      class="ml-3"
+      class="ml-3 pt-0"
       label="Path"
       prepend-icon="folder"
       single-line
@@ -85,11 +94,15 @@ export default {
     forwardDisabled () {
       return !this.canForwardDirectory
     },
+    bookmarkColor () {
+      return this.directoryBookmarked ? 'primary' : null
+    },
     ...mapGetters('local/explorer', [
       'backDirectories',
       'forwardDirectories',
       'canBackDirectory',
-      'canForwardDirectory'
+      'canForwardDirectory',
+      'directoryBookmarked'
     ])
   },
   methods: {
@@ -100,9 +113,7 @@ export default {
       ContextMenu.show(e, this.backDirectories.map((directory, index) => {
         return {
           label: directory,
-          click: () => {
-            this.backDirectory({ offset: index })
-          }
+          click: () => this.backDirectory({ offset: index })
         }
       }))
     },
@@ -113,9 +124,7 @@ export default {
       ContextMenu.show(e, this.forwardDirectories.map((directory, index) => {
         return {
           label: directory,
-          click: () => {
-            this.forwardDirectory({ offset: index })
-          }
+          click: () => this.forwardDirectory({ offset: index })
         }
       }))
     },
@@ -127,6 +136,9 @@ export default {
     },
     onHomeClick () {
       this.changeHomeDirectory()
+    },
+    onBookmarkClick () {
+      this.toggleDirectoryBookmarked()
     },
     onTextContextMenu (e) {
       ContextMenu.showTextMenu(e)
@@ -146,7 +158,8 @@ export default {
       'backDirectory',
       'forwardDirectory',
       'reloadDirectory',
-      'browseDirectory'
+      'browseDirectory',
+      'toggleDirectoryBookmarked'
     ])
   }
 }

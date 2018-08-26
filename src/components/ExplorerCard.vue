@@ -2,22 +2,44 @@
   <v-card
     class="explorer-card"
     flat
+    tile
   >
-    <v-card-title class="py-2 px-0">
+    <v-toolbar
+      color="transparent"
+      flat
+    >
       <v-btn
         :title="'View'|accelerator('Enter')"
-        :disabled="disabled"
+        :disabled="!canViewFile"
         flat
         icon
-        @click="onPhotoClick"
+        @click="onViewClick"
       >
         <v-icon>photo</v-icon>
       </v-btn>
       <v-spacer />
+      <v-btn
+        :color="listColor"
+        title="List"
+        flat
+        icon
+        @click="onListClick"
+      >
+        <v-icon>view_headline</v-icon>
+      </v-btn>
+      <v-btn
+        :color="thumbnailColor"
+        title="Thumbnail"
+        flat
+        icon
+        @click="onThumbnailClick"
+      >
+        <v-icon>view_module</v-icon>
+      </v-btn>
       <v-text-field
         v-model="queryInput"
         name="query"
-        class="mx-3 my-2 pt-0"
+        class="ml-3 pt-0"
         label="Search"
         append-icon="search"
         single-line
@@ -26,12 +48,12 @@
         @keyup="onTextKeyUp"
         @contextmenu.stop="onTextContextMenu"
       />
-    </v-card-title>
+    </v-toolbar>
   </v-card>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
 export default {
@@ -44,11 +66,18 @@ export default {
         this.$store.commit('local/explorer/setQueryInput', { queryInput: value })
       }
     },
-    disabled () {
-      return !this.selectedFilepath
+    listColor () {
+      return this.display === 'list' ? 'primary' : null
+    },
+    thumbnailColor () {
+      return this.display === 'thumbnail' ? 'primary' : null
     },
     ...mapState('local/explorer', [
-      'selectedFilepath'
+      'selectedFilepath',
+      'display'
+    ]),
+    ...mapGetters('local/explorer', [
+      'canViewFile'
     ])
   },
   watch: {
@@ -57,8 +86,14 @@ export default {
     }
   },
   methods: {
-    onPhotoClick () {
+    onViewClick () {
       this.viewFile({ filepath: this.selectedFilepath })
+    },
+    onListClick () {
+      this.setDisplay({ display: 'list' })
+    },
+    onThumbnailClick () {
+      this.setDisplay({ display: 'thumbnail' })
     },
     onTextContextMenu (e) {
       ContextMenu.showTextMenu(e)
@@ -70,7 +105,8 @@ export default {
     },
     ...mapActions('local/explorer', [
       'searchFiles',
-      'viewFile'
+      'viewFile',
+      'setDisplay'
     ])
   }
 }

@@ -37,13 +37,13 @@ export default {
         if (dirpath) {
           files = await Worker.post(worker, { id: 'listFiles', data: [dirpath, { recursive: rootState.settings.recursive }] })
         } else if (filepath) {
-          const file = File.get(filepath)
+          const file = File.getFile(filepath)
           files = await Worker.post(worker, { id: 'listFiles', data: [file.dirname] })
           currentFilepath = filepath
         } else {
           files = await Worker.post(worker, { id: 'getFiles', data: [filepathes] })
         }
-        files = files.filter((file) => rootGetters['settings/isAvailableFile']({ filepath: file.path }))
+        files = files.filter((file) => rootGetters['settings/isFileAvailable']({ filepath: file.path }))
         if (files.length && (!currentFilepath || !files.find((file) => file.path === currentFilepath))) {
           currentFilepath = files[0].path
         }

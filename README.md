@@ -7,8 +7,9 @@
 ## Features
 * Paging/Zooming controller on viewer
 * Rating images
-* Cross platform support
+* Bookmark directories
 * Change theme (Light/Dark)
+* Cross platform support
 
 
 ## Screenshots

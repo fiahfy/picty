@@ -1,57 +1,65 @@
 <template>
-  <v-data-table
+  <div
     v-resize="onResize"
-    ref="table"
-    v-bind="$attrs"
-    v-model="model"
-    :pagination.sync="paginationModel"
-    :items="renderItems"
-    :class="classes"
-    :disable-initial-sort="true"
-    class="virtual-data-table"
+    class="virtual-data-iterator"
   >
-    <template
-      slot="headers"
-      slot-scope="props"
+    <v-container
+      :class="classes"
+      fluid
+      pa-0
     >
       <slot
-        v-bind="props"
-        name="headers"
+        v-if="loading"
+        name="progress"
       />
-    </template>
-    <template
-      slot="items"
-      slot-scope="props"
-    >
-      <tr
-        v-if="props.index === 0"
-        :style="{ height: `${padding.top}px` }"
-      />
-      <slot
-        v-bind="props"
-        name="items"
-      />
-      <tr
-        v-if="props.index === renderItems.length - 1"
-        :style="{ height: `${padding.bottom}px` }"
-      />
-    </template>
-    <slot
-      slot="progress"
-      name="progress"
-    />
-    <slot
-      slot="no-data"
-      name="no-data"
-    />
-    <slot
-      slot="no-results"
-      name="no-results"
-    />
-  </v-data-table>
+      <v-data-iterator
+        ref="iterator"
+        v-bind="$attrs"
+        v-model="model"
+        :pagination.sync="paginationModel"
+        :items="renderItems"
+        :disable-initial-sort="true"
+        content-tag="v-layout"
+        row
+        wrap
+      >
+        <template
+          slot="item"
+          slot-scope="props"
+        >
+          <v-flex
+            v-if="props.index === 0"
+            :style="{ height: `${padding.top}px` }"
+            class="pa-0"
+            xs12
+          />
+          <slot
+            v-bind="props"
+            name="items"
+          />
+          <v-flex
+            v-if="props.index === renderItems.length - 1"
+            :style="{ height: `${padding.bottom}px` }"
+            class="pa-0"
+            xs12
+          />
+        </template>
+        <slot
+          slot="no-data"
+          name="no-data"
+        />
+        <slot
+          slot="no-results"
+          name="no-results"
+        />
+      </v-data-iterator>
+    </v-container>
+  </div>
 </template>
 
 <script>
+import * as Viewport from '~/utils/viewport'
+
 export default {
   props: {
     value: {
@@ -74,9 +82,21 @@ export default {
       type: Number,
       default: 0
     },
-    stickyHeaders: {
+    loading: {
       type: Boolean,
       default: false
+    },
+    itemKey: {
+      type: String,
+      default: 'id'
+    },
+    sizes: {
+      type: [Number, Array],
+      default: 6
+    },
+    containerClass: {
+      type: [String],
+      default: ''
     }
   },
   data () {
@@ -108,9 +128,12 @@ export default {
     },
     classes () {
       return {
-        'sticky-headers': this.stickyHeaders,
+        [this.containerClass]: true,
         scrolling: this.scrolling
       }
+    },
+    calculatedSizes () {
+      return Array.isArray(this.sizes) ? this.sizes : Array(5).fill(this.sizes)
     }
   },
   watch: {
@@ -119,7 +142,7 @@ export default {
     }
   },
   mounted () {
-    this.container = this.$el.querySelector('.v-table__overflow')
+    this.container = this.$el.querySelector('.v-data-iterator')
     this.container.addEventListener('scroll', this.onScroll)
     this.$nextTick(() => {
       this.adjustItems()
@@ -144,23 +167,25 @@ export default {
       if (!this.container) {
         return
       }
+      const size = 12 / this.calculatedSizes[Viewport.getSizeIndex()]
+
       const { scrollTop, offsetHeight } = this.container
       const index = Math.floor(scrollTop / this.estimatedHeight)
       const offset = Math.ceil(offsetHeight / this.estimatedHeight) + 1
 
       let firstIndex = Math.max(0, index - this.threshold)
       let lastIndex = firstIndex + offset + this.threshold
-      if (lastIndex > this.items.length) {
-        lastIndex = this.items.length
+      if (lastIndex > Math.ceil(this.items.length / size)) {
+        lastIndex = Math.ceil(this.items.length / size)
         firstIndex = Math.max(0, lastIndex - offset - this.threshold * 2)
       }
 
       this.scrolling = scrollTop > 0
       this.padding = {
         top: firstIndex * this.estimatedHeight,
-        bottom: (this.items.length - lastIndex) * this.estimatedHeight
+        bottom: (Math.ceil(this.items.length / size) - lastIndex) * this.estimatedHeight
       }
-      this.renderItems = this.items.slice(firstIndex, lastIndex)
+      this.renderItems = this.items.slice(firstIndex * size, lastIndex * size)
     },
     onResize () {
       this.adjustItems()
@@ -174,8 +199,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.virtual-data-table.sticky-headers {
-  & /deep/ .v-table__overflow {
+.virtual-data-iterator>.container {
+  height: 100%;
+  position: relative;
+  .v-progress-linear {
+    left: 0;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .v-data-iterator {
     height: 100%;
     overflow-y: scroll;
     &::-webkit-scrollbar {
@@ -190,42 +224,24 @@ export default {
         background-color: #ccc;
       }
     }
-    .v-datatable {
-      table-layout: fixed;
-      &>thead {
-        background: inherit;
-        &>tr {
-          background: inherit;
-          &>th {
-            background: inherit;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-          }
-          &.v-datatable__progress>th {
-            top: 56px;
-            z-index: 0;
-            &:after {
-              bottom: 0;
-              box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
-              content: '';
-              left: 0;
-              position: absolute;
-              width: 100%;
-            }
-          }
-        }
-      }
+    &:before {
+      box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+      content: '';
+      left: 0;
+      position: absolute;
+      right: 14px;
+      top: -10px;
+      z-index: 1;
+    }
+    & /deep/ .layout {
+      margin: 0px!important;
     }
   }
-  &.scrolling /deep/ .v-datatable>thead>tr {
-    border-bottom: none;
-    &.v-datatable__progress>th:after {
-      height: 10px;
-    }
+  &.scrolling .v-data-iterator:before {
+    height: 10px;
   }
 }
-.theme--dark .virtual-data-table.sticky-headers /deep/ .v-table__overflow::-webkit-scrollbar-thumb {
+.theme--dark .virtual-data-iterator .v-data-iterator::-webkit-scrollbar-thumb {
   background-color: #424242!important;
   &:hover {
     background-color: #505050!important;

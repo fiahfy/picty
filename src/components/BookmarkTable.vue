@@ -2,27 +2,26 @@
   <virtual-data-table
     ref="table"
     :headers="headers"
-    :items="filteredFiles"
-    :loading="loading"
-    :no-data-text="noDataText"
-    class="explorer-table"
+    :items="bookmarks"
+    class="bookmark-table"
     item-key="path"
     hide-actions
     sticky-headers
     tabindex="0"
     @scroll="onScroll"
     @keydown.native="onKeyDown"
+    @contextmenu.native.stop="onContextMenu"
   >
-    <explorer-table-header-row
+    <bookmark-table-header-row
       slot="headers"
       slot-scope="props"
       :headers="props.headers"
     />
-    <explorer-table-row
+    <bookmark-table-row
       slot="items"
       slot-scope="props"
       :key="props.item.path"
-      :file="props.item"
+      :bookmark="props.item"
     />
     <v-progress-linear
       slot="progress"
@@ -32,66 +31,48 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
-import ExplorerTableHeaderRow from './ExplorerTableHeaderRow'
-import ExplorerTableRow from './ExplorerTableRow'
+import { mapActions, mapGetters, mapState, mapMutations } from 'vuex'
+import BookmarkTableHeaderRow from './BookmarkTableHeaderRow'
+import BookmarkTableRow from './BookmarkTableRow'
 import VirtualDataTable from './VirtualDataTable'
+import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
-    ExplorerTableHeaderRow,
-    ExplorerTableRow,
+    BookmarkTableHeaderRow,
+    BookmarkTableRow,
     VirtualDataTable
   },
   data () {
     return {
       headers: [
         {
-          text: 'Name',
-          value: 'name'
+          text: 'Path',
+          value: 'path'
         },
         {
-          text: 'Views',
-          value: 'views',
-          width: 50
-        },
-        {
-          text: 'Rating',
-          value: 'rating',
-          width: 190
-        },
-        {
-          text: 'Date Modified',
-          value: 'modified_at',
+          text: 'Date Added',
+          value: 'added_at',
           width: 110
         }
       ]
     }
   },
   computed: {
-    noDataText () {
-      if (this.loading) {
-        return 'Loading...'
-      }
-      return this.query ? 'No matching records found' : 'No data available'
-    },
-    ...mapState('local/explorer', [
-      'directory',
-      'query',
-      'loading',
-      'selectedFilepath'
-    ]),
-    ...mapGetters('local/explorer', [
-      'filteredFiles',
+    ...mapState('local/bookmark', [
       'scrollTop',
-      'selectedFileIndex'
+      'selectedBookmarkPath'
+    ]),
+    ...mapGetters('local/bookmark', [
+      'bookmarks',
+      'selectedBookmarkIndex'
     ])
   },
   watch: {
     loading () {
       this.restore()
     },
-    selectedFileIndex (value) {
+    selectedBookmarkIndex (value) {
       this.$nextTick(() => {
         const index = value
         if (index === -1) {
@@ -130,39 +111,65 @@ export default {
     },
     onKeyDown (e) {
       switch (e.keyCode) {
+        case 8:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.removeBookmark()
+          }
+          break
         case 13:
-          this.viewFile({ filepath: this.selectedFilepath })
+          this.openBookmark({ filepath: this.selectedBookmarkPath })
           break
         case 38:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirstFile()
+            this.selectFirstBookmark()
           } else {
-            this.selectPreviousFile()
+            this.selectPreviousBookmark()
           }
           break
         case 40:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLastFile()
+            this.selectLastBookmark()
           } else {
-            this.selectNextFile()
+            this.selectNextBookmark()
+          }
+          break
+        case 78:
+          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
+            this.showDialog()
           }
           break
       }
     },
-    ...mapActions('local/explorer', [
-      'selectFirstFile',
-      'selectLastFile',
-      'selectPreviousFile',
-      'selectNextFile',
-      'setScrollTop',
-      'viewFile'
+    onContextMenu (e) {
+      this.unselectBookmark()
+      const templates = [
+        {
+          label: 'New Bookmark',
+          click: () => this.showDialog(),
+          accelerator: 'CmdOrCtrl+N'
+        }
+      ]
+      ContextMenu.show(e, templates)
+    },
+    ...mapMutations('local/bookmark', [
+      'setScrollTop'
+    ]),
+    ...mapActions('local/bookmark', [
+      'removeBookmark',
+      'unselectBookmark',
+      'selectFirstBookmark',
+      'selectLastBookmark',
+      'selectPreviousBookmark',
+      'selectNextBookmark',
+      'openBookmark',
+      'showDialog'
     ])
   }
 }
 </script>
 
 <style scoped lang="scss">
-.explorer-table {
+.bookmark-table {
   outline: none;
 }
 </style>

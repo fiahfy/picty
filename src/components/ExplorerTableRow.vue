@@ -6,7 +6,7 @@
     @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
   >
-    <td>
+    <td :title="file.name">
       <v-layout class="align-center">
         <v-icon
           :color="color"
@@ -16,9 +16,17 @@
       </v-layout>
     </td>
     <td class="text-xs-right">
+      {{ file.views || '' }}
+    </td>
+    <td
+      class="text-xs-right"
+      @click.stop
+      @dblclick.stop
+    >
       <v-rating
         v-model="rating"
         half-increments
+        clearable
       />
     </td>
     <td class="text-xs-right">
@@ -44,15 +52,11 @@ export default {
         return this.file.rating
       },
       set (value) {
-        const file = {
-          ...this.file,
-          rating: value
-        }
-        this.$store.dispatch('local/explorer/updateFile', { file })
+        this.$store.dispatch('local/explorer/updateFileRating', { filepath: this.file.path, rating: value })
       }
     },
     active () {
-      return this.isSelectedFile({ filepath: this.file.path })
+      return this.isFileSelected({ filepath: this.file.path })
     },
     color () {
       if (this.file.exists) {
@@ -67,7 +71,7 @@ export default {
       return 'broken_image'
     },
     ...mapGetters('local/explorer', [
-      'isSelectedFile'
+      'isFileSelected'
     ])
   },
   methods: {
@@ -82,9 +86,7 @@ export default {
       let templates = [
         {
           label: 'View',
-          click: () => {
-            this.viewFile({ filepath: this.file.path })
-          },
+          click: () => this.viewFile({ filepath: this.file.path }),
           accelerator: 'Enter'
         }
       ]
@@ -96,9 +98,7 @@ export default {
           { role: ContextMenu.Role.copy },
           {
             label: `Search "${text}"`,
-            click: () => {
-              this.searchFiles({ query: text })
-            },
+            click: () => this.searchFiles({ query: text }),
             accelerator: 'CmdOrCtrl+F'
           }
         ]
