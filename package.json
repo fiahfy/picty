@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "electron-devtools-installer": "^2.2.0",
-    "electron-window-state": "^4.1.1",
+    "electron-window-state": "^5.0.0",
     "file-url": "^2.0.2",
     "material-design-icons": "^3.0.1",
     "typeface-roboto": "^0.0.54",
@@ -17,7 +17,7 @@
     "vue-long-press-directive": "^1.0.2",
     "vue-moment": "^4.0.0",
     "vue-router": "^3.0.1",
-    "vuetify": "1.2.0-beta.2",
+    "vuetify": "^1.2.3",
     "vuex": "^3.0.0",
     "vuex-persistedstate": "^2.0.0",
     "vuex-router-sync": "^5.0.0"
@@ -45,7 +45,7 @@
     "node-sass": "^4.9.0",
     "npm-run-all": "^4.0.2",
     "sass-loader": "^7.0.1",
-    "style-loader": "^0.22.0",
+    "style-loader": "^0.23.0",
     "url-loader": "^1.0.1",
     "vue-loader": "^15.0.9",
     "vue-template-compiler": "^2.0.0",
