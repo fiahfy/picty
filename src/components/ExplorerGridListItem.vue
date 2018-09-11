@@ -96,7 +96,7 @@ export default {
         return fileUrl(this.file.path)
       }
       const child = this.file.child
-      return child ? fileUrl(child.path) : ''
+      return child ? fileUrl(child) : null
       // const path = this.directoryImagePathes[this.file.path]
       // if (path === null) {
       //   return path
@@ -108,7 +108,7 @@ export default {
         return 'Load failed'
       }
       if (this.imageUrl === null) {
-        return 'No image'
+        return 'No preview'
       }
       return ''
     },

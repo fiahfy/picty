@@ -11,9 +11,9 @@ export const getFile = (filepath) => {
     modified_at: null
   }
   try {
-    console.time('lstatSync')
+    // console.time('lstatSync ' + filepath)
     const stat = fs.lstatSync(filepath)
-    console.timeEnd('lstatSync')
+    // console.timeEnd('lstatSync ' + filepath)
     return {
       ...obj,
       exists: true,
@@ -28,19 +28,27 @@ export const getFile = (filepath) => {
   }
 }
 
-export const findFile = (dirpath, callback) => {
+export const getFirstChildPath = (dirpath) => {
+  console.time('findImagePath ' + dirpath)
   const filenames = fs.readdirSync(dirpath)
+  console.timeEnd('findImagePath ' + dirpath)
   const filename = filenames.find((filename) => {
     if (filename.match(/^\./)) {
       return false
     }
-    const filepath = path.join(dirpath, filename)
-    return callback(filepath)
+    return true
+    // const filepath = path.join(dirpath, filename)
+    // console.log(filepath)
+    // const ext = path.extname(filepath).toUpperCase()
+    // if (!ext) {
+    //   return false
+    // }
+    // return extensions.includes(ext.slice(1))
   })
   if (!filename) {
     return null
   }
-  return getFile(path.join(dirpath, filename))
+  return path.join(dirpath, filename)
 }
 
 export const listFiles = (dirpath, options = { recursive: false }) => {

@@ -162,9 +162,9 @@ export default {
             .map((file) => {
               return {
                 ...file,
+                child: rootGetters['settings/isFileAvailable']({ filepath: file.child }) ? file.child : null,
                 rating: rootGetters['rating/getRating']({ filepath: file.path }),
-                views: rootGetters['views/getViews']({ filepath: file.path }),
-                child: file.children.find((file) => rootGetters['settings/isFileAvailable']({ filepath: file.path }))
+                views: rootGetters['views/getViews']({ filepath: file.path })
               }
             })
         } else {

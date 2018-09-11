@@ -9,8 +9,9 @@ onmessage = ({ data: { id, data } }) => {
         break
       }
       case 'listFilesWithChildren': {
-        const files = File.listFiles(...data).map((file) => {
-          file.children = file.directory ? File.listFiles(file.path) : []
+        const [dirpath] = data
+        const files = File.listFiles(dirpath).map((file) => {
+          file.child = file.directory ? File.getFirstChildPath(file.path) : null
           return file
         })
         postMessage(files)
