@@ -19,8 +19,8 @@
     />
     <bookmark-table-row
       slot="items"
-      slot-scope="props"
       :key="props.item.path"
+      slot-scope="props"
       :bookmark="props.item"
     />
     <v-progress-linear

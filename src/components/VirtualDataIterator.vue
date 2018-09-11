@@ -14,8 +14,8 @@
       />
       <v-data-iterator
         ref="iterator"
-        v-bind="$attrs"
         v-model="model"
+        v-bind="$attrs"
         :pagination.sync="paginationModel"
         :items="renderItems"
         :disable-initial-sort="true"

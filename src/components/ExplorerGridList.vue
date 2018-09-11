@@ -16,8 +16,8 @@
   >
     <explorer-grid-list-item
       slot="items"
-      slot-scope="props"
       :key="props.item.path"
+      slot-scope="props"
       :file="props.item"
       :class="classes"
     />

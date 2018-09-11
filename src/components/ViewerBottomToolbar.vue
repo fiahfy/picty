@@ -38,8 +38,8 @@
     <v-spacer />
 
     <v-menu
-      :close-on-content-click="false"
       v-model="menu"
+      :close-on-content-click="false"
       top
       offset-y
       nudge-top="12"

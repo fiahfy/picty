@@ -20,8 +20,8 @@
     />
     <explorer-table-row
       slot="items"
-      slot-scope="props"
       :key="props.item.path"
+      slot-scope="props"
       :file="props.item"
     />
     <v-progress-linear
