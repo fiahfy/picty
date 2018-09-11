@@ -95,11 +95,13 @@ export default {
       if (!this.file.directory) {
         return fileUrl(this.file.path)
       }
-      const path = this.directoryImagePathes[this.file.path]
-      if (path === null) {
-        return path
-      }
-      return path ? fileUrl(path) : ''
+      const child = this.file.child
+      return child ? fileUrl(child.path) : ''
+      // const path = this.directoryImagePathes[this.file.path]
+      // if (path === null) {
+      //   return path
+      // }
+      // return path ? fileUrl(path) : ''
     },
     message () {
       if (this.error) {
@@ -118,14 +120,14 @@ export default {
       'isFileAvailable'
     ])
   },
-  created () {
-    if (this.file.directory) {
-      this.requestDirectoryImage({ filepath: this.file.path })
-    }
-  },
-  beforeDestroy () {
-    clearTimeout(this.timer)
-  },
+  // created () {
+  //   if (this.file.directory) {
+  //     this.requestDirectoryImage({ filepath: this.file.path })
+  //   }
+  // },
+  // beforeDestroy () {
+  //   clearTimeout(this.timer)
+  // },
   methods: {
     onClick () {
       this.selectFile({ filepath: this.file.path })

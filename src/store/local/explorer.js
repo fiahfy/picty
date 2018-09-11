@@ -147,22 +147,37 @@ export default {
     toggleDirectoryBookmarked ({ dispatch, state }) {
       dispatch('bookmark/toggleBookmarked', { filepath: state.directory }, { root: true })
     },
-    async loadFiles ({ commit, dispatch, rootGetters, state }) {
+    async loadFiles ({ commit, dispatch, rootGetters, rootState, state }) {
       if (state.loading) {
         return
       }
       commit('setLoading', { loading: true })
       try {
         commit('setFiles', { files: [] })
-        let files = await Worker.post(worker, { id: 'listFiles', data: [state.directory] })
-        files = files.filter((file) => file.directory || rootGetters['settings/isFileAvailable']({ filepath: file.path }))
-          .map((file) => {
-            return {
-              ...file,
-              rating: rootGetters['rating/getRating']({ filepath: file.path }),
-              views: rootGetters['views/getViews']({ filepath: file.path })
-            }
-          })
+        let files
+        if (rootState.settings.children) {
+          console.log('#children')
+          files = await Worker.post(worker, { id: 'listFilesWithChildren', data: [state.directory] })
+          files = files.filter((file) => file.directory || rootGetters['settings/isFileAvailable']({ filepath: file.path }))
+            .map((file) => {
+              return {
+                ...file,
+                rating: rootGetters['rating/getRating']({ filepath: file.path }),
+                views: rootGetters['views/getViews']({ filepath: file.path }),
+                child: file.children.find((file) => rootGetters['settings/isFileAvailable']({ filepath: file.path }))
+              }
+            })
+        } else {
+          files = await Worker.post(worker, { id: 'listFiles', data: [state.directory] })
+          files = files.filter((file) => file.directory || rootGetters['settings/isFileAvailable']({ filepath: file.path }))
+            .map((file) => {
+              return {
+                ...file,
+                rating: rootGetters['rating/getRating']({ filepath: file.path }),
+                views: rootGetters['views/getViews']({ filepath: file.path })
+              }
+            })
+        }
         commit('setFiles', { files })
       } catch (e) {
         console.error(e)

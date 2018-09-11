@@ -11,7 +11,9 @@ export const getFile = (filepath) => {
     modified_at: null
   }
   try {
+    console.time('lstatSync')
     const stat = fs.lstatSync(filepath)
+    console.timeEnd('lstatSync')
     return {
       ...obj,
       exists: true,
@@ -42,7 +44,9 @@ export const findFile = (dirpath, callback) => {
 }
 
 export const listFiles = (dirpath, options = { recursive: false }) => {
+  console.time('readdirSync')
   const filenames = fs.readdirSync(dirpath)
+  console.timeEnd('readdirSync')
   return filenames.reduce((carry, filename) => {
     try {
       if (filename.match(/^\./)) {

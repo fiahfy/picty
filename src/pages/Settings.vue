@@ -39,6 +39,10 @@
       v-model="imageStretched"
       label="Stretch small images"
     />
+    <v-checkbox
+      v-model="children"
+      label="children"
+    />
   </v-container>
 </template>
 
@@ -82,6 +86,14 @@ export default {
       },
       set (value) {
         this.$store.commit('settings/setImageStretched', { imageStretched: value })
+      }
+    },
+    children: {
+      get () {
+        return this.$store.state.settings.children
+      },
+      set (value) {
+        this.$store.commit('settings/setChildren', { children: value })
       }
     },
     extensions: {

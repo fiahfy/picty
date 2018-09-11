@@ -11,6 +11,7 @@ export default {
     fullScreen: false,
     recursive: false,
     imageStretched: false,
+    children: false,
     extensions: [...defaultExtensions]
   },
   getters: {
@@ -36,6 +37,9 @@ export default {
     },
     setImageStretched (state, { imageStretched }) {
       state.imageStretched = imageStretched
+    },
+    setChildren (state, { children }) {
+      state.children = children
     },
     setExtensions (state, { extensions }) {
       state.extensions = extensions

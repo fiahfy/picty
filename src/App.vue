@@ -6,7 +6,7 @@
     @dragover.native.prevent
   >
     <title-bar />
-    <template v-if="!viewing">
+    <template>
       <activity-bar />
       <v-content class="fill-height">
         <router-view />
