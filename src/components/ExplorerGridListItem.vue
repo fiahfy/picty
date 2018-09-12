@@ -182,6 +182,9 @@ export default {
   &>.layout {
     height: 150px;
   }
+  .v-rating {
+    height: 32px;
+  }
 }
 .theme--dark .explorer-grid-list-item .v-card {
   &[active] {
