@@ -18,10 +18,12 @@
       </v-layout>
       <v-img
         v-else
-        :src="imageUrl"
+        :src="src"
+        :contain="contain"
         height="150"
         @error="onError"
       />
+      <v-divider />
       <v-card-title class="pt-2 px-2 pb-0">
         <v-layout class="align-center">
           <v-icon
@@ -64,7 +66,8 @@ export default {
   },
   data () {
     return {
-      error: false
+      error: false,
+      src: ''
     }
   },
   computed: {
@@ -91,17 +94,12 @@ export default {
       }
       return 'broken_image'
     },
+    contain () {
+      return this.thumbnailStyle === 'contain'
+    },
     imageUrl () {
-      if (!this.file.directory) {
-        return fileUrl(this.file.path)
-      }
-      const child = this.file.child
-      return child ? fileUrl(child) : null
-      // const path = this.directoryImagePathes[this.file.path]
-      // if (path === null) {
-      //   return path
-      // }
-      // return path ? fileUrl(path) : ''
+      const imagePath = this.file.imagePath
+      return imagePath ? fileUrl(imagePath) : null
     },
     message () {
       if (this.error) {
@@ -112,22 +110,22 @@ export default {
       }
       return ''
     },
-    ...mapState('local/explorer', [
-      'directoryImagePathes'
+    ...mapState('settings', [
+      'thumbnailStyle'
     ]),
     ...mapGetters('local/explorer', [
       'isFileSelected',
       'isFileAvailable'
     ])
   },
-  // created () {
-  //   if (this.file.directory) {
-  //     this.requestDirectoryImage({ filepath: this.file.path })
-  //   }
-  // },
-  // beforeDestroy () {
-  //   clearTimeout(this.timer)
-  // },
+  created () {
+    this.timer = setTimeout(() => {
+      this.src = this.imageUrl
+    }, 500)
+  },
+  beforeDestroy () {
+    clearTimeout(this.timer)
+  },
   methods: {
     onClick () {
       this.selectFile({ filepath: this.file.path })
@@ -166,8 +164,7 @@ export default {
       'selectFile',
       'searchFiles',
       'openFile',
-      'viewFile',
-      'requestDirectoryImage'
+      'viewFile'
     ])
   }
 }

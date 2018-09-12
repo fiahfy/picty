@@ -4,7 +4,7 @@
     :items="filteredFiles"
     :loading="loading"
     :no-data-text="noDataText"
-    :estimated-height="231"
+    :estimated-height="232"
     :sizes="sizes"
     class="explorer-grid-list"
     container-class="grid-list-md"

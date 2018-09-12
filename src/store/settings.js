@@ -4,6 +4,10 @@ export const defaultExtensions = [
   'BMP', 'GIF', 'ICO', 'JPEG', 'JPG', 'PNG', 'SVG', 'TIF', 'TIFF', 'WEBP'
 ]
 
+export const thumbnailStyles = [
+  'cover', 'contain'
+]
+
 export default {
   namespaced: true,
   state: {
@@ -11,7 +15,7 @@ export default {
     fullScreen: false,
     recursive: false,
     imageStretched: false,
-    children: false,
+    thumbnailStyle: 'cover',
     extensions: [...defaultExtensions]
   },
   getters: {
@@ -41,8 +45,8 @@ export default {
     setImageStretched (state, { imageStretched }) {
       state.imageStretched = imageStretched
     },
-    setChildren (state, { children }) {
-      state.children = children
+    setThumbnailStyle (state, { thumbnailStyle }) {
+      state.thumbnailStyle = thumbnailStyle
     },
     setExtensions (state, { extensions }) {
       state.extensions = extensions

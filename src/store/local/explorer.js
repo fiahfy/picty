@@ -1,7 +1,7 @@
 import { remote, shell } from 'electron'
 import { Selector } from '~/store'
 import * as File from '~/utils/file'
-import * as Worker from '~/utils/worker'
+import * as WorkerHelper from '~/utils/worker-helper'
 import FileWorker from '~/workers/file.worker.js'
 
 const reversed = {
@@ -12,7 +12,6 @@ const reversed = {
 }
 
 const worker = new FileWorker()
-const subWorker = new FileWorker()
 
 export default {
   namespaced: true,
@@ -27,9 +26,7 @@ export default {
     selectedFilepath: '',
     histories: [],
     historyIndex: -1,
-    orders: {},
-    directoryImagePathes: {},
-    directoryImageLoading: false
+    orders: {}
   },
   getters: {
     backDirectories (state) {
@@ -154,30 +151,20 @@ export default {
       commit('setLoading', { loading: true })
       try {
         commit('setFiles', { files: [] })
-        let files
-        if (rootState.settings.children) {
-          console.log('#children')
-          files = await Worker.post(worker, { id: 'listFilesWithChildren', data: [state.directory] })
-          files = files.filter((file) => file.directory || rootGetters['settings/isFileAvailable']({ filepath: file.path }))
-            .map((file) => {
-              return {
-                ...file,
-                child: rootGetters['settings/isFileAvailable']({ filepath: file.child }) ? file.child : null,
-                rating: rootGetters['rating/getRating']({ filepath: file.path }),
-                views: rootGetters['views/getViews']({ filepath: file.path })
-              }
-            })
-        } else {
-          files = await Worker.post(worker, { id: 'listFiles', data: [state.directory] })
-          files = files.filter((file) => file.directory || rootGetters['settings/isFileAvailable']({ filepath: file.path }))
-            .map((file) => {
-              return {
-                ...file,
-                rating: rootGetters['rating/getRating']({ filepath: file.path }),
-                views: rootGetters['views/getViews']({ filepath: file.path })
-              }
-            })
-        }
+        let files = await WorkerHelper.post(worker, { id: 'listFilesWithChild', data: [state.directory] })
+        files = files.filter((file) => file.directory || rootGetters['settings/isFileAvailable']({ filepath: file.path }))
+          .map((file) => {
+            let imagePath = file.path
+            if (file.directory) {
+              imagePath = rootGetters['settings/isFileAvailable']({ filepath: file.childPath }) ? file.childPath : null
+            }
+            return {
+              ...file,
+              imagePath,
+              rating: rootGetters['rating/getRating']({ filepath: file.path }),
+              views: rootGetters['views/getViews']({ filepath: file.path })
+            }
+          })
         commit('setFiles', { files })
       } catch (e) {
         console.error(e)
@@ -316,41 +303,6 @@ export default {
     focus ({ dispatch, state }) {
       const selector = state.display === 'list' ? Selector.explorerTable : Selector.explorerGridList
       dispatch('focus', { selector }, { root: true })
-    },
-    async requestDirectoryImage ({ commit, dispatch, state }, { filepath }) {
-      const directoryImagePath = state.directoryImagePathes[filepath]
-      if (directoryImagePath !== undefined) {
-        return
-      }
-      const directoryImagePathes = {
-        ...state.directoryImagePathes,
-        [filepath]: ''
-      }
-      commit('setDirectoryImagePathes', { directoryImagePathes })
-      if (state.directoryImageLoading) {
-        return
-      }
-      commit('setDirectoryImageLoading', { directoryImageLoading: true })
-      await dispatch('loadDirectoryImages')
-    },
-    async loadDirectoryImages ({ commit, dispatch, rootGetters, state }) {
-      const filepathes = Object.keys(state.directoryImagePathes).filter((filepath) => {
-        return state.directoryImagePathes[filepath] === ''
-      })
-      if (!filepathes.length) {
-        commit('setDirectoryImageLoading', { directoryImageLoading: false })
-        return
-      }
-      const fileSets = await Worker.post(subWorker, { id: 'listFileSets', data: [filepathes] })
-      const directoryImagePathes = Object.keys(fileSets).reduce((carry, filepath) => {
-        const file = fileSets[filepath].find((file) => rootGetters['settings/isFileAvailable']({ filepath: file.path }))
-        return {
-          ...carry,
-          [filepath]: file ? file.path : null
-        }
-      }, state.directoryImagePathes)
-      commit('setDirectoryImagePathes', { directoryImagePathes })
-      await dispatch('loadDirectoryImages')
     }
   },
   mutations: {
@@ -399,12 +351,6 @@ export default {
         ...state.orders,
         [directory]: order
       }
-    },
-    setDirectoryImagePathes (state, { directoryImagePathes }) {
-      state.directoryImagePathes = directoryImagePathes
-    },
-    setDirectoryImageLoading (state, { directoryImageLoading }) {
-      state.directoryImageLoading = directoryImageLoading
     }
   }
 }
