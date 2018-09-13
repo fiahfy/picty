@@ -114,8 +114,7 @@ export default {
       'thumbnailStyle'
     ]),
     ...mapGetters('local/explorer', [
-      'isFileSelected',
-      'isFileAvailable'
+      'isFileSelected'
     ])
   },
   created () {
