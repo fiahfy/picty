@@ -8,20 +8,18 @@ onmessage = ({ data: { id, data } }) => {
         postMessage(files)
         break
       }
-      case 'getFiles': {
-        const files = File.getFiles(...data)
+      case 'listFilesWithChild': {
+        const [dirpath] = data
+        const files = File.listFiles(dirpath).map((file) => {
+          file.childPath = file.directory ? File.getFirstChildPath(file.path) : null
+          return file
+        })
         postMessage(files)
         break
       }
-      case 'listFileSets': {
-        const [filepathes] = data
-        const fileSets = filepathes.reduce((carry, filepath) => {
-          return {
-            ...carry,
-            [filepath]: File.listFiles(filepath)
-          }
-        }, {})
-        postMessage(fileSets)
+      case 'getFiles': {
+        const files = File.getFiles(...data)
+        postMessage(files)
         break
       }
       default:

@@ -6,13 +6,11 @@
     @dragover.native.prevent
   >
     <title-bar />
-    <template v-if="!viewing">
-      <activity-bar />
-      <v-content class="fill-height">
-        <router-view />
-      </v-content>
-      <notification-bar />
-    </template>
+    <activity-bar />
+    <v-content class="fill-height">
+      <router-view />
+    </v-content>
+    <notification-bar />
     <viewer />
   </v-app>
 </template>

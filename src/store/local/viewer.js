@@ -1,5 +1,5 @@
 import * as File from '~/utils/file'
-import * as Worker from '~/utils/worker'
+import * as WorkerHelper from '~/utils/worker-helper'
 import FileWorker from '~/workers/file.worker.js'
 
 const scales = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
@@ -35,13 +35,13 @@ export default {
         let files = []
         let currentFilepath = ''
         if (dirpath) {
-          files = await Worker.post(worker, { id: 'listFiles', data: [dirpath, { recursive: rootState.settings.recursive }] })
+          files = await WorkerHelper.post(worker, { id: 'listFiles', data: [dirpath, { recursive: rootState.settings.recursive }] })
         } else if (filepath) {
           const file = File.getFile(filepath)
-          files = await Worker.post(worker, { id: 'listFiles', data: [file.dirname] })
+          files = await WorkerHelper.post(worker, { id: 'listFiles', data: [file.dirname] })
           currentFilepath = filepath
         } else {
-          files = await Worker.post(worker, { id: 'getFiles', data: [filepathes] })
+          files = await WorkerHelper.post(worker, { id: 'getFiles', data: [filepathes] })
         }
         files = files.filter((file) => rootGetters['settings/isFileAvailable']({ filepath: file.path }))
         if (files.length && (!currentFilepath || !files.find((file) => file.path === currentFilepath))) {

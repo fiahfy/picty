@@ -1,54 +1,71 @@
 <template>
   <v-container class="settings">
-    <v-subheader class="pa-0">General</v-subheader>
-    <v-checkbox
-      v-model="darkTheme"
-      label="Use dark theme"
-    />
-    <v-combobox
-      v-model="extensions"
-      :items="defaults"
-      label="Filter extensions"
-      chips
-      multiple
-    >
-      <template
-        slot="selection"
-        slot-scope="data"
+    <v-subheader>General</v-subheader>
+    <v-container>
+      <v-checkbox
+        v-model="darkTheme"
+        label="Use dark theme"
+      />
+      <v-combobox
+        v-model="extensions"
+        :items="defaultExtensions"
+        label="Filter extensions"
+        chips
+        multiple
       >
-        <v-chip
-          :selected="data.selected"
-          close
-          @input="onChipInput(data.item)"
+        <template
+          slot="selection"
+          slot-scope="data"
         >
-          {{ data.item }}
-        </v-chip>
-      </template>
-    </v-combobox>
+          <v-chip
+            :selected="data.selected"
+            close
+            @input="onChipInput(data.item)"
+          >
+            {{ data.item }}
+          </v-chip>
+        </template>
+      </v-combobox>
+    </v-container>
 
-    <v-subheader class="pa-0">Viewer</v-subheader>
-    <v-checkbox
-      v-model="fullScreen"
-      label="View images in full screen"
-    />
-    <v-checkbox
-      v-model="recursive"
-      label="View images recursively"
-    />
-    <v-checkbox
-      v-model="imageStretched"
-      label="Stretch small images"
-    />
+    <v-subheader>Explorer</v-subheader>
+    <v-container>
+      <v-select
+        v-model="thumbnailStyle"
+        :items="thumbnailStyles"
+        label="Thumbnail style"
+      />
+    </v-container>
+
+    <v-subheader>Viewer</v-subheader>
+    <v-container>
+      <v-checkbox
+        v-model="fullScreen"
+        label="View images in full screen"
+      />
+      <v-checkbox
+        v-model="recursive"
+        label="View images recursively"
+      />
+      <v-checkbox
+        v-model="imageStretched"
+        label="Stretch small images"
+      />
+    </v-container>
   </v-container>
 </template>
 
 <script>
-import { defaultExtensions } from '~/store/settings'
+import { defaultExtensions, thumbnailStyles } from '~/store/settings'
 
 export default {
   data () {
     return {
-      defaults: defaultExtensions
+      defaultExtensions,
+      thumbnailStyles: thumbnailStyles.map((style) => ({
+        value: style,
+        text: style.charAt(0).toUpperCase() + style.slice(1)
+      }))
     }
   },
   computed: {
@@ -82,6 +99,14 @@ export default {
       },
       set (value) {
         this.$store.commit('settings/setImageStretched', { imageStretched: value })
+      }
+    },
+    thumbnailStyle: {
+      get () {
+        return this.$store.state.settings.thumbnailStyle
+      },
+      set (value) {
+        this.$store.commit('settings/setThumbnailStyle', { thumbnailStyle: value })
       }
     },
     extensions: {

@@ -7,11 +7,39 @@
     @contextmenu.stop="onContextMenu"
   >
     <td :title="file.name">
-      <v-layout class="align-center">
-        <v-icon
-          :color="color"
-          class="pa-1"
-        >{{ icon }}</v-icon>
+      <v-layout
+        slot="activator"
+        class="align-center"
+      >
+        <v-menu
+          open-on-hover
+          right
+          offset-x
+          lazy
+        >
+          <v-icon
+            slot="activator"
+            :color="color"
+            class="icon pa-1"
+          >{{ icon }}</v-icon>
+          <v-card>
+            <v-layout
+              v-if="message"
+              align-center
+              justify-center
+            >
+              <v-flex class="text-xs-center caption">{{ message }}</v-flex>
+            </v-layout>
+            <v-img
+              v-else
+              :src="imageUrl"
+              contain
+              height="256"
+              width="256"
+              @error="onError"
+            />
+          </v-card>
+        </v-menu>
         <span class="ellipsis">{{ file.name }}</span>
       </v-layout>
     </td>
@@ -36,6 +64,7 @@
 </template>
 
 <script>
+import fileUrl from 'file-url'
 import { mapActions, mapGetters } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
@@ -44,6 +73,11 @@ export default {
     file: {
       type: Object,
       default: () => ({})
+    }
+  },
+  data () {
+    return {
+      error: false
     }
   },
   computed: {
@@ -69,6 +103,19 @@ export default {
         return this.file.directory ? 'folder' : 'photo'
       }
       return 'broken_image'
+    },
+    imageUrl () {
+      const imagePath = this.file.imagePath
+      return imagePath ? fileUrl(imagePath) : null
+    },
+    message () {
+      if (this.error) {
+        return 'Load failed'
+      }
+      if (this.imageUrl === null) {
+        return 'No preview'
+      }
+      return ''
     },
     ...mapGetters('local/explorer', [
       'isFileSelected'
@@ -105,6 +152,9 @@ export default {
       }
       ContextMenu.show(e, templates)
     },
+    onError () {
+      this.error = true
+    },
     ...mapActions('local/explorer', [
       'selectFile',
       'searchFiles',
@@ -129,5 +179,9 @@ export default {
       flex: 1;
     }
   }
+}
+.v-menu__content>.v-card>.layout {
+  height: 256px;
+  width: 256px;
 }
 </style>

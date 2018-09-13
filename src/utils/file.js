@@ -26,19 +26,13 @@ export const getFile = (filepath) => {
   }
 }
 
-export const findFile = (dirpath, callback) => {
+export const getFirstChildPath = (dirpath) => {
   const filenames = fs.readdirSync(dirpath)
-  const filename = filenames.find((filename) => {
-    if (filename.match(/^\./)) {
-      return false
-    }
-    const filepath = path.join(dirpath, filename)
-    return callback(filepath)
-  })
+  const filename = filenames.find((filename) => !filename.match(/^\./))
   if (!filename) {
     return null
   }
-  return getFile(path.join(dirpath, filename))
+  return path.join(dirpath, filename)
 }
 
 export const listFiles = (dirpath, options = { recursive: false }) => {
