@@ -552,6 +552,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@fiahfy/electron-accelerator-formatter@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@fiahfy/electron-accelerator-formatter/-/electron-accelerator-formatter-0.0.1.tgz#d15cc77bdd21389ae454bdc1b50c2b9855c76cfb"
+
 "@types/node@^8.0.24":
   version "8.10.29"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.29.tgz#b3a13b58dd7b0682bf1b42022bef4a5a9718f687"

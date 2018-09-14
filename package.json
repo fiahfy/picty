@@ -8,6 +8,7 @@
     "url": "http://fiahfy.blogspot.com/"
   },
   "dependencies": {
+    "@fiahfy/electron-accelerator-formatter": "^0.0.1",
     "electron-devtools-installer": "^2.2.0",
     "electron-window-state": "^5.0.0",
     "file-url": "^2.0.2",

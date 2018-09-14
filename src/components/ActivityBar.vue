@@ -9,7 +9,7 @@
       <v-list-tile
         v-for="item in items"
         :key="item.name"
-        :title="item.title"
+        :title="item.title|accelerator(item.accelerator)"
         @click="(e) => onItemClick(e, item)"
       >
         <v-list-tile-action>
@@ -21,15 +21,13 @@
 </template>
 
 <script>
-import { buildText } from '~/utils/accelerator'
-
 export default {
   data () {
     return {
       items: [
-        { name: 'explorer', icon: 'explore', title: `Explorer (${buildText('CmdOrCtrl+Shift+E')})` },
-        { name: 'bookmark', icon: 'star', title: `Bookmark (${buildText('CmdOrCtrl+Shift+B')})` },
-        { name: 'settings', icon: 'settings', title: `Settings (${buildText('CmdOrCtrl+,')})` }
+        { name: 'explorer', icon: 'explore', title: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E' },
+        { name: 'bookmark', icon: 'star', title: 'Bookmark', accelerator: 'CmdOrCtrl+Shift+B' },
+        { name: 'settings', icon: 'settings', title: 'Settings', accelerator: 'CmdOrCtrl+,' }
       ]
     }
   },
