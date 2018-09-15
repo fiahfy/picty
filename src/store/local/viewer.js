@@ -1,10 +1,10 @@
+import workerPromisify from '@fiahfy/worker-promisify'
 import * as File from '~/utils/file'
-import * as WorkerHelper from '~/utils/worker-helper'
 import FileWorker from '~/workers/file.worker.js'
 
 const scales = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5]
 
-const worker = new FileWorker()
+const worker = workerPromisify(new FileWorker())
 
 export default {
   namespaced: true,
@@ -35,13 +35,13 @@ export default {
         let files = []
         let currentFilepath = ''
         if (dirpath) {
-          files = await WorkerHelper.post(worker, { id: 'listFiles', data: [dirpath, { recursive: rootState.settings.recursive }] })
+          files = (await worker.postMessage({ id: 'listFiles', data: [dirpath, { recursive: rootState.settings.recursive }] })).data
         } else if (filepath) {
           const file = File.getFile(filepath)
-          files = await WorkerHelper.post(worker, { id: 'listFiles', data: [file.dirname] })
+          files = (await worker.postMessage({ id: 'listFiles', data: [file.dirname] })).data
           currentFilepath = filepath
         } else {
-          files = await WorkerHelper.post(worker, { id: 'getFiles', data: [filepathes] })
+          files = (await worker.postMessage({ id: 'getFiles', data: [filepathes] })).data
         }
         files = files.filter((file) => rootGetters['settings/isFileAvailable']({ filepath: file.path }))
         if (files.length && (!currentFilepath || !files.find((file) => file.path === currentFilepath))) {

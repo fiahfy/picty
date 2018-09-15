@@ -1,7 +1,7 @@
 import { remote, shell } from 'electron'
+import workerPromisify from '@fiahfy/worker-promisify'
 import { Selector } from '~/store'
 import * as File from '~/utils/file'
-import * as WorkerHelper from '~/utils/worker-helper'
 import FileWorker from '~/workers/file.worker.js'
 
 const reversed = {
@@ -11,7 +11,7 @@ const reversed = {
   modified_at: true
 }
 
-const worker = new FileWorker()
+const worker = workerPromisify(new FileWorker())
 
 export default {
   namespaced: true,
@@ -151,7 +151,7 @@ export default {
       commit('setLoading', { loading: true })
       try {
         commit('setFiles', { files: [] })
-        let files = await WorkerHelper.post(worker, { id: 'listFilesWithChild', data: [state.directory] })
+        let files = (await worker.postMessage({ id: 'listFilesWithChild', data: [state.directory] })).data
         files = files.filter((file) => file.directory || rootGetters['settings/isFileAvailable']({ filepath: file.path }))
           .map((file) => {
             let imagePath = file.path
