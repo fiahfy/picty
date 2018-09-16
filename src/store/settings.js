@@ -4,6 +4,13 @@ export const defaultExtensions = [
   'BMP', 'GIF', 'ICO', 'JPEG', 'JPG', 'PNG', 'SVG', 'TIF', 'TIFF', 'WEBP'
 ]
 
+export const previewSizes = {
+  none: 0,
+  small: 128,
+  medium: 256,
+  large: 512
+}
+
 export const thumbnailStyles = [
   'cover', 'contain'
 ]
@@ -15,10 +22,14 @@ export default {
     fullScreen: false,
     recursive: false,
     imageStretched: false,
+    previewSize: 'medium',
     thumbnailStyle: 'cover',
     extensions: [...defaultExtensions]
   },
   getters: {
+    previewSizeValue (state) {
+      return previewSizes[state.previewSize]
+    },
     isFileAvailable (state) {
       return ({ filepath }) => {
         if (!filepath) {
@@ -44,6 +55,9 @@ export default {
     },
     setImageStretched (state, { imageStretched }) {
       state.imageStretched = imageStretched
+    },
+    setPreviewSize (state, { previewSize }) {
+      state.previewSize = previewSize
     },
     setThumbnailStyle (state, { thumbnailStyle }) {
       state.thumbnailStyle = thumbnailStyle

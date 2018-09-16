@@ -31,6 +31,11 @@
     <v-subheader>Explorer</v-subheader>
     <v-container>
       <v-select
+        v-model="previewSize"
+        :items="previewSizes"
+        label="Preview size"
+      />
+      <v-select
         v-model="thumbnailStyle"
         :items="thumbnailStyles"
         label="Thumbnail style"
@@ -56,12 +61,16 @@
 </template>
 
 <script>
-import { defaultExtensions, thumbnailStyles } from '~/store/settings'
+import { defaultExtensions, previewSizes, thumbnailStyles } from '~/store/settings'
 
 export default {
   data () {
     return {
       defaultExtensions,
+      previewSizes: Object.keys(previewSizes).map((size) => ({
+        value: size,
+        text: size.charAt(0).toUpperCase() + size.slice(1)
+      })),
       thumbnailStyles: thumbnailStyles.map((style) => ({
         value: style,
         text: style.charAt(0).toUpperCase() + style.slice(1)
@@ -99,6 +108,14 @@ export default {
       },
       set (value) {
         this.$store.commit('settings/setImageStretched', { imageStretched: value })
+      }
+    },
+    previewSize: {
+      get () {
+        return this.$store.state.settings.previewSize
+      },
+      set (value) {
+        this.$store.commit('settings/setPreviewSize', { previewSize: value })
       }
     },
     thumbnailStyle: {

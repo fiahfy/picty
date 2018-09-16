@@ -20,16 +20,42 @@
         v-else
         :src="src"
         :contain="contain"
-        height="150"
+        height="128"
         @error="onError"
       />
       <v-divider />
       <v-card-title class="pt-2 px-2 pb-0">
         <v-layout class="align-center">
-          <v-icon
-            :color="color"
-            class="pa-1"
-          >{{ icon }}</v-icon>
+          <v-menu
+            :disabled="menuDisabled"
+            open-on-hover
+            right
+            offset-x
+            lazy
+          >
+            <v-icon
+              slot="activator"
+              :color="iconColor"
+              class="pa-1"
+            >{{ icon }}</v-icon>
+            <v-card>
+              <v-layout
+                v-if="message"
+                align-center
+                justify-center
+              >
+                <v-flex class="text-xs-center caption">{{ message }}</v-flex>
+              </v-layout>
+              <v-img
+                v-else
+                :src="imageUrl"
+                contain
+                :height="previewSizeValue"
+                :width="previewSizeValue"
+                @error="onError"
+              />
+            </v-card>
+          </v-menu>
           <span class="ellipsis caption">{{ file.name }}</span>
         </v-layout>
       </v-card-title>
@@ -82,17 +108,17 @@ export default {
     active () {
       return this.isFileSelected({ filepath: this.file.path })
     },
-    color () {
-      if (this.file.exists) {
-        return this.file.directory ? 'blue lighten-3' : 'green lighten-3'
-      }
-      return 'grey'
-    },
     icon () {
       if (this.file.exists) {
         return this.file.directory ? 'folder' : 'photo'
       }
       return 'broken_image'
+    },
+    iconColor () {
+      if (this.file.exists) {
+        return this.file.directory ? 'blue lighten-3' : 'green lighten-3'
+      }
+      return 'grey'
     },
     contain () {
       return this.thumbnailStyle === 'contain'
@@ -110,8 +136,14 @@ export default {
       }
       return ''
     },
+    menuDisabled () {
+      return this.previewSizeValue <= 128
+    },
     ...mapState('settings', [
       'thumbnailStyle'
+    ]),
+    ...mapGetters('settings', [
+      'previewSizeValue'
     ]),
     ...mapGetters('local/explorer', [
       'isFileSelected'
@@ -179,7 +211,7 @@ export default {
     background-color: #eeeeee;
   }
   &>.layout {
-    height: 150px;
+    height: 128px;
   }
   .v-rating {
     height: 32px;
