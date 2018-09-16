@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 export const getFile = (filepath) => {
-  let obj = {
+  const obj = {
     path: filepath,
     name: path.basename(filepath),
     dirname: path.dirname(filepath),

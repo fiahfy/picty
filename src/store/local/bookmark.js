@@ -51,13 +51,13 @@ export default {
     }
   },
   actions: {
-    addBookmark ({ dispatch }, { filepath }) {
-      dispatch('bookmark/addBookmark', { filepath }, { root: true })
+    addBookmark ({ commit, dispatch }, { filepath }) {
+      commit('bookmark/addBookmark', { filepath }, { root: true })
       dispatch('selectBookmark', { filepath })
     },
-    removeBookmark ({ dispatch, getters, state }) {
+    removeBookmark ({ commit, dispatch, getters, state }) {
       const oldIndex = getters.selectedBookmarkIndex
-      dispatch('bookmark/removeBookmark', { filepath: state.selectedBookmarkPath }, { root: true })
+      commit('bookmark/removeBookmark', { filepath: state.selectedBookmarkPath }, { root: true })
       const index = oldIndex < getters.bookmarks.length ? oldIndex : getters.bookmarks.length - 1
       dispatch('selectBookmarkIndex', { index })
     },

@@ -265,15 +265,15 @@ export default {
       }
       dispatch('incrementFileViews', { filepath: file.path })
     },
-    updateFileRating ({ commit, dispatch, rootGetters }, { filepath, rating }) {
-      dispatch('rating/setRating', { filepath, rating }, { root: true })
+    updateFileRating ({ commit, rootGetters }, { filepath, rating }) {
+      commit('rating/setRating', { filepath, rating }, { root: true })
       const file = {
         rating: rootGetters['rating/getRating']({ filepath })
       }
       commit('updateFile', { filepath, file })
     },
-    incrementFileViews ({ commit, dispatch, rootGetters }, { filepath }) {
-      dispatch('views/incrementViews', { filepath }, { root: true })
+    incrementFileViews ({ commit, rootGetters }, { filepath }) {
+      commit('views/incrementViews', { filepath }, { root: true })
       const file = {
         views: rootGetters['views/getViews']({ filepath })
       }

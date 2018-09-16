@@ -8,18 +8,13 @@ export default {
       return ({ filepath }) => state.views[filepath] || 0
     }
   },
-  actions: {
-    incrementViews ({ commit, getters, state }, { filepath }) {
-      const views = {
-        ...state.views,
-        [filepath]: getters.getViews({ filepath }) + 1
-      }
-      commit('setViews', { views })
-    }
-  },
   mutations: {
-    setViews (state, { views }) {
-      state.views = views
+    incrementViews (state, { filepath }) {
+      const views = state.views[filepath] || 0
+      state.views = {
+        ...state.views,
+        [filepath]: views + 1
+      }
     }
   }
 }
