@@ -4,7 +4,7 @@
     :items="filteredFiles"
     :loading="loading"
     :no-data-text="noDataText"
-    :estimated-height="209"
+    :estimated-height="estimatedHeight"
     :sizes="sizes"
     class="explorer-grid-list"
     container-class="grid-list-md"
@@ -53,6 +53,7 @@ export default {
   },
   data () {
     return {
+      estimatedHeight: 209,
       sizes: [6, 4, 3, 2, 2]
     }
   },
@@ -91,10 +92,9 @@ export default {
           return
         }
         const offset = this.getItemOffset()
-        const rowHeight = 231
         const el = {
-          offsetTop: rowHeight * Math.floor(index / offset),
-          offsetHeight: rowHeight
+          offsetTop: this.estimatedHeight * Math.floor(index / offset),
+          offsetHeight: this.estimatedHeight
         }
         const iterator = {
           scrollTop: this.$refs.iterator.getScrollTop(),
