@@ -21,15 +21,7 @@
             class="pa-1"
           >{{ icon }}</v-icon>
           <v-card>
-            <v-layout
-              v-if="message"
-              align-center
-              justify-center
-            >
-              <v-flex class="text-xs-center caption">{{ message }}</v-flex>
-            </v-layout>
             <v-img
-              v-else
               :src="imageUrl"
               contain
               :height="previewSizeValue"
@@ -119,7 +111,7 @@ export default {
       return ''
     },
     menuDisabled () {
-      return !this.previewSizeValue
+      return !this.previewSizeValue || !!this.message
     },
     ...mapGetters('settings', [
       'previewSizeValue'
@@ -186,9 +178,5 @@ export default {
       flex: 1;
     }
   }
-}
-.v-menu__content .v-card>.layout {
-  height: 128px;
-  width: 128px;
 }
 </style>

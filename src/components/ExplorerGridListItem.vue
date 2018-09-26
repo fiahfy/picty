@@ -38,15 +38,7 @@
               class="pa-1"
             >{{ icon }}</v-icon>
             <v-card>
-              <v-layout
-                v-if="message"
-                align-center
-                justify-center
-              >
-                <v-flex class="text-xs-center caption">{{ message }}</v-flex>
-              </v-layout>
               <v-img
-                v-else
                 :src="imageUrl"
                 contain
                 :height="previewSizeValue"
@@ -139,7 +131,7 @@ export default {
       return ''
     },
     menuDisabled () {
-      return this.previewSizeValue <= 128
+      return this.previewSizeValue <= 128 || !!this.message
     },
     ...mapState('settings', [
       'thumbnailStyle'
@@ -218,10 +210,6 @@ export default {
   .v-rating {
     height: 32px;
   }
-}
-.v-menu__content .v-card>.layout {
-  height: 128px;
-  width: 128px;
 }
 .theme--dark .explorer-grid-list-item .v-card {
   &[active] {
