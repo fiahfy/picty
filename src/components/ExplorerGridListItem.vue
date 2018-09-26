@@ -4,7 +4,6 @@
   >
     <v-card
       :active="active"
-      :title="file.name"
       @click.native="onClick"
       @dblclick="onDblClick"
       @contextmenu.stop="onContextMenu"
@@ -56,7 +55,10 @@
               />
             </v-card>
           </v-menu>
-          <span class="ellipsis caption">{{ file.name }}</span>
+          <span
+            :title="file.name"
+            class="ellipsis caption"
+          >{{ file.name }}</span>
         </v-layout>
       </v-card-title>
       <v-card-actions
@@ -216,6 +218,10 @@ export default {
   .v-rating {
     height: 32px;
   }
+}
+.v-menu__content .v-card>.layout {
+  height: 128px;
+  width: 128px;
 }
 .theme--dark .explorer-grid-list-item .v-card {
   &[active] {

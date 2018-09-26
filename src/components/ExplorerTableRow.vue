@@ -6,7 +6,7 @@
     @dblclick="onDblClick"
     @contextmenu.stop="onContextMenu"
   >
-    <td :title="file.name">
+    <td>
       <v-layout class="align-center">
         <v-menu
           :disabled="menuDisabled"
@@ -38,7 +38,10 @@
             />
           </v-card>
         </v-menu>
-        <span class="ellipsis">{{ file.name }}</span>
+        <span
+          :title="file.name"
+          class="ellipsis"
+        >{{ file.name }}</span>
       </v-layout>
     </td>
     <td class="text-xs-right">
@@ -183,5 +186,9 @@ export default {
       flex: 1;
     }
   }
+}
+.v-menu__content .v-card>.layout {
+  height: 128px;
+  width: 128px;
 }
 </style>
