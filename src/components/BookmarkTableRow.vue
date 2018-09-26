@@ -15,7 +15,7 @@
         <span class="ellipsis">{{ bookmark.path }}</span>
       </v-layout>
     </td>
-    <td class="text-xs-right">
+    <td class="no-wrap">
       <template v-if="bookmark.added_at">{{ bookmark.added_at | moment('YYYY-MM-DD HH:mm') }}</template>
     </td>
   </tr>

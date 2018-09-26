@@ -45,6 +45,8 @@ export default {
   },
   data () {
     return {
+      headerHeight: 58,
+      rowHeight: 48,
       headers: [
         {
           text: 'Path',
@@ -53,7 +55,7 @@ export default {
         {
           text: 'Date Added',
           value: 'added_at',
-          width: 110
+          width: 150
         }
       ]
     }
@@ -78,15 +80,13 @@ export default {
         if (index === -1) {
           return
         }
-        const rowHeight = 48
-        const headerHeight = 58
         const el = {
-          offsetTop: rowHeight * index,
-          offsetHeight: rowHeight
+          offsetTop: this.rowHeight * index,
+          offsetHeight: this.rowHeight
         }
         const table = {
           scrollTop: this.$refs.table.getScrollTop(),
-          offsetHeight: this.$refs.table.getOffsetHeight() - headerHeight
+          offsetHeight: this.$refs.table.getOffsetHeight() - this.headerHeight
         }
         if (table.scrollTop > el.offsetTop) {
           this.$refs.table.setScrollTop(el.offsetTop)
@@ -171,5 +171,8 @@ export default {
 <style scoped lang="scss">
 .bookmark-table {
   outline: none;
+  & /deep/ .v-datatable {
+    min-width: 512px;
+  }
 }
 </style>

@@ -45,6 +45,8 @@ export default {
   },
   data () {
     return {
+      headerHeight: 58,
+      rowHeight: 48,
       headers: [
         {
           text: 'Name',
@@ -53,17 +55,17 @@ export default {
         {
           text: 'Views',
           value: 'views',
-          width: 50
+          width: 96
         },
         {
           text: 'Rating',
           value: 'rating',
-          width: 190
+          width: 238
         },
         {
           text: 'Date Modified',
           value: 'modified_at',
-          width: 110
+          width: 150
         }
       ]
     }
@@ -97,15 +99,13 @@ export default {
         if (index === -1) {
           return
         }
-        const rowHeight = 48
-        const headerHeight = 58
         const el = {
-          offsetTop: rowHeight * index,
-          offsetHeight: rowHeight
+          offsetTop: this.rowHeight * index,
+          offsetHeight: this.rowHeight
         }
         const table = {
           scrollTop: this.$refs.table.getScrollTop(),
-          offsetHeight: this.$refs.table.getOffsetHeight() - headerHeight
+          offsetHeight: this.$refs.table.getOffsetHeight() - this.headerHeight
         }
         if (table.scrollTop > el.offsetTop) {
           this.$refs.table.setScrollTop(el.offsetTop)
@@ -164,5 +164,8 @@ export default {
 <style scoped lang="scss">
 .explorer-table {
   outline: none;
+  & /deep/ .v-datatable {
+    min-width: 768px;
+  }
 }
 </style>

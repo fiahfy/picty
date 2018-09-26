@@ -40,7 +40,6 @@
       {{ file.views || '' }}
     </td>
     <td
-      class="text-xs-right"
       @click.stop
       @dblclick.stop
     >
@@ -50,7 +49,7 @@
         clearable
       />
     </td>
-    <td class="text-xs-right">
+    <td class="no-wrap">
       <template v-if="file.modified_at">{{ file.modified_at | moment('YYYY-MM-DD HH:mm') }}</template>
     </td>
   </tr>

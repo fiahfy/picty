@@ -38,7 +38,6 @@ export default {
     },
     getStyle (header) {
       return {
-        'box-sizing': 'content-box',
         width: header.width ? `${header.width}px` : null
       }
     },
