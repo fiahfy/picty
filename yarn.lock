@@ -623,20 +623,20 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@fiahfy/electron-accelerator-formatter@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@fiahfy/electron-accelerator-formatter/-/electron-accelerator-formatter-0.0.1.tgz#d15cc77bdd21389ae454bdc1b50c2b9855c76cfb"
-  integrity sha512-b5btxi6TnnvmCeezuZgFh8FKzbFbSiVm0Pm8RXco9NJVxThTaaEeYD/HO7YW54O3TQq8i/PRl2g1/mLFWY8Nug==
+"@fiahfy/electron-accelerator-formatter@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@fiahfy/electron-accelerator-formatter/-/electron-accelerator-formatter-0.0.2.tgz#a593cb76c179ec3d5a84adc1f36d5f8d6c6ee028"
+  integrity sha512-p3dojNdN70bIl3vliRkXRqWxXTx0kl3YXqgMlWnMJdhzqMraYY4ybQ1ILYhABDfKUxo/GjTzV5FvsusyXW0Mtg==
 
-"@fiahfy/worker-promisify@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@fiahfy/worker-promisify/-/worker-promisify-0.0.1.tgz#cb7f55a69fd958c569ff8eeb73501fcd24968d7d"
-  integrity sha512-+Y3OMweIp+hDDNJzklW5ZpYdVc3evKTzIfMRrfTq/aC9xloQVNAYZGFQImhzV7xaVR9PY+bX6SX2CZ6KxaKjxw==
+"@fiahfy/worker-promisify@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@fiahfy/worker-promisify/-/worker-promisify-0.0.2.tgz#9f2a047982b3e743d2631fd6fd3460bdfcf43e34"
+  integrity sha512-7GgqGdQXBCS83KGlJkiqeVGDqxPP5KXfH1qh31TVx9i1j9+gJzuRjoZ4H8Yo9sEYG5IXnQsLU/uuICjz4QuUPg==
 
 "@types/node@^8.0.24":
-  version "8.10.32"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.32.tgz#f8df7c32975e36e1215d22ae5f087752931c1e4a"
-  integrity sha512-8OfXpkB3E0jhpcpyVlqJDV5mkXlrsJrDZR7q0uss8SBdW8IxNdx/J2o5m7cM2qbFzyd/o+aV5Z4OJcIukI6UlA==
+  version "8.10.34"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.34.tgz#a94d9f3767fe45f211e09e49af598bb84822280c"
+  integrity sha512-alypNiaAEd0RBGXoWehJ2gchPYCITmw4CYBoB5nDlji8l8on7FsklfdfIs4DDmgpKLSX3OF3ha6SV+0W7cTzUA==
 
 "@vue/component-compiler-utils@^2.0.0":
   version "2.2.0"
@@ -2119,9 +2119,9 @@ deep-is@~0.1.3:
   integrity sha1-s2nW+128E+7PUk+RsHD+7cNXzzQ=
 
 deepmerge@^2.1.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-2.1.1.tgz#e862b4e45ea0555072bf51e7fd0d9845170ae768"
-  integrity sha512-urQxA1smbLZ2cBbXbaYObM1dJ82aJ2H57A1C/Kklfh/ZN1bgH4G/n5KWhdNfOK11W98gqZfyYj7W4frJJRwA2w==
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-2.2.1.tgz#5d3ff22a01c00f645405a2fbc17d0778a1801170"
+  integrity sha512-R9hc1Xa/NOBi9WRVUWg19rl1UB7Tt4kuPd+thNJgFZoxXsTz7ncaPaeIm+40oSGuP33DfMb4sZt1QIGiJzC4EA==
 
 default-gateway@^2.6.0:
   version "2.7.2"
