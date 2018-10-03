@@ -1,18 +1,6 @@
-export const breakpoints = [
-  600,
-  960,
-  1280 - 16,
-  1920 - 16,
-  Infinity
-]
+export const breakpoints = [600, 960, 1280 - 16, 1920 - 16, Infinity]
 
-export const sizes = [
-  'xs',
-  'sm',
-  'md',
-  'lg',
-  'xl'
-]
+export const sizes = ['xs', 'sm', 'md', 'lg', 'xl']
 
 export const getSizeIndex = () => {
   const w = window.innerWidth

@@ -67,40 +67,43 @@ export default {
       default: () => ({})
     }
   },
-  data () {
+  data() {
     return {
       error: false
     }
   },
   computed: {
     rating: {
-      get () {
+      get() {
         return this.file.rating
       },
-      set (value) {
-        this.$store.dispatch('local/explorer/updateFileRating', { filepath: this.file.path, rating: value })
+      set(value) {
+        this.$store.dispatch('local/explorer/updateFileRating', {
+          filepath: this.file.path,
+          rating: value
+        })
       }
     },
-    active () {
+    active() {
       return this.isFileSelected({ filepath: this.file.path })
     },
-    icon () {
+    icon() {
       if (this.file.exists) {
         return this.file.directory ? 'folder' : 'photo'
       }
       return 'broken_image'
     },
-    iconColor () {
+    iconColor() {
       if (this.file.exists) {
         return this.file.directory ? 'blue lighten-3' : 'green lighten-3'
       }
       return 'grey'
     },
-    imageUrl () {
+    imageUrl() {
       const imagePath = this.file.imagePath
       return imagePath ? fileUrl(imagePath) : null
     },
-    message () {
+    message() {
       if (this.error) {
         return 'Load failed'
       }
@@ -109,24 +112,20 @@ export default {
       }
       return ''
     },
-    menuDisabled () {
+    menuDisabled() {
       return !this.previewSizeValue || !!this.message
     },
-    ...mapGetters('settings', [
-      'previewSizeValue'
-    ]),
-    ...mapGetters('local/explorer', [
-      'isFileSelected'
-    ])
+    ...mapGetters('settings', ['previewSizeValue']),
+    ...mapGetters('local/explorer', ['isFileSelected'])
   },
   methods: {
-    onClick () {
+    onClick() {
       this.selectFile({ filepath: this.file.path })
     },
-    onDblClick () {
+    onDblClick() {
       this.openFile({ filepath: this.file.path })
     },
-    onContextMenu (e) {
+    onContextMenu(e) {
       this.selectFile({ filepath: this.file.path })
       let templates = [
         {
@@ -150,7 +149,7 @@ export default {
       }
       ContextMenu.show(e, templates)
     },
-    onError () {
+    onError() {
       this.error = true
     },
     ...mapActions('local/explorer', [

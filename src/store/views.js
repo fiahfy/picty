@@ -4,12 +4,12 @@ export default {
     views: {}
   },
   getters: {
-    getViews (state) {
+    getViews(state) {
       return ({ filepath }) => state.views[filepath] || 0
     }
   },
   mutations: {
-    incrementViews (state, { filepath }) {
+    incrementViews(state, { filepath }) {
       const views = state.views[filepath] || 0
       state.views = {
         ...state.views,

@@ -69,7 +69,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
-  data () {
+  data() {
     return {
       form: {
         valid: false,
@@ -78,24 +78,20 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/bookmark', [
-      'dialog'
-    ]),
-    ...mapGetters('local/bookmark', [
-      'canRemoveBookmark'
-    ])
+    ...mapState('local/bookmark', ['dialog']),
+    ...mapGetters('local/bookmark', ['canRemoveBookmark'])
   },
   methods: {
-    onAddClick () {
+    onAddClick() {
       this.showDialog()
     },
-    onRemoveClick () {
+    onRemoveClick() {
       this.removeBookmark()
     },
-    onCloseClick () {
+    onCloseClick() {
       this.dismissDialog()
     },
-    onSubmit () {
+    onSubmit() {
       this.addBookmark({ filepath: this.form.filepath })
       this.form.filepath = ''
       this.dismissDialog()

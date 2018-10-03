@@ -4,12 +4,12 @@ export default {
     bookmarks: {}
   },
   getters: {
-    isBookmarked (state) {
+    isBookmarked(state) {
       return ({ filepath }) => !!state.bookmarks[filepath]
     }
   },
   actions: {
-    toggleBookmarked ({ commit, getters }, { filepath }) {
+    toggleBookmarked({ commit, getters }, { filepath }) {
       if (getters.isBookmarked({ filepath })) {
         commit('removeBookmark', { filepath })
       } else {
@@ -18,7 +18,7 @@ export default {
     }
   },
   mutations: {
-    addBookmark (state, { filepath }) {
+    addBookmark(state, { filepath }) {
       state.bookmarks = {
         ...state.bookmarks,
         [filepath]: {
@@ -26,7 +26,7 @@ export default {
         }
       }
     },
-    removeBookmark (state, { filepath }) {
+    removeBookmark(state, { filepath }) {
       state.bookmarks = Object.keys(state.bookmarks)
         .filter((key) => key !== filepath)
         .reduce((carry, key) => {

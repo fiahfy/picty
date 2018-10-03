@@ -59,55 +59,48 @@ import * as ContextMenu from '~/utils/context-menu'
 export default {
   computed: {
     queryInput: {
-      get () {
+      get() {
         return this.$store.state.local.explorer.queryInput
       },
-      set (value) {
-        this.$store.commit('local/explorer/setQueryInput', { queryInput: value })
+      set(value) {
+        this.$store.commit('local/explorer/setQueryInput', {
+          queryInput: value
+        })
       }
     },
-    listColor () {
+    listColor() {
       return this.display === 'list' ? 'primary' : null
     },
-    thumbnailColor () {
+    thumbnailColor() {
       return this.display === 'thumbnail' ? 'primary' : null
     },
-    ...mapState('local/explorer', [
-      'selectedFilepath',
-      'display'
-    ]),
-    ...mapGetters('local/explorer', [
-      'canViewFile'
-    ])
+    ...mapState('local/explorer', ['selectedFilepath', 'display']),
+    ...mapGetters('local/explorer', ['canViewFile'])
   },
   watch: {
-    queryInput (value) {
+    queryInput(value) {
       this.searchFiles({ query: value })
     }
   },
   methods: {
-    onViewClick () {
+    onViewClick() {
       this.viewFile({ filepath: this.selectedFilepath })
     },
-    onListClick () {
+    onListClick() {
       this.setDisplay({ display: 'list' })
     },
-    onThumbnailClick () {
+    onThumbnailClick() {
       this.setDisplay({ display: 'thumbnail' })
     },
-    onTextContextMenu (e) {
+    onTextContextMenu(e) {
       ContextMenu.showTextMenu(e)
     },
-    onTextKeyUp (e) {
+    onTextKeyUp(e) {
       if (e.keyCode === 13) {
         this.searchFiles({ query: e.target.value })
       }
     },
-    ...mapActions('local/explorer', [
-      'searchFiles',
-      'viewFile',
-      'setDisplay'
-    ])
+    ...mapActions('local/explorer', ['searchFiles', 'viewFile', 'setDisplay'])
   }
 }
 </script>

@@ -61,10 +61,14 @@
 </template>
 
 <script>
-import { defaultExtensions, previewSizes, thumbnailStyles } from '~/store/settings'
+import {
+  defaultExtensions,
+  previewSizes,
+  thumbnailStyles
+} from '~/store/settings'
 
 export default {
-  data () {
+  data() {
     return {
       defaultExtensions,
       previewSizes: Object.keys(previewSizes).map((size) => ({
@@ -79,65 +83,75 @@ export default {
   },
   computed: {
     darkTheme: {
-      get () {
+      get() {
         return this.$store.state.settings.darkTheme
       },
-      set (value) {
+      set(value) {
         this.$store.commit('settings/setDarkTheme', { darkTheme: value })
       }
     },
     fullScreen: {
-      get () {
+      get() {
         return this.$store.state.settings.fullScreen
       },
-      set (value) {
+      set(value) {
         this.$store.commit('settings/setFullScreen', { fullScreen: value })
       }
     },
     recursive: {
-      get () {
+      get() {
         return this.$store.state.settings.recursive
       },
-      set (value) {
+      set(value) {
         this.$store.commit('settings/setRecursive', { recursive: value })
       }
     },
     imageStretched: {
-      get () {
+      get() {
         return this.$store.state.settings.imageStretched
       },
-      set (value) {
-        this.$store.commit('settings/setImageStretched', { imageStretched: value })
+      set(value) {
+        this.$store.commit('settings/setImageStretched', {
+          imageStretched: value
+        })
       }
     },
     previewSize: {
-      get () {
+      get() {
         return this.$store.state.settings.previewSize
       },
-      set (value) {
+      set(value) {
         this.$store.commit('settings/setPreviewSize', { previewSize: value })
       }
     },
     thumbnailStyle: {
-      get () {
+      get() {
         return this.$store.state.settings.thumbnailStyle
       },
-      set (value) {
-        this.$store.commit('settings/setThumbnailStyle', { thumbnailStyle: value })
+      set(value) {
+        this.$store.commit('settings/setThumbnailStyle', {
+          thumbnailStyle: value
+        })
       }
     },
     extensions: {
-      get () {
-        return this.$store.state.settings.extensions.map((item) => item.toUpperCase())
+      get() {
+        return this.$store.state.settings.extensions.map((item) =>
+          item.toUpperCase()
+        )
       },
-      set (value) {
-        this.$store.commit('settings/setExtensions', { extensions: value.map((item) => item.toUpperCase()) })
+      set(value) {
+        this.$store.commit('settings/setExtensions', {
+          extensions: value.map((item) => item.toUpperCase())
+        })
       }
     }
   },
   methods: {
-    onChipInput (item) {
-      this.extensions = this.extensions.filter((extension) => extension !== item)
+    onChipInput(item) {
+      this.extensions = this.extensions.filter(
+        (extension) => extension !== item
+      )
     }
   }
 }

@@ -50,7 +50,6 @@ export const listFiles = (dirpath, options = { recursive: false }) => {
       const files = listFiles(filepath, options)
       return [...carry, file, ...files]
     } catch (e) {
-      console.error(e)
       return carry
     }
   }, [])

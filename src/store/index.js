@@ -28,15 +28,15 @@ export default new Vuex.Store({
     viewing: false
   },
   getters: {
-    titleBar (state) {
+    titleBar(state) {
       return process.platform === 'darwin' && !state.fullScreen
     }
   },
   actions: {
-    initialize ({ dispatch }) {
+    initialize({ dispatch }) {
       dispatch('local/explorer/initialize')
     },
-    open ({ dispatch }, { filepathes }) {
+    open({ dispatch }, { filepathes }) {
       const file = File.getFile(filepathes[0])
       if (filepathes.length === 1 && file.directory) {
         dispatch('openDirectory', { dirpath: file.path })
@@ -44,18 +44,18 @@ export default new Vuex.Store({
         dispatch('showViewer', { filepathes })
       }
     },
-    openDirectory ({ dispatch }, { dirpath }) {
+    openDirectory({ dispatch }, { dirpath }) {
       dispatch('local/explorer/changeDirectory', { dirpath })
       dispatch('changeRoute', { name: 'explorer' })
     },
-    showViewer ({ commit, dispatch, state }, payload) {
+    showViewer({ commit, dispatch, state }, payload) {
       dispatch('local/viewer/loadFiles', payload)
       commit('setViewing', { viewing: true })
       if (state.settings.fullScreen) {
         dispatch('enterFullScreen')
       }
     },
-    dismissViewer ({ commit, dispatch, state }) {
+    dismissViewer({ commit, dispatch, state }) {
       if (state.local.viewer.loading) {
         return
       }
@@ -67,17 +67,17 @@ export default new Vuex.Store({
         dispatch('local/explorer/focus')
       }
     },
-    enterFullScreen () {
+    enterFullScreen() {
       const browserWindow = remote.getCurrentWindow()
       browserWindow.setFullScreen(true)
       browserWindow.setMenuBarVisibility(false)
     },
-    leaveFullScreen () {
+    leaveFullScreen() {
       const browserWindow = remote.getCurrentWindow()
       browserWindow.setFullScreen(false)
       browserWindow.setMenuBarVisibility(true)
     },
-    focus (_, { selector }) {
+    focus(_, { selector }) {
       // wait dom updated
       setTimeout(() => {
         const el = document.querySelector(selector)
@@ -86,7 +86,7 @@ export default new Vuex.Store({
         }
       })
     },
-    select (_, { selector }) {
+    select(_, { selector }) {
       // wait dom updated
       setTimeout(() => {
         const el = document.querySelector(selector)
@@ -95,28 +95,28 @@ export default new Vuex.Store({
         }
       })
     },
-    changeRoute (_, payload) {
+    changeRoute(_, payload) {
       router.push(payload)
     },
-    changeTitle ({ commit }, { title = Package.productName }) {
+    changeTitle({ commit }, { title = Package.productName }) {
       document.title = title
       commit('setTitle', { title })
     },
-    showMessage ({ commit }, message) {
+    showMessage({ commit }, message) {
       commit('setMessage', { message })
     }
   },
   mutations: {
-    setTitle (state, { title }) {
+    setTitle(state, { title }) {
       state.title = title
     },
-    setMessage (state, { message }) {
+    setMessage(state, { message }) {
       state.message = message
     },
-    setFullScreen (state, { fullScreen }) {
+    setFullScreen(state, { fullScreen }) {
       state.fullScreen = fullScreen
     },
-    setViewing (state, { viewing }) {
+    setViewing(state, { viewing }) {
       state.viewing = viewing
     }
   },

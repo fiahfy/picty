@@ -43,7 +43,7 @@ export default {
     BookmarkTableRow,
     VirtualDataTable
   },
-  data () {
+  data() {
     return {
       headerHeight: 58,
       rowHeight: 48,
@@ -61,20 +61,14 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/bookmark', [
-      'scrollTop',
-      'selectedBookmarkPath'
-    ]),
-    ...mapGetters('local/bookmark', [
-      'bookmarks',
-      'selectedBookmarkIndex'
-    ])
+    ...mapState('local/bookmark', ['scrollTop', 'selectedBookmarkPath']),
+    ...mapGetters('local/bookmark', ['bookmarks', 'selectedBookmarkIndex'])
   },
   watch: {
-    loading () {
+    loading() {
       this.restore()
     },
-    selectedBookmarkIndex (value) {
+    selectedBookmarkIndex(value) {
       this.$nextTick(() => {
         const index = value
         if (index === -1) {
@@ -90,26 +84,31 @@ export default {
         }
         if (table.scrollTop > el.offsetTop) {
           this.$refs.table.setScrollTop(el.offsetTop)
-        } else if (table.scrollTop < el.offsetTop + el.offsetHeight - table.offsetHeight) {
-          this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight)
+        } else if (
+          table.scrollTop <
+          el.offsetTop + el.offsetHeight - table.offsetHeight
+        ) {
+          this.$refs.table.setScrollTop(
+            el.offsetTop + el.offsetHeight - table.offsetHeight
+          )
         }
       })
     }
   },
-  mounted () {
+  mounted() {
     this.restore()
   },
   methods: {
-    restore () {
+    restore() {
       const scrollTop = this.scrollTop
       this.$nextTick(() => {
         this.$refs.table.setScrollTop(scrollTop)
       })
     },
-    onScroll (e) {
+    onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
-    onKeyDown (e) {
+    onKeyDown(e) {
       switch (e.keyCode) {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
@@ -140,7 +139,7 @@ export default {
           break
       }
     },
-    onContextMenu (e) {
+    onContextMenu(e) {
       this.unselectBookmark()
       const templates = [
         {
@@ -151,9 +150,7 @@ export default {
       ]
       ContextMenu.show(e, templates)
     },
-    ...mapMutations('local/bookmark', [
-      'setScrollTop'
-    ]),
+    ...mapMutations('local/bookmark', ['setScrollTop']),
     ...mapActions('local/bookmark', [
       'removeBookmark',
       'unselectBookmark',

@@ -51,20 +51,20 @@ export default {
     ExplorerGridListItem,
     VirtualDataIterator
   },
-  data () {
+  data() {
     return {
       estimatedHeight: 209,
       sizes: [6, 4, 3, 2, 2]
     }
   },
   computed: {
-    noDataText () {
+    noDataText() {
       if (this.loading) {
         return 'Loading...'
       }
       return this.query ? 'No matching records found' : 'No data available'
     },
-    classes () {
+    classes() {
       return Viewport.sizes.map((s, i) => {
         return s + this.sizes[i]
       })
@@ -82,10 +82,10 @@ export default {
     ])
   },
   watch: {
-    loading () {
+    loading() {
       this.restore()
     },
-    selectedFileIndex (value) {
+    selectedFileIndex(value) {
       this.$nextTick(() => {
         const index = value
         if (index === -1) {
@@ -102,29 +102,34 @@ export default {
         }
         if (iterator.scrollTop > el.offsetTop) {
           this.$refs.iterator.setScrollTop(el.offsetTop)
-        } else if (iterator.scrollTop < el.offsetTop + el.offsetHeight - iterator.offsetHeight) {
-          this.$refs.iterator.setScrollTop(el.offsetTop + el.offsetHeight - iterator.offsetHeight)
+        } else if (
+          iterator.scrollTop <
+          el.offsetTop + el.offsetHeight - iterator.offsetHeight
+        ) {
+          this.$refs.iterator.setScrollTop(
+            el.offsetTop + el.offsetHeight - iterator.offsetHeight
+          )
         }
       })
     }
   },
-  mounted () {
+  mounted() {
     this.restore()
   },
   methods: {
-    restore () {
+    restore() {
       const scrollTop = this.scrollTop
       this.$nextTick(() => {
         this.$refs.iterator.setScrollTop(scrollTop)
       })
     },
-    getItemOffset () {
+    getItemOffset() {
       return 12 / this.sizes[Viewport.getSizeIndex()]
     },
-    onScroll (e) {
+    onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
-    onKeyDown (e) {
+    onKeyDown(e) {
       const offset = this.getItemOffset()
       switch (e.keyCode) {
         case 13:

@@ -31,30 +31,24 @@ export default {
     Viewer
   },
   computed: {
-    ...mapState([
-      'viewing',
-      'settings'
-    ])
+    ...mapState(['viewing', 'settings'])
   },
-  created () {
+  created() {
     this.initialize()
   },
   methods: {
-    onContextMenu (e) {
+    onContextMenu(e) {
       ContextMenu.show(e)
     },
-    onDrop (e) {
+    onDrop(e) {
       const files = Array.from(e.dataTransfer.files)
       if (!files.length) {
         return
       }
-      const filepathes = files.map(file => file.path)
+      const filepathes = files.map((file) => file.path)
       this.open({ filepathes })
     },
-    ...mapActions([
-      'initialize',
-      'open'
-    ])
+    ...mapActions(['initialize', 'open'])
   }
 }
 </script>
@@ -69,7 +63,8 @@ html {
 }
 
 .no-transition {
-  &-leave-active, &-enter-active {
+  &-leave-active,
+  &-enter-active {
     transition: none;
   }
 }

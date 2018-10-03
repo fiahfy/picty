@@ -84,7 +84,7 @@ export default {
       default: () => ({})
     }
   },
-  data () {
+  data() {
     return {
       error: false,
       src: ''
@@ -92,36 +92,39 @@ export default {
   },
   computed: {
     rating: {
-      get () {
+      get() {
         return this.file.rating
       },
-      set (value) {
-        this.$store.dispatch('local/explorer/updateFileRating', { filepath: this.file.path, rating: value })
+      set(value) {
+        this.$store.dispatch('local/explorer/updateFileRating', {
+          filepath: this.file.path,
+          rating: value
+        })
       }
     },
-    active () {
+    active() {
       return this.isFileSelected({ filepath: this.file.path })
     },
-    icon () {
+    icon() {
       if (this.file.exists) {
         return this.file.directory ? 'folder' : 'photo'
       }
       return 'broken_image'
     },
-    iconColor () {
+    iconColor() {
       if (this.file.exists) {
         return this.file.directory ? 'blue lighten-3' : 'green lighten-3'
       }
       return 'grey'
     },
-    contain () {
+    contain() {
       return this.thumbnailStyle === 'contain'
     },
-    imageUrl () {
+    imageUrl() {
       const imagePath = this.file.imagePath
       return imagePath ? fileUrl(imagePath) : null
     },
-    message () {
+    message() {
       if (this.error) {
         return 'Load failed'
       }
@@ -130,35 +133,29 @@ export default {
       }
       return ''
     },
-    menuDisabled () {
+    menuDisabled() {
       return this.previewSizeValue <= 128 || !!this.message
     },
-    ...mapState('settings', [
-      'thumbnailStyle'
-    ]),
-    ...mapGetters('settings', [
-      'previewSizeValue'
-    ]),
-    ...mapGetters('local/explorer', [
-      'isFileSelected'
-    ])
+    ...mapState('settings', ['thumbnailStyle']),
+    ...mapGetters('settings', ['previewSizeValue']),
+    ...mapGetters('local/explorer', ['isFileSelected'])
   },
-  created () {
+  created() {
     this.timer = setTimeout(() => {
       this.src = this.imageUrl
     }, 500)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     clearTimeout(this.timer)
   },
   methods: {
-    onClick () {
+    onClick() {
       this.selectFile({ filepath: this.file.path })
     },
-    onDblClick () {
+    onDblClick() {
       this.openFile({ filepath: this.file.path })
     },
-    onContextMenu (e) {
+    onContextMenu(e) {
       this.selectFile({ filepath: this.file.path })
       let templates = [
         {
@@ -182,7 +179,7 @@ export default {
       }
       ContextMenu.show(e, templates)
     },
-    onError () {
+    onError() {
       this.error = true
     },
     ...mapActions('local/explorer', [
@@ -204,7 +201,7 @@ export default {
   &:hover {
     background-color: #eeeeee;
   }
-  &>.layout {
+  & > .layout {
     height: 128px;
   }
   .v-rating {

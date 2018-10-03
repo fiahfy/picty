@@ -41,9 +41,7 @@ export default {
     ExplorerGridList
   },
   computed: {
-    ...mapState('local/explorer', [
-      'display'
-    ])
+    ...mapState('local/explorer', ['display'])
   }
 }
 </script>

@@ -4,12 +4,12 @@ export default {
     ratings: {}
   },
   getters: {
-    getRating (state) {
+    getRating(state) {
       return ({ filepath }) => state.ratings[filepath] || 0
     }
   },
   mutations: {
-    setRating (state, { filepath, rating }) {
+    setRating(state, { filepath, rating }) {
       if (rating) {
         state.ratings = {
           ...state.ratings,

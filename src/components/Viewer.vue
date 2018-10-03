@@ -63,28 +63,24 @@ export default {
     ViewerBottomToolbar,
     ViewerTopToolbar
   },
-  data () {
+  data() {
     return {
       toolbar: null
     }
   },
   computed: {
-    classes () {
+    classes() {
       return {
         'toolbar-hidden': this.toolbar === false,
         'toolbar-fade-in': this.toolbar === true,
         'toolbar-fade-out': this.toolbar === false
       }
     },
-    ...mapState([
-      'viewing'
-    ]),
-    ...mapState('local/viewer', [
-      'loading'
-    ])
+    ...mapState(['viewing']),
+    ...mapState('local/viewer', ['loading'])
   },
   watch: {
-    viewing (value) {
+    viewing(value) {
       if (value) {
         this.showToolbar()
         document.body.addEventListener('mousemove', this.onMouseMove)
@@ -96,7 +92,7 @@ export default {
     }
   },
   methods: {
-    onKeyDown (e) {
+    onKeyDown(e) {
       switch (e.keyCode) {
         case 27:
           this.dismissViewer()
@@ -115,38 +111,36 @@ export default {
           break
       }
     },
-    onMouseMove (e) {
+    onMouseMove() {
       this.showToolbar()
     },
-    clearTimer () {
+    clearTimer() {
       clearTimeout(this.timer)
     },
-    setTimer () {
+    setTimer() {
       this.timer = setTimeout(() => {
         this.toolbar = false
         this.$refs['bottom-toolbar'].hideMenu()
       }, 2000)
     },
-    resetTimer () {
+    resetTimer() {
       this.clearTimer()
-      if (this.$refs['top-toolbar'].isHover() || this.$refs['bottom-toolbar'].isHover()) {
+      if (
+        this.$refs['top-toolbar'].isHover() ||
+        this.$refs['bottom-toolbar'].isHover()
+      ) {
         return
       }
       this.setTimer()
     },
-    showToolbar () {
+    showToolbar() {
       if (this.toolbar === false) {
         this.toolbar = true
       }
       this.resetTimer()
     },
-    ...mapActions([
-      'dismissViewer'
-    ]),
-    ...mapActions('local/viewer', [
-      'movePreviousFile',
-      'moveNextFile'
-    ])
+    ...mapActions(['dismissViewer']),
+    ...mapActions('local/viewer', ['movePreviousFile', 'moveNextFile'])
   }
 }
 </script>
@@ -170,20 +164,22 @@ export default {
 }
 
 .v-card {
-  height: 100%!important;
+  height: 100% !important;
   &.toolbar-hidden {
     .viewer-content {
       cursor: none;
     }
   }
   &.toolbar-fade-in {
-    .top-overlay, .bottom-overlay {
-      animation: fade-in .3s forwards;
+    .top-overlay,
+    .bottom-overlay {
+      animation: fade-in 0.3s forwards;
     }
   }
   &.toolbar-fade-out {
-    .top-overlay, .bottom-overlay {
-      animation: fade-out .3s forwards;
+    .top-overlay,
+    .bottom-overlay {
+      animation: fade-out 0.3s forwards;
     }
   }
   .container .layout {
