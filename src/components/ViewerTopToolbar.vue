@@ -22,29 +22,25 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  data () {
+  data() {
     return {
       hovered: false
     }
   },
   computed: {
-    filename () {
+    filename() {
       return this.currentFile ? this.currentFile.name : ''
     },
-    ...mapGetters('local/viewer', [
-      'currentFile'
-    ])
+    ...mapGetters('local/viewer', ['currentFile'])
   },
   methods: {
-    onCloseClick () {
+    onCloseClick() {
       this.dismiss()
     },
-    isHover () {
+    isHover() {
       return !!this.$el.querySelector(':hover')
     },
-    ...mapActions('local/viewer', [
-      'dismiss'
-    ])
+    ...mapActions('local/viewer', ['dismiss'])
   }
 }
 </script>

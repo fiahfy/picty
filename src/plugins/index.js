@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import { createSimpleTransition } from 'vuetify/es5/util/helpers'
 import VueMoment from 'vue-moment'
 import VueLongPress from 'vue-long-press-directive'
-import { buildText } from '~/utils/accelerator'
+import electronAcceleratorFormatter from '@fiahfy/electron-accelerator-formatter'
 
 Vue.use(Vuetify, {
   theme: {
@@ -20,7 +20,7 @@ Vue.use(VueMoment)
 Vue.use(VueLongPress, { duration: 300 })
 
 Vue.filter('accelerator', (title, accelerator) => {
-  return `${title} (${buildText(accelerator)})`
+  return `${title} (${electronAcceleratorFormatter(accelerator)})`
 })
 
 Vue.filter('readableSize', (bytes) => {

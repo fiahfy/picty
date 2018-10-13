@@ -1,7 +1,7 @@
 import { remote, shell } from 'electron'
+import workerPromisify from '@fiahfy/worker-promisify'
 import { Selector } from '~/store'
 import * as File from '~/utils/file'
-import * as Worker from '~/utils/worker'
 import FileWorker from '~/workers/file.worker.js'
 
 const reversed = {
@@ -11,8 +11,7 @@ const reversed = {
   modified_at: true
 }
 
-const worker = new FileWorker()
-const subWorker = new FileWorker()
+const worker = workerPromisify(new FileWorker())
 
 export default {
   namespaced: true,
@@ -27,70 +26,82 @@ export default {
     selectedFilepath: '',
     histories: [],
     historyIndex: -1,
-    orders: {},
-    directoryImagePathes: {},
-    directoryImageLoading: false
+    orders: {}
   },
   getters: {
-    backDirectories (state) {
-      return state.histories.slice(0, state.historyIndex).reverse().map(history => history.directory)
+    backDirectories(state) {
+      return state.histories
+        .slice(0, state.historyIndex)
+        .reverse()
+        .map((history) => history.directory)
     },
-    forwardDirectories (state) {
-      return state.histories.slice(state.historyIndex + 1, state.histories.length).map(history => history.directory)
+    forwardDirectories(state) {
+      return state.histories
+        .slice(state.historyIndex + 1, state.histories.length)
+        .map((history) => history.directory)
     },
-    canBackDirectory (state) {
+    canBackDirectory(state) {
       return state.historyIndex > 0
     },
-    canForwardDirectory (state) {
+    canForwardDirectory(state) {
       return state.historyIndex < state.histories.length - 1
     },
-    canViewFile (state) {
+    canViewFile(state) {
       return !!state.selectedFilepath
     },
-    directoryBookmarked (state, getters, rootState, rootGetters) {
+    directoryBookmarked(state, getters, rootState, rootGetters) {
       return rootGetters['bookmark/isBookmarked']({ filepath: state.directory })
     },
-    scrollTop (state) {
+    scrollTop(state) {
       return state.histories[state.historyIndex].scrollTop
     },
-    order (state) {
-      return state.orders[state.directory] || {
-        by: 'name',
-        descending: false
-      }
+    order(state) {
+      return (
+        state.orders[state.directory] || {
+          by: 'name',
+          descending: false
+        }
+      )
     },
-    filteredFiles (state) {
+    filteredFiles(state) {
       return state.files.concat().filter((file) => {
-        return !state.query || file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
+        return (
+          !state.query ||
+          file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
+        )
       })
     },
-    selectedFileIndex (state, getters) {
-      return getters.filteredFiles.findIndex((file) => getters.isFileSelected({ filepath: file.path }))
+    selectedFileIndex(state, getters) {
+      return getters.filteredFiles.findIndex((file) =>
+        getters.isFileSelected({ filepath: file.path })
+      )
     },
-    getFile (state) {
-      return ({ filepath }) => state.files.find((file) => file.path === filepath)
+    getFile(state) {
+      return ({ filepath }) =>
+        state.files.find((file) => file.path === filepath)
     },
-    isFileSelected (state) {
+    isFileSelected(state) {
       return ({ filepath }) => state.selectedFilepath === filepath
     },
-    isFileAvailable (state, getters, rootState, rootGetters) {
-      return ({ filepath }) => rootGetters['settings/isFileAvailable']({ filepath })
+    isFileAvailable(state, getters, rootState, rootGetters) {
+      return ({ filepath }) =>
+        rootGetters['settings/isFileAvailable']({ filepath })
     }
   },
   actions: {
-    initialize ({ dispatch, state }) {
+    initialize({ dispatch, state }) {
       const dirpath = state.directory
       dispatch('changeDirectory', { dirpath, force: true })
     },
-    upDirectory ({ dispatch, state }) {
+    upDirectory({ dispatch, state }) {
       const dirpath = File.getFile(state.directory).dirname
       dispatch('changeDirectory', { dirpath })
     },
-    changeHomeDirectory ({ dispatch }) {
+    changeHomeDirectory({ dispatch }) {
       const dirpath = remote.app.getPath('home')
       dispatch('changeDirectory', { dirpath })
     },
-    changeDirectory ({ commit, dispatch, state }, { dirpath, force = false }) {
+    changeDirectory({ commit, dispatch, state }, { dirpath, force = false }) {
       if (state.loading) {
         return
       }
@@ -98,34 +109,39 @@ export default {
         return
       }
       const historyIndex = state.historyIndex + 1
-      const histories = [...state.histories.slice(0, historyIndex), {
-        directory: dirpath,
-        scrollTop: 0
-      }]
+      const histories = [
+        ...state.histories.slice(0, historyIndex),
+        {
+          directory: dirpath,
+          scrollTop: 0
+        }
+      ]
       commit('setSelectedFilepath', { selectedFilepath: '' })
       commit('setHistories', { histories })
       commit('setHistoryIndex', { historyIndex })
 
       dispatch('restoreDirectory', { historyIndex })
     },
-    backDirectory ({ getters, dispatch, state }, { offset = 0 } = {}) {
+    backDirectory({ getters, dispatch, state }, { offset = 0 } = {}) {
       if (!getters.canBackDirectory) {
         return
       }
       const historyIndex = state.historyIndex - 1 - offset
       dispatch('restoreDirectory', { historyIndex })
     },
-    forwardDirectory ({ getters, dispatch, state }, { offset = 0 } = {}) {
+    forwardDirectory({ getters, dispatch, state }, { offset = 0 } = {}) {
       if (!getters.canForwardDirectory) {
         return
       }
       const historyIndex = state.historyIndex + 1 + offset
       dispatch('restoreDirectory', { historyIndex })
     },
-    reloadDirectory ({ dispatch, state }) {
+    reloadDirectory({ commit, dispatch, state }) {
+      commit('setSelectedFilepath', { selectedFilepath: '' })
+      dispatch('setScrollTop', { scrollTop: 0 })
       dispatch('restoreDirectory', { historyIndex: state.historyIndex })
     },
-    restoreDirectory ({ commit, dispatch, state }, { historyIndex }) {
+    restoreDirectory({ commit, dispatch, state }, { historyIndex }) {
       if (state.loading) {
         return
       }
@@ -138,41 +154,65 @@ export default {
 
       dispatch('loadFiles')
     },
-    browseDirectory ({ dispatch, state }) {
+    browseDirectory({ dispatch, state }) {
       const result = shell.openItem(state.directory)
       if (!result) {
-        dispatch('showMessage', { color: 'error', text: 'Invalid directory' }, { root: true })
+        dispatch(
+          'showMessage',
+          { color: 'error', text: 'Invalid directory' },
+          { root: true }
+        )
       }
     },
-    toggleDirectoryBookmarked ({ dispatch, state }) {
-      dispatch('bookmark/toggleBookmarked', { filepath: state.directory }, { root: true })
+    toggleDirectoryBookmarked({ dispatch, state }) {
+      dispatch(
+        'bookmark/toggleBookmarked',
+        { filepath: state.directory },
+        { root: true }
+      )
     },
-    async loadFiles ({ commit, dispatch, rootGetters, state }) {
+    async loadFiles({ commit, dispatch, rootGetters, state }) {
       if (state.loading) {
         return
       }
       commit('setLoading', { loading: true })
       try {
         commit('setFiles', { files: [] })
-        let files = await Worker.post(worker, { id: 'listFiles', data: [state.directory] })
-        files = files.filter((file) => file.directory || rootGetters['settings/isFileAvailable']({ filepath: file.path }))
+        let files = (await worker.postMessage({
+          id: 'listFilesWithChild',
+          data: [state.directory]
+        })).data
+        files = files
+          .filter(
+            (file) =>
+              file.directory ||
+              rootGetters['settings/isFileAvailable']({ filepath: file.path })
+          )
           .map((file) => {
+            let imagePath = file.path
+            if (file.directory) {
+              imagePath = rootGetters['settings/isFileAvailable']({
+                filepath: file.childPath
+              })
+                ? file.childPath
+                : null
+            }
             return {
               ...file,
+              imagePath,
               rating: rootGetters['rating/getRating']({ filepath: file.path }),
               views: rootGetters['views/getViews']({ filepath: file.path })
             }
           })
         commit('setFiles', { files })
       } catch (e) {
-        console.error(e)
         commit('setFiles', { files: [] })
       }
       dispatch('sortFiles')
       dispatch('focus')
       commit('setLoading', { loading: false })
     },
-    sortFiles ({ commit, getters, state }) {
+    sortFiles({ commit, getters, state }) {
       const { by, descending } = getters.order
       const files = state.files.concat().sort((a, b) => {
         let result = 0
@@ -193,60 +233,61 @@ export default {
       })
       commit('setFiles', { files })
     },
-    searchFiles ({ commit }, { query }) {
+    searchFiles({ commit }, { query }) {
       commit('setQueryInput', { queryInput: query })
       commit('setQuery', { query })
     },
-    selectFile ({ commit }, { filepath }) {
+    selectFile({ commit }, { filepath }) {
       commit('setSelectedFilepath', { selectedFilepath: filepath })
     },
-    selectFileIndex ({ dispatch, getters }, { index }) {
+    selectFileIndex({ dispatch, getters }, { index }) {
       const file = getters.filteredFiles[index]
       if (file) {
         dispatch('selectFile', { filepath: file.path })
       }
     },
-    selectFirstFile ({ dispatch }) {
+    selectFirstFile({ dispatch }) {
       dispatch('selectFileIndex', { index: 0 })
     },
-    selectLastFile ({ dispatch, getters }) {
+    selectLastFile({ dispatch, getters }) {
       dispatch('selectFileIndex', { index: getters.filteredFiles.length - 1 })
     },
-    selectPreviousFile ({ dispatch, getters }) {
+    selectPreviousFile({ dispatch, getters }) {
       dispatch('selectFileIndex', { index: getters.selectedFileIndex - 1 })
     },
-    selectNextFile ({ dispatch, getters }) {
+    selectNextFile({ dispatch, getters }) {
       dispatch('selectFileIndex', { index: getters.selectedFileIndex + 1 })
     },
-    selectLeftFile ({ dispatch, getters }, { offset }) {
+    selectLeftFile({ dispatch, getters }, { offset }) {
       const index = getters.selectedFileIndex - 1
       if (index % offset === offset - 1) {
         return
       }
       dispatch('selectFileIndex', { index })
     },
-    selectTopFile ({ dispatch, getters }, { offset }) {
+    selectTopFile({ dispatch, getters }, { offset }) {
       const index = getters.selectedFileIndex - offset
       if (index < 0) {
         return
       }
       dispatch('selectFileIndex', { index })
     },
-    selectRightFile ({ dispatch, getters }, { offset }) {
+    selectRightFile({ dispatch, getters }, { offset }) {
       const index = getters.selectedFileIndex + 1
       if (index % offset === 0) {
         return
       }
       dispatch('selectFileIndex', { index })
     },
-    selectBottomFile ({ dispatch, getters }, { offset }) {
-      const index = getters.selectedFileIndex + offset
+    selectBottomFile({ dispatch, getters }, { offset }) {
+      const index =
+        getters.selectedFileIndex > -1 ? getters.selectedFileIndex + offset : 0
       if (index > getters.filteredFiles.length - 1) {
         return
       }
       dispatch('selectFileIndex', { index })
     },
-    openFile ({ dispatch, getters }, { filepath }) {
+    openFile({ dispatch, getters }, { filepath }) {
       const file = getters.getFile({ filepath })
       if (file.directory) {
         dispatch('changeDirectory', { dirpath: file.path })
@@ -254,7 +295,7 @@ export default {
         dispatch('viewFile', { filepath: file.path })
       }
     },
-    viewFile ({ dispatch, getters }, { filepath }) {
+    viewFile({ dispatch, getters }, { filepath }) {
       const file = getters.getFile({ filepath })
       if (file.directory) {
         dispatch('showViewer', { dirpath: file.path }, { root: true })
@@ -263,21 +304,21 @@ export default {
       }
       dispatch('incrementFileViews', { filepath: file.path })
     },
-    updateFileRating ({ commit, dispatch, rootGetters }, { filepath, rating }) {
-      dispatch('rating/setRating', { filepath, rating }, { root: true })
+    updateFileRating({ commit, rootGetters }, { filepath, rating }) {
+      commit('rating/setRating', { filepath, rating }, { root: true })
       const file = {
         rating: rootGetters['rating/getRating']({ filepath })
       }
       commit('updateFile', { filepath, file })
     },
-    incrementFileViews ({ commit, dispatch, rootGetters }, { filepath }) {
-      dispatch('views/incrementViews', { filepath }, { root: true })
+    incrementFileViews({ commit, rootGetters }, { filepath }) {
+      commit('views/incrementViews', { filepath }, { root: true })
       const file = {
         views: rootGetters['views/getViews']({ filepath })
       }
       commit('updateFile', { filepath, file })
     },
-    setScrollTop ({ commit, state }, { scrollTop }) {
+    setScrollTop({ commit, state }, { scrollTop }) {
       if (state.loading) {
         return
       }
@@ -287,109 +328,76 @@ export default {
       }
       commit('setHistory', { history, index: state.historyIndex })
     },
-    changeOrderBy ({ commit, dispatch, getters, state }, { orderBy }) {
-      const descending = getters.order.by === orderBy ? !getters.order.descending : false
+    changeOrderBy({ commit, dispatch, getters, state }, { orderBy }) {
+      const descending =
+        getters.order.by === orderBy ? !getters.order.descending : false
       const order = { by: orderBy, descending }
       commit('setOrder', { order, directory: state.directory })
       dispatch('sortFiles')
     },
-    setDisplay ({ commit, dispatch }, { display }) {
-      dispatch('setScrollTop', { scrollTop: 0 })
+    setDisplay({ commit, dispatch }, { display }) {
       commit('setDisplay', { display })
+      commit('setSelectedFilepath', { selectedFilepath: '' })
+      dispatch('setScrollTop', { scrollTop: 0 })
       dispatch('focus')
     },
-    focus ({ dispatch, state }) {
-      const selector = state.display === 'list' ? Selector.explorerTable : Selector.explorerGridList
+    focus({ dispatch, state }) {
+      const selector =
+        state.display === 'list'
+          ? Selector.explorerTable
+          : Selector.explorerGridList
       dispatch('focus', { selector }, { root: true })
-    },
-    async requestDirectoryImage ({ commit, dispatch, state }, { filepath }) {
-      const directoryImagePath = state.directoryImagePathes[filepath]
-      if (directoryImagePath !== undefined) {
-        return
-      }
-      const directoryImagePathes = {
-        ...state.directoryImagePathes,
-        [filepath]: ''
-      }
-      commit('setDirectoryImagePathes', { directoryImagePathes })
-      if (state.directoryImageLoading) {
-        return
-      }
-      commit('setDirectoryImageLoading', { directoryImageLoading: true })
-      await dispatch('loadDirectoryImages')
-    },
-    async loadDirectoryImages ({ commit, dispatch, rootGetters, state }) {
-      const filepathes = Object.keys(state.directoryImagePathes).filter((filepath) => {
-        return state.directoryImagePathes[filepath] === ''
-      })
-      if (!filepathes.length) {
-        commit('setDirectoryImageLoading', { directoryImageLoading: false })
-        return
-      }
-      const fileSets = await Worker.post(subWorker, { id: 'listFileSets', data: [filepathes] })
-      const directoryImagePathes = Object.keys(fileSets).reduce((carry, filepath) => {
-        const file = fileSets[filepath].find((file) => rootGetters['settings/isFileAvailable']({ filepath: file.path }))
-        return {
-          ...carry,
-          [filepath]: file ? file.path : null
-        }
-      }, state.directoryImagePathes)
-      commit('setDirectoryImagePathes', { directoryImagePathes })
-      await dispatch('loadDirectoryImages')
     }
   },
   mutations: {
-    setDirectory (state, { directory }) {
+    setDirectory(state, { directory }) {
       state.directory = directory
     },
-    setDirectoryInput (state, { directoryInput }) {
+    setDirectoryInput(state, { directoryInput }) {
       state.directoryInput = directoryInput
     },
-    setQuery (state, { query }) {
+    setQuery(state, { query }) {
       state.query = query
     },
-    setQueryInput (state, { queryInput }) {
+    setQueryInput(state, { queryInput }) {
       state.queryInput = queryInput
     },
-    setDisplay (state, { display }) {
+    setDisplay(state, { display }) {
       state.display = display
     },
-    setLoading (state, { loading }) {
+    setLoading(state, { loading }) {
       state.loading = loading
     },
-    setFiles (state, { files }) {
+    setFiles(state, { files }) {
       state.files = files
     },
-    updateFile (state, { filepath, file }) {
-      state.files = state.files.map((current) => current.path !== filepath ? current : { ...current, ...file })
+    updateFile(state, { filepath, file }) {
+      state.files = state.files.map(
+        (current) =>
+          current.path !== filepath ? current : { ...current, ...file }
+      )
     },
-    setSelectedFilepath (state, { selectedFilepath }) {
+    setSelectedFilepath(state, { selectedFilepath }) {
       state.selectedFilepath = selectedFilepath
     },
-    setHistory (state, { history, index }) {
+    setHistory(state, { history, index }) {
       state.histories = [
         ...state.histories.slice(0, index),
         history,
         ...state.histories.slice(index + 1, state.histories.length)
       ]
     },
-    setHistories (state, { histories }) {
+    setHistories(state, { histories }) {
       state.histories = histories
     },
-    setHistoryIndex (state, { historyIndex }) {
+    setHistoryIndex(state, { historyIndex }) {
       state.historyIndex = historyIndex
     },
-    setOrder (state, { order, directory }) {
+    setOrder(state, { order, directory }) {
       state.orders = {
         ...state.orders,
         [directory]: order
       }
-    },
-    setDirectoryImagePathes (state, { directoryImagePathes }) {
-      state.directoryImagePathes = directoryImagePathes
-    },
-    setDirectoryImageLoading (state, { directoryImageLoading }) {
-      state.directoryImageLoading = directoryImageLoading
     }
   }
 }

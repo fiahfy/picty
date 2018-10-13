@@ -6,13 +6,11 @@
     @dragover.native.prevent
   >
     <title-bar />
-    <template v-if="!viewing">
-      <activity-bar />
-      <v-content class="fill-height">
-        <router-view />
-      </v-content>
-      <notification-bar />
-    </template>
+    <activity-bar />
+    <v-content class="fill-height">
+      <router-view />
+    </v-content>
+    <notification-bar />
     <viewer />
   </v-app>
 </template>
@@ -33,37 +31,31 @@ export default {
     Viewer
   },
   computed: {
-    ...mapState([
-      'viewing',
-      'settings'
-    ])
+    ...mapState(['viewing', 'settings'])
   },
-  created () {
+  created() {
     this.initialize()
   },
   methods: {
-    onContextMenu (e) {
+    onContextMenu(e) {
       ContextMenu.show(e)
     },
-    onDrop (e) {
+    onDrop(e) {
       const files = Array.from(e.dataTransfer.files)
       if (!files.length) {
         return
       }
-      const filepathes = files.map(file => file.path)
+      const filepathes = files.map((file) => file.path)
       this.open({ filepathes })
     },
-    ...mapActions([
-      'initialize',
-      'open'
-    ])
+    ...mapActions(['initialize', 'open'])
   }
 }
 </script>
 
 <style lang="scss">
 @import '~typeface-roboto/index.css';
-@import '~material-design-icons/iconfont/material-icons.css';
+@import '~material-design-icons-iconfont/dist/material-design-icons.css';
 @import '~vuetify/dist/vuetify.min.css';
 
 html {
@@ -71,7 +63,8 @@ html {
 }
 
 .no-transition {
-  &-leave-active, &-enter-active {
+  &-leave-active,
+  &-enter-active {
     transition: none;
   }
 }

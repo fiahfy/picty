@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 export const getFile = (filepath) => {
-  let obj = {
+  const obj = {
     path: filepath,
     name: path.basename(filepath),
     dirname: path.dirname(filepath),
@@ -26,19 +26,13 @@ export const getFile = (filepath) => {
   }
 }
 
-export const findFile = (dirpath, callback) => {
+export const getFirstChildPath = (dirpath) => {
   const filenames = fs.readdirSync(dirpath)
-  const filename = filenames.find((filename) => {
-    if (filename.match(/^\./)) {
-      return false
-    }
-    const filepath = path.join(dirpath, filename)
-    return callback(filepath)
-  })
+  const filename = filenames.find((filename) => !filename.match(/^\./))
   if (!filename) {
     return null
   }
-  return getFile(path.join(dirpath, filename))
+  return path.join(dirpath, filename)
 }
 
 export const listFiles = (dirpath, options = { recursive: false }) => {
@@ -56,7 +50,6 @@ export const listFiles = (dirpath, options = { recursive: false }) => {
       const files = listFiles(filepath, options)
       return [...carry, file, ...files]
     } catch (e) {
-      console.error(e)
       return carry
     }
   }, [])

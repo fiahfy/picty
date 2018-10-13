@@ -38,8 +38,8 @@
     <v-spacer />
 
     <v-menu
-      :close-on-content-click="false"
       v-model="menu"
+      :close-on-content-click="false"
       top
       offset-y
       nudge-top="12"
@@ -99,7 +99,7 @@
 import { mapActions, mapState } from 'vuex'
 
 export default {
-  data () {
+  data() {
     return {
       hovered: false,
       menu: false
@@ -107,57 +107,54 @@ export default {
   },
   computed: {
     page: {
-      get () {
+      get() {
         return this.$store.getters['local/viewer/currentFileIndex'] + 1
       },
-      set (value) {
+      set(value) {
         this.$store.dispatch('local/viewer/moveFile', { index: value - 1 })
       }
     },
-    maxPage () {
+    maxPage() {
       return this.files.length
     },
-    percentage () {
+    percentage() {
       return Math.floor(this.scale * 100)
     },
-    ...mapState([
-      'fullScreen'
-    ]),
-    ...mapState('local/viewer', [
-      'loading',
-      'files',
-      'scale'
-    ])
+    ...mapState(['fullScreen']),
+    ...mapState('local/viewer', ['loading', 'files', 'scale'])
   },
   watch: {
-    page () {
+    page() {
       this.$refs.slider && this.$refs.slider.$el.querySelector('input').blur()
     }
   },
   methods: {
-    onPreviousClick () {
+    onPreviousClick() {
       this.movePreviousFile()
     },
-    onNextClick () {
+    onNextClick() {
       this.moveNextFile()
     },
-    onZoomInClick () {
+    onZoomInClick() {
       this.zoomIn()
     },
-    onZoomOutClick () {
+    onZoomOutClick() {
       this.zoomOut()
     },
-    onResetClick () {
+    onResetClick() {
       this.resetZoom()
     },
-    onFullscreenClick () {
+    onFullscreenClick() {
       this.toggleFullScreen()
     },
-    hideMenu () {
+    hideMenu() {
       this.menu = false
     },
-    isHover () {
-      return !!(this.$el.querySelector(':hover') || this.$refs.toolbar.$el.querySelector(':hover'))
+    isHover() {
+      return !!(
+        this.$el.querySelector(':hover') ||
+        this.$refs.toolbar.$el.querySelector(':hover')
+      )
     },
     ...mapActions('local/viewer', [
       'movePreviousFile',

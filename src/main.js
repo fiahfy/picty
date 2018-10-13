@@ -13,8 +13,16 @@ const createTemplate = () => {
     {
       label: 'File',
       submenu: [
-        { label: 'Open...', accelerator: 'CmdOrCtrl+O', click: () => send('openDirectory') },
-        { label: 'Open Images...', accelerator: 'CmdOrCtrl+Shift+O', click: () => send('openImages') }
+        {
+          label: 'Open...',
+          accelerator: 'CmdOrCtrl+O',
+          click: () => send('openDirectory')
+        },
+        {
+          label: 'Open Images...',
+          accelerator: 'CmdOrCtrl+Shift+O',
+          click: () => send('openImages')
+        }
       ]
     },
     {
@@ -30,14 +38,26 @@ const createTemplate = () => {
         { role: 'delete' },
         { role: 'selectall' },
         { type: 'separator' },
-        { label: 'Search...', accelerator: 'CmdOrCtrl+F', click: () => send('search') }
+        {
+          label: 'Search...',
+          accelerator: 'CmdOrCtrl+F',
+          click: () => send('search')
+        }
       ]
     },
     {
       label: 'View',
       submenu: [
-        { label: 'Explorer', accelerator: 'CmdOrCtrl+Shift+E', click: () => send('showExplorer') },
-        { label: 'Bookmark', accelerator: 'CmdOrCtrl+Shift+B', click: () => send('showBookmark') },
+        {
+          label: 'Explorer',
+          accelerator: 'CmdOrCtrl+Shift+E',
+          click: () => send('showExplorer')
+        },
+        {
+          label: 'Bookmark',
+          accelerator: 'CmdOrCtrl+Shift+B',
+          click: () => send('showBookmark')
+        },
         { type: 'separator' },
         { role: 'reload' },
         { role: 'forcereload' },
@@ -53,35 +73,71 @@ const createTemplate = () => {
     {
       label: 'Explorer',
       submenu: [
-        { label: 'Open Location...', accelerator: 'CmdOrCtrl+L', click: () => send('openLocation') },
+        {
+          label: 'Open Location...',
+          accelerator: 'CmdOrCtrl+L',
+          click: () => send('openLocation')
+        },
         { type: 'separator' },
-        { label: 'Back', accelerator: 'CmdOrCtrl+Left', click: () => send('backDirectory') },
-        { label: 'Forward', accelerator: 'CmdOrCtrl+Right', click: () => send('forwardDirectory') },
-        { label: 'Up', accelerator: 'CmdOrCtrl+Shift+P', click: () => send('upDirectory') },
-        { label: 'Home', accelerator: 'CmdOrCtrl+Shift+H', click: () => send('changeHomeDirectory') },
-        { label: 'Bookmark', accelerator: 'CmdOrCtrl+D', click: () => send('bookmarkDirectory') },
+        {
+          label: 'Back',
+          accelerator: 'CmdOrCtrl+Left',
+          click: () => send('backDirectory')
+        },
+        {
+          label: 'Forward',
+          accelerator: 'CmdOrCtrl+Right',
+          click: () => send('forwardDirectory')
+        },
+        {
+          label: 'Up',
+          accelerator: 'CmdOrCtrl+Shift+P',
+          click: () => send('upDirectory')
+        },
+        {
+          label: 'Home',
+          accelerator: 'CmdOrCtrl+Shift+H',
+          click: () => send('changeHomeDirectory')
+        },
+        {
+          label: 'Bookmark',
+          accelerator: 'CmdOrCtrl+D',
+          click: () => send('bookmarkDirectory')
+        },
         { label: 'Browse', click: () => send('browseDirectory') }
       ]
     },
     {
       label: 'Viewer',
       submenu: [
-        { label: 'Zoom In', accelerator: 'CmdOrCtrl+Plus', click: () => send('zoomIn') },
-        { label: 'Zoom Out', accelerator: 'CmdOrCtrl+-', click: () => send('zoomOut') },
-        { label: 'Reset Zoom', accelerator: 'CmdOrCtrl+0', click: () => send('resetZoom') }
+        {
+          label: 'Zoom In',
+          accelerator: 'CmdOrCtrl+Plus',
+          click: () => send('zoomIn')
+        },
+        {
+          label: 'Zoom Out',
+          accelerator: 'CmdOrCtrl+-',
+          click: () => send('zoomOut')
+        },
+        {
+          label: 'Reset Zoom',
+          accelerator: 'CmdOrCtrl+0',
+          click: () => send('resetZoom')
+        }
       ]
     },
     {
       role: 'window',
-      submenu: [
-        { role: 'close' },
-        { role: 'minimize' }
-      ]
+      submenu: [{ role: 'close' }, { role: 'minimize' }]
     },
     {
       role: 'help',
       submenu: [
-        { label: 'Learn More', click: () => shell.openExternal('https://github.com/fiahfy/picty') }
+        {
+          label: 'Learn More',
+          click: () => shell.openExternal('https://github.com/fiahfy/picty')
+        }
       ]
     }
   ]
@@ -92,7 +148,11 @@ const createTemplate = () => {
       submenu: [
         { role: 'about' },
         { type: 'separator' },
-        { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => send('showSettings') },
+        {
+          label: 'Preferences...',
+          accelerator: 'CmdOrCtrl+,',
+          click: () => send('showSettings')
+        },
         { type: 'separator' },
         { role: 'services', submenu: [] },
         { type: 'separator' },
@@ -110,10 +170,7 @@ const createTemplate = () => {
           { type: 'separator' },
           {
             label: 'Speech',
-            submenu: [
-              { role: 'startspeaking' },
-              { role: 'stopspeaking' }
-            ]
+            submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }]
           }
         )
       } else if (menu.role === 'window') {
@@ -164,10 +221,9 @@ const createWindow = () => {
   Menu.setApplicationMenu(menu)
 
   if (process.env.NODE_ENV !== 'production') {
-    installExtension(VUEJS_DEVTOOLS.id)
-      .catch((err) => {
-        console.log('Unable to install `vue-devtools`: \n', err) // eslint-disable-line no-console
-      })
+    installExtension(VUEJS_DEVTOOLS.id).catch((err) => {
+      console.log('Unable to install `vue-devtools`: \n', err) // eslint-disable-line no-console
+    })
     mainWindow.openDevTools()
   }
 

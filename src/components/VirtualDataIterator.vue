@@ -14,8 +14,8 @@
       />
       <v-data-iterator
         ref="iterator"
-        v-bind="$attrs"
         v-model="model"
+        v-bind="$attrs"
         :pagination.sync="paginationModel"
         :items="renderItems"
         :disable-initial-sort="true"
@@ -99,7 +99,7 @@ export default {
       default: ''
     }
   },
-  data () {
+  data() {
     return {
       scrolling: false,
       padding: {
@@ -111,59 +111,59 @@ export default {
   },
   computed: {
     paginationModel: {
-      get () {
+      get() {
         return this.pagination
       },
-      set (value) {
+      set(value) {
         this.$emit('update:pagination', value)
       }
     },
     model: {
-      get () {
+      get() {
         return this.value
       },
-      set (value) {
+      set(value) {
         this.$emit('input', value)
       }
     },
-    classes () {
+    classes() {
       return {
         [this.containerClass]: true,
         scrolling: this.scrolling
       }
     },
-    calculatedSizes () {
+    calculatedSizes() {
       return Array.isArray(this.sizes) ? this.sizes : Array(5).fill(this.sizes)
     }
   },
   watch: {
-    items () {
+    items() {
       this.adjustItems()
     }
   },
-  mounted () {
+  mounted() {
     this.container = this.$el.querySelector('.v-data-iterator')
     this.container.addEventListener('scroll', this.onScroll)
     this.$nextTick(() => {
       this.adjustItems()
     })
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.container.removeEventListener('scroll', this.onScroll)
   },
   methods: {
-    getScrollTop () {
+    getScrollTop() {
       return this.container.scrollTop
     },
-    setScrollTop (value) {
+    setScrollTop(value) {
       this.$nextTick(() => {
         this.container.scrollTop = value
       })
     },
-    getOffsetHeight () {
+    getOffsetHeight() {
       return this.container.offsetHeight
     },
-    adjustItems () {
+    adjustItems() {
       if (!this.container) {
         return
       }
@@ -183,14 +183,16 @@ export default {
       this.scrolling = scrollTop > 0
       this.padding = {
         top: firstIndex * this.estimatedHeight,
-        bottom: (Math.ceil(this.items.length / size) - lastIndex) * this.estimatedHeight
+        bottom:
+          (Math.ceil(this.items.length / size) - lastIndex) *
+          this.estimatedHeight
       }
       this.renderItems = this.items.slice(firstIndex * size, lastIndex * size)
     },
-    onResize () {
+    onResize() {
       this.adjustItems()
     },
-    onScroll (e) {
+    onScroll(e) {
       this.adjustItems()
       this.$emit('scroll', e)
     }
@@ -199,7 +201,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.virtual-data-iterator>.container {
+.virtual-data-iterator > .container {
   height: 100%;
   position: relative;
   .v-progress-linear {
@@ -225,7 +227,8 @@ export default {
       }
     }
     &:before {
-      box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+      box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
       content: '';
       left: 0;
       position: absolute;
@@ -234,7 +237,7 @@ export default {
       z-index: 1;
     }
     & /deep/ .layout {
-      margin: 0px!important;
+      margin: 0px !important;
     }
   }
   &.scrolling .v-data-iterator:before {
@@ -242,12 +245,12 @@ export default {
   }
 }
 .theme--dark .virtual-data-iterator .v-data-iterator::-webkit-scrollbar-thumb {
-  background-color: #424242!important;
+  background-color: #424242 !important;
   &:hover {
-    background-color: #505050!important;
+    background-color: #505050 !important;
   }
   &:active {
-    background-color: #616161!important;
+    background-color: #616161 !important;
   }
 }
 </style>

@@ -1,8 +1,26 @@
 import path from 'path'
 
 export const defaultExtensions = [
-  'BMP', 'GIF', 'ICO', 'JPEG', 'JPG', 'PNG', 'SVG', 'TIF', 'TIFF', 'WEBP'
+  'BMP',
+  'GIF',
+  'ICO',
+  'JPEG',
+  'JPG',
+  'PNG',
+  'SVG',
+  'TIF',
+  'TIFF',
+  'WEBP'
 ]
+
+export const previewSizes = {
+  none: 0,
+  small: 128,
+  medium: 256,
+  large: 512
+}
+
+export const thumbnailStyles = ['cover', 'contain']
 
 export default {
   namespaced: true,
@@ -11,11 +29,19 @@ export default {
     fullScreen: false,
     recursive: false,
     imageStretched: false,
+    previewSize: 'medium',
+    thumbnailStyle: 'cover',
     extensions: [...defaultExtensions]
   },
   getters: {
-    isFileAvailable (state) {
+    previewSizeValue(state) {
+      return previewSizes[state.previewSize]
+    },
+    isFileAvailable(state) {
       return ({ filepath }) => {
+        if (!filepath) {
+          return false
+        }
         const ext = path.extname(filepath).toUpperCase()
         if (!ext) {
           return false
@@ -25,19 +51,25 @@ export default {
     }
   },
   mutations: {
-    setDarkTheme (state, { darkTheme }) {
+    setDarkTheme(state, { darkTheme }) {
       state.darkTheme = darkTheme
     },
-    setFullScreen (state, { fullScreen }) {
+    setFullScreen(state, { fullScreen }) {
       state.fullScreen = fullScreen
     },
-    setRecursive (state, { recursive }) {
+    setRecursive(state, { recursive }) {
       state.recursive = recursive
     },
-    setImageStretched (state, { imageStretched }) {
+    setImageStretched(state, { imageStretched }) {
       state.imageStretched = imageStretched
     },
-    setExtensions (state, { extensions }) {
+    setPreviewSize(state, { previewSize }) {
+      state.previewSize = previewSize
+    },
+    setThumbnailStyle(state, { thumbnailStyle }) {
+      state.thumbnailStyle = thumbnailStyle
+    },
+    setExtensions(state, { extensions }) {
       state.extensions = extensions
     }
   }

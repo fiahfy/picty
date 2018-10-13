@@ -44,7 +44,7 @@ import fileUrl from 'file-url'
 import { mapActions, mapState } from 'vuex'
 
 export default {
-  data () {
+  data() {
     return {
       loadError: false,
       dragging: false,
@@ -59,12 +59,12 @@ export default {
     }
   },
   computed: {
-    classes () {
+    classes() {
       return {
         dragging: this.dragging
       }
     },
-    message () {
+    message() {
       if (this.loading) {
         return 'Loading...'
       }
@@ -76,10 +76,10 @@ export default {
       }
       return this.error ? this.error.message : ''
     },
-    imageSrc () {
+    imageSrc() {
       return this.currentFilepath ? fileUrl(this.currentFilepath) : ''
     },
-    imageClasses () {
+    imageClasses() {
       return {
         'horizontal-center': this.centered.horizontal,
         'vertical-center': this.centered.vertical,
@@ -87,15 +87,15 @@ export default {
         stretched: this.imageStretched
       }
     },
-    imageStyles () {
-      return this.scaling ? {
-        width: this.originalSize.width * this.scale + 'px',
-        height: this.originalSize.height * this.scale + 'px'
-      } : {}
+    imageStyles() {
+      return this.scaling
+        ? {
+            width: this.originalSize.width * this.scale + 'px',
+            height: this.originalSize.height * this.scale + 'px'
+          }
+        : {}
     },
-    ...mapState('settings', [
-      'imageStretched'
-    ]),
+    ...mapState('settings', ['imageStretched']),
     ...mapState('local/viewer', [
       'loading',
       'error',
@@ -106,40 +106,52 @@ export default {
     ])
   },
   watch: {
-    currentFilepath () {
+    currentFilepath() {
       this.loadError = false
     },
-    scale (newValue, oldValue) {
+    scale(newValue, oldValue) {
       if (this.message) {
         return
       }
       this.$nextTick(() => {
         var offsetX = 0
-        if (newValue > oldValue && this.$el.clientWidth > this.originalSize.width * oldValue) {
-          offsetX = (this.$el.clientWidth - this.originalSize.width * oldValue) / 2
+        if (
+          newValue > oldValue &&
+          this.$el.clientWidth > this.originalSize.width * oldValue
+        ) {
+          offsetX =
+            (this.$el.clientWidth - this.originalSize.width * oldValue) / 2
         }
         var offsetY = 0
-        if (newValue > oldValue && this.$el.clientHeight > this.originalSize.height * oldValue) {
-          offsetY = (this.$el.clientHeight - this.originalSize.height * oldValue) / 2
+        if (
+          newValue > oldValue &&
+          this.$el.clientHeight > this.originalSize.height * oldValue
+        ) {
+          offsetY =
+            (this.$el.clientHeight - this.originalSize.height * oldValue) / 2
         }
 
-        this.$refs.wrapper.scrollLeft += (newValue - oldValue) * this.originalSize.width / 2 - offsetX
-        this.$refs.wrapper.scrollTop += (newValue - oldValue) * this.originalSize.height / 2 - offsetY
+        this.$refs.wrapper.scrollLeft +=
+          ((newValue - oldValue) * this.originalSize.width) / 2 - offsetX
+        this.$refs.wrapper.scrollTop +=
+          ((newValue - oldValue) * this.originalSize.height) / 2 - offsetY
 
-        this.centered.horizontal = this.$el.clientWidth >= this.originalSize.width * newValue
-        this.centered.vertical = this.$el.clientHeight >= this.originalSize.height * newValue
+        this.centered.horizontal =
+          this.$el.clientWidth >= this.originalSize.width * newValue
+        this.centered.vertical =
+          this.$el.clientHeight >= this.originalSize.height * newValue
       })
     }
   },
   methods: {
-    onMouseDown (e) {
+    onMouseDown() {
       this.dragging = true
     },
-    onMouseUp (e) {
+    onMouseUp() {
       this.dragging = false
       this.scrollPosition = null
     },
-    onMouseMove (e) {
+    onMouseMove(e) {
       if (this.message) {
         return
       }
@@ -152,7 +164,7 @@ export default {
         this.scrollPosition = position
       }
     },
-    onImageLoad (e) {
+    onImageLoad(e) {
       const maxWidth = this.$el.clientWidth
       const maxHeight = this.$el.clientHeight
       const imageWidth = e.target.naturalWidth
@@ -169,12 +181,10 @@ export default {
       }
       this.setupZoom({ scale })
     },
-    onImageError (e) {
+    onImageError() {
       this.loadError = true
     },
-    ...mapActions('local/viewer', [
-      'setupZoom'
-    ])
+    ...mapActions('local/viewer', ['setupZoom'])
   }
 }
 </script>
@@ -192,11 +202,11 @@ export default {
       display: none;
     }
     img {
-      bottom:0;
+      bottom: 0;
       left: 0;
       position: absolute;
       right: 0;
-      top:0;
+      top: 0;
       &.horizontal-center {
         margin-left: auto;
         margin-right: auto;

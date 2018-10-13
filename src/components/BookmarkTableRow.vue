@@ -15,7 +15,7 @@
         <span class="ellipsis">{{ bookmark.path }}</span>
       </v-layout>
     </td>
-    <td class="text-xs-right">
+    <td class="no-wrap">
       <template v-if="bookmark.added_at">{{ bookmark.added_at | moment('YYYY-MM-DD HH:mm') }}</template>
     </td>
   </tr>
@@ -33,21 +33,19 @@ export default {
     }
   },
   computed: {
-    active () {
+    active() {
       return this.isBookmarkSelected({ filepath: this.bookmark.path })
     },
-    ...mapGetters('local/bookmark', [
-      'isBookmarkSelected'
-    ])
+    ...mapGetters('local/bookmark', ['isBookmarkSelected'])
   },
   methods: {
-    onClick () {
+    onClick() {
       this.selectBookmark({ filepath: this.bookmark.path })
     },
-    onDblClick () {
+    onDblClick() {
       this.openBookmark({ filepath: this.bookmark.path })
     },
-    onContextMenu (e) {
+    onContextMenu(e) {
       this.selectBookmark({ filepath: this.bookmark.path })
       let templates = [
         {

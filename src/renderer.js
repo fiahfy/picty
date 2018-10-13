@@ -16,7 +16,7 @@ Vue.config.productionTip = false
 sync(store, router)
 addIpcRendererListeners(store)
 
-new Vue({ // eslint-disable-line no-new
+new Vue({
   el: '#app',
   router,
   store,

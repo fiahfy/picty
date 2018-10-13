@@ -81,20 +81,22 @@ import * as ContextMenu from '~/utils/context-menu'
 export default {
   computed: {
     directoryInput: {
-      get () {
+      get() {
         return this.$store.state.local.explorer.directoryInput
       },
-      set (value) {
-        this.$store.commit('local/explorer/setDirectoryInput', { directoryInput: value })
+      set(value) {
+        this.$store.commit('local/explorer/setDirectoryInput', {
+          directoryInput: value
+        })
       }
     },
-    backDisabled () {
+    backDisabled() {
       return !this.canBackDirectory
     },
-    forwardDisabled () {
+    forwardDisabled() {
       return !this.canForwardDirectory
     },
-    bookmarkColor () {
+    bookmarkColor() {
       return this.directoryBookmarked ? 'primary' : null
     },
     ...mapGetters('local/explorer', [
@@ -106,49 +108,55 @@ export default {
     ])
   },
   methods: {
-    onBackClick () {
+    onBackClick() {
       this.backDirectory()
     },
-    onBackContextMenu (e) {
-      ContextMenu.show(e, this.backDirectories.map((directory, index) => {
-        return {
-          label: directory,
-          click: () => this.backDirectory({ offset: index })
-        }
-      }))
+    onBackContextMenu(e) {
+      ContextMenu.show(
+        e,
+        this.backDirectories.map((directory, index) => {
+          return {
+            label: directory,
+            click: () => this.backDirectory({ offset: index })
+          }
+        })
+      )
     },
-    onForwardClick () {
+    onForwardClick() {
       this.forwardDirectory()
     },
-    onForwardContextMenu (e) {
-      ContextMenu.show(e, this.forwardDirectories.map((directory, index) => {
-        return {
-          label: directory,
-          click: () => this.forwardDirectory({ offset: index })
-        }
-      }))
+    onForwardContextMenu(e) {
+      ContextMenu.show(
+        e,
+        this.forwardDirectories.map((directory, index) => {
+          return {
+            label: directory,
+            click: () => this.forwardDirectory({ offset: index })
+          }
+        })
+      )
     },
-    onUpwardClick () {
+    onUpwardClick() {
       this.upDirectory()
     },
-    onRefreshClick () {
+    onRefreshClick() {
       this.reloadDirectory()
     },
-    onHomeClick () {
+    onHomeClick() {
       this.changeHomeDirectory()
     },
-    onBookmarkClick () {
+    onBookmarkClick() {
       this.toggleDirectoryBookmarked()
     },
-    onTextContextMenu (e) {
+    onTextContextMenu(e) {
       ContextMenu.showTextMenu(e)
     },
-    onTextKeyUp (e) {
+    onTextKeyUp(e) {
       if (e.keyCode === 13) {
         this.changeDirectory({ dirpath: e.target.value })
       }
     },
-    onPrependClick () {
+    onPrependClick() {
       this.browseDirectory()
     },
     ...mapActions('local/explorer', [

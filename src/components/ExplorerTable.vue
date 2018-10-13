@@ -20,8 +20,8 @@
     />
     <explorer-table-row
       slot="items"
-      slot-scope="props"
       :key="props.item.path"
+      slot-scope="props"
       :file="props.item"
     />
     <v-progress-linear
@@ -43,8 +43,10 @@ export default {
     ExplorerTableRow,
     VirtualDataTable
   },
-  data () {
+  data() {
     return {
+      headerHeight: 58,
+      rowHeight: 48,
       headers: [
         {
           text: 'Name',
@@ -53,23 +55,23 @@ export default {
         {
           text: 'Views',
           value: 'views',
-          width: 50
+          width: 96
         },
         {
           text: 'Rating',
           value: 'rating',
-          width: 190
+          width: 238
         },
         {
           text: 'Date Modified',
           value: 'modified_at',
-          width: 110
+          width: 150
         }
       ]
     }
   },
   computed: {
-    noDataText () {
+    noDataText() {
       if (this.loading) {
         return 'Loading...'
       }
@@ -88,47 +90,50 @@ export default {
     ])
   },
   watch: {
-    loading () {
+    loading() {
       this.restore()
     },
-    selectedFileIndex (value) {
+    selectedFileIndex(value) {
       this.$nextTick(() => {
         const index = value
         if (index === -1) {
           return
         }
-        const rowHeight = 48
-        const headerHeight = 58
         const el = {
-          offsetTop: rowHeight * index,
-          offsetHeight: rowHeight
+          offsetTop: this.rowHeight * index,
+          offsetHeight: this.rowHeight
         }
         const table = {
           scrollTop: this.$refs.table.getScrollTop(),
-          offsetHeight: this.$refs.table.getOffsetHeight() - headerHeight
+          offsetHeight: this.$refs.table.getOffsetHeight() - this.headerHeight
         }
         if (table.scrollTop > el.offsetTop) {
           this.$refs.table.setScrollTop(el.offsetTop)
-        } else if (table.scrollTop < el.offsetTop + el.offsetHeight - table.offsetHeight) {
-          this.$refs.table.setScrollTop(el.offsetTop + el.offsetHeight - table.offsetHeight)
+        } else if (
+          table.scrollTop <
+          el.offsetTop + el.offsetHeight - table.offsetHeight
+        ) {
+          this.$refs.table.setScrollTop(
+            el.offsetTop + el.offsetHeight - table.offsetHeight
+          )
         }
       })
     }
   },
-  mounted () {
+  mounted() {
     this.restore()
   },
   methods: {
-    restore () {
+    restore() {
       const scrollTop = this.scrollTop
       this.$nextTick(() => {
         this.$refs.table.setScrollTop(scrollTop)
       })
     },
-    onScroll (e) {
+    onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })
     },
-    onKeyDown (e) {
+    onKeyDown(e) {
       switch (e.keyCode) {
         case 13:
           this.viewFile({ filepath: this.selectedFilepath })
@@ -164,5 +169,8 @@ export default {
 <style scoped lang="scss">
 .explorer-table {
   outline: none;
+  & /deep/ .v-datatable {
+    min-width: 768px;
+  }
 }
 </style>

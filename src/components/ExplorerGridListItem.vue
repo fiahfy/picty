@@ -4,7 +4,6 @@
   >
     <v-card
       :active="active"
-      :title="file.name"
       @click.native="onClick"
       @dblclick="onDblClick"
       @contextmenu.stop="onContextMenu"
@@ -18,17 +17,40 @@
       </v-layout>
       <v-img
         v-else
-        :src="imageUrl"
-        height="150"
+        :src="src"
+        :contain="contain"
+        height="128"
         @error="onError"
       />
+      <v-divider />
       <v-card-title class="pt-2 px-2 pb-0">
         <v-layout class="align-center">
-          <v-icon
-            :color="color"
-            class="pa-1"
-          >{{ icon }}</v-icon>
-          <span class="ellipsis caption">{{ file.name }}</span>
+          <v-menu
+            :disabled="menuDisabled"
+            open-on-hover
+            right
+            offset-x
+            lazy
+          >
+            <v-icon
+              slot="activator"
+              :color="iconColor"
+              class="pa-1"
+            >{{ icon }}</v-icon>
+            <v-card>
+              <v-img
+                :src="imageUrl"
+                contain
+                :height="previewSizeValue"
+                :width="previewSizeValue"
+                @error="onError"
+              />
+            </v-card>
+          </v-menu>
+          <span
+            :title="file.name"
+            class="ellipsis caption"
+          >{{ file.name }}</span>
         </v-layout>
       </v-card-title>
       <v-card-actions
@@ -62,78 +84,78 @@ export default {
       default: () => ({})
     }
   },
-  data () {
+  data() {
     return {
-      error: false
+      error: false,
+      src: ''
     }
   },
   computed: {
     rating: {
-      get () {
+      get() {
         return this.file.rating
       },
-      set (value) {
-        this.$store.dispatch('local/explorer/updateFileRating', { filepath: this.file.path, rating: value })
+      set(value) {
+        this.$store.dispatch('local/explorer/updateFileRating', {
+          filepath: this.file.path,
+          rating: value
+        })
       }
     },
-    active () {
+    active() {
       return this.isFileSelected({ filepath: this.file.path })
     },
-    color () {
-      if (this.file.exists) {
-        return this.file.directory ? 'blue lighten-3' : 'green lighten-3'
-      }
-      return 'grey'
-    },
-    icon () {
+    icon() {
       if (this.file.exists) {
         return this.file.directory ? 'folder' : 'photo'
       }
       return 'broken_image'
     },
-    imageUrl () {
-      if (!this.file.directory) {
-        return fileUrl(this.file.path)
+    iconColor() {
+      if (this.file.exists) {
+        return this.file.directory ? 'blue lighten-3' : 'green lighten-3'
       }
-      const path = this.directoryImagePathes[this.file.path]
-      if (path === null) {
-        return path
-      }
-      return path ? fileUrl(path) : ''
+      return 'grey'
     },
-    message () {
+    contain() {
+      return this.thumbnailStyle === 'contain'
+    },
+    imageUrl() {
+      const imagePath = this.file.imagePath
+      return imagePath ? fileUrl(imagePath) : null
+    },
+    message() {
       if (this.error) {
         return 'Load failed'
       }
       if (this.imageUrl === null) {
-        return 'No image'
+        return 'No preview'
       }
       return ''
     },
-    ...mapState('local/explorer', [
-      'directoryImagePathes'
-    ]),
-    ...mapGetters('local/explorer', [
-      'isFileSelected',
-      'isFileAvailable'
-    ])
+    menuDisabled() {
+      return this.previewSizeValue <= 128 || !!this.message
+    },
+    ...mapState('settings', ['thumbnailStyle']),
+    ...mapGetters('settings', ['previewSizeValue']),
+    ...mapGetters('local/explorer', ['isFileSelected'])
   },
-  created () {
-    if (this.file.directory) {
-      this.requestDirectoryImage({ filepath: this.file.path })
-    }
+  created() {
+    this.timer = setTimeout(() => {
+      this.src = this.imageUrl
+    }, 500)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     clearTimeout(this.timer)
   },
   methods: {
-    onClick () {
+    onClick() {
       this.selectFile({ filepath: this.file.path })
     },
-    onDblClick () {
+    onDblClick() {
       this.openFile({ filepath: this.file.path })
     },
-    onContextMenu (e) {
+    onContextMenu(e) {
       this.selectFile({ filepath: this.file.path })
       let templates = [
         {
@@ -157,15 +179,14 @@ export default {
       }
       ContextMenu.show(e, templates)
     },
-    onError () {
+    onError() {
       this.error = true
     },
     ...mapActions('local/explorer', [
       'selectFile',
       'searchFiles',
       'openFile',
-      'viewFile',
-      'requestDirectoryImage'
+      'viewFile'
     ])
   }
 }
@@ -180,8 +201,11 @@ export default {
   &:hover {
     background-color: #eeeeee;
   }
-  &>.layout {
-    height: 150px;
+  & > .layout {
+    height: 128px;
+  }
+  .v-rating {
+    height: 32px;
   }
 }
 .theme--dark .explorer-grid-list-item .v-card {
