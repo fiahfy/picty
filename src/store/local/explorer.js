@@ -136,7 +136,9 @@ export default {
       const historyIndex = state.historyIndex + 1 + offset
       dispatch('restoreDirectory', { historyIndex })
     },
-    reloadDirectory({ dispatch, state }) {
+    reloadDirectory({ commit, dispatch, state }) {
+      commit('setSelectedFilepath', { selectedFilepath: '' })
+      dispatch('setScrollTop', { scrollTop: 0 })
       dispatch('restoreDirectory', { historyIndex: state.historyIndex })
     },
     restoreDirectory({ commit, dispatch, state }, { historyIndex }) {
@@ -278,7 +280,8 @@ export default {
       dispatch('selectFileIndex', { index })
     },
     selectBottomFile({ dispatch, getters }, { offset }) {
-      const index = getters.selectedFileIndex + offset
+      const index =
+        getters.selectedFileIndex > -1 ? getters.selectedFileIndex + offset : 0
       if (index > getters.filteredFiles.length - 1) {
         return
       }
@@ -333,8 +336,9 @@ export default {
       dispatch('sortFiles')
     },
     setDisplay({ commit, dispatch }, { display }) {
-      dispatch('setScrollTop', { scrollTop: 0 })
       commit('setDisplay', { display })
+      commit('setSelectedFilepath', { selectedFilepath: '' })
+      dispatch('setScrollTop', { scrollTop: 0 })
       dispatch('focus')
     },
     focus({ dispatch, state }) {
