@@ -1,67 +1,77 @@
 <template>
-  <v-container class="settings">
-    <v-subheader>General</v-subheader>
-    <v-container>
-      <v-checkbox
-        v-model="darkTheme"
-        label="Use dark theme"
-      />
-      <v-combobox
-        v-model="extensions"
-        :items="defaultExtensions"
-        label="Filter extensions"
-        chips
-        multiple
-      >
-        <template
-          slot="selection"
-          slot-scope="data"
-        >
-          <v-chip
-            :selected="data.selected"
-            close
-            @input="onChipInput(data.item)"
+  <v-container
+    class="settings"
+    fluid
+    fill-height
+    pa-0
+    scroll-y
+  >
+    <v-layout>
+      <v-container>
+        <v-subheader>General</v-subheader>
+        <v-container>
+          <v-checkbox
+            v-model="darkTheme"
+            label="Use dark theme"
+          />
+          <v-combobox
+            v-model="extensions"
+            :items="defaultExtensions"
+            label="Filter extensions"
+            chips
+            multiple
           >
-            {{ data.item }}
-          </v-chip>
-        </template>
-      </v-combobox>
-    </v-container>
+            <template
+              slot="selection"
+              slot-scope="data"
+            >
+              <v-chip
+                :selected="data.selected"
+                close
+                @input="onChipInput(data.item)"
+              >
+                {{ data.item }}
+              </v-chip>
+            </template>
+          </v-combobox>
+        </v-container>
 
-    <v-subheader>Explorer</v-subheader>
-    <v-container>
-      <v-select
-        v-model="previewSize"
-        :items="previewSizes"
-        label="Preview size"
-      />
-      <v-select
-        v-model="thumbnailStyle"
-        :items="thumbnailStyles"
-        label="Thumbnail style"
-      />
-      <v-select
-        v-model="thumbnailHeight"
-        :items="thumbnailHeights"
-        label="Thumbnail height"
-      />
-    </v-container>
+        <v-subheader>Explorer</v-subheader>
+        <v-container>
+          <v-select
+            v-model="previewSize"
+            :items="previewSizes"
+            label="Preview size"
+          />
+          <v-select
+            v-model="thumbnailStyle"
+            :items="thumbnailStyles"
+            label="Thumbnail style"
+          />
+          <v-select
+            v-model="thumbnailHeight"
+            :items="thumbnailHeights"
+            label="Thumbnail height"
+          />
+        </v-container>
 
-    <v-subheader>Viewer</v-subheader>
-    <v-container>
-      <v-checkbox
-        v-model="fullScreen"
-        label="View images in full screen"
-      />
-      <v-checkbox
-        v-model="recursive"
-        label="View images recursively"
-      />
-      <v-checkbox
-        v-model="imageStretched"
-        label="Stretch small images"
-      />
-    </v-container>
+        <v-subheader>Viewer</v-subheader>
+        <v-container>
+          <v-checkbox
+            v-model="fullScreen"
+            label="View images in full screen"
+          />
+          <v-checkbox
+            v-model="recursive"
+            label="View images recursively"
+          />
+          <v-checkbox
+            v-model="imageStretched"
+            label="Stretch small images"
+          />
+        </v-container>
+      </v-container>
+    </v-layout>
   </v-container>
 </template>
 
