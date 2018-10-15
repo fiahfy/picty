@@ -19,6 +19,11 @@ export const previewSizes = {
   medium: 256,
   large: 512
 }
+export const thumbnailHeights = {
+  short: 128,
+  medium: 192,
+  tall: 256
+}
 
 export const thumbnailStyles = ['cover', 'contain']
 
@@ -31,11 +36,15 @@ export default {
     imageStretched: false,
     previewSize: 'medium',
     thumbnailStyle: 'cover',
+    thumbnailHeight: 'medium',
     extensions: [...defaultExtensions]
   },
   getters: {
     previewSizeValue(state) {
       return previewSizes[state.previewSize]
+    },
+    thumbnailHeightValue(state) {
+      return thumbnailHeights[state.thumbnailHeight]
     },
     isFileAvailable(state) {
       return ({ filepath }) => {
@@ -68,6 +77,9 @@ export default {
     },
     setThumbnailStyle(state, { thumbnailStyle }) {
       state.thumbnailStyle = thumbnailStyle
+    },
+    setThumbnailHeight(state, { thumbnailHeight }) {
+      state.thumbnailHeight = thumbnailHeight
     },
     setExtensions(state, { extensions }) {
       state.extensions = extensions

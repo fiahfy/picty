@@ -10,6 +10,7 @@
     >
       <v-layout
         v-if="message"
+        :style="{ height: `${thumbnailHeightValue}px` }"
         align-center
         justify-center
       >
@@ -19,34 +20,16 @@
         v-else
         :src="src"
         :contain="contain"
-        height="128"
+        :height="thumbnailHeightValue"
         @error="onError"
       />
       <v-divider />
       <v-card-title class="pt-2 px-2 pb-0">
         <v-layout class="align-center">
-          <v-menu
-            :disabled="menuDisabled"
-            open-on-hover
-            right
-            offset-x
-            lazy
-          >
-            <v-icon
-              slot="activator"
-              :color="iconColor"
-              class="pa-1"
-            >{{ icon }}</v-icon>
-            <v-card>
-              <v-img
-                :src="imageUrl"
-                contain
-                :height="previewSizeValue"
-                :width="previewSizeValue"
-                @error="onError"
-              />
-            </v-card>
-          </v-menu>
+          <v-icon
+            :color="iconColor"
+            class="pa-1"
+          >{{ icon }}</v-icon>
           <span
             :title="file.name"
             class="ellipsis caption"
@@ -133,11 +116,8 @@ export default {
       }
       return ''
     },
-    menuDisabled() {
-      return this.previewSizeValue <= 128 || !!this.message
-    },
     ...mapState('settings', ['thumbnailStyle']),
-    ...mapGetters('settings', ['previewSizeValue']),
+    ...mapGetters('settings', ['thumbnailHeightValue']),
     ...mapGetters('local/explorer', ['isFileSelected'])
   },
   created() {
@@ -200,9 +180,6 @@ export default {
   }
   &:hover {
     background-color: #eeeeee;
-  }
-  & > .layout {
-    height: 128px;
   }
   .v-rating {
     height: 32px;

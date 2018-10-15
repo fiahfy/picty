@@ -40,6 +40,11 @@
         :items="thumbnailStyles"
         label="Thumbnail style"
       />
+      <v-select
+        v-model="thumbnailHeight"
+        :items="thumbnailHeights"
+        label="Thumbnail height"
+      />
     </v-container>
 
     <v-subheader>Viewer</v-subheader>
@@ -64,7 +69,8 @@
 import {
   defaultExtensions,
   previewSizes,
-  thumbnailStyles
+  thumbnailStyles,
+  thumbnailHeights
 } from '~/store/settings'
 
 export default {
@@ -78,6 +84,10 @@ export default {
       thumbnailStyles: thumbnailStyles.map((style) => ({
         value: style,
         text: style.charAt(0).toUpperCase() + style.slice(1)
+      })),
+      thumbnailHeights: Object.keys(thumbnailHeights).map((height) => ({
+        value: height,
+        text: height.charAt(0).toUpperCase() + height.slice(1)
       }))
     }
   },
@@ -131,6 +141,16 @@ export default {
       set(value) {
         this.$store.commit('settings/setThumbnailStyle', {
           thumbnailStyle: value
+        })
+      }
+    },
+    thumbnailHeight: {
+      get() {
+        return this.$store.state.settings.thumbnailHeight
+      },
+      set(value) {
+        this.$store.commit('settings/setThumbnailHeight', {
+          thumbnailHeight: value
         })
       }
     },
