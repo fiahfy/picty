@@ -20,6 +20,7 @@ export default {
     directoryInput: '',
     query: '',
     queryInput: '',
+    queryHistories: [],
     display: 'list',
     loading: false,
     files: [],
@@ -236,6 +237,9 @@ export default {
     searchFiles({ commit }, { query }) {
       commit('setQueryInput', { queryInput: query })
       commit('setQuery', { query })
+      if (query) {
+        commit('addQueryHistory', { queryHistory: query })
+      }
     },
     selectFile({ commit }, { filepath }) {
       commit('setSelectedFilepath', { selectedFilepath: filepath })
@@ -361,6 +365,9 @@ export default {
     },
     setQueryInput(state, { queryInput }) {
       state.queryInput = queryInput
+    },
+    addQueryHistory(state, { queryHistory }) {
+      state.queryHistories = [...state.queryHistories, queryHistory]
     },
     setDisplay(state, { display }) {
       state.display = display
