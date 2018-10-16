@@ -17,7 +17,7 @@
           <v-combobox
             v-model="extensions"
             :items="defaultExtensions"
-            label="Filter extensions"
+            label="Image file extensions"
             chips
             multiple
           >
@@ -59,11 +59,11 @@
         <v-container>
           <v-checkbox
             v-model="fullScreen"
-            label="View images in full screen"
+            label="Enter full screen"
           />
           <v-checkbox
             v-model="recursive"
-            label="View images recursively"
+            label="View images in directory recursively"
           />
           <v-checkbox
             v-model="imageStretched"
