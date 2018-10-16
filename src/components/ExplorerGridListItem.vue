@@ -60,10 +60,14 @@ import fileUrl from 'file-url'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
-import workerPromisify from '@fiahfy/worker-promisify'
+// import workerPromisify from '@fiahfy/worker-promisify'
 import FileWorker from '~/workers/file.worker.js'
 
-const worker = workerPromisify(new FileWorker())
+const resolves = {}
+const worker = new FileWorker()
+worker.onmessage = ({ data: { id, data } }) => {
+  resolves[id](data)
+}
 
 export default {
   props: {
@@ -126,27 +130,26 @@ export default {
     ...mapGetters('settings', ['thumbnailHeightValue', 'isFileAvailable']),
     ...mapGetters('local/explorer', ['isFileSelected'])
   },
-  created() {
-    this.timer = setTimeout(async () => {
-      if (!this.file.directory) {
-        this.src = fileUrl(this.file.path)
-        return
-      }
-        console.log(this.file.path)
-      let files = (await worker.postMessage({
-        id: 'listFiles',
-        data: [this.file.path]
-      })).data
-      files = files.filter((file) =>
-        this.isFileAvailable({ filepath: file.path })
-      )
-      const file = files[0]
-      this.src = file ? fileUrl(file.path) : null
-        console.log(this.file.path)
-    }, 500)
+  async created() {
+    // this.timer = setTimeout(async () => {
+    if (!this.file.directory) {
+      this.src = fileUrl(this.file.path)
+      return
+    }
+    // console.log(this.file.path)
+    resolves[this.file.path] = (data) => {
+      const file = this.isFileAvailable({ filepath: data }) ? data : null
+      this.src = file ? fileUrl(file) : null
+      // console.log(this.file.path, data)
+    }
+    worker.postMessage({
+      id: 'getFirstChildPath',
+      data: [this.file.path]
+    })
+    // }, 500)
   },
   beforeDestroy() {
-    clearTimeout(this.timer)
+    // clearTimeout(this.timer)
   },
   methods: {
     onClick() {

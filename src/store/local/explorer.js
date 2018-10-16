@@ -180,7 +180,7 @@ export default {
       try {
         commit('setFiles', { files: [] })
         let files = (await worker.postMessage({
-          id: 'listFilesWithChild',
+          id: 'listFiles',
           data: [state.directory]
         })).data
         files = files

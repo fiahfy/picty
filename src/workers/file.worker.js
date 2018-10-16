@@ -23,6 +23,13 @@ onmessage = ({ data: { id, data } }) => {
       postMessage(files)
       break
     }
+    case 'getFirstChildPath': {
+      // console.log('worker', data)
+      const filepath = File.getFirstChildPath(...data)
+      // console.log('worker', data, filepath)
+      postMessage({ id: data[0], data: filepath })
+      break
+    }
     default:
       postMessage([])
       break
