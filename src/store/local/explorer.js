@@ -263,9 +263,14 @@ export default {
       dispatch('selectFileIndex', { index: getters.selectedFileIndex + 1 })
     },
     selectLeftFile({ dispatch, getters }, { offset }) {
-      const index = getters.selectedFileIndex - 1
-      if (index % offset === offset - 1) {
-        return
+      let index
+      if (getters.selectedFileIndex % offset === 0) {
+        index = getters.selectedFileIndex + offset - 1
+        if (index > getters.filteredFiles.length - 1) {
+          index = getters.filteredFiles.length - 1
+        }
+      } else {
+        index = getters.selectedFileIndex - 1
       }
       dispatch('selectFileIndex', { index })
     },
@@ -277,9 +282,15 @@ export default {
       dispatch('selectFileIndex', { index })
     },
     selectRightFile({ dispatch, getters }, { offset }) {
-      const index = getters.selectedFileIndex + 1
-      if (index % offset === 0) {
-        return
+      let index
+      if (getters.selectedFileIndex % offset === offset - 1) {
+        index = getters.selectedFileIndex - offset + 1
+      } else {
+        index = getters.selectedFileIndex + 1
+        if (index > getters.filteredFiles.length - 1) {
+          index =
+            getters.selectedFileIndex - (getters.selectedFileIndex % offset)
+        }
       }
       dispatch('selectFileIndex', { index })
     },
