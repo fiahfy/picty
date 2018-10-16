@@ -60,6 +60,11 @@ import fileUrl from 'file-url'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
 
+import workerPromisify from '@fiahfy/worker-promisify'
+import FileWorker from '~/workers/file.worker.js'
+
+const worker = workerPromisify(new FileWorker())
+
 export default {
   props: {
     file: {
@@ -104,25 +109,40 @@ export default {
       return this.thumbnailStyle === 'contain'
     },
     imageUrl() {
-      const imagePath = this.file.imagePath
-      return imagePath ? fileUrl(imagePath) : null
+      return this.file.path
+      // const imagePath = this.file.imagePath
+      // return imagePath ? fileUrl(imagePath) : null
     },
     message() {
       if (this.error) {
         return 'Load failed'
       }
-      if (this.imageUrl === null) {
+      if (this.src === null) {
         return 'No preview'
       }
       return ''
     },
     ...mapState('settings', ['thumbnailStyle']),
-    ...mapGetters('settings', ['thumbnailHeightValue']),
+    ...mapGetters('settings', ['thumbnailHeightValue', 'isFileAvailable']),
     ...mapGetters('local/explorer', ['isFileSelected'])
   },
   created() {
-    this.timer = setTimeout(() => {
-      this.src = this.imageUrl
+    this.timer = setTimeout(async () => {
+      if (!this.file.directory) {
+        this.src = fileUrl(this.file.path)
+        return
+      }
+        console.log(this.file.path)
+      let files = (await worker.postMessage({
+        id: 'listFiles',
+        data: [this.file.path]
+      })).data
+      files = files.filter((file) =>
+        this.isFileAvailable({ filepath: file.path })
+      )
+      const file = files[0]
+      this.src = file ? fileUrl(file.path) : null
+        console.log(this.file.path)
     }, 500)
   },
   beforeDestroy() {
