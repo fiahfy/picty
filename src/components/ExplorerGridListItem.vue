@@ -56,18 +56,13 @@
 </template>
 
 <script>
+import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
-
-// import workerPromisify from '@fiahfy/worker-promisify'
 import FileWorker from '~/workers/file.worker.js'
 
-const resolves = {}
-const worker = new FileWorker()
-worker.onmessage = ({ data: { id, data } }) => {
-  resolves[id](data)
-}
+const worker = workerPromisify(new FileWorker())
 
 export default {
   props: {
@@ -137,15 +132,18 @@ export default {
       return
     }
     // console.log(this.file.path)
-    resolves[this.file.path] = (data) => {
-      const file = this.isFileAvailable({ filepath: data }) ? data : null
-      this.src = file ? fileUrl(file) : null
-      // console.log(this.file.path, data)
-    }
-    worker.postMessage({
+    // resolves[this.file.path] = (data) => {
+    //   const file = this.isFileAvailable({ filepath: data }) ? data : null
+    //   this.src = file ? fileUrl(file) : null
+    //   // console.log(this.file.path, data)
+    // }
+    const { data } = await worker.postMessage({
+      key: this.file.path,
       id: 'getFirstChildPath',
       data: [this.file.path]
     })
+    const file = this.isFileAvailable({ filepath: data }) ? data : null
+    this.src = file ? fileUrl(file) : null
     // }, 500)
   },
   beforeDestroy() {

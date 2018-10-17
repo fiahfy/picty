@@ -1,6 +1,6 @@
 import * as File from '~/utils/file'
 
-onmessage = ({ data: { id, data } }) => {
+onmessage = ({ data: { id, key, data } }) => {
   switch (id) {
     case 'listFiles': {
       const files = File.listFiles(...data)
@@ -27,7 +27,7 @@ onmessage = ({ data: { id, data } }) => {
       // console.log('worker', data)
       const filepath = File.getFirstChildPath(...data)
       // console.log('worker', data, filepath)
-      postMessage({ id: data[0], data: filepath })
+      postMessage({ key, id: data[0], data: filepath })
       break
     }
     default:

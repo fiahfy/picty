@@ -628,10 +628,10 @@
   resolved "https://registry.yarnpkg.com/@fiahfy/electron-accelerator-formatter/-/electron-accelerator-formatter-0.0.2.tgz#a593cb76c179ec3d5a84adc1f36d5f8d6c6ee028"
   integrity sha512-p3dojNdN70bIl3vliRkXRqWxXTx0kl3YXqgMlWnMJdhzqMraYY4ybQ1ILYhABDfKUxo/GjTzV5FvsusyXW0Mtg==
 
-"@fiahfy/worker-promisify@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@fiahfy/worker-promisify/-/worker-promisify-0.0.2.tgz#9f2a047982b3e743d2631fd6fd3460bdfcf43e34"
-  integrity sha512-7GgqGdQXBCS83KGlJkiqeVGDqxPP5KXfH1qh31TVx9i1j9+gJzuRjoZ4H8Yo9sEYG5IXnQsLU/uuICjz4QuUPg==
+"@fiahfy/worker-promisify@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@fiahfy/worker-promisify/-/worker-promisify-0.0.3.tgz#d5c3492563fcdf5af4ee56471759aac0fde984c5"
+  integrity sha512-v08f8lKQP/AfxfzkZdaSCpAThMafljmQgMo92CggLONRsDhD+x92M8nTKKiNsO5bEZG9m0OOfMRC2HDzvMRwkg==
 
 "@types/node@^8.0.24":
   version "8.10.36"
