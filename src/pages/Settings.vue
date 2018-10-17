@@ -7,7 +7,7 @@
     scroll-y
   >
     <v-layout>
-      <v-container>
+      <v-container class="my-0">
         <v-subheader>General</v-subheader>
         <v-container>
           <v-checkbox
