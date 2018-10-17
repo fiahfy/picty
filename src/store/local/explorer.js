@@ -190,17 +190,8 @@ export default {
               rootGetters['settings/isFileAvailable']({ filepath: file.path })
           )
           .map((file) => {
-            let imagePath = file.path
-            if (file.directory) {
-              imagePath = rootGetters['settings/isFileAvailable']({
-                filepath: file.childPath
-              })
-                ? file.childPath
-                : null
-            }
             return {
               ...file,
-              imagePath,
               rating: rootGetters['rating/getRating']({ filepath: file.path }),
               views: rootGetters['views/getViews']({ filepath: file.path })
             }

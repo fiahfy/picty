@@ -18,7 +18,7 @@
       </v-layout>
       <v-img
         v-else
-        :src="src"
+        :src="imageUrl"
         :contain="contain"
         :height="thumbnailHeightValue"
         @error="onError"
@@ -60,9 +60,9 @@ import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
-import FileWorker from '~/workers/file.worker.js'
+import Worker from '~/workers/child-fetcher.worker.js'
 
-const worker = workerPromisify(new FileWorker())
+const worker = workerPromisify(new Worker())
 
 export default {
   props: {
@@ -73,8 +73,9 @@ export default {
   },
   data() {
     return {
+      loading: false,
       error: false,
-      src: ''
+      imageUrl: ''
     }
   },
   computed: {
@@ -107,47 +108,33 @@ export default {
     contain() {
       return this.thumbnailStyle === 'contain'
     },
-    imageUrl() {
-      return this.file.path
-      // const imagePath = this.file.imagePath
-      // return imagePath ? fileUrl(imagePath) : null
-    },
     message() {
+      if (this.loading) {
+        return 'Loading...'
+      }
       if (this.error) {
         return 'Load failed'
       }
-      if (this.src === null) {
-        return 'No preview'
-      }
-      return ''
+      return this.imageUrl ? '' : 'No image'
     },
     ...mapState('settings', ['thumbnailStyle']),
     ...mapGetters('settings', ['thumbnailHeightValue', 'isFileAvailable']),
     ...mapGetters('local/explorer', ['isFileSelected'])
   },
   async created() {
-    // this.timer = setTimeout(async () => {
     if (!this.file.directory) {
-      this.src = fileUrl(this.file.path)
+      this.imageUrl = fileUrl(this.file.path)
       return
     }
-    // console.log(this.file.path)
-    // resolves[this.file.path] = (data) => {
-    //   const file = this.isFileAvailable({ filepath: data }) ? data : null
-    //   this.src = file ? fileUrl(file) : null
-    //   // console.log(this.file.path, data)
-    // }
+    this.loading = true
     const { data } = await worker.postMessage({
       key: this.file.path,
-      id: 'getFirstChildPath',
-      data: [this.file.path]
+      data: this.file.path
     })
-    const file = this.isFileAvailable({ filepath: data }) ? data : null
-    this.src = file ? fileUrl(file) : null
-    // }, 500)
-  },
-  beforeDestroy() {
-    // clearTimeout(this.timer)
+    if (this.isFileAvailable({ filepath: data })) {
+      this.imageUrl = fileUrl(data)
+    }
+    this.loading = false
   },
   methods: {
     onClick() {
