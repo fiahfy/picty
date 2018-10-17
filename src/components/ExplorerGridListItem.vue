@@ -60,7 +60,7 @@ import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
-import Worker from '~/workers/child-fetcher.worker.js'
+import Worker from '~/workers/child-fetch.worker.js'
 
 const worker = workerPromisify(new Worker())
 
