@@ -18,7 +18,7 @@
       </v-layout>
       <v-img
         v-else
-        :src="src"
+        :src="imageUrl"
         :contain="contain"
         :height="thumbnailHeightValue"
         @error="onError"
@@ -56,9 +56,13 @@
 </template>
 
 <script>
+import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
+import Worker from '~/workers/child-fetch.worker.js'
+
+const worker = workerPromisify(new Worker())
 
 export default {
   props: {
@@ -69,8 +73,9 @@ export default {
   },
   data() {
     return {
+      loading: false,
       error: false,
-      src: ''
+      imageUrl: ''
     }
   },
   computed: {
@@ -103,30 +108,33 @@ export default {
     contain() {
       return this.thumbnailStyle === 'contain'
     },
-    imageUrl() {
-      const imagePath = this.file.imagePath
-      return imagePath ? fileUrl(imagePath) : null
-    },
     message() {
+      if (this.loading) {
+        return 'Loading...'
+      }
       if (this.error) {
         return 'Load failed'
       }
-      if (this.imageUrl === null) {
-        return 'No preview'
-      }
-      return ''
+      return this.imageUrl ? '' : 'No image'
     },
     ...mapState('settings', ['thumbnailStyle']),
-    ...mapGetters('settings', ['thumbnailHeightValue']),
+    ...mapGetters('settings', ['thumbnailHeightValue', 'isFileAvailable']),
     ...mapGetters('local/explorer', ['isFileSelected'])
   },
-  created() {
-    this.timer = setTimeout(() => {
-      this.src = this.imageUrl
-    }, 500)
-  },
-  beforeDestroy() {
-    clearTimeout(this.timer)
+  async created() {
+    if (!this.file.directory) {
+      this.imageUrl = fileUrl(this.file.path)
+      return
+    }
+    this.loading = true
+    const { data } = await worker.postMessage({
+      key: this.file.path,
+      data: this.file.path
+    })
+    if (this.isFileAvailable({ filepath: data })) {
+      this.imageUrl = fileUrl(data)
+    }
+    this.loading = false
   },
   methods: {
     onClick() {

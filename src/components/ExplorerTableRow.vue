@@ -21,11 +21,20 @@
             class="pa-1"
           >{{ icon }}</v-icon>
           <v-card>
+            <v-layout
+              v-if="message"
+              :style="{ height: `${previewSizeValue}px`, width: `${previewSizeValue}px` }"
+              align-center
+              justify-center
+            >
+              <v-flex class="text-xs-center caption">{{ message }}</v-flex>
+            </v-layout>
             <v-img
+              v-else
               :src="imageUrl"
-              contain
               :height="previewSizeValue"
               :width="previewSizeValue"
+              contain
               @error="onError"
             />
           </v-card>
@@ -56,9 +65,13 @@
 </template>
 
 <script>
+import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
 import { mapActions, mapGetters } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
+import Worker from '~/workers/child-fetch.worker.js'
+
+const worker = workerPromisify(new Worker())
 
 export default {
   props: {
@@ -69,7 +82,9 @@ export default {
   },
   data() {
     return {
-      error: false
+      loading: false,
+      error: false,
+      imageUrl: ''
     }
   },
   computed: {
@@ -99,24 +114,39 @@ export default {
       }
       return 'grey'
     },
-    imageUrl() {
-      const imagePath = this.file.imagePath
-      return imagePath ? fileUrl(imagePath) : null
-    },
     message() {
+      if (this.loading) {
+        return 'Loading...'
+      }
       if (this.error) {
         return 'Load failed'
       }
-      if (this.imageUrl === null) {
-        return 'No preview'
-      }
-      return ''
+      return this.imageUrl ? '' : 'No image'
     },
     menuDisabled() {
-      return !this.previewSizeValue || !!this.message
+      return !this.previewSizeValue
     },
     ...mapGetters('settings', ['previewSizeValue']),
+    ...mapGetters('settings', ['isFileAvailable']),
     ...mapGetters('local/explorer', ['isFileSelected'])
+  },
+  async created() {
+    if (this.menuDisabled) {
+      return
+    }
+    if (!this.file.directory) {
+      this.imageUrl = fileUrl(this.file.path)
+      return
+    }
+    this.loading = true
+    const { data } = await worker.postMessage({
+      key: this.file.path,
+      data: this.file.path
+    })
+    if (this.isFileAvailable({ filepath: data })) {
+      this.imageUrl = fileUrl(data)
+    }
+    this.loading = false
   },
   methods: {
     onClick() {

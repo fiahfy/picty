@@ -56,6 +56,7 @@
         ref="toolbar"
         flat
         dense
+        dark
       >
         <v-btn
           :title="'Zoom in'|accelerator('CmdOrCtrl+Plus')"
