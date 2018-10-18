@@ -636,10 +636,10 @@
   resolved "https://registry.yarnpkg.com/@fiahfy/electron-accelerator-formatter/-/electron-accelerator-formatter-0.0.2.tgz#a593cb76c179ec3d5a84adc1f36d5f8d6c6ee028"
   integrity sha512-p3dojNdN70bIl3vliRkXRqWxXTx0kl3YXqgMlWnMJdhzqMraYY4ybQ1ILYhABDfKUxo/GjTzV5FvsusyXW0Mtg==
 
-"@fiahfy/icns-convert@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@fiahfy/icns-convert/-/icns-convert-0.0.2.tgz#720ccdfea99c26224a5737665a25fae1b3dc9237"
-  integrity sha512-gVjhvQQemZ1IRt2NYRuP1IjciqtewfiHDYCCtijlIQfeW8yYB9bxk5SQfMzOwtpScMmDyhSCBE5X8xUE902XVQ==
+"@fiahfy/icns-convert@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@fiahfy/icns-convert/-/icns-convert-0.0.3.tgz#58c8ed5d229cb88c1eb3692509324254c36145f9"
+  integrity sha512-bmQnSYeuE+HTVyuqH1oqoh2yQXczzmNYsmLNTBT/7Iuay6hq6YDfqmeURGOSotxciQ4z1/7EZHRoQoafXEQhmQ==
   dependencies:
     "@fiahfy/icns" "^0.0.1"
     commander "^2.18.0"
@@ -653,10 +653,10 @@
     "@fiahfy/packbits" "^0.0.2"
     jimp "^0.5.0"
 
-"@fiahfy/ico-convert@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@fiahfy/ico-convert/-/ico-convert-0.0.2.tgz#47777d42ce683a74ebd3a794b2304104d4e4112a"
-  integrity sha512-t7oi4/AGr4nP0n0Qiv7G40ovJAq2uE0mOmbj3hYTpVuCqNPS3M8Cs6funDqa5VeH3DF7pP0nzzFJJfkczM7sTg==
+"@fiahfy/ico-convert@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@fiahfy/ico-convert/-/ico-convert-0.0.3.tgz#1beac9aaed05a8f8a5671955a0dfaac6c17dc116"
+  integrity sha512-VzAAZYFcBfdy+a/uYJsojzTtWJ+3F/RrFNs6z/T9L/f7qN0zJmbdhYX8ezrvzMPM3FS5r4pQfD2ncj4XgzOjrg==
   dependencies:
     "@fiahfy/ico" "^0.0.1"
     commander "^2.18.0"
