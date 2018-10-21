@@ -39,9 +39,9 @@
         <v-subheader>Explorer</v-subheader>
         <v-container>
           <v-select
-            v-model="previewSize"
-            :items="previewSizes"
-            label="Preview size"
+            v-model="previewWidth"
+            :items="previewWidths"
+            label="Preview width"
           />
           <v-select
             v-model="thumbnailStyle"
@@ -78,7 +78,7 @@
 <script>
 import {
   defaultExtensions,
-  previewSizes,
+  previewWidths,
   thumbnailStyles,
   thumbnailHeights
 } from '~/store/settings'
@@ -87,7 +87,7 @@ export default {
   data() {
     return {
       defaultExtensions,
-      previewSizes: Object.keys(previewSizes).map((size) => ({
+      previewWidths: Object.keys(previewWidths).map((size) => ({
         value: size,
         text: size.charAt(0).toUpperCase() + size.slice(1)
       })),
@@ -136,12 +136,12 @@ export default {
         })
       }
     },
-    previewSize: {
+    previewWidth: {
       get() {
-        return this.$store.state.settings.previewSize
+        return this.$store.state.settings.previewWidth
       },
       set(value) {
-        this.$store.commit('settings/setPreviewSize', { previewSize: value })
+        this.$store.commit('settings/setPreviewWidth', { previewWidth: value })
       }
     },
     thumbnailStyle: {

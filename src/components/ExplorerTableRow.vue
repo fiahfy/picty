@@ -20,20 +20,17 @@
             :color="iconColor"
             class="pa-1"
           >{{ icon }}</v-icon>
-          <v-card>
+          <v-card :width="previewWidthValue">
             <v-layout
               v-if="message"
-              :style="{ height: `${previewSizeValue}px`, width: `${previewSizeValue}px` }"
               align-center
               justify-center
             >
-              <v-flex class="text-xs-center caption">{{ message }}</v-flex>
+              <v-flex class="py-3 text-xs-center caption">{{ message }}</v-flex>
             </v-layout>
             <v-img
               v-else
               :src="imageUrl"
-              :height="previewSizeValue"
-              :width="previewSizeValue"
               contain
               @error="onError"
             />
@@ -124,9 +121,9 @@ export default {
       return this.imageUrl ? '' : 'No image'
     },
     menuDisabled() {
-      return !this.previewSizeValue
+      return !this.previewWidthValue
     },
-    ...mapGetters('settings', ['previewSizeValue']),
+    ...mapGetters('settings', ['previewWidthValue']),
     ...mapGetters('settings', ['isFileAvailable']),
     ...mapGetters('local/explorer', ['isFileSelected'])
   },
