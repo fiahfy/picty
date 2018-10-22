@@ -23,21 +23,25 @@
         :height="thumbnailHeightValue"
         @error="onError"
       />
+      <v-icon
+        :color="iconColor"
+        class="pa-1"
+      >{{ icon }}</v-icon>
       <v-divider />
       <v-card-title class="pt-2 px-2 pb-0">
-        <v-layout class="align-center">
-          <v-icon
-            :color="iconColor"
-            class="pa-1"
-          >{{ icon }}</v-icon>
-          <span
-            :title="file.name"
-            class="ellipsis caption"
-          >{{ file.name }}</span>
-        </v-layout>
+        <v-spacer />
+        <div class="title">
+          <div>
+            <span
+              :title="file.name"
+              class="text-xs-center caption"
+            >{{ file.name }}</span>
+          </div>
+        </div>
+        <v-spacer />
       </v-card-title>
       <v-card-actions
-        class="pa-0 text-xs-center"
+        class="pa-0"
         @click.stop
         @dblclick.stop
       >
@@ -183,11 +187,33 @@ export default {
 <style scoped lang="scss">
 .explorer-grid-list-item .v-card {
   cursor: pointer;
+  position: relative;
   &[active] {
     background-color: #f5f5f5;
   }
   &:hover {
     background-color: #eeeeee;
+  }
+  .v-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .title {
+    display: table;
+    & > div {
+      display: table-cell;
+      height: 25px;
+      vertical-align: middle;
+      & > span {
+        display: -webkit-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+    }
   }
   .v-rating {
     height: 32px;
