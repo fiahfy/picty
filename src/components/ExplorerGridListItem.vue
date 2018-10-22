@@ -8,53 +8,40 @@
       @dblclick="onDblClick"
       @contextmenu.stop="onContextMenu"
     >
-      <v-layout
-        v-if="message"
-        align-center
-        justify-center
-      >
-        <v-flex class="text-xs-center caption">{{ message }}</v-flex>
-      </v-layout>
       <v-img
-        v-else
-        :src="src"
+        :src="imageUrl"
         :contain="contain"
-        height="128"
+        :height="thumbnailHeightValue"
         @error="onError"
-      />
+      >
+        <v-layout
+          slot="placeholder"
+          fill-height
+          align-center
+          justify-center
+        >
+          <v-flex class="text-xs-center caption">{{ message }}</v-flex>
+        </v-layout>
+      </v-img>
+      <v-icon
+        :color="iconColor"
+        class="pa-1"
+      >{{ icon }}</v-icon>
       <v-divider />
       <v-card-title class="pt-2 px-2 pb-0">
-        <v-layout class="align-center">
-          <v-menu
-            :disabled="menuDisabled"
-            open-on-hover
-            right
-            offset-x
-            lazy
-          >
-            <v-icon
-              slot="activator"
-              :color="iconColor"
-              class="pa-1"
-            >{{ icon }}</v-icon>
-            <v-card>
-              <v-img
-                :src="imageUrl"
-                contain
-                :height="previewSizeValue"
-                :width="previewSizeValue"
-                @error="onError"
-              />
-            </v-card>
-          </v-menu>
-          <span
-            :title="file.name"
-            class="ellipsis caption"
-          >{{ file.name }}</span>
-        </v-layout>
+        <v-spacer />
+        <div class="title">
+          <div>
+            <span
+              :title="file.name"
+              class="text-xs-center caption"
+            >{{ file.name }}</span>
+          </div>
+        </div>
+        <v-spacer />
       </v-card-title>
       <v-card-actions
-        class="pa-0 text-xs-center"
+        class="pa-0"
         @click.stop
         @dblclick.stop
       >
@@ -73,9 +60,13 @@
 </template>
 
 <script>
+import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as ContextMenu from '~/utils/context-menu'
+import Worker from '~/workers/child-fetch.worker.js'
+
+const worker = workerPromisify(new Worker())
 
 export default {
   props: {
@@ -86,8 +77,9 @@ export default {
   },
   data() {
     return {
+      loading: false,
       error: false,
-      src: ''
+      imageUrl: ''
     }
   },
   computed: {
@@ -120,33 +112,33 @@ export default {
     contain() {
       return this.thumbnailStyle === 'contain'
     },
-    imageUrl() {
-      const imagePath = this.file.imagePath
-      return imagePath ? fileUrl(imagePath) : null
-    },
     message() {
+      if (this.loading) {
+        return 'Loading...'
+      }
       if (this.error) {
         return 'Load failed'
       }
-      if (this.imageUrl === null) {
-        return 'No preview'
-      }
-      return ''
-    },
-    menuDisabled() {
-      return this.previewSizeValue <= 128 || !!this.message
+      return this.imageUrl ? '' : 'No image'
     },
     ...mapState('settings', ['thumbnailStyle']),
-    ...mapGetters('settings', ['previewSizeValue']),
+    ...mapGetters('settings', ['thumbnailHeightValue', 'isFileAvailable']),
     ...mapGetters('local/explorer', ['isFileSelected'])
   },
-  created() {
-    this.timer = setTimeout(() => {
-      this.src = this.imageUrl
-    }, 500)
-  },
-  beforeDestroy() {
-    clearTimeout(this.timer)
+  async created() {
+    if (!this.file.directory) {
+      this.imageUrl = fileUrl(this.file.path)
+      return
+    }
+    this.loading = true
+    const { data } = await worker.postMessage({
+      key: this.file.path,
+      data: this.file.path
+    })
+    if (this.isFileAvailable({ filepath: data })) {
+      this.imageUrl = fileUrl(data)
+    }
+    this.loading = false
   },
   methods: {
     onClick() {
@@ -195,14 +187,34 @@ export default {
 <style scoped lang="scss">
 .explorer-grid-list-item .v-card {
   cursor: pointer;
+  position: relative;
   &[active] {
     background-color: #f5f5f5;
   }
   &:hover {
     background-color: #eeeeee;
   }
-  & > .layout {
-    height: 128px;
+  .v-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .title {
+    display: table;
+    & > div {
+      display: table-cell;
+      height: 28px;
+      vertical-align: middle;
+      & > span {
+        display: -webkit-box;
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+    }
   }
   .v-rating {
     height: 32px;

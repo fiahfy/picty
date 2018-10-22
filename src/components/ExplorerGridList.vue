@@ -53,7 +53,6 @@ export default {
   },
   data() {
     return {
-      estimatedHeight: 209,
       sizes: [6, 4, 3, 2, 2]
     }
   },
@@ -69,6 +68,10 @@ export default {
         return s + this.sizes[i]
       })
     },
+    estimatedHeight() {
+      return this.thumbnailHeightValue + 77
+    },
+    ...mapGetters('settings', ['thumbnailHeightValue']),
     ...mapState('local/explorer', [
       'directory',
       'query',

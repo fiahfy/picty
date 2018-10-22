@@ -1,83 +1,103 @@
 <template>
-  <v-container class="settings">
-    <v-subheader>General</v-subheader>
-    <v-container>
-      <v-checkbox
-        v-model="darkTheme"
-        label="Use dark theme"
-      />
-      <v-combobox
-        v-model="extensions"
-        :items="defaultExtensions"
-        label="Filter extensions"
-        chips
-        multiple
-      >
-        <template
-          slot="selection"
-          slot-scope="data"
-        >
-          <v-chip
-            :selected="data.selected"
-            close
-            @input="onChipInput(data.item)"
+  <v-container
+    class="settings"
+    fluid
+    fill-height
+    pa-0
+    scroll-y
+  >
+    <v-layout>
+      <v-container class="my-0">
+        <v-subheader>General</v-subheader>
+        <v-container>
+          <v-checkbox
+            v-model="darkTheme"
+            label="Use dark theme"
+          />
+          <v-combobox
+            v-model="extensions"
+            :items="defaultExtensions"
+            label="Image file extensions"
+            chips
+            multiple
           >
-            {{ data.item }}
-          </v-chip>
-        </template>
-      </v-combobox>
-    </v-container>
+            <template
+              slot="selection"
+              slot-scope="data"
+            >
+              <v-chip
+                :selected="data.selected"
+                close
+                @input="onChipInput(data.item)"
+              >
+                {{ data.item }}
+              </v-chip>
+            </template>
+          </v-combobox>
+        </v-container>
 
-    <v-subheader>Explorer</v-subheader>
-    <v-container>
-      <v-select
-        v-model="previewSize"
-        :items="previewSizes"
-        label="Preview size"
-      />
-      <v-select
-        v-model="thumbnailStyle"
-        :items="thumbnailStyles"
-        label="Thumbnail style"
-      />
-    </v-container>
+        <v-subheader>Explorer</v-subheader>
+        <v-container>
+          <v-select
+            v-model="previewWidth"
+            :items="previewWidths"
+            label="Preview width"
+          />
+          <v-select
+            v-model="thumbnailStyle"
+            :items="thumbnailStyles"
+            label="Thumbnail style"
+          />
+          <v-select
+            v-model="thumbnailHeight"
+            :items="thumbnailHeights"
+            label="Thumbnail height"
+          />
+        </v-container>
 
-    <v-subheader>Viewer</v-subheader>
-    <v-container>
-      <v-checkbox
-        v-model="fullScreen"
-        label="View images in full screen"
-      />
-      <v-checkbox
-        v-model="recursive"
-        label="View images recursively"
-      />
-      <v-checkbox
-        v-model="imageStretched"
-        label="Stretch small images"
-      />
-    </v-container>
+        <v-subheader>Viewer</v-subheader>
+        <v-container>
+          <v-checkbox
+            v-model="fullScreen"
+            label="Enter full screen"
+          />
+          <v-checkbox
+            v-model="recursive"
+            label="View images in directory recursively"
+          />
+          <v-checkbox
+            v-model="imageStretched"
+            label="Stretch small images"
+          />
+        </v-container>
+      </v-container>
+    </v-layout>
   </v-container>
 </template>
 
 <script>
 import {
   defaultExtensions,
-  previewSizes,
-  thumbnailStyles
+  previewWidths,
+  thumbnailStyles,
+  thumbnailHeights
 } from '~/store/settings'
 
 export default {
   data() {
     return {
       defaultExtensions,
-      previewSizes: Object.keys(previewSizes).map((size) => ({
+      previewWidths: Object.keys(previewWidths).map((size) => ({
         value: size,
         text: size.charAt(0).toUpperCase() + size.slice(1)
       })),
       thumbnailStyles: thumbnailStyles.map((style) => ({
         value: style,
         text: style.charAt(0).toUpperCase() + style.slice(1)
+      })),
+      thumbnailHeights: Object.keys(thumbnailHeights).map((height) => ({
+        value: height,
+        text: height.charAt(0).toUpperCase() + height.slice(1)
       }))
     }
   },
@@ -116,12 +136,12 @@ export default {
         })
       }
     },
-    previewSize: {
+    previewWidth: {
       get() {
-        return this.$store.state.settings.previewSize
+        return this.$store.state.settings.previewWidth
       },
       set(value) {
-        this.$store.commit('settings/setPreviewSize', { previewSize: value })
+        this.$store.commit('settings/setPreviewWidth', { previewWidth: value })
       }
     },
     thumbnailStyle: {
@@ -131,6 +151,16 @@ export default {
       set(value) {
         this.$store.commit('settings/setThumbnailStyle', {
           thumbnailStyle: value
+        })
+      }
+    },
+    thumbnailHeight: {
+      get() {
+        return this.$store.state.settings.thumbnailHeight
+      },
+      set(value) {
+        this.$store.commit('settings/setThumbnailHeight', {
+          thumbnailHeight: value
         })
       }
     },

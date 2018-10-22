@@ -36,15 +36,17 @@
       >
         <v-icon>view_module</v-icon>
       </v-btn>
-      <v-text-field
+      <v-autocomplete
         v-model="queryInput"
+        :items="queryHistories.slice().reverse()"
         name="query"
         class="ml-3 pt-0"
         label="Search"
-        append-icon="search"
+        prepend-icon="search"
         single-line
         hide-details
         clearable
+        @input="onTextInput"
         @keyup="onTextKeyUp"
         @contextmenu.stop="onTextContextMenu"
       />
@@ -74,13 +76,12 @@ export default {
     thumbnailColor() {
       return this.display === 'thumbnail' ? 'primary' : null
     },
-    ...mapState('local/explorer', ['selectedFilepath', 'display']),
+    ...mapState('local/explorer', [
+      'selectedFilepath',
+      'display',
+      'queryHistories'
+    ]),
     ...mapGetters('local/explorer', ['canViewFile'])
-  },
-  watch: {
-    queryInput(value) {
-      this.searchFiles({ query: value })
-    }
   },
   methods: {
     onViewClick() {
@@ -92,13 +93,16 @@ export default {
     onThumbnailClick() {
       this.setDisplay({ display: 'thumbnail' })
     },
-    onTextContextMenu(e) {
-      ContextMenu.showTextMenu(e)
+    onTextInput(value) {
+      this.searchFiles({ query: value })
     },
     onTextKeyUp(e) {
       if (e.keyCode === 13) {
         this.searchFiles({ query: e.target.value })
       }
+    },
+    onTextContextMenu(e) {
+      ContextMenu.showTextMenu(e)
     },
     ...mapActions('local/explorer', ['searchFiles', 'viewFile', 'setDisplay'])
   }

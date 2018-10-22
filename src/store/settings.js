@@ -13,11 +13,16 @@ export const defaultExtensions = [
   'WEBP'
 ]
 
-export const previewSizes = {
+export const previewWidths = {
   none: 0,
-  small: 128,
-  medium: 256,
-  large: 512
+  narrow: 128,
+  medium: 192,
+  wide: 256
+}
+export const thumbnailHeights = {
+  short: 128,
+  medium: 192,
+  tall: 256
 }
 
 export const thumbnailStyles = ['cover', 'contain']
@@ -29,13 +34,17 @@ export default {
     fullScreen: false,
     recursive: false,
     imageStretched: false,
-    previewSize: 'medium',
+    previewWidth: 'medium',
     thumbnailStyle: 'cover',
+    thumbnailHeight: 'medium',
     extensions: [...defaultExtensions]
   },
   getters: {
-    previewSizeValue(state) {
-      return previewSizes[state.previewSize]
+    previewWidthValue(state) {
+      return previewWidths[state.previewWidth]
+    },
+    thumbnailHeightValue(state) {
+      return thumbnailHeights[state.thumbnailHeight]
     },
     isFileAvailable(state) {
       return ({ filepath }) => {
@@ -63,11 +72,14 @@ export default {
     setImageStretched(state, { imageStretched }) {
       state.imageStretched = imageStretched
     },
-    setPreviewSize(state, { previewSize }) {
-      state.previewSize = previewSize
+    setPreviewWidth(state, { previewWidth }) {
+      state.previewWidth = previewWidth
     },
     setThumbnailStyle(state, { thumbnailStyle }) {
       state.thumbnailStyle = thumbnailStyle
+    },
+    setThumbnailHeight(state, { thumbnailHeight }) {
+      state.thumbnailHeight = thumbnailHeight
     },
     setExtensions(state, { extensions }) {
       state.extensions = extensions
