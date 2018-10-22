@@ -69,7 +69,7 @@ export default {
       })
     },
     estimatedHeight() {
-      return this.thumbnailHeightValue + 74
+      return this.thumbnailHeightValue + 77
     },
     ...mapGetters('settings', ['thumbnailHeightValue']),
     ...mapState('local/explorer', [

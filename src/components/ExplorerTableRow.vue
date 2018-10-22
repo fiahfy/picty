@@ -21,19 +21,19 @@
             class="pa-1"
           >{{ icon }}</v-icon>
           <v-card :width="previewWidthValue">
-            <v-layout
-              v-if="message"
-              align-center
-              justify-center
-            >
-              <v-flex class="py-3 text-xs-center caption">{{ message }}</v-flex>
-            </v-layout>
             <v-img
-              v-else
               :src="imageUrl"
               contain
               @error="onError"
-            />
+            >
+              <v-layout
+                fill-height
+                align-center
+                justify-center
+              >
+                <v-flex class="py-3 text-xs-center caption">{{ message }}</v-flex>
+              </v-layout>
+            </v-img>
           </v-card>
         </v-menu>
         <span

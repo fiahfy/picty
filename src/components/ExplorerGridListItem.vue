@@ -8,21 +8,21 @@
       @dblclick="onDblClick"
       @contextmenu.stop="onContextMenu"
     >
-      <v-layout
-        v-if="message"
-        :style="{ height: `${thumbnailHeightValue}px` }"
-        align-center
-        justify-center
-      >
-        <v-flex class="text-xs-center caption">{{ message }}</v-flex>
-      </v-layout>
       <v-img
-        v-else
         :src="imageUrl"
         :contain="contain"
         :height="thumbnailHeightValue"
         @error="onError"
-      />
+      >
+        <v-layout
+          slot="placeholder"
+          fill-height
+          align-center
+          justify-center
+        >
+          <v-flex class="text-xs-center caption">{{ message }}</v-flex>
+        </v-layout>
+      </v-img>
       <v-icon
         :color="iconColor"
         class="pa-1"
@@ -203,10 +203,11 @@ export default {
     display: table;
     & > div {
       display: table-cell;
-      height: 25px;
+      height: 28px;
       vertical-align: middle;
       & > span {
         display: -webkit-box;
+        line-height: 1.2;
         overflow: hidden;
         text-overflow: ellipsis;
         word-break: break-all;
