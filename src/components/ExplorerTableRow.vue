@@ -123,8 +123,7 @@ export default {
     menuDisabled() {
       return !this.previewWidthValue
     },
-    ...mapGetters('settings', ['previewWidthValue']),
-    ...mapGetters('settings', ['isFileAvailable']),
+    ...mapGetters('settings', ['previewWidthValue', 'isFileAvailable']),
     ...mapGetters('local/explorer', ['isFileSelected'])
   },
   async created() {
