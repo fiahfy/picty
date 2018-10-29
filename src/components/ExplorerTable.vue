@@ -169,7 +169,7 @@ export default {
 <style scoped lang="scss">
 .explorer-table {
   outline: none;
-  & /deep/ .v-datatable {
+  /deep/ .v-datatable {
     min-width: 768px;
   }
 }

@@ -168,7 +168,7 @@ export default {
 <style scoped lang="scss">
 .bookmark-table {
   outline: none;
-  & /deep/ .v-datatable {
+  /deep/ .v-datatable {
     min-width: 512px;
   }
 }

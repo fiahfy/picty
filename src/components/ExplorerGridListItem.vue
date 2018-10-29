@@ -201,11 +201,11 @@ export default {
   }
   .title {
     display: table;
-    & > div {
+    > div {
       display: table-cell;
       height: 28px;
       vertical-align: middle;
-      & > span {
+      > span {
         display: -webkit-box;
         line-height: 1.2;
         overflow: hidden;

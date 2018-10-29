@@ -236,7 +236,7 @@ export default {
       top: -10px;
       z-index: 1;
     }
-    & /deep/ .layout {
+    /deep/ .layout {
       margin: 0px !important;
     }
   }
