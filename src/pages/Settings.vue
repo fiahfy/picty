@@ -1,8 +1,8 @@
 <template>
   <v-container
     class="settings"
-    fluid
     fill-height
+    fluid
     pa-0
     scroll-y
   >
