@@ -23,10 +23,7 @@
       slot-scope="props"
       :bookmark="props.item"
     />
-    <v-progress-linear
-      slot="progress"
-      indeterminate
-    />
+    <v-progress-linear slot="progress" indeterminate />
   </virtual-data-table>
 </template>
 

@@ -1,12 +1,7 @@
 <template>
-  <v-toolbar
-    class="viewer-top-toolbar"
-    color="transparent"
-    flat
-    dense
-  >
+  <v-toolbar class="viewer-top-toolbar" color="transparent" flat dense>
     <v-btn
-      :title="'Close'|accelerator('Esc')"
+      :title="'Close' | accelerator('Esc')"
       flat
       icon
       @click="onCloseClick"

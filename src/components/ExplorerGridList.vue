@@ -21,22 +21,9 @@
       :file="props.item"
       :class="classes"
     />
-    <v-progress-linear
-      slot="progress"
-      indeterminate
-    />
-    <v-card
-      slot="no-data"
-      class="ma-3 pa-3"
-    >
-      {{ noDataText }}
-    </v-card>
-    <v-card
-      slot="no-results"
-      class="ma-3 pa-3"
-    >
-      {{ noDataText }}
-    </v-card>
+    <v-progress-linear slot="progress" indeterminate />
+    <v-card slot="no-data" class="ma-3 pa-3">{{ noDataText }}</v-card>
+    <v-card slot="no-results" class="ma-3 pa-3">{{ noDataText }}</v-card>
   </virtual-data-iterator>
 </template>
 

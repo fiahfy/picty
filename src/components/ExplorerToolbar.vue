@@ -1,12 +1,8 @@
 <template>
-  <v-toolbar
-    class="explorer-toolbar"
-    flat
-    dense
-  >
+  <v-toolbar class="explorer-toolbar" flat dense>
     <v-btn
       v-long-press="onBackContextMenu"
-      :title="'Back'|accelerator('CmdOrCtrl+Left')"
+      :title="'Back' | accelerator('CmdOrCtrl+Left')"
       :disabled="backDisabled"
       flat
       icon
@@ -17,7 +13,7 @@
     </v-btn>
     <v-btn
       v-long-press="onForwardContextMenu"
-      :title="'Forward'|accelerator('CmdOrCtrl+Right')"
+      :title="'Forward' | accelerator('CmdOrCtrl+Right')"
       :disabled="forwardDisabled"
       flat
       icon
@@ -27,23 +23,18 @@
       <v-icon>arrow_forward</v-icon>
     </v-btn>
     <v-btn
-      :title="'Up'|accelerator('CmdOrCtrl+Shift+P')"
+      :title="'Up' | accelerator('CmdOrCtrl+Shift+P')"
       flat
       icon
       @click="onUpwardClick"
     >
       <v-icon>arrow_upward</v-icon>
     </v-btn>
-    <v-btn
-      title="Reload"
-      flat
-      icon
-      @click="onRefreshClick"
-    >
+    <v-btn title="Reload" flat icon @click="onRefreshClick">
       <v-icon>refresh</v-icon>
     </v-btn>
     <v-btn
-      :title="'Home'|accelerator('CmdOrCtrl+Shift+H')"
+      :title="'Home' | accelerator('CmdOrCtrl+Shift+H')"
       flat
       icon
       @click="onHomeClick"
@@ -51,7 +42,7 @@
       <v-icon>home</v-icon>
     </v-btn>
     <v-btn
-      :title="'Bookmark'|accelerator('CmdOrCtrl+D')"
+      :title="'Bookmark' | accelerator('CmdOrCtrl+D')"
       :color="bookmarkColor"
       flat
       icon

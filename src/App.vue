@@ -7,9 +7,7 @@
   >
     <title-bar />
     <activity-bar />
-    <v-content class="fill-height">
-      <router-view />
-    </v-content>
+    <v-content class="fill-height"><router-view /></v-content>
     <notification-bar />
     <viewer />
   </v-app>

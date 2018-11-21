@@ -1,17 +1,7 @@
 <template>
-  <div
-    v-resize="onResize"
-    class="virtual-data-iterator"
-  >
-    <v-container
-      :class="classes"
-      fluid
-      pa-0
-    >
-      <slot
-        v-if="loading"
-        name="progress"
-      />
+  <div v-resize="onResize" class="virtual-data-iterator">
+    <v-container :class="classes" fluid pa-0>
+      <slot v-if="loading" name="progress" />
       <v-data-iterator
         ref="iterator"
         v-model="model"
@@ -23,20 +13,14 @@
         row
         wrap
       >
-        <template
-          slot="item"
-          slot-scope="props"
-        >
+        <template slot="item" slot-scope="props">
           <v-flex
             v-if="props.index === 0"
             :style="{ height: `${padding.top}px` }"
             class="pa-0"
             xs12
           />
-          <slot
-            v-bind="props"
-            name="items"
-          />
+          <slot v-bind="props" name="items" />
           <v-flex
             v-if="props.index === renderItems.length - 1"
             :style="{ height: `${padding.bottom}px` }"
@@ -44,14 +28,8 @@
             xs12
           />
         </template>
-        <slot
-          slot="no-data"
-          name="no-data"
-        />
-        <slot
-          slot="no-results"
-          name="no-results"
-        />
+        <slot slot="no-data" name="no-data" />
+        <slot slot="no-results" name="no-results" />
       </v-data-iterator>
     </v-container>
   </div>

@@ -1,26 +1,11 @@
 <template>
-  <v-container
-    class="explorer"
-    fill-height
-    fluid
-    pa-0
-  >
+  <v-container class="explorer" fill-height fluid pa-0>
     <v-layout column>
       <explorer-toolbar />
       <explorer-card />
-      <v-container
-        fluid
-        pa-0
-        overflow-hidden
-      >
-        <explorer-table
-          v-if="display === 'list'"
-          class="fill-height"
-        />
-        <explorer-grid-list
-          v-else
-          class="fill-height"
-        />
+      <v-container fluid pa-0 overflow-hidden>
+        <explorer-table v-if="display === 'list'" class="fill-height" />
+        <explorer-grid-list v-else class="fill-height" />
       </v-container>
     </v-layout>
   </v-container>

@@ -1,7 +1,5 @@
 <template>
-  <v-flex
-    class="explorer-grid-list-item"
-  >
+  <v-flex class="explorer-grid-list-item">
     <v-card
       :active="active"
       @click.native="onClick"
@@ -14,37 +12,24 @@
         :height="thumbnailHeightValue"
         @error="onError"
       >
-        <v-layout
-          slot="placeholder"
-          fill-height
-          align-center
-          justify-center
-        >
+        <v-layout slot="placeholder" fill-height align-center justify-center>
           <v-flex class="text-xs-center caption">{{ message }}</v-flex>
         </v-layout>
       </v-img>
-      <v-icon
-        :color="iconColor"
-        class="pa-1"
-      >{{ icon }}</v-icon>
+      <v-icon :color="iconColor" class="pa-1">{{ icon }}</v-icon>
       <v-divider />
       <v-card-title class="pt-2 px-2 pb-0">
         <v-spacer />
         <div class="title">
           <div>
-            <span
-              :title="file.name"
-              class="text-xs-center caption"
-            >{{ file.name }}</span>
+            <span :title="file.name" class="text-xs-center caption">
+              {{ file.name }}
+            </span>
           </div>
         </div>
         <v-spacer />
       </v-card-title>
-      <v-card-actions
-        class="pa-0"
-        @click.stop
-        @dblclick.stop
-      >
+      <v-card-actions class="pa-0" @click.stop @dblclick.stop>
         <v-spacer />
         <v-rating
           v-model="rating"

@@ -10,44 +10,20 @@
     :disable-initial-sort="true"
     class="virtual-data-table"
   >
-    <template
-      slot="headers"
-      slot-scope="props"
-    >
-      <slot
-        v-bind="props"
-        name="headers"
-      />
+    <template slot="headers" slot-scope="props">
+      <slot v-bind="props" name="headers" />
     </template>
-    <template
-      slot="items"
-      slot-scope="props"
-    >
-      <tr
-        v-if="props.index === 0"
-        :style="{ height: `${padding.top}px` }"
-      />
-      <slot
-        v-bind="props"
-        name="items"
-      />
+    <template slot="items" slot-scope="props">
+      <tr v-if="props.index === 0" :style="{ height: `${padding.top}px` }" />
+      <slot v-bind="props" name="items" />
       <tr
         v-if="props.index === renderItems.length - 1"
         :style="{ height: `${padding.bottom}px` }"
       />
     </template>
-    <slot
-      slot="progress"
-      name="progress"
-    />
-    <slot
-      slot="no-data"
-      name="no-data"
-    />
-    <slot
-      slot="no-results"
-      name="no-results"
-    />
+    <slot slot="progress" name="progress" />
+    <slot slot="no-data" name="no-data" />
+    <slot slot="no-results" name="no-results" />
   </v-data-table>
 </template>
 

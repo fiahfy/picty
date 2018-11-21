@@ -381,9 +381,8 @@ export default {
       state.files = files
     },
     updateFile(state, { filepath, file }) {
-      state.files = state.files.map(
-        (current) =>
-          current.path !== filepath ? current : { ...current, ...file }
+      state.files = state.files.map((current) =>
+        current.path !== filepath ? current : { ...current, ...file }
       )
     },
     setSelectedFilepath(state, { selectedFilepath }) {

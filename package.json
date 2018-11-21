@@ -13,7 +13,7 @@
     "electron-devtools-installer": "^2.2.0",
     "electron-window-state": "^5.0.0",
     "file-url": "^2.0.2",
-    "material-design-icons-iconfont": "^3.0.3",
+    "material-design-icons-iconfont": "^4.0.2",
     "typeface-roboto": "^0.0.54",
     "vue": "^2.4.2",
     "vue-long-press-directive": "^1.0.2",

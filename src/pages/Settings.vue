@@ -1,19 +1,10 @@
 <template>
-  <v-container
-    class="settings"
-    fill-height
-    fluid
-    pa-0
-    scroll-y
-  >
+  <v-container class="settings" fill-height fluid pa-0 scroll-y>
     <v-layout>
       <v-container class="my-0">
         <v-subheader>General</v-subheader>
         <v-container>
-          <v-checkbox
-            v-model="darkTheme"
-            label="Use dark theme"
-          />
+          <v-checkbox v-model="darkTheme" label="Use dark theme" />
           <v-combobox
             v-model="extensions"
             :items="defaultExtensions"
@@ -21,10 +12,7 @@
             chips
             multiple
           >
-            <template
-              slot="selection"
-              slot-scope="data"
-            >
+            <template slot="selection" slot-scope="data">
               <v-chip
                 :selected="data.selected"
                 close
@@ -57,18 +45,12 @@
 
         <v-subheader>Viewer</v-subheader>
         <v-container>
-          <v-checkbox
-            v-model="fullScreen"
-            label="Enter full screen"
-          />
+          <v-checkbox v-model="fullScreen" label="Enter full screen" />
           <v-checkbox
             v-model="recursive"
             label="View images in directory recursively"
           />
-          <v-checkbox
-            v-model="imageStretched"
-            label="Stretch small images"
-          />
+          <v-checkbox v-model="imageStretched" label="Stretch small images" />
         </v-container>
       </v-container>
     </v-layout>

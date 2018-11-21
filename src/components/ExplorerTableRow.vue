@@ -8,55 +8,31 @@
   >
     <td>
       <v-layout class="align-center">
-        <v-menu
-          :disabled="menuDisabled"
-          open-on-hover
-          right
-          offset-x
-          lazy
-        >
-          <v-icon
-            slot="activator"
-            :color="iconColor"
-            class="pa-1"
-          >{{ icon }}</v-icon>
+        <v-menu :disabled="menuDisabled" open-on-hover right offset-x lazy>
+          <v-icon slot="activator" :color="iconColor" class="pa-1">
+            {{ icon }}
+          </v-icon>
           <v-card :width="previewWidthValue">
-            <v-img
-              :src="imageUrl"
-              contain
-              @error="onError"
-            >
-              <v-layout
-                fill-height
-                align-center
-                justify-center
-              >
-                <v-flex class="py-3 text-xs-center caption">{{ message }}</v-flex>
+            <v-img :src="imageUrl" contain @error="onError">
+              <v-layout fill-height align-center justify-center>
+                <v-flex class="py-3 text-xs-center caption">
+                  {{ message }}
+                </v-flex>
               </v-layout>
             </v-img>
           </v-card>
         </v-menu>
-        <span
-          :title="file.name"
-          class="ellipsis"
-        >{{ file.name }}</span>
+        <span :title="file.name" class="ellipsis">{{ file.name }}</span>
       </v-layout>
     </td>
-    <td class="text-xs-right">
-      {{ file.views || '' }}
-    </td>
-    <td
-      @click.stop
-      @dblclick.stop
-    >
-      <v-rating
-        v-model="rating"
-        half-increments
-        clearable
-      />
+    <td class="text-xs-right">{{ file.views || '' }}</td>
+    <td @click.stop @dblclick.stop>
+      <v-rating v-model="rating" half-increments clearable />
     </td>
     <td class="no-wrap">
-      <template v-if="file.modified_at">{{ file.modified_at | moment('YYYY-MM-DD HH:mm') }}</template>
+      <template v-if="file.modified_at">
+        {{ file.modified_at | moment('YYYY-MM-DD HH:mm') }}
+      </template>
     </td>
   </tr>
 </template>

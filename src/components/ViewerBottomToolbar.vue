@@ -1,12 +1,7 @@
 <template>
-  <v-toolbar
-    class="viewer-bottom-toolbar"
-    color="transparent"
-    flat
-    dense
-  >
+  <v-toolbar class="viewer-bottom-toolbar" color="transparent" flat dense>
     <v-btn
-      :title="'View previous image'|accelerator('Left')"
+      :title="'View previous image' | accelerator('Left')"
       flat
       icon
       @click="onPreviousClick"
@@ -15,7 +10,7 @@
     </v-btn>
 
     <v-btn
-      :title="'View next image'|accelerator('Right')"
+      :title="'View next image' | accelerator('Right')"
       flat
       icon
       @click="onNextClick"
@@ -44,22 +39,12 @@
       offset-y
       nudge-top="12"
     >
-      <v-btn
-        slot="activator"
-        title="Zoom"
-        flat
-        icon
-      >
+      <v-btn slot="activator" title="Zoom" flat icon>
         <v-icon>zoom_in</v-icon>
       </v-btn>
-      <v-toolbar
-        ref="toolbar"
-        flat
-        dense
-        dark
-      >
+      <v-toolbar ref="toolbar" flat dense dark>
         <v-btn
-          :title="'Zoom in'|accelerator('CmdOrCtrl+Plus')"
+          :title="'Zoom in' | accelerator('CmdOrCtrl+Plus')"
           flat
           icon
           @click="onZoomInClick"
@@ -68,7 +53,7 @@
         </v-btn>
         <span class="px-3">{{ percentage }}%</span>
         <v-btn
-          :title="'Zoom out'|accelerator('CmdOrCtrl+-')"
+          :title="'Zoom out' | accelerator('CmdOrCtrl+-')"
           flat
           icon
           @click="onZoomOutClick"
@@ -76,7 +61,7 @@
           <v-icon>zoom_out</v-icon>
         </v-btn>
         <v-btn
-          :title="'Reset'|accelerator('CmdOrCtrl+0')"
+          :title="'Reset' | accelerator('CmdOrCtrl+0')"
           flat
           @click="onResetClick"
         >

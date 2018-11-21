@@ -1,15 +1,8 @@
 <template>
-  <v-card
-    class="explorer-card"
-    flat
-    tile
-  >
-    <v-toolbar
-      color="transparent"
-      flat
-    >
+  <v-card class="explorer-card" flat tile>
+    <v-toolbar color="transparent" flat>
       <v-btn
-        :title="'View'|accelerator('Enter')"
+        :title="'View' | accelerator('Enter')"
         :disabled="!canViewFile"
         flat
         icon
@@ -18,13 +11,7 @@
         <v-icon>photo</v-icon>
       </v-btn>
       <v-spacer />
-      <v-btn
-        :color="listColor"
-        title="List"
-        flat
-        icon
-        @click="onListClick"
-      >
+      <v-btn :color="listColor" title="List" flat icon @click="onListClick">
         <v-icon>view_headline</v-icon>
       </v-btn>
       <v-btn

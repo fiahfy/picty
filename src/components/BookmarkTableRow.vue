@@ -8,15 +8,14 @@
   >
     <td :title="bookmark.path">
       <v-layout class="align-center">
-        <v-icon
-          class="pa-1"
-          color="blue lighten-3"
-        >folder</v-icon>
+        <v-icon class="pa-1" color="blue lighten-3">folder</v-icon>
         <span class="ellipsis">{{ bookmark.path }}</span>
       </v-layout>
     </td>
     <td class="no-wrap">
-      <template v-if="bookmark.added_at">{{ bookmark.added_at | moment('YYYY-MM-DD HH:mm') }}</template>
+      <template v-if="bookmark.added_at">
+        {{ bookmark.added_at | moment('YYYY-MM-DD HH:mm') }}
+      </template>
     </td>
   </tr>
 </template>
