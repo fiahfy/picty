@@ -6,21 +6,27 @@ import Settings from '~/pages/Settings'
 
 Vue.use(Router)
 
+export const Name = {
+  explorer: 'explorer',
+  bookmark: 'bookmark',
+  settings: 'settings'
+}
+
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'explorer',
+      name: Name.explorer,
       component: Explorer
     },
     {
       path: '/bookmark',
-      name: 'bookmark',
+      name: Name.bookmark,
       component: Bookmark
     },
     {
       path: '/settings',
-      name: 'settings',
+      name: Name.settings,
       component: Settings
     }
   ]

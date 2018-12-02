@@ -24,9 +24,9 @@
       v-if="!loading"
       ref="slider"
       v-model="page"
+      class="px-3"
       :min="1"
       :max="maxPage"
-      class="px-3"
       hide-details
     />
 

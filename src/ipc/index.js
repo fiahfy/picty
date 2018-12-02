@@ -1,4 +1,5 @@
 import { ipcRenderer, remote } from 'electron'
+import { Name } from '~/router'
 import { Selector } from '~/store'
 
 export const addIpcRendererListeners = (store) => {
@@ -42,18 +43,18 @@ export const addIpcRendererListeners = (store) => {
     store.dispatch('select', { selector: Selector.queryInput })
   })
   ipcRenderer.on('showExplorer', () => {
-    store.dispatch('changeRoute', { name: 'explorer' })
+    store.dispatch('changeRoute', { name: Name.explorer })
   })
   ipcRenderer.on('showBookmark', () => {
-    store.dispatch('changeRoute', { name: 'bookmark' })
+    store.dispatch('changeRoute', { name: Name.bookmark })
   })
   ipcRenderer.on('showSettings', () => {
-    store.dispatch('changeRoute', { name: 'settings' })
+    store.dispatch('changeRoute', { name: Name.settings })
   })
   ipcRenderer.on('openLocation', () => {
     store.dispatch('focus', { selector: Selector.directoryInput })
     store.dispatch('select', { selector: Selector.directoryInput })
-    store.dispatch('changeRoute', { name: 'explorer' })
+    store.dispatch('changeRoute', { name: Name.explorer })
   })
   ipcRenderer.on('backDirectory', () => {
     store.dispatch('local/explorer/backDirectory')

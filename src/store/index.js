@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import { remote } from 'electron'
 import Package from '~~/package.json'
-import router from '~/router'
+import router, { Name } from '~/router'
 import * as File from '~/utils/file'
 import local from './local'
 import bookmark from './bookmark'
@@ -46,7 +46,7 @@ export default new Vuex.Store({
     },
     openDirectory({ dispatch }, { dirpath }) {
       dispatch('local/explorer/changeDirectory', { dirpath })
-      dispatch('changeRoute', { name: 'explorer' })
+      dispatch('changeRoute', { name: Name.explorer })
     },
     showViewer({ commit, dispatch, state }, payload) {
       dispatch('local/viewer/loadFiles', payload)

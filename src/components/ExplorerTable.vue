@@ -1,12 +1,12 @@
 <template>
   <virtual-data-table
     ref="table"
+    class="explorer-table"
     :headers="headers"
     :items="filteredFiles"
+    item-key="path"
     :loading="loading"
     :no-data-text="noDataText"
-    class="explorer-table"
-    item-key="path"
     hide-actions
     sticky-headers
     tabindex="0"
@@ -72,7 +72,7 @@ export default {
       if (this.loading) {
         return 'Loading...'
       }
-      return this.query ? 'No matching records found' : 'No data available'
+      return this.query ? 'No matching records found.' : 'No data available.'
     },
     ...mapState('local/explorer', [
       'directory',

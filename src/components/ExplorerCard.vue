@@ -1,6 +1,6 @@
 <template>
   <v-card class="explorer-card" flat tile>
-    <v-toolbar color="transparent" flat>
+    <v-toolbar color="transparent" flat dense>
       <v-btn
         :title="'View' | accelerator('Enter')"
         :disabled="!canViewFile"
@@ -25,9 +25,9 @@
       </v-btn>
       <v-autocomplete
         v-model="queryInput"
+        class="ml-3 pt-0"
         :items="queryHistories.slice().reverse()"
         name="query"
-        class="ml-3 pt-0"
         label="Search"
         prepend-icon="search"
         single-line

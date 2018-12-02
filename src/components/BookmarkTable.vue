@@ -1,10 +1,11 @@
 <template>
   <virtual-data-table
     ref="table"
+    class="bookmark-table"
     :headers="headers"
     :items="bookmarks"
-    class="bookmark-table"
     item-key="path"
+    no-data-text="No data available."
     hide-actions
     sticky-headers
     tabindex="0"

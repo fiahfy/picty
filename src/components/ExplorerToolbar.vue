@@ -52,8 +52,8 @@
     </v-btn>
     <v-text-field
       v-model="directoryInput"
-      name="directory"
       class="ml-3 pt-0"
+      name="directory"
       label="Path"
       prepend-icon="folder"
       single-line

@@ -2,7 +2,7 @@
   <v-container class="settings" fill-height fluid pa-0 scroll-y>
     <v-layout>
       <v-container class="my-0">
-        <v-subheader class="pl-0">General</v-subheader>
+        <v-subheader class="pl-0">GENERAL</v-subheader>
         <v-checkbox v-model="darkTheme" class="mt-0" label="Use dark theme" />
         <v-combobox
           v-model="extensions"
@@ -22,7 +22,7 @@
           </template>
         </v-combobox>
 
-        <v-subheader class="pl-0">Explorer</v-subheader>
+        <v-subheader class="pl-0">EXPLORER</v-subheader>
         <v-select
           v-model="previewWidth"
           :items="previewWidths"
@@ -39,7 +39,7 @@
           label="Thumbnail height"
         />
 
-        <v-subheader class="pl-0">Viewer</v-subheader>
+        <v-subheader class="pl-0">VIEWER</v-subheader>
         <v-checkbox
           v-model="fullScreen"
           class="mt-0"
