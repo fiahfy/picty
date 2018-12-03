@@ -3,11 +3,11 @@
     <v-layout>
       <v-container class="my-0">
         <v-subheader class="pl-0">GENERAL</v-subheader>
-        <v-checkbox v-model="darkTheme" class="mt-0" label="Use dark theme" />
+        <v-checkbox v-model="darkTheme" class="mt-0" label="Use Dark Theme" />
         <v-combobox
           v-model="extensions"
           :items="defaultExtensions"
-          label="Image file extensions"
+          label="Image File Extensions"
           chips
           multiple
         >
@@ -26,34 +26,34 @@
         <v-select
           v-model="previewWidth"
           :items="previewWidths"
-          label="Preview width"
+          label="Preview Width"
         />
         <v-select
           v-model="thumbnailStyle"
           :items="thumbnailStyles"
-          label="Thumbnail style"
+          label="Thumbnail Style"
         />
         <v-select
           v-model="thumbnailHeight"
           :items="thumbnailHeights"
-          label="Thumbnail height"
+          label="Thumbnail Height"
         />
 
         <v-subheader class="pl-0">VIEWER</v-subheader>
         <v-checkbox
           v-model="fullScreen"
           class="mt-0"
-          label="Enter full screen"
+          label="Enter Full Screen"
         />
         <v-checkbox
           v-model="recursive"
           class="mt-0"
-          label="View images in directory recursively"
+          label="View Images In Directory Recursively"
         />
         <v-checkbox
           v-model="imageStretched"
           class="mt-0"
-          label="Stretch small images"
+          label="Stretch Small Images"
         />
       </v-container>
     </v-layout>
