@@ -43,7 +43,7 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import * as ContextMenu from '~/utils/context-menu'
+import ContextMenu from '~/utils/context-menu'
 
 export default {
   computed: {
@@ -88,8 +88,8 @@ export default {
         this.searchFiles({ query: e.target.value })
       }
     },
-    onTextContextMenu(e) {
-      ContextMenu.showTextMenu(e)
+    onTextContextMenu() {
+      ContextMenu.showSimpleTextMenus()
     },
     ...mapActions('local/explorer', ['searchFiles', 'viewFile', 'setDisplay'])
   }

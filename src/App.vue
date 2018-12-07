@@ -19,7 +19,7 @@ import ActivityBar from './components/ActivityBar'
 import NotificationBar from './components/NotificationBar'
 import TitleBar from './components/TitleBar'
 import Viewer from './components/Viewer'
-import * as ContextMenu from './utils/context-menu'
+import ContextMenu from './utils/context-menu'
 
 export default {
   components: {
@@ -36,8 +36,8 @@ export default {
     this.initialize()
   },
   methods: {
-    onContextMenu(e) {
-      ContextMenu.show(e)
+    onContextMenu() {
+      ContextMenu.show()
     },
     onDrop(e) {
       const files = Array.from(e.dataTransfer.files)

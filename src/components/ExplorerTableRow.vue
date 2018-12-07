@@ -41,7 +41,7 @@
 import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
 import { mapActions, mapGetters } from 'vuex'
-import * as ContextMenu from '~/utils/context-menu'
+import ContextMenu from '~/utils/context-menu'
 import Worker from '~/workers/child-fetch.worker.js'
 
 const worker = workerPromisify(new Worker())
@@ -127,7 +127,7 @@ export default {
     onDblClick() {
       this.openFile({ filepath: this.file.path })
     },
-    onContextMenu(e) {
+    onContextMenu() {
       this.selectFile({ filepath: this.file.path })
       let templates = [
         {
@@ -149,7 +149,7 @@ export default {
           }
         ]
       }
-      ContextMenu.show(e, templates)
+      ContextMenu.show(templates)
     },
     onError() {
       this.error = true

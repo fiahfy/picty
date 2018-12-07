@@ -67,7 +67,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import * as ContextMenu from '~/utils/context-menu'
+import ContextMenu from '~/utils/context-menu'
 
 export default {
   computed: {
@@ -102,9 +102,8 @@ export default {
     onBackClick() {
       this.backDirectory()
     },
-    onBackContextMenu(e) {
+    onBackContextMenu() {
       ContextMenu.show(
-        e,
         this.backDirectories.map((directory, index) => {
           return {
             label: directory,
@@ -116,9 +115,8 @@ export default {
     onForwardClick() {
       this.forwardDirectory()
     },
-    onForwardContextMenu(e) {
+    onForwardContextMenu() {
       ContextMenu.show(
-        e,
         this.forwardDirectories.map((directory, index) => {
           return {
             label: directory,
@@ -139,8 +137,8 @@ export default {
     onBookmarkClick() {
       this.toggleDirectoryBookmarked()
     },
-    onTextContextMenu(e) {
-      ContextMenu.showTextMenu(e)
+    onTextContextMenu() {
+      ContextMenu.showSimpleTextMenus()
     },
     onTextKeyUp(e) {
       if (e.keyCode === 13) {

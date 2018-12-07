@@ -22,7 +22,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import * as ContextMenu from '~/utils/context-menu'
+import ContextMenu from '~/utils/context-menu'
 
 export default {
   props: {
@@ -44,7 +44,7 @@ export default {
     onDblClick() {
       this.openBookmark({ filepath: this.bookmark.path })
     },
-    onContextMenu(e) {
+    onContextMenu() {
       this.selectBookmark({ filepath: this.bookmark.path })
       let templates = [
         {
@@ -76,7 +76,7 @@ export default {
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
-      ContextMenu.show(e, templates)
+      ContextMenu.show(templates)
     },
     ...mapActions('local/bookmark', [
       'removeBookmark',
