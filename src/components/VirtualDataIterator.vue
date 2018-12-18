@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import * as Viewport from '~/utils/viewport'
+import viewport from '~/utils/viewport'
 
 export default {
   props: {
@@ -145,7 +145,7 @@ export default {
       if (!this.container) {
         return
       }
-      const size = 12 / this.calculatedSizes[Viewport.getSizeIndex()]
+      const size = 12 / this.calculatedSizes[viewport.getSizeIndex()]
 
       const { scrollTop, offsetHeight } = this.container
       const index = Math.floor(scrollTop / this.estimatedHeight)

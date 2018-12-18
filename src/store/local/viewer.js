@@ -1,6 +1,6 @@
 import workerPromisify from '@fiahfy/worker-promisify'
-import * as File from '~/utils/file'
-import Worker from '~/workers/file-bridge.worker.js'
+import file from '~/utils/file'
+import Worker from '~/workers/file.worker.js'
 
 const scales = [
   0.25,
@@ -61,10 +61,10 @@ export const actions = {
           args: [dirpath, { recursive: rootState.settings.recursive }]
         })).data
       } else if (filepath) {
-        const file = File.getFile(filepath)
+        const f = file.getFile(filepath)
         files = (await worker.postMessage({
           method: 'listFiles',
-          args: [file.dirname]
+          args: [f.dirname]
         })).data
         currentFilepath = filepath
       } else {

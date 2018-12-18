@@ -41,7 +41,7 @@
 import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
 import { mapActions, mapGetters } from 'vuex'
-import Worker from '~/workers/child-fetch.worker.js'
+import Worker from '~/workers/fetch.worker.js'
 
 const worker = workerPromisify(new Worker())
 

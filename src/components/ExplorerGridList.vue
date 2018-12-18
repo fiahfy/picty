@@ -31,7 +31,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import ExplorerGridListItem from './ExplorerGridListItem'
 import VirtualDataIterator from './VirtualDataIterator'
-import * as Viewport from '~/utils/viewport'
+import viewport from '~/utils/viewport'
 
 export default {
   components: {
@@ -51,7 +51,7 @@ export default {
       return this.query ? 'No matching records found' : 'No data available'
     },
     classes() {
-      return Viewport.sizes.map((s, i) => {
+      return viewport.SIZES.map((s, i) => {
         return s + this.sizes[i]
       })
     },
@@ -114,7 +114,7 @@ export default {
       })
     },
     getItemOffset() {
-      return 12 / this.sizes[Viewport.getSizeIndex()]
+      return 12 / this.sizes[viewport.getSizeIndex()]
     },
     onScroll(e) {
       this.setScrollTop({ scrollTop: e.target.scrollTop })

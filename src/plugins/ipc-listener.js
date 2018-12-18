@@ -51,9 +51,11 @@ export default ({ store }) => {
     store.$router.push('/settings')
   })
   ipcRenderer.on('openLocation', () => {
-    store.dispatch('focus', { selector: selector.DIRECTORY_INPUT })
-    store.dispatch('select', { selector: selector.DIRECTORY_INPUT })
     store.$router.push('/explorer')
+    setTimeout(() => {
+      store.dispatch('focus', { selector: selector.DIRECTORY_INPUT })
+      store.dispatch('select', { selector: selector.DIRECTORY_INPUT })
+    }, 100)
   })
   ipcRenderer.on('backDirectory', () => {
     store.dispatch('local/explorer/backDirectory')

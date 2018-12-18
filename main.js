@@ -203,6 +203,13 @@ const createWindow = async () => {
     }
   }
 
+  if (dev) {
+    options.webPreferences = {
+      ...options.webPreferences,
+      webSecurity: false
+    }
+  }
+
   const path = '#/explorer'
 
   mainWindow = new BrowserWindow(options)

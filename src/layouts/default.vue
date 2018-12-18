@@ -50,3 +50,10 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+#app .v-content .container:nth-child(2) {
+  /* prevent flash if page is changed */
+  display: none;
+}
+</style>

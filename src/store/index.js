@@ -1,7 +1,7 @@
 import createPersistedState from 'vuex-persistedstate'
 import { remote } from 'electron'
 import Package from '~~/package.json'
-import * as File from '~/utils/file'
+import file from '~/utils/file'
 
 export const state = () => ({
   title: Package.productName,
@@ -21,9 +21,9 @@ export const actions = {
     dispatch('local/explorer/initialize')
   },
   open({ dispatch }, { filepathes }) {
-    const file = File.getFile(filepathes[0])
-    if (filepathes.length === 1 && file.directory) {
-      dispatch('openDirectory', { dirpath: file.path })
+    const f = file.getFile(filepathes[0])
+    if (filepathes.length === 1 && f.directory) {
+      dispatch('openDirectory', { dirpath: f.path })
     } else {
       dispatch('showViewer', { filepathes })
     }
@@ -47,9 +47,7 @@ export const actions = {
       dispatch('leaveFullScreen')
     }
     commit('setViewing', { viewing: false })
-    if (this.$route.path === '/explorer') {
-      dispatch('local/explorer/focus')
-    }
+    dispatch('local/explorer/focus')
   },
   enterFullScreen() {
     const browserWindow = remote.getCurrentWindow()
