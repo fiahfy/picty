@@ -7,7 +7,7 @@
   >
     <title-bar />
     <activity-bar />
-    <v-content class="fill-height"><router-view /></v-content>
+    <v-content class="fill-height"><nuxt /></v-content>
     <notification-bar />
     <viewer />
   </v-app>
@@ -15,11 +15,10 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import ActivityBar from './components/ActivityBar'
-import NotificationBar from './components/NotificationBar'
-import TitleBar from './components/TitleBar'
-import Viewer from './components/Viewer'
-import ContextMenu from './utils/context-menu'
+import ActivityBar from '~/components/ActivityBar'
+import NotificationBar from '~/components/NotificationBar'
+import TitleBar from '~/components/TitleBar'
+import Viewer from '~/components/Viewer'
 
 export default {
   components: {
@@ -37,7 +36,7 @@ export default {
   },
   methods: {
     onContextMenu() {
-      ContextMenu.show()
+      this.$contextMenu.show()
     },
     onDrop(e) {
       const files = Array.from(e.dataTransfer.files)
@@ -51,20 +50,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-@import '~typeface-roboto/index.css';
-@import '~material-design-icons-iconfont/dist/material-design-icons.css';
-@import '~vuetify/dist/vuetify.min.css';
-
-html {
-  overflow-y: hidden;
-}
-
-.no-transition {
-  &-leave-active,
-  &-enter-active {
-    transition: none;
-  }
-}
-</style>

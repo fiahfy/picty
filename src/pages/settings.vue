@@ -61,29 +61,26 @@
 </template>
 
 <script>
-import {
-  defaultExtensions,
-  previewWidths,
-  thumbnailStyles,
-  thumbnailHeights
-} from '~/store/settings'
+import settings from '~/consts/settings'
 
 export default {
   data() {
     return {
-      defaultExtensions,
-      previewWidths: Object.keys(previewWidths).map((size) => ({
+      defaultExtensions: settings.DEFAULT_EXTENSIONS,
+      previewWidths: Object.keys(settings.PREVIEW_WIDTHS).map((size) => ({
         value: size,
         text: size.charAt(0).toUpperCase() + size.slice(1)
       })),
-      thumbnailStyles: thumbnailStyles.map((style) => ({
+      thumbnailStyles: settings.THUMBNAIL_STYLES.map((style) => ({
         value: style,
         text: style.charAt(0).toUpperCase() + style.slice(1)
       })),
-      thumbnailHeights: Object.keys(thumbnailHeights).map((height) => ({
-        value: height,
-        text: height.charAt(0).toUpperCase() + height.slice(1)
-      }))
+      thumbnailHeights: Object.keys(settings.THUMBNAIL_HEIGHTS).map(
+        (height) => ({
+          value: height,
+          text: height.charAt(0).toUpperCase() + height.slice(1)
+        })
+      )
     }
   },
   computed: {

@@ -16,8 +16,6 @@
 </template>
 
 <script>
-import { Name } from '~/router'
-
 export default {
   data() {
     return {
@@ -27,34 +25,34 @@ export default {
           icon: 'explore',
           title: 'Explorer',
           accelerator: 'CmdOrCtrl+Shift+E',
-          location: { name: Name.explorer }
+          path: '/explorer'
         },
         {
           id: 2,
           icon: 'star',
           title: 'Bookmark',
           accelerator: 'CmdOrCtrl+Shift+B',
-          location: { name: Name.bookmark }
+          path: '/bookmark'
         },
         {
           id: 3,
           icon: 'settings',
           title: 'Settings',
           accelerator: 'CmdOrCtrl+,',
-          location: { name: Name.settings }
+          path: '/settings'
         }
       ]
     }
   },
   methods: {
     onItemClick(e, item) {
-      this.$router.push(item.location)
+      this.$router.push(item.path)
     },
     getColor(item) {
       return this.getActive(item) ? 'primary' : null
     },
     getActive(item) {
-      return item.location.name === this.$route.name
+      return item.path === this.$route.path
     }
   }
 }

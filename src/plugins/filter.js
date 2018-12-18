@@ -1,23 +1,5 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify'
-import { createSimpleTransition } from 'vuetify/es5/util/helpers'
-import VueMoment from 'vue-moment'
-import VueLongPress from 'vue-long-press-directive'
 import electronAcceleratorFormatter from '@fiahfy/electron-accelerator-formatter'
-
-Vue.use(Vuetify, {
-  theme: {
-    primary: '#ff4081',
-    accent: '#ff4081'
-  }
-})
-
-const noTransition = createSimpleTransition('no-transition')
-Vue.component('no-transition', noTransition)
-
-Vue.use(VueMoment)
-
-Vue.use(VueLongPress, { duration: 300 })
 
 Vue.filter('accelerator', (title, accelerator) => {
   return `${title} (${electronAcceleratorFormatter(accelerator)})`

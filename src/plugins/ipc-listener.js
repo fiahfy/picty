@@ -1,8 +1,7 @@
 import { ipcRenderer, remote } from 'electron'
-import { Name } from '~/router'
-import { Selector } from '~/store'
+import selector from '~/consts/selector'
 
-export const addIpcRendererListeners = (store) => {
+export default ({ store }) => {
   ipcRenderer.on('enterFullScreen', () => {
     store.commit('setFullScreen', { fullScreen: true })
   })
@@ -39,22 +38,22 @@ export const addIpcRendererListeners = (store) => {
     store.dispatch('showViewer', { filepathes })
   })
   ipcRenderer.on('search', () => {
-    store.dispatch('focus', { selector: Selector.queryInput })
-    store.dispatch('select', { selector: Selector.queryInput })
+    store.dispatch('focus', { selector: selector.QUERY_INPUT })
+    store.dispatch('select', { selector: selector.QUERY_INPUT })
   })
   ipcRenderer.on('showExplorer', () => {
-    store.dispatch('changeRoute', { name: Name.explorer })
+    store.$router.push('/explorer')
   })
   ipcRenderer.on('showBookmark', () => {
-    store.dispatch('changeRoute', { name: Name.bookmark })
+    store.$router.push('/bookmark')
   })
   ipcRenderer.on('showSettings', () => {
-    store.dispatch('changeRoute', { name: Name.settings })
+    store.$router.push('/settings')
   })
   ipcRenderer.on('openLocation', () => {
-    store.dispatch('focus', { selector: Selector.directoryInput })
-    store.dispatch('select', { selector: Selector.directoryInput })
-    store.dispatch('changeRoute', { name: Name.explorer })
+    store.dispatch('focus', { selector: selector.DIRECTORY_INPUT })
+    store.dispatch('select', { selector: selector.DIRECTORY_INPUT })
+    store.$router.push('/explorer')
   })
   ipcRenderer.on('backDirectory', () => {
     store.dispatch('local/explorer/backDirectory')

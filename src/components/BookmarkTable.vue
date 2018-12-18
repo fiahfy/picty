@@ -33,7 +33,6 @@ import { mapActions, mapGetters, mapState, mapMutations } from 'vuex'
 import BookmarkTableHeaderRow from './BookmarkTableHeaderRow'
 import BookmarkTableRow from './BookmarkTableRow'
 import VirtualDataTable from './VirtualDataTable'
-import ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
@@ -139,14 +138,14 @@ export default {
     },
     onContextMenu() {
       this.unselectBookmark()
-      const templates = [
+      const template = [
         {
           label: 'New Bookmark',
           click: () => this.showDialog(),
           accelerator: 'CmdOrCtrl+N'
         }
       ]
-      ContextMenu.show(templates)
+      this.$contextMenu.show(template)
     },
     ...mapMutations('local/bookmark', ['setScrollTop']),
     ...mapActions('local/bookmark', [

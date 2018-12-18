@@ -14,6 +14,7 @@
         @mousedown="onMouseDown"
         @mouseup="onMouseUp"
       >
+        <!-- eslint-disable-next-line vue/html-self-closing -->
         <img
           :src="imageSrc"
           :class="imageClasses"

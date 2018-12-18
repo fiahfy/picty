@@ -41,7 +41,6 @@
 import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
 import { mapActions, mapGetters } from 'vuex'
-import ContextMenu from '~/utils/context-menu'
 import Worker from '~/workers/child-fetch.worker.js'
 
 const worker = workerPromisify(new Worker())
@@ -129,7 +128,7 @@ export default {
     },
     onContextMenu() {
       this.selectFile({ filepath: this.file.path })
-      let templates = [
+      let template = [
         {
           label: 'View',
           click: () => this.viewFile({ filepath: this.file.path }),
@@ -138,10 +137,10 @@ export default {
       ]
       const text = getSelection().toString()
       if (text) {
-        templates = [
-          ...templates,
+        template = [
+          ...template,
           { type: 'separator' },
-          { role: ContextMenu.Role.copy },
+          { role: 'copy' },
           {
             label: `Search "${text}"`,
             click: () => this.searchFiles({ query: text }),
@@ -149,7 +148,7 @@ export default {
           }
         ]
       }
-      ContextMenu.show(templates)
+      this.$contextMenu.show(template)
     },
     onError() {
       this.error = true
