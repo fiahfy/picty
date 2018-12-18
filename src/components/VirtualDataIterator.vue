@@ -1,5 +1,5 @@
 <template>
-  <div v-resize="onResize" class="virtual-data-iterator">
+  <div class="virtual-data-iterator">
     <v-container :class="classes" fluid pa-0>
       <slot v-if="loading" name="progress" />
       <v-data-iterator
@@ -122,12 +122,15 @@ export default {
   mounted() {
     this.container = this.$el.querySelector('.v-data-iterator')
     this.container.addEventListener('scroll', this.onScroll)
+    this.observer = new ResizeObserver(this.onResize)
+    this.observer.observe(this.container)
     this.$nextTick(() => {
       this.adjustItems()
     })
   },
   beforeDestroy() {
     this.container.removeEventListener('scroll', this.onScroll)
+    this.observer.disconnect()
   },
   methods: {
     getScrollTop() {
@@ -166,6 +169,8 @@ export default {
           this.estimatedHeight
       }
       this.renderItems = this.items.slice(firstIndex * size, lastIndex * size)
+
+      this.setScrollTop(this.container.scrollTop)
     },
     onResize() {
       this.adjustItems()

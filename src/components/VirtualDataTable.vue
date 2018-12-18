@@ -2,7 +2,6 @@
   <v-data-table
     ref="table"
     v-model="model"
-    v-resize="onResize"
     v-bind="$attrs"
     class="virtual-data-table"
     :pagination.sync="paginationModel"
@@ -97,12 +96,15 @@ export default {
   mounted() {
     this.container = this.$el.querySelector('.v-table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
+    this.observer = new ResizeObserver(this.onResize)
+    this.observer.observe(this.container)
     this.$nextTick(() => {
       this.adjustItems()
     })
   },
   beforeDestroy() {
     this.container.removeEventListener('scroll', this.onScroll)
+    this.observer.disconnect()
   },
   methods: {
     getScrollTop() {
@@ -137,6 +139,8 @@ export default {
         bottom: (this.items.length - lastIndex) * this.estimatedHeight
       }
       this.renderItems = this.items.slice(firstIndex, lastIndex)
+
+      this.setScrollTop(this.container.scrollTop)
     },
     onResize() {
       this.adjustItems()
