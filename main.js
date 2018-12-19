@@ -1,8 +1,11 @@
-import { app, shell, BrowserWindow, Menu } from 'electron'
-import windowStateKeeper from 'electron-window-state'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+const http = require('http')
+const { app, shell, BrowserWindow, Menu } = require('electron')
+const windowStateKeeper = require('electron-window-state')
 
-let mainWindow
+const dev = process.env.NODE_ENV === 'development'
+const port = process.env.PORT || 3000
+
+let mainWindow = null
 
 const send = (...args) => {
   mainWindow && mainWindow.webContents.send(...args)
@@ -186,7 +189,7 @@ const createTemplate = () => {
   return template
 }
 
-const createWindow = () => {
+const createWindow = async () => {
   const windowState = windowStateKeeper({
     defaultWidth: 820,
     defaultHeight: 600
@@ -200,19 +203,48 @@ const createWindow = () => {
     }
   }
 
-  let url = `file://${__dirname}/app/index.html`
-
-  if (process.env.HMR) {
-    const port = process.env.PORT || 3000
-    url = `http://localhost:${port}/index.html`
+  if (dev) {
     options.webPreferences = {
       ...options.webPreferences,
       webSecurity: false
     }
   }
 
+  const path = '#/explorer'
+
   mainWindow = new BrowserWindow(options)
-  mainWindow.loadURL(url)
+
+  if (dev) {
+    // Disable security warnings
+    process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true
+
+    // Install vue dev tool and open chrome dev tools
+    const {
+      default: installExtension,
+      VUEJS_DEVTOOLS
+    } = require('electron-devtools-installer')
+
+    const name = await installExtension(VUEJS_DEVTOOLS.id)
+    console.log(`Added Extension: ${name}`) // eslint-disable-line no-console
+
+    // Wait for nuxt to build
+    const url = `http://localhost:${port}/${path}`
+    const pollServer = () => {
+      http
+        .get(url, (res) => {
+          if (res.statusCode === 200) {
+            mainWindow.loadURL(url)
+            mainWindow.webContents.openDevTools()
+          } else {
+            setTimeout(pollServer, 300)
+          }
+        })
+        .on('error', pollServer)
+    }
+    pollServer()
+  } else {
+    mainWindow.loadURL(`file://${__dirname}/app/index.html${path}`)
+  }
 
   windowState.manage(mainWindow)
 
@@ -220,42 +252,12 @@ const createWindow = () => {
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 
-  if (process.env.NODE_ENV !== 'production') {
-    installExtension(VUEJS_DEVTOOLS.id).catch((err) => {
-      console.log('Unable to install `vue-devtools`: \n', err) // eslint-disable-line no-console
-    })
-    mainWindow.openDevTools()
-  }
-
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
-
-  mainWindow.on('enter-full-screen', () => {
-    send('enterFullScreen')
-  })
-
-  mainWindow.on('leave-full-screen', () => {
-    send('leaveFullScreen')
-  })
-
-  mainWindow.on('app-command', (e, cmd) => {
-    send('appCommand', cmd)
-  })
+  mainWindow.on('closed', () => (mainWindow = null))
+  mainWindow.on('enter-full-screen', () => send('enterFullScreen'))
+  mainWindow.on('leave-full-screen', () => send('leaveFullScreen'))
+  mainWindow.on('app-command', (e, cmd) => send('appCommand', cmd))
 }
 
-app.on('ready', () => {
-  createWindow()
-})
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow()
-  }
-})
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+app.on('ready', createWindow)
+app.on('activate', () => mainWindow === null && createWindow())
+app.on('window-all-closed', () => process.platform !== 'darwin' && app.quit())

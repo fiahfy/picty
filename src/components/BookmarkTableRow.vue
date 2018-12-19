@@ -22,7 +22,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ContextMenu from '~/utils/context-menu'
 
 export default {
   props: {
@@ -46,7 +45,7 @@ export default {
     },
     onContextMenu() {
       this.selectBookmark({ filepath: this.bookmark.path })
-      let templates = [
+      let template = [
         {
           label: 'Open',
           click: () => this.openBookmark({ filepath: this.bookmark.path }),
@@ -55,14 +54,10 @@ export default {
       ]
       const text = getSelection().toString()
       if (text) {
-        templates = [
-          ...templates,
-          { type: 'separator' },
-          { role: ContextMenu.Role.copy }
-        ]
+        template = [...template, { type: 'separator' }, { role: 'copy' }]
       }
-      templates = [
-        ...templates,
+      template = [
+        ...template,
         { type: 'separator' },
         {
           label: 'New Bookmark',
@@ -76,7 +71,7 @@ export default {
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
-      ContextMenu.show(templates)
+      this.$contextMenu.show(template)
     },
     ...mapActions('local/bookmark', [
       'removeBookmark',
