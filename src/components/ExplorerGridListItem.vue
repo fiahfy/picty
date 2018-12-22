@@ -195,6 +195,7 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         word-break: break-all;
+        /* autoprefixer: ignore next */
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
       }

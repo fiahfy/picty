@@ -7,7 +7,7 @@
   >
     <title-bar />
     <activity-bar />
-    <v-content class="fill-height"><nuxt /></v-content>
+    <v-content class="fill-height"><router-view /></v-content>
     <notification-bar />
     <viewer />
   </v-app>
@@ -50,10 +50,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-#app .v-content .container:nth-child(2) {
-  /* prevent flash if page is changed */
-  display: none;
-}
-</style>

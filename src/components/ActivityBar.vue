@@ -45,14 +45,14 @@ export default {
     }
   },
   methods: {
-    onItemClick(e, item) {
-      this.$router.push(item.path)
-    },
     getColor(item) {
       return this.getActive(item) ? 'primary' : null
     },
     getActive(item) {
       return item.path === this.$route.path
+    },
+    onItemClick(e, item) {
+      this.$router.push(item.path)
     }
   }
 }

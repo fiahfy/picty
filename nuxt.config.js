@@ -92,13 +92,6 @@ module.exports = {
   srcDir: 'src',
 
   /*
-   ** Transition configuration
-   */
-  transition: {
-    mode: 'in-out'
-  },
-
-  /*
    ** Vue configuration
    */
   vue: {
