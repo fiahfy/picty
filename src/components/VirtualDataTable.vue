@@ -98,9 +98,7 @@ export default {
     this.container.addEventListener('scroll', this.onScroll)
     this.observer = new ResizeObserver(this.onResize)
     this.observer.observe(this.container)
-    this.$nextTick(() => {
-      this.adjustItems()
-    })
+    this.adjustItems()
   },
   beforeDestroy() {
     this.container.removeEventListener('scroll', this.onScroll)
@@ -140,7 +138,7 @@ export default {
       }
       this.renderItems = this.items.slice(firstIndex, lastIndex)
 
-      this.setScrollTop(this.container.scrollTop)
+      this.setScrollTop(scrollTop)
     },
     onResize() {
       this.adjustItems()

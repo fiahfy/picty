@@ -117,7 +117,8 @@ export default {
       return 12 / this.sizes[viewport.getSizeIndex()]
     },
     onScroll(e) {
-      this.setScrollTop({ scrollTop: e.target.scrollTop })
+      const scrollTop = e.target.scrollTop
+      this.setScrollTop({ scrollTop })
     },
     onKeyDown(e) {
       const offset = this.getItemOffset()
