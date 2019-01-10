@@ -1,11 +1,13 @@
 <template>
-  <div class="virtual-data-iterator">
-    <v-container :class="classes" fluid pa-0>
+  <v-layout class="virtual-data-iterator" column>
+    <slot name="header" />
+    <v-container :class="classes" fluid pa-0 overflow-hidden>
       <slot v-if="loading" name="progress" />
       <v-data-iterator
         ref="iterator"
         v-model="model"
         v-bind="$attrs"
+        class="fill-height scroll-y"
         :pagination.sync="paginationModel"
         :items="renderItems"
         :disable-initial-sort="true"
@@ -32,7 +34,7 @@
         <slot slot="no-results" name="no-results" />
       </v-data-iterator>
     </v-container>
-  </div>
+  </v-layout>
 </template>
 
 <script>
@@ -183,7 +185,6 @@ export default {
 
 <style scoped lang="scss">
 .virtual-data-iterator > .container {
-  height: 100%;
   position: relative;
   .v-progress-linear {
     left: 0;
@@ -194,7 +195,6 @@ export default {
   }
   .v-data-iterator {
     height: 100%;
-    overflow-y: scroll;
     &::-webkit-scrollbar {
       width: 14px;
     }

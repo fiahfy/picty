@@ -22,10 +22,12 @@
             </v-img>
           </v-card>
         </v-menu>
-        <span :title="file.name" class="ellipsis">{{ file.name }}</span>
+        <span :title="file.name" class="ellipsis spacer">{{ file.name }}</span>
+        <span v-if="files !== ''" class="files text-xs-right caption ml-3">
+          {{ files }} files
+        </span>
       </v-layout>
     </td>
-    <td class="text-xs-right">{{ files }}</td>
     <td class="text-xs-right">{{ file.views || '' }}</td>
     <td @click.stop @dblclick.stop>
       <v-rating v-model="rating" half-increments clearable />
@@ -176,8 +178,8 @@ export default {
     .v-rating {
       white-space: nowrap;
     }
-    span {
-      flex: 1;
+    .files {
+      white-space: nowrap;
     }
   }
 }

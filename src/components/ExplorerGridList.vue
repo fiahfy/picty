@@ -14,6 +14,7 @@
     @scroll="onScroll"
     @keydown.native="onKeyDown"
   >
+    <explorer-grid-list-header slot="header" />
     <explorer-grid-list-item
       slot="items"
       :key="props.item.path"
@@ -29,12 +30,14 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
+import ExplorerGridListHeader from './ExplorerGridListHeader'
 import ExplorerGridListItem from './ExplorerGridListItem'
 import VirtualDataIterator from './VirtualDataIterator'
 import viewport from '~/utils/viewport'
 
 export default {
   components: {
+    ExplorerGridListHeader,
     ExplorerGridListItem,
     VirtualDataIterator
   },
