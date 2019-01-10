@@ -15,6 +15,10 @@
         <v-layout slot="placeholder" fill-height align-center justify-center>
           <v-flex class="text-xs-center caption">{{ message }}</v-flex>
         </v-layout>
+        <div v-if="files !== ''" class="files caption white--text ma-2 px-1">
+          <div class="background" />
+          <div class="text">{{ files }} files</div>
+        </div>
       </v-img>
       <v-icon :color="iconColor" class="pa-1">{{ icon }}</v-icon>
       <v-divider />
@@ -63,7 +67,8 @@ export default {
     return {
       loading: false,
       error: false,
-      imageUrl: ''
+      imageUrl: '',
+      files: ''
     }
   },
   computed: {
@@ -103,7 +108,7 @@ export default {
       if (this.error) {
         return 'Load failed'
       }
-      return this.imageUrl ? '' : 'No image'
+      return this.imageUrl ? '' : 'No images'
     },
     ...mapState('settings', ['thumbnailStyle']),
     ...mapGetters('settings', ['thumbnailHeightValue', 'isFileAvailable']),
@@ -119,9 +124,13 @@ export default {
       key: this.file.path,
       data: this.file.path
     })
-    if (this.isFileAvailable({ filepath: data })) {
-      this.imageUrl = fileUrl(data)
+    const filepathes = data.filter((filepath) =>
+      this.isFileAvailable({ filepath })
+    )
+    if (filepathes.length) {
+      this.imageUrl = fileUrl(filepathes[0])
     }
+    this.files = filepathes.length
     this.loading = false
   },
   methods: {
@@ -178,12 +187,27 @@ export default {
   &:hover {
     background-color: #eeeeee;
   }
+  .v-image .files {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    > .background {
+      background-color: black;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0.6;
+      z-index: -1;
+    }
+  }
   .v-icon {
     position: absolute;
     left: 0;
     top: 0;
   }
-  .title {
+  .v-card__title .title {
     display: table;
     > div {
       display: table-cell;

@@ -50,18 +50,20 @@ const listFiles = (dirpath, options = { recursive: false }) => {
   }, [])
 }
 
-const getFirstChildPath = (dirpath) => {
+const getChildPathes = (dirpath) => {
   const filenames = fs.readdirSync(dirpath)
-  const filename = filenames.find((filename) => !filename.match(/^\./))
-  if (!filename) {
-    return null
-  }
-  return path.join(dirpath, filename)
+  return filenames.reduce((carry, filename) => {
+    if (filename.match(/^\./)) {
+      return carry
+    }
+    const filepath = path.join(dirpath, filename)
+    return [...carry, filepath]
+  }, [])
 }
 
 export default {
   getFile,
   getFiles,
   listFiles,
-  getFirstChildPath
+  getChildPathes
 }

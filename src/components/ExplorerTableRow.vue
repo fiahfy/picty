@@ -25,6 +25,7 @@
         <span :title="file.name" class="ellipsis">{{ file.name }}</span>
       </v-layout>
     </td>
+    <td class="text-xs-right">{{ files }}</td>
     <td class="text-xs-right">{{ file.views || '' }}</td>
     <td @click.stop @dblclick.stop>
       <v-rating v-model="rating" half-increments clearable />
@@ -56,7 +57,8 @@ export default {
     return {
       loading: false,
       error: false,
-      imageUrl: ''
+      imageUrl: '',
+      files: ''
     }
   },
   computed: {
@@ -93,7 +95,7 @@ export default {
       if (this.error) {
         return 'Load failed'
       }
-      return this.imageUrl ? '' : 'No image'
+      return this.imageUrl ? '' : 'No images'
     },
     menuDisabled() {
       return !this.previewWidthValue
@@ -102,9 +104,6 @@ export default {
     ...mapGetters('local/explorer', ['isFileSelected'])
   },
   async created() {
-    if (this.menuDisabled) {
-      return
-    }
     if (!this.file.directory) {
       this.imageUrl = fileUrl(this.file.path)
       return
@@ -114,9 +113,13 @@ export default {
       key: this.file.path,
       data: this.file.path
     })
-    if (this.isFileAvailable({ filepath: data })) {
-      this.imageUrl = fileUrl(data)
+    const filepathes = data.filter((filepath) =>
+      this.isFileAvailable({ filepath })
+    )
+    if (filepathes.length) {
+      this.imageUrl = fileUrl(filepathes[0])
     }
+    this.files = filepathes.length
     this.loading = false
   },
   methods: {

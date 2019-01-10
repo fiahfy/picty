@@ -50,6 +50,11 @@ export default {
           value: 'name'
         },
         {
+          text: 'Files',
+          value: 'files',
+          width: 96
+        },
+        {
           text: 'Views',
           value: 'views',
           width: 96
