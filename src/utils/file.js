@@ -5,7 +5,8 @@ const getFile = (filepath) => {
   const obj = {
     path: filepath,
     name: path.basename(filepath),
-    dirname: path.dirname(filepath),
+    dirpath: path.dirname(filepath),
+    dirname: path.basename(path.dirname(filepath)),
     exists: false,
     directory: false,
     modified_at: null

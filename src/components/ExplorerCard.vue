@@ -24,18 +24,21 @@
         <v-icon>view_module</v-icon>
       </v-btn>
       <v-autocomplete
+        ref="autocomplete"
         v-model="queryInput"
+        :search-input.sync="searchInput"
         class="ml-3 pt-0"
         :items="queryHistories.slice().reverse()"
         name="query"
         label="Search"
-        prepend-icon="search"
+        append-outer-icon="search"
         single-line
         hide-details
         clearable
         @input="onTextInput"
         @keyup="onTextKeyUp"
         @contextmenu.stop="onTextContextMenu"
+        @click:append-outer="onTextAppendIconClick"
       />
     </v-toolbar>
   </v-card>
@@ -45,6 +48,11 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 
 export default {
+  data() {
+    return {
+      searchInput: ''
+    }
+  },
   computed: {
     queryInput: {
       get() {
@@ -93,6 +101,9 @@ export default {
         { role: 'copy' },
         { role: 'paste' }
       ])
+    },
+    onTextAppendIconClick() {
+      this.searchFiles({ query: this.searchInput })
     },
     ...mapActions('local/explorer', ['searchFiles', 'viewFile', 'setDisplay'])
   }

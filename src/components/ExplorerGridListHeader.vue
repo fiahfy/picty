@@ -7,7 +7,7 @@
           v-model="order"
           :items="orders"
           single-line
-          prepend-icon="sort"
+          append-outer-icon="sort"
         />
       </v-flex>
     </v-toolbar>

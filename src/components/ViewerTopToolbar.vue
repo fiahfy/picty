@@ -9,7 +9,7 @@
       <v-icon>close</v-icon>
     </v-btn>
 
-    <span class="px-3 ellipsis">{{ filename }}</span>
+    <span class="px-3 ellipsis">{{ title }}</span>
   </v-toolbar>
 </template>
 
@@ -23,8 +23,11 @@ export default {
     }
   },
   computed: {
-    filename() {
-      return this.currentFile ? this.currentFile.name : ''
+    title() {
+      if (!this.currentFile) {
+        return ''
+      }
+      return this.currentFile.dirname + ' - ' + this.currentFile.name
     },
     ...mapGetters('local/viewer', ['currentFile'])
   },

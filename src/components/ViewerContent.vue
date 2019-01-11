@@ -3,7 +3,7 @@
     <v-layout fill-height>
       <v-flex v-if="message">
         <v-layout fill-height align-center justify-center>
-          <v-flex text-xs-center subheading>{{ message }}</v-flex>
+          <v-flex text-xs-center body-1>{{ message }}</v-flex>
         </v-layout>
       </v-flex>
       <v-flex

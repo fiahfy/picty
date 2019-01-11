@@ -61,7 +61,7 @@ export const actions = {
         const file = fileUtil.getFile(filepath)
         files = (await worker.postMessage({
           method: 'listFiles',
-          args: [file.dirname]
+          args: [file.dirpath]
         })).data
         currentFilepath = filepath
       }

@@ -94,7 +94,7 @@ export const actions = {
     dispatch('changeDirectory', { dirpath, force: true })
   },
   upDirectory({ dispatch, state }) {
-    const dirpath = fileUtil.getFile(state.directory).dirname
+    const dirpath = fileUtil.getFile(state.directory).dirpath
     dispatch('changeDirectory', { dirpath })
   },
   changeHomeDirectory({ dispatch }) {
