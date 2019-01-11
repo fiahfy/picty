@@ -1,6 +1,6 @@
-import file from '~/utils/file'
+import fileUtil from '~/utils/file'
 
 onmessage = ({ data: { key, data } }) => {
-  const filepathes = file.getChildPathes(data)
+  const filepathes = fileUtil.getChildPathes(data)
   postMessage({ key, data: filepathes })
 }

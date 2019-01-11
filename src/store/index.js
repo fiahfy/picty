@@ -1,7 +1,7 @@
 import createPersistedState from 'vuex-persistedstate'
 import { remote } from 'electron'
 import Package from '~~/package.json'
-import file from '~/utils/file'
+import fileUtil from '~/utils/file'
 
 export const state = () => ({
   title: Package.productName,
@@ -20,12 +20,10 @@ export const actions = {
   initialize({ dispatch }) {
     dispatch('local/explorer/initialize')
   },
-  open({ dispatch }, { filepathes }) {
-    const f = file.getFile(filepathes[0])
-    if (filepathes.length === 1 && f.directory) {
-      dispatch('openDirectory', { dirpath: f.path })
-    } else {
-      dispatch('showViewer', { filepathes })
+  open({ dispatch }, { filepath }) {
+    const file = fileUtil.getFile(filepath)
+    if (file.directory) {
+      dispatch('openDirectory', { dirpath: file.path })
     }
   },
   openDirectory({ dispatch }, { dirpath }) {

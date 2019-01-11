@@ -1,6 +1,6 @@
-import file from '~/utils/file'
+import fileUtil from '~/utils/file'
 
 onmessage = ({ data: { method, args } }) => {
-  const result = file[method](...args)
+  const result = fileUtil[method](...args)
   postMessage(result)
 }

@@ -26,10 +26,6 @@ const getFile = (filepath) => {
   }
 }
 
-const getFiles = (filepathes) => {
-  return filepathes.map((filepath) => getFile(filepath))
-}
-
 const listFiles = (dirpath, options = { recursive: false }) => {
   const filenames = fs.readdirSync(dirpath)
   return filenames.reduce((carry, filename) => {
@@ -63,7 +59,6 @@ const getChildPathes = (dirpath) => {
 
 export default {
   getFile,
-  getFiles,
   listFiles,
   getChildPathes
 }

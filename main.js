@@ -20,11 +20,6 @@ const createTemplate = () => {
           label: 'Open...',
           accelerator: 'CmdOrCtrl+O',
           click: () => send('openDirectory')
-        },
-        {
-          label: 'Open Images...',
-          accelerator: 'CmdOrCtrl+Shift+O',
-          click: () => send('openImages')
         }
       ]
     },

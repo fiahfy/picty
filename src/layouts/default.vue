@@ -43,8 +43,8 @@ export default {
       if (!files.length) {
         return
       }
-      const filepathes = files.map((file) => file.path)
-      this.open({ filepathes })
+      const filepath = files[0].path
+      this.open({ filepath })
     },
     ...mapActions(['initialize', 'open'])
   }

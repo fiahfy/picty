@@ -1,5 +1,5 @@
 import workerPromisify from '@fiahfy/worker-promisify'
-import file from '~/utils/file'
+import fileUtil from '~/utils/file'
 import Worker from '~/workers/file.worker.js'
 
 const scales = [
@@ -44,10 +44,7 @@ export const getters = {
 }
 
 export const actions = {
-  async loadFiles(
-    { commit, rootGetters, rootState },
-    { dirpath, filepath, filepathes }
-  ) {
+  async loadFiles({ commit, rootGetters, rootState }, { dirpath, filepath }) {
     commit('setLoading', { loading: true })
     commit('setError', { error: null })
     commit('setFiles', { files: [] })
@@ -61,17 +58,12 @@ export const actions = {
           args: [dirpath, { recursive: rootState.settings.recursive }]
         })).data
       } else if (filepath) {
-        const f = file.getFile(filepath)
+        const file = fileUtil.getFile(filepath)
         files = (await worker.postMessage({
           method: 'listFiles',
-          args: [f.dirname]
+          args: [file.dirname]
         })).data
         currentFilepath = filepath
-      } else {
-        files = (await worker.postMessage({
-          method: 'getFiles',
-          args: [filepathes]
-        })).data
       }
       files = files.filter((file) =>
         rootGetters['settings/isFileAvailable']({ filepath: file.path })

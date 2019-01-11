@@ -1,7 +1,7 @@
 import workerPromisify from '@fiahfy/worker-promisify'
 import { remote, shell } from 'electron'
 import selector from '~/consts/selector'
-import file from '~/utils/file'
+import fileUtil from '~/utils/file'
 import Worker from '~/workers/file.worker.js'
 
 const reversed = {
@@ -94,7 +94,7 @@ export const actions = {
     dispatch('changeDirectory', { dirpath, force: true })
   },
   upDirectory({ dispatch, state }) {
-    const dirpath = file.getFile(state.directory).dirname
+    const dirpath = fileUtil.getFile(state.directory).dirname
     dispatch('changeDirectory', { dirpath })
   },
   changeHomeDirectory({ dispatch }) {

@@ -28,15 +28,6 @@ export default ({ store }) => {
     const dirpath = filepathes[0]
     store.dispatch('openDirectory', { dirpath })
   })
-  ipcRenderer.on('openImages', () => {
-    const filepathes = remote.dialog.showOpenDialog({
-      properties: ['openFile', 'multiSelections']
-    })
-    if (!filepathes || !filepathes.length) {
-      return
-    }
-    store.dispatch('showViewer', { filepathes })
-  })
   ipcRenderer.on('search', () => {
     store.dispatch('focus', { selector: selector.QUERY_INPUT })
     store.dispatch('select', { selector: selector.QUERY_INPUT })
