@@ -1,6 +1,8 @@
 <template>
   <v-flex class="explorer-grid-list-item">
     <v-card
+      flat
+      tile
       :active="active"
       @click.native="onClick"
       @dblclick="onDblClick"

@@ -6,8 +6,8 @@ import Worker from '~/workers/file.worker.js'
 
 const reversed = {
   name: false,
-  rating: true,
   views: true,
+  rating: true,
   modified_at: true
 }
 
@@ -332,12 +332,15 @@ export const actions = {
     }
     commit('setHistory', { history, index: state.historyIndex })
   },
-  changeOrderBy({ commit, dispatch, getters, state }, { orderBy }) {
+  changeOrder({ commit, dispatch, state }, { order }) {
+    commit('setOrder', { order, directory: state.directory })
+    dispatch('sortFiles')
+  },
+  changeOrderBy({ dispatch, getters }, { orderBy }) {
     const descending =
       getters.order.by === orderBy ? !getters.order.descending : false
     const order = { by: orderBy, descending }
-    commit('setOrder', { order, directory: state.directory })
-    dispatch('sortFiles')
+    dispatch('changeOrder', { order })
   },
   setDisplay({ commit, dispatch }, { display }) {
     commit('setDisplay', { display })

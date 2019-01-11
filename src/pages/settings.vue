@@ -3,7 +3,7 @@
     <v-layout>
       <v-container class="my-0">
         <v-subheader class="pl-0">GENERAL</v-subheader>
-        <v-checkbox v-model="darkTheme" class="mt-0" label="Use Dark Theme" />
+        <v-checkbox v-model="darkTheme" class="mt-0" label="Dark Theme" />
         <v-combobox
           v-model="extensions"
           :items="defaultExtensions"
@@ -48,7 +48,7 @@
         <v-checkbox
           v-model="recursive"
           class="mt-0"
-          label="View Images In Directory Recursively"
+          label="View Images Recursively"
         />
         <v-checkbox
           v-model="imageStretched"
