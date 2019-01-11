@@ -17,9 +17,9 @@
         <v-layout slot="placeholder" fill-height align-center justify-center>
           <v-flex class="text-xs-center caption">{{ message }}</v-flex>
         </v-layout>
-        <div v-if="files !== ''" class="files caption white--text ma-2 px-1">
+        <div v-if="images" class="images caption white--text ma-2 px-1">
           <div class="background" />
-          <div class="text">{{ files }} files</div>
+          <div class="text">{{ images }} images</div>
         </div>
       </v-img>
       <v-icon :color="iconColor" class="pa-1">{{ icon }}</v-icon>
@@ -70,7 +70,7 @@ export default {
       loading: false,
       error: false,
       imageUrl: '',
-      files: ''
+      images: ''
     }
   },
   computed: {
@@ -132,7 +132,7 @@ export default {
     if (filepathes.length) {
       this.imageUrl = fileUrl(filepathes[0])
     }
-    this.files = filepathes.length
+    this.images = filepathes.length
     this.loading = false
   },
   methods: {
@@ -189,7 +189,7 @@ export default {
   &:hover {
     background-color: #eeeeee;
   }
-  .v-image .files {
+  .v-image .images {
     position: absolute;
     bottom: 0;
     right: 0;

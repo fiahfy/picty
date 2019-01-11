@@ -23,8 +23,8 @@
           </v-card>
         </v-menu>
         <span :title="file.name" class="ellipsis spacer">{{ file.name }}</span>
-        <span v-if="files !== ''" class="files text-xs-right caption ml-3">
-          {{ files }} files
+        <span v-if="images !== ''" class="images text-xs-right caption ml-3">
+          {{ images }} images
         </span>
       </v-layout>
     </td>
@@ -60,7 +60,7 @@ export default {
       loading: false,
       error: false,
       imageUrl: '',
-      files: ''
+      images: ''
     }
   },
   computed: {
@@ -121,7 +121,7 @@ export default {
     if (filepathes.length) {
       this.imageUrl = fileUrl(filepathes[0])
     }
-    this.files = filepathes.length
+    this.images = filepathes.length
     this.loading = false
   },
   methods: {
@@ -178,7 +178,7 @@ export default {
     .v-rating {
       white-space: nowrap;
     }
-    .files {
+    .images {
       white-space: nowrap;
     }
   }
