@@ -18,8 +18,7 @@
           <v-flex class="text-xs-center caption">{{ message }}</v-flex>
         </v-layout>
         <div v-if="images" class="images caption white--text ma-2 px-1">
-          <div class="background" />
-          <div class="text">{{ images }} images</div>
+          {{ images }} images
         </div>
       </v-img>
       <v-icon :color="iconColor" class="pa-1">{{ icon }}</v-icon>
@@ -190,19 +189,10 @@ export default {
     background-color: #eeeeee;
   }
   .v-image .images {
+    background-color: rgba(0, 0, 0, 0.8);
     position: absolute;
     bottom: 0;
     right: 0;
-    > .background {
-      background-color: black;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      opacity: 0.6;
-      z-index: -1;
-    }
   }
   .v-icon {
     position: absolute;
