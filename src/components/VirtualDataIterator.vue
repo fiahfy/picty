@@ -7,7 +7,7 @@
         ref="iterator"
         v-model="model"
         v-bind="$attrs"
-        class="fill-height scroll-y"
+        class="fill-height"
         :pagination.sync="paginationModel"
         :items="renderItems"
         :disable-initial-sort="true"
@@ -194,7 +194,7 @@ export default {
     top: 0;
   }
   .v-data-iterator {
-    height: 100%;
+    overflow-y: scroll;
     &::-webkit-scrollbar {
       width: 14px;
     }
