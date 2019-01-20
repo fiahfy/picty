@@ -1,5 +1,5 @@
 # Picty
-[![Build Status](https://travis-ci.org/fiahfy/picty.svg?branch=master)](https://travis-ci.org/fiahfy/picty)
+[![Build Status](https://travis-ci.com/fiahfy/picty.svg?branch=master)](https://travis-ci.com/fiahfy/picty)
 
 > Simple Image Viewer based on Electron.
 
