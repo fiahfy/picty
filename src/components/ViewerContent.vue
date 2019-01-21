@@ -1,21 +1,9 @@
 <template>
-  <v-container
-    :class="classes"
-    class="viewer-content"
-    fluid
-    pa-0
-  >
+  <v-container :class="classes" class="viewer-content" fluid pa-0>
     <v-layout fill-height>
       <v-flex v-if="message">
-        <v-layout
-          fill-height
-          align-center
-          justify-center
-        >
-          <v-flex
-            text-xs-center
-            subheading
-          >{{ message }}</v-flex>
+        <v-layout fill-height align-center justify-center>
+          <v-flex text-xs-center body-1>{{ message }}</v-flex>
         </v-layout>
       </v-flex>
       <v-flex
@@ -26,6 +14,7 @@
         @mousedown="onMouseDown"
         @mouseup="onMouseUp"
       >
+        <!-- eslint-disable-next-line vue/html-self-closing -->
         <img
           :src="imageSrc"
           :class="imageClasses"
@@ -33,7 +22,7 @@
           draggable="false"
           @load="onImageLoad"
           @error="onImageError"
-        >
+        />
       </v-flex>
     </v-layout>
   </v-container>

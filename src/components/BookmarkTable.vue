@@ -1,10 +1,11 @@
 <template>
   <virtual-data-table
     ref="table"
+    class="bookmark-table"
     :headers="headers"
     :items="bookmarks"
-    class="bookmark-table"
     item-key="path"
+    no-data-text="No data available."
     hide-actions
     sticky-headers
     tabindex="0"
@@ -23,10 +24,7 @@
       slot-scope="props"
       :bookmark="props.item"
     />
-    <v-progress-linear
-      slot="progress"
-      indeterminate
-    />
+    <v-progress-linear slot="progress" indeterminate />
   </virtual-data-table>
 </template>
 
@@ -35,7 +33,6 @@ import { mapActions, mapGetters, mapState, mapMutations } from 'vuex'
 import BookmarkTableHeaderRow from './BookmarkTableHeaderRow'
 import BookmarkTableRow from './BookmarkTableRow'
 import VirtualDataTable from './VirtualDataTable'
-import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   components: {
@@ -106,7 +103,8 @@ export default {
       })
     },
     onScroll(e) {
-      this.setScrollTop({ scrollTop: e.target.scrollTop })
+      const scrollTop = e.target.scrollTop
+      this.setScrollTop({ scrollTop })
     },
     onKeyDown(e) {
       switch (e.keyCode) {
@@ -139,16 +137,16 @@ export default {
           break
       }
     },
-    onContextMenu(e) {
+    onContextMenu() {
       this.unselectBookmark()
-      const templates = [
+      const template = [
         {
           label: 'New Bookmark',
           click: () => this.showDialog(),
           accelerator: 'CmdOrCtrl+N'
         }
       ]
-      ContextMenu.show(e, templates)
+      this.$contextMenu.show(template)
     },
     ...mapMutations('local/bookmark', ['setScrollTop']),
     ...mapActions('local/bookmark', [
@@ -168,7 +166,7 @@ export default {
 <style scoped lang="scss">
 .bookmark-table {
   outline: none;
-  & /deep/ .v-datatable {
+  /deep/ .v-datatable {
     min-width: 512px;
   }
 }

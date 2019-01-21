@@ -2,52 +2,27 @@
   <v-data-table
     ref="table"
     v-model="model"
-    v-resize="onResize"
     v-bind="$attrs"
+    class="virtual-data-table"
     :pagination.sync="paginationModel"
     :items="renderItems"
     :class="classes"
     :disable-initial-sort="true"
-    class="virtual-data-table"
   >
-    <template
-      slot="headers"
-      slot-scope="props"
-    >
-      <slot
-        v-bind="props"
-        name="headers"
-      />
+    <template slot="headers" slot-scope="props">
+      <slot v-bind="props" name="headers" />
     </template>
-    <template
-      slot="items"
-      slot-scope="props"
-    >
-      <tr
-        v-if="props.index === 0"
-        :style="{ height: `${padding.top}px` }"
-      />
-      <slot
-        v-bind="props"
-        name="items"
-      />
+    <template slot="items" slot-scope="props">
+      <tr v-if="props.index === 0" :style="{ height: `${padding.top}px` }" />
+      <slot v-bind="props" name="items" />
       <tr
         v-if="props.index === renderItems.length - 1"
         :style="{ height: `${padding.bottom}px` }"
       />
     </template>
-    <slot
-      slot="progress"
-      name="progress"
-    />
-    <slot
-      slot="no-data"
-      name="no-data"
-    />
-    <slot
-      slot="no-results"
-      name="no-results"
-    />
+    <slot slot="progress" name="progress" />
+    <slot slot="no-data" name="no-data" />
+    <slot slot="no-results" name="no-results" />
   </v-data-table>
 </template>
 
@@ -121,12 +96,13 @@ export default {
   mounted() {
     this.container = this.$el.querySelector('.v-table__overflow')
     this.container.addEventListener('scroll', this.onScroll)
-    this.$nextTick(() => {
-      this.adjustItems()
-    })
+    this.observer = new ResizeObserver(this.onResize)
+    this.observer.observe(this.container)
+    this.adjustItems()
   },
   beforeDestroy() {
     this.container.removeEventListener('scroll', this.onScroll)
+    this.observer.disconnect()
   },
   methods: {
     getScrollTop() {
@@ -161,6 +137,8 @@ export default {
         bottom: (this.items.length - lastIndex) * this.estimatedHeight
       }
       this.renderItems = this.items.slice(firstIndex, lastIndex)
+
+      this.setScrollTop(scrollTop)
     },
     onResize() {
       this.adjustItems()
@@ -175,7 +153,7 @@ export default {
 
 <style scoped lang="scss">
 .virtual-data-table.sticky-headers {
-  & /deep/ .v-table__overflow {
+  /deep/ .v-table__overflow {
     height: 100%;
     overflow-y: scroll;
     &::-webkit-scrollbar {
@@ -192,11 +170,11 @@ export default {
     }
     .v-datatable {
       table-layout: fixed;
-      & > thead {
+      > thead {
         background: inherit;
-        & > tr {
+        > tr {
           background: inherit;
-          & > th {
+          > th {
             background: inherit;
             position: sticky;
             top: 0;
@@ -207,9 +185,7 @@ export default {
             z-index: 0;
             &:after {
               bottom: 0;
-              box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
-                0 4px 5px 0 rgba(0, 0, 0, 0.14),
-                0 1px 10px 0 rgba(0, 0, 0, 0.12);
+              box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
               content: '';
               left: 0;
               position: absolute;

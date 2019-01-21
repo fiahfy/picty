@@ -1,15 +1,8 @@
 <template>
-  <v-card
-    class="explorer-card"
-    flat
-    tile
-  >
-    <v-toolbar
-      color="transparent"
-      flat
-    >
+  <v-card class="explorer-card" flat tile>
+    <v-toolbar color="transparent" flat dense>
       <v-btn
-        :title="'View'|accelerator('Enter')"
+        :title="'View' | accelerator('Enter')"
         :disabled="!canViewFile"
         flat
         icon
@@ -18,13 +11,7 @@
         <v-icon>photo</v-icon>
       </v-btn>
       <v-spacer />
-      <v-btn
-        :color="listColor"
-        title="List"
-        flat
-        icon
-        @click="onListClick"
-      >
+      <v-btn :color="listColor" title="List" flat icon @click="onListClick">
         <v-icon>view_headline</v-icon>
       </v-btn>
       <v-btn
@@ -37,18 +24,21 @@
         <v-icon>view_module</v-icon>
       </v-btn>
       <v-autocomplete
+        ref="autocomplete"
         v-model="queryInput"
+        :search-input.sync="searchInput"
+        class="ml-3 pt-0"
         :items="queryHistories.slice().reverse()"
         name="query"
-        class="ml-3 pt-0"
         label="Search"
-        prepend-icon="search"
+        append-outer-icon="search"
         single-line
         hide-details
         clearable
         @input="onTextInput"
         @keyup="onTextKeyUp"
         @contextmenu.stop="onTextContextMenu"
+        @click:append-outer="onTextAppendIconClick"
       />
     </v-toolbar>
   </v-card>
@@ -56,9 +46,13 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import * as ContextMenu from '~/utils/context-menu'
 
 export default {
+  data() {
+    return {
+      searchInput: ''
+    }
+  },
   computed: {
     queryInput: {
       get() {
@@ -101,8 +95,15 @@ export default {
         this.searchFiles({ query: e.target.value })
       }
     },
-    onTextContextMenu(e) {
-      ContextMenu.showTextMenu(e)
+    onTextContextMenu() {
+      this.$contextMenu.show([
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' }
+      ])
+    },
+    onTextAppendIconClick() {
+      this.searchFiles({ query: this.searchInput })
     },
     ...mapActions('local/explorer', ['searchFiles', 'viewFile', 'setDisplay'])
   }

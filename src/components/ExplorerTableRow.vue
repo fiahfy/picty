@@ -8,55 +8,34 @@
   >
     <td>
       <v-layout class="align-center">
-        <v-menu
-          :disabled="menuDisabled"
-          open-on-hover
-          right
-          offset-x
-          lazy
-        >
-          <v-icon
-            slot="activator"
-            :color="iconColor"
-            class="pa-1"
-          >{{ icon }}</v-icon>
+        <v-menu :disabled="menuDisabled" open-on-hover right offset-x lazy>
+          <v-icon slot="activator" :color="iconColor" class="pa-1">
+            {{ icon }}
+          </v-icon>
           <v-card :width="previewWidthValue">
-            <v-img
-              :src="imageUrl"
-              contain
-              @error="onError"
-            >
-              <v-layout
-                fill-height
-                align-center
-                justify-center
-              >
-                <v-flex class="py-3 text-xs-center caption">{{ message }}</v-flex>
+            <v-img :src="imageUrl" contain @error="onError">
+              <v-layout fill-height align-center justify-center>
+                <v-flex class="py-3 text-xs-center caption">
+                  {{ message }}
+                </v-flex>
               </v-layout>
             </v-img>
           </v-card>
         </v-menu>
-        <span
-          :title="file.name"
-          class="ellipsis"
-        >{{ file.name }}</span>
+        <span :title="file.name" class="ellipsis spacer">{{ file.name }}</span>
+        <span v-if="images !== ''" class="images text-xs-right caption ml-3">
+          {{ images }} images
+        </span>
       </v-layout>
     </td>
-    <td class="text-xs-right">
-      {{ file.views || '' }}
-    </td>
-    <td
-      @click.stop
-      @dblclick.stop
-    >
-      <v-rating
-        v-model="rating"
-        half-increments
-        clearable
-      />
+    <td class="text-xs-right">{{ file.views || '' }}</td>
+    <td @click.stop @dblclick.stop>
+      <v-rating v-model="rating" half-increments clearable />
     </td>
     <td class="no-wrap">
-      <template v-if="file.modified_at">{{ file.modified_at | moment('YYYY-MM-DD HH:mm') }}</template>
+      <template v-if="file.modified_at">
+        {{ file.modified_at | moment('YYYY-MM-DD HH:mm') }}
+      </template>
     </td>
   </tr>
 </template>
@@ -65,8 +44,7 @@
 import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
 import { mapActions, mapGetters } from 'vuex'
-import * as ContextMenu from '~/utils/context-menu'
-import Worker from '~/workers/child-fetch.worker.js'
+import Worker from '~/workers/fetch.worker.js'
 
 const worker = workerPromisify(new Worker())
 
@@ -81,7 +59,8 @@ export default {
     return {
       loading: false,
       error: false,
-      imageUrl: ''
+      imageUrl: '',
+      images: ''
     }
   },
   computed: {
@@ -118,19 +97,15 @@ export default {
       if (this.error) {
         return 'Load failed'
       }
-      return this.imageUrl ? '' : 'No image'
+      return this.imageUrl ? '' : 'No images'
     },
     menuDisabled() {
       return !this.previewWidthValue
     },
-    ...mapGetters('settings', ['previewWidthValue']),
-    ...mapGetters('settings', ['isFileAvailable']),
+    ...mapGetters('settings', ['previewWidthValue', 'isFileAvailable']),
     ...mapGetters('local/explorer', ['isFileSelected'])
   },
   async created() {
-    if (this.menuDisabled) {
-      return
-    }
     if (!this.file.directory) {
       this.imageUrl = fileUrl(this.file.path)
       return
@@ -140,9 +115,13 @@ export default {
       key: this.file.path,
       data: this.file.path
     })
-    if (this.isFileAvailable({ filepath: data })) {
-      this.imageUrl = fileUrl(data)
+    const filepathes = data.filter((filepath) =>
+      this.isFileAvailable({ filepath })
+    )
+    if (filepathes.length) {
+      this.imageUrl = fileUrl(filepathes[0])
     }
+    this.images = filepathes.length
     this.loading = false
   },
   methods: {
@@ -152,9 +131,9 @@ export default {
     onDblClick() {
       this.openFile({ filepath: this.file.path })
     },
-    onContextMenu(e) {
+    onContextMenu() {
       this.selectFile({ filepath: this.file.path })
-      let templates = [
+      let template = [
         {
           label: 'View',
           click: () => this.viewFile({ filepath: this.file.path }),
@@ -163,10 +142,10 @@ export default {
       ]
       const text = getSelection().toString()
       if (text) {
-        templates = [
-          ...templates,
+        template = [
+          ...template,
           { type: 'separator' },
-          { role: ContextMenu.Role.copy },
+          { role: 'copy' },
           {
             label: `Search "${text}"`,
             click: () => this.searchFiles({ query: text }),
@@ -174,7 +153,7 @@ export default {
           }
         ]
       }
-      ContextMenu.show(e, templates)
+      this.$contextMenu.show(template)
     },
     onError() {
       this.error = true
@@ -199,8 +178,8 @@ export default {
     .v-rating {
       white-space: nowrap;
     }
-    span {
-      flex: 1;
+    .images {
+      white-space: nowrap;
     }
   }
 }

@@ -14,6 +14,7 @@
     @scroll="onScroll"
     @keydown.native="onKeyDown"
   >
+    <explorer-grid-list-header slot="header" />
     <explorer-grid-list-item
       slot="items"
       :key="props.item.path"
@@ -21,33 +22,22 @@
       :file="props.item"
       :class="classes"
     />
-    <v-progress-linear
-      slot="progress"
-      indeterminate
-    />
-    <v-card
-      slot="no-data"
-      class="ma-3 pa-3"
-    >
-      {{ noDataText }}
-    </v-card>
-    <v-card
-      slot="no-results"
-      class="ma-3 pa-3"
-    >
-      {{ noDataText }}
-    </v-card>
+    <v-progress-linear slot="progress" indeterminate />
+    <v-card slot="no-data" class="ma-3 pa-3">{{ noDataText }}</v-card>
+    <v-card slot="no-results" class="ma-3 pa-3">{{ noDataText }}</v-card>
   </virtual-data-iterator>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
+import ExplorerGridListHeader from './ExplorerGridListHeader'
 import ExplorerGridListItem from './ExplorerGridListItem'
 import VirtualDataIterator from './VirtualDataIterator'
-import * as Viewport from '~/utils/viewport'
+import viewport from '~/utils/viewport'
 
 export default {
   components: {
+    ExplorerGridListHeader,
     ExplorerGridListItem,
     VirtualDataIterator
   },
@@ -64,7 +54,7 @@ export default {
       return this.query ? 'No matching records found' : 'No data available'
     },
     classes() {
-      return Viewport.sizes.map((s, i) => {
+      return viewport.SIZES.map((s, i) => {
         return s + this.sizes[i]
       })
     },
@@ -127,10 +117,11 @@ export default {
       })
     },
     getItemOffset() {
-      return 12 / this.sizes[Viewport.getSizeIndex()]
+      return 12 / this.sizes[viewport.getSizeIndex()]
     },
     onScroll(e) {
-      this.setScrollTop({ scrollTop: e.target.scrollTop })
+      const scrollTop = e.target.scrollTop
+      this.setScrollTop({ scrollTop })
     },
     onKeyDown(e) {
       const offset = this.getItemOffset()

@@ -8,22 +8,20 @@
   >
     <td :title="bookmark.path">
       <v-layout class="align-center">
-        <v-icon
-          class="pa-1"
-          color="blue lighten-3"
-        >folder</v-icon>
+        <v-icon class="pa-1" color="blue lighten-3">folder</v-icon>
         <span class="ellipsis">{{ bookmark.path }}</span>
       </v-layout>
     </td>
     <td class="no-wrap">
-      <template v-if="bookmark.added_at">{{ bookmark.added_at | moment('YYYY-MM-DD HH:mm') }}</template>
+      <template v-if="bookmark.added_at">
+        {{ bookmark.added_at | moment('YYYY-MM-DD HH:mm') }}
+      </template>
     </td>
   </tr>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import * as ContextMenu from '~/utils/context-menu'
 
 export default {
   props: {
@@ -45,9 +43,9 @@ export default {
     onDblClick() {
       this.openBookmark({ filepath: this.bookmark.path })
     },
-    onContextMenu(e) {
+    onContextMenu() {
       this.selectBookmark({ filepath: this.bookmark.path })
-      let templates = [
+      let template = [
         {
           label: 'Open',
           click: () => this.openBookmark({ filepath: this.bookmark.path }),
@@ -56,14 +54,10 @@ export default {
       ]
       const text = getSelection().toString()
       if (text) {
-        templates = [
-          ...templates,
-          { type: 'separator' },
-          { role: ContextMenu.Role.copy }
-        ]
+        template = [...template, { type: 'separator' }, { role: 'copy' }]
       }
-      templates = [
-        ...templates,
+      template = [
+        ...template,
         { type: 'separator' },
         {
           label: 'New Bookmark',
@@ -77,7 +71,7 @@ export default {
           accelerator: 'CmdOrCtrl+Backspace'
         }
       ]
-      ContextMenu.show(e, templates)
+      this.$contextMenu.show(template)
     },
     ...mapActions('local/bookmark', [
       'removeBookmark',

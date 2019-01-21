@@ -6,33 +6,14 @@
     hide-overlay
     @keydown="onKeyDown"
   >
-    <v-card
-      :class="classes"
-      dark
-      flat
-      tile
-    >
-      <v-layout
-        column
-        fill-height
-      >
+    <v-card :class="classes" dark flat tile>
+      <v-layout column fill-height>
         <title-bar />
         <v-content class="fill-height pl-0">
-          <v-container
-            fill-height
-            fluid
-            pa-0
-          >
+          <v-container fill-height fluid pa-0>
             <v-layout column>
-              <v-progress-linear
-                v-if="loading"
-                :indeterminate="true"
-              />
-              <v-container
-                fluid
-                pa-0
-                overflow-hidden
-              >
+              <v-progress-linear v-if="loading" :indeterminate="true" />
+              <v-container fluid pa-0 overflow-hidden>
                 <viewer-content class="fill-height" />
               </v-container>
             </v-layout>

@@ -1,12 +1,12 @@
 <template>
   <virtual-data-table
     ref="table"
+    class="explorer-table"
     :headers="headers"
     :items="filteredFiles"
+    item-key="path"
     :loading="loading"
     :no-data-text="noDataText"
-    class="explorer-table"
-    item-key="path"
     hide-actions
     sticky-headers
     tabindex="0"
@@ -24,10 +24,7 @@
       slot-scope="props"
       :file="props.item"
     />
-    <v-progress-linear
-      slot="progress"
-      indeterminate
-    />
+    <v-progress-linear slot="progress" indeterminate />
   </virtual-data-table>
 </template>
 
@@ -75,7 +72,7 @@ export default {
       if (this.loading) {
         return 'Loading...'
       }
-      return this.query ? 'No matching records found' : 'No data available'
+      return this.query ? 'No matching records found.' : 'No data available.'
     },
     ...mapState('local/explorer', [
       'directory',
@@ -131,7 +128,8 @@ export default {
       })
     },
     onScroll(e) {
-      this.setScrollTop({ scrollTop: e.target.scrollTop })
+      const scrollTop = e.target.scrollTop
+      this.setScrollTop({ scrollTop })
     },
     onKeyDown(e) {
       switch (e.keyCode) {
@@ -169,7 +167,7 @@ export default {
 <style scoped lang="scss">
 .explorer-table {
   outline: none;
-  & /deep/ .v-datatable {
+  /deep/ .v-datatable {
     min-width: 768px;
   }
 }

@@ -1,7 +1,7 @@
 import { ipcRenderer, remote } from 'electron'
-import { Selector } from '~/store'
+import selector from '~/consts/selector'
 
-export const addIpcRendererListeners = (store) => {
+export default ({ store }) => {
   ipcRenderer.on('enterFullScreen', () => {
     store.commit('setFullScreen', { fullScreen: true })
   })
@@ -28,32 +28,25 @@ export const addIpcRendererListeners = (store) => {
     const dirpath = filepathes[0]
     store.dispatch('openDirectory', { dirpath })
   })
-  ipcRenderer.on('openImages', () => {
-    const filepathes = remote.dialog.showOpenDialog({
-      properties: ['openFile', 'multiSelections']
-    })
-    if (!filepathes || !filepathes.length) {
-      return
-    }
-    store.dispatch('showViewer', { filepathes })
-  })
   ipcRenderer.on('search', () => {
-    store.dispatch('focus', { selector: Selector.queryInput })
-    store.dispatch('select', { selector: Selector.queryInput })
+    store.dispatch('focus', { selector: selector.QUERY_INPUT })
+    store.dispatch('select', { selector: selector.QUERY_INPUT })
   })
   ipcRenderer.on('showExplorer', () => {
-    store.dispatch('changeRoute', { name: 'explorer' })
+    store.$router.push('/explorer')
   })
   ipcRenderer.on('showBookmark', () => {
-    store.dispatch('changeRoute', { name: 'bookmark' })
+    store.$router.push('/bookmark')
   })
   ipcRenderer.on('showSettings', () => {
-    store.dispatch('changeRoute', { name: 'settings' })
+    store.$router.push('/settings')
   })
   ipcRenderer.on('openLocation', () => {
-    store.dispatch('focus', { selector: Selector.directoryInput })
-    store.dispatch('select', { selector: Selector.directoryInput })
-    store.dispatch('changeRoute', { name: 'explorer' })
+    store.$router.push('/explorer')
+    setTimeout(() => {
+      store.dispatch('focus', { selector: selector.DIRECTORY_INPUT })
+      store.dispatch('select', { selector: selector.DIRECTORY_INPUT })
+    }, 100)
   })
   ipcRenderer.on('backDirectory', () => {
     store.dispatch('local/explorer/backDirectory')

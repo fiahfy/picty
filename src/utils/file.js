@@ -1,11 +1,12 @@
 import fs from 'fs'
 import path from 'path'
 
-export const getFile = (filepath) => {
+const getFile = (filepath) => {
   const obj = {
     path: filepath,
     name: path.basename(filepath),
-    dirname: path.dirname(filepath),
+    dirpath: path.dirname(filepath),
+    dirname: path.basename(path.dirname(filepath)),
     exists: false,
     directory: false,
     modified_at: null
@@ -26,16 +27,7 @@ export const getFile = (filepath) => {
   }
 }
 
-export const getFirstChildPath = (dirpath) => {
-  const filenames = fs.readdirSync(dirpath)
-  const filename = filenames.find((filename) => !filename.match(/^\./))
-  if (!filename) {
-    return null
-  }
-  return path.join(dirpath, filename)
-}
-
-export const listFiles = (dirpath, options = { recursive: false }) => {
+const listFiles = (dirpath, options = { recursive: false }) => {
   const filenames = fs.readdirSync(dirpath)
   return filenames.reduce((carry, filename) => {
     try {
@@ -55,6 +47,19 @@ export const listFiles = (dirpath, options = { recursive: false }) => {
   }, [])
 }
 
-export const getFiles = (filepathes) => {
-  return filepathes.map((filepath) => getFile(filepath))
+const getChildPathes = (dirpath) => {
+  const filenames = fs.readdirSync(dirpath)
+  return filenames.reduce((carry, filename) => {
+    if (filename.match(/^\./)) {
+      return carry
+    }
+    const filepath = path.join(dirpath, filename)
+    return [...carry, filepath]
+  }, [])
+}
+
+export default {
+  getFile,
+  listFiles,
+  getChildPathes
 }

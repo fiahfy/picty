@@ -1,104 +1,86 @@
 <template>
-  <v-container
-    class="settings"
-    fluid
-    fill-height
-    pa-0
-    scroll-y
-  >
+  <v-container class="settings" fill-height fluid pa-0 scroll-y>
     <v-layout>
       <v-container class="my-0">
-        <v-subheader>General</v-subheader>
-        <v-container>
-          <v-checkbox
-            v-model="darkTheme"
-            label="Use dark theme"
-          />
-          <v-combobox
-            v-model="extensions"
-            :items="defaultExtensions"
-            label="Image file extensions"
-            chips
-            multiple
-          >
-            <template
-              slot="selection"
-              slot-scope="data"
+        <v-subheader class="pl-0">GENERAL</v-subheader>
+        <v-checkbox v-model="darkTheme" class="mt-0" label="Dark Theme" />
+        <v-combobox
+          v-model="extensions"
+          :items="defaultExtensions"
+          label="Image File Extensions"
+          chips
+          multiple
+        >
+          <template slot="selection" slot-scope="data">
+            <v-chip
+              :selected="data.selected"
+              close
+              @input="onChipInput(data.item)"
             >
-              <v-chip
-                :selected="data.selected"
-                close
-                @input="onChipInput(data.item)"
-              >
-                {{ data.item }}
-              </v-chip>
-            </template>
-          </v-combobox>
-        </v-container>
+              {{ data.item }}
+            </v-chip>
+          </template>
+        </v-combobox>
 
-        <v-subheader>Explorer</v-subheader>
-        <v-container>
-          <v-select
-            v-model="previewWidth"
-            :items="previewWidths"
-            label="Preview width"
-          />
-          <v-select
-            v-model="thumbnailStyle"
-            :items="thumbnailStyles"
-            label="Thumbnail style"
-          />
-          <v-select
-            v-model="thumbnailHeight"
-            :items="thumbnailHeights"
-            label="Thumbnail height"
-          />
-        </v-container>
+        <v-subheader class="pl-0">EXPLORER</v-subheader>
+        <v-select
+          v-model="previewWidth"
+          :items="previewWidths"
+          label="Preview Width"
+        />
+        <v-select
+          v-model="thumbnailStyle"
+          :items="thumbnailStyles"
+          label="Thumbnail Style"
+        />
+        <v-select
+          v-model="thumbnailHeight"
+          :items="thumbnailHeights"
+          label="Thumbnail Height"
+        />
 
-        <v-subheader>Viewer</v-subheader>
-        <v-container>
-          <v-checkbox
-            v-model="fullScreen"
-            label="Enter full screen"
-          />
-          <v-checkbox
-            v-model="recursive"
-            label="View images in directory recursively"
-          />
-          <v-checkbox
-            v-model="imageStretched"
-            label="Stretch small images"
-          />
-        </v-container>
+        <v-subheader class="pl-0">VIEWER</v-subheader>
+        <v-checkbox
+          v-model="fullScreen"
+          class="mt-0"
+          label="Enter Full Screen"
+        />
+        <v-checkbox
+          v-model="recursive"
+          class="mt-0"
+          label="View Images Recursively"
+        />
+        <v-checkbox
+          v-model="imageStretched"
+          class="mt-0"
+          label="Stretch Small Images"
+        />
       </v-container>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import {
-  defaultExtensions,
-  previewWidths,
-  thumbnailStyles,
-  thumbnailHeights
-} from '~/store/settings'
+import settings from '~/consts/settings'
 
 export default {
   data() {
     return {
-      defaultExtensions,
-      previewWidths: Object.keys(previewWidths).map((size) => ({
+      defaultExtensions: settings.DEFAULT_EXTENSIONS,
+      previewWidths: Object.keys(settings.PREVIEW_WIDTHS).map((size) => ({
         value: size,
         text: size.charAt(0).toUpperCase() + size.slice(1)
       })),
-      thumbnailStyles: thumbnailStyles.map((style) => ({
+      thumbnailStyles: settings.THUMBNAIL_STYLES.map((style) => ({
         value: style,
         text: style.charAt(0).toUpperCase() + style.slice(1)
       })),
-      thumbnailHeights: Object.keys(thumbnailHeights).map((height) => ({
-        value: height,
-        text: height.charAt(0).toUpperCase() + height.slice(1)
-      }))
+      thumbnailHeights: Object.keys(settings.THUMBNAIL_HEIGHTS).map(
+        (height) => ({
+          value: height,
+          text: height.charAt(0).toUpperCase() + height.slice(1)
+        })
+      )
     }
   },
   computed: {

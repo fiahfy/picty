@@ -1,19 +1,14 @@
 <template>
-  <v-navigation-drawer
-    class="activity-bar"
-    mini-variant
-    permanent
-    app
-  >
+  <v-navigation-drawer class="activity-bar" mini-variant permanent app>
     <v-list class="pt-0">
       <v-list-tile
         v-for="item in items"
-        :key="item.name"
-        :title="item.title|accelerator(item.accelerator)"
+        :key="item.id"
+        :title="item.title | accelerator(item.accelerator)"
         @click="(e) => onItemClick(e, item)"
       >
         <v-list-tile-action>
-          <v-icon :color="item.color">{{ item.icon }}</v-icon>
+          <v-icon :color="getColor(item)">{{ item.icon }}</v-icon>
         </v-list-tile-action>
       </v-list-tile>
     </v-list>
@@ -26,43 +21,38 @@ export default {
     return {
       items: [
         {
-          name: 'explorer',
+          id: 1,
           icon: 'explore',
           title: 'Explorer',
-          accelerator: 'CmdOrCtrl+Shift+E'
+          accelerator: 'CmdOrCtrl+Shift+E',
+          path: '/explorer'
         },
         {
-          name: 'bookmark',
+          id: 2,
           icon: 'star',
           title: 'Bookmark',
-          accelerator: 'CmdOrCtrl+Shift+B'
+          accelerator: 'CmdOrCtrl+Shift+B',
+          path: '/bookmark'
         },
         {
-          name: 'settings',
+          id: 3,
           icon: 'settings',
           title: 'Settings',
-          accelerator: 'CmdOrCtrl+,'
+          accelerator: 'CmdOrCtrl+,',
+          path: '/settings'
         }
       ]
     }
   },
-  watch: {
-    $route(to) {
-      this.updateItems(to.name)
-    }
-  },
-  mounted() {
-    this.updateItems(this.$route.name)
-  },
   methods: {
-    onItemClick(e, item) {
-      this.$router.push({ name: item.name })
+    getColor(item) {
+      return this.getActive(item) ? 'primary' : null
     },
-    updateItems(name) {
-      this.items = this.items.map((item) => ({
-        ...item,
-        color: item.name === name ? 'primary' : null
-      }))
+    getActive(item) {
+      return item.path === this.$route.path
+    },
+    onItemClick(e, item) {
+      this.$router.push(item.path)
     }
   }
 }

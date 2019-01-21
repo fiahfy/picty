@@ -1,8 +1,8 @@
 {
   "appId": "net.fiahfy.picty",
   "files": [
-    "main.js",
-    "app/**/*"
+    "app",
+    "main.js"
   ],
   "mac": {
     "target": ["dmg"]

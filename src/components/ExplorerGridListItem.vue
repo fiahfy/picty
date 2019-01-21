@@ -1,8 +1,8 @@
 <template>
-  <v-flex
-    class="explorer-grid-list-item"
-  >
+  <v-flex class="explorer-grid-list-item">
     <v-card
+      flat
+      tile
       :active="active"
       @click.native="onClick"
       @dblclick="onDblClick"
@@ -14,37 +14,27 @@
         :height="thumbnailHeightValue"
         @error="onError"
       >
-        <v-layout
-          slot="placeholder"
-          fill-height
-          align-center
-          justify-center
-        >
+        <v-layout slot="placeholder" fill-height align-center justify-center>
           <v-flex class="text-xs-center caption">{{ message }}</v-flex>
         </v-layout>
+        <div v-if="images" class="images caption white--text ma-2 px-1">
+          {{ images }} images
+        </div>
       </v-img>
-      <v-icon
-        :color="iconColor"
-        class="pa-1"
-      >{{ icon }}</v-icon>
+      <v-icon :color="iconColor" class="pa-1">{{ icon }}</v-icon>
       <v-divider />
       <v-card-title class="pt-2 px-2 pb-0">
         <v-spacer />
         <div class="title">
           <div>
-            <span
-              :title="file.name"
-              class="text-xs-center caption"
-            >{{ file.name }}</span>
+            <span :title="file.name" class="text-xs-center caption">
+              {{ file.name }}
+            </span>
           </div>
         </div>
         <v-spacer />
       </v-card-title>
-      <v-card-actions
-        class="pa-0"
-        @click.stop
-        @dblclick.stop
-      >
+      <v-card-actions class="pa-0" @click.stop @dblclick.stop>
         <v-spacer />
         <v-rating
           v-model="rating"
@@ -63,8 +53,7 @@
 import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import * as ContextMenu from '~/utils/context-menu'
-import Worker from '~/workers/child-fetch.worker.js'
+import Worker from '~/workers/fetch.worker.js'
 
 const worker = workerPromisify(new Worker())
 
@@ -79,7 +68,8 @@ export default {
     return {
       loading: false,
       error: false,
-      imageUrl: ''
+      imageUrl: '',
+      images: ''
     }
   },
   computed: {
@@ -119,7 +109,7 @@ export default {
       if (this.error) {
         return 'Load failed'
       }
-      return this.imageUrl ? '' : 'No image'
+      return this.imageUrl ? '' : 'No images'
     },
     ...mapState('settings', ['thumbnailStyle']),
     ...mapGetters('settings', ['thumbnailHeightValue', 'isFileAvailable']),
@@ -135,9 +125,13 @@ export default {
       key: this.file.path,
       data: this.file.path
     })
-    if (this.isFileAvailable({ filepath: data })) {
-      this.imageUrl = fileUrl(data)
+    const filepathes = data.filter((filepath) =>
+      this.isFileAvailable({ filepath })
+    )
+    if (filepathes.length) {
+      this.imageUrl = fileUrl(filepathes[0])
     }
+    this.images = filepathes.length
     this.loading = false
   },
   methods: {
@@ -147,9 +141,9 @@ export default {
     onDblClick() {
       this.openFile({ filepath: this.file.path })
     },
-    onContextMenu(e) {
+    onContextMenu() {
       this.selectFile({ filepath: this.file.path })
-      let templates = [
+      let template = [
         {
           label: 'View',
           click: () => this.viewFile({ filepath: this.file.path }),
@@ -158,10 +152,10 @@ export default {
       ]
       const text = getSelection().toString()
       if (text) {
-        templates = [
-          ...templates,
+        template = [
+          ...template,
           { type: 'separator' },
-          { role: ContextMenu.Role.copy },
+          { role: 'copy' },
           {
             label: `Search "${text}"`,
             click: () => this.searchFiles({ query: text }),
@@ -169,7 +163,7 @@ export default {
           }
         ]
       }
-      ContextMenu.show(e, templates)
+      this.$contextMenu.show(template)
     },
     onError() {
       this.error = true
@@ -194,23 +188,30 @@ export default {
   &:hover {
     background-color: #eeeeee;
   }
+  .v-image .images {
+    background-color: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
   .v-icon {
     position: absolute;
     left: 0;
     top: 0;
   }
-  .title {
+  .v-card__title .title {
     display: table;
-    & > div {
+    > div {
       display: table-cell;
       height: 28px;
       vertical-align: middle;
-      & > span {
+      > span {
         display: -webkit-box;
         line-height: 1.2;
         overflow: hidden;
         text-overflow: ellipsis;
         word-break: break-all;
+        /* autoprefixer: ignore next */
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
       }

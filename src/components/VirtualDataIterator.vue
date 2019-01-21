@@ -1,21 +1,13 @@
 <template>
-  <div
-    v-resize="onResize"
-    class="virtual-data-iterator"
-  >
-    <v-container
-      :class="classes"
-      fluid
-      pa-0
-    >
-      <slot
-        v-if="loading"
-        name="progress"
-      />
+  <v-layout class="virtual-data-iterator" column>
+    <slot name="header" />
+    <v-container :class="classes" fluid pa-0 overflow-hidden>
+      <slot v-if="loading" name="progress" />
       <v-data-iterator
         ref="iterator"
         v-model="model"
         v-bind="$attrs"
+        class="fill-height"
         :pagination.sync="paginationModel"
         :items="renderItems"
         :disable-initial-sort="true"
@@ -23,20 +15,14 @@
         row
         wrap
       >
-        <template
-          slot="item"
-          slot-scope="props"
-        >
+        <template slot="item" slot-scope="props">
           <v-flex
             v-if="props.index === 0"
             :style="{ height: `${padding.top}px` }"
             class="pa-0"
             xs12
           />
-          <slot
-            v-bind="props"
-            name="items"
-          />
+          <slot v-bind="props" name="items" />
           <v-flex
             v-if="props.index === renderItems.length - 1"
             :style="{ height: `${padding.bottom}px` }"
@@ -44,21 +30,15 @@
             xs12
           />
         </template>
-        <slot
-          slot="no-data"
-          name="no-data"
-        />
-        <slot
-          slot="no-results"
-          name="no-results"
-        />
+        <slot slot="no-data" name="no-data" />
+        <slot slot="no-results" name="no-results" />
       </v-data-iterator>
     </v-container>
-  </div>
+  </v-layout>
 </template>
 
 <script>
-import * as Viewport from '~/utils/viewport'
+import viewport from '~/utils/viewport'
 
 export default {
   props: {
@@ -144,12 +124,13 @@ export default {
   mounted() {
     this.container = this.$el.querySelector('.v-data-iterator')
     this.container.addEventListener('scroll', this.onScroll)
-    this.$nextTick(() => {
-      this.adjustItems()
-    })
+    this.observer = new ResizeObserver(this.onResize)
+    this.observer.observe(this.container)
+    this.adjustItems()
   },
   beforeDestroy() {
     this.container.removeEventListener('scroll', this.onScroll)
+    this.observer.disconnect()
   },
   methods: {
     getScrollTop() {
@@ -167,7 +148,7 @@ export default {
       if (!this.container) {
         return
       }
-      const size = 12 / this.calculatedSizes[Viewport.getSizeIndex()]
+      const size = 12 / this.calculatedSizes[viewport.getSizeIndex()]
 
       const { scrollTop, offsetHeight } = this.container
       const index = Math.floor(scrollTop / this.estimatedHeight)
@@ -188,6 +169,8 @@ export default {
           this.estimatedHeight
       }
       this.renderItems = this.items.slice(firstIndex * size, lastIndex * size)
+
+      this.setScrollTop(scrollTop)
     },
     onResize() {
       this.adjustItems()
@@ -202,7 +185,6 @@ export default {
 
 <style scoped lang="scss">
 .virtual-data-iterator > .container {
-  height: 100%;
   position: relative;
   .v-progress-linear {
     left: 0;
@@ -212,7 +194,6 @@ export default {
     top: 0;
   }
   .v-data-iterator {
-    height: 100%;
     overflow-y: scroll;
     &::-webkit-scrollbar {
       width: 14px;
@@ -227,8 +208,7 @@ export default {
       }
     }
     &:before {
-      box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
-        0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
       content: '';
       left: 0;
       position: absolute;
@@ -236,7 +216,7 @@ export default {
       top: -10px;
       z-index: 1;
     }
-    & /deep/ .layout {
+    /deep/ .layout {
       margin: 0px !important;
     }
   }
