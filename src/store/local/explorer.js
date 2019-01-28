@@ -373,6 +373,11 @@ export const mutations = {
   addQueryHistory(state, { queryHistory }) {
     state.queryHistories = [...state.queryHistories, queryHistory]
   },
+  removeQueryHistory(state, { queryHistory }) {
+    state.queryHistories = state.queryHistories.filter(
+      (history) => history !== queryHistory
+    )
+  },
   setDisplay(state, { display }) {
     state.display = display
   },

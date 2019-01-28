@@ -39,13 +39,29 @@
         @keyup="onTextKeyUp"
         @contextmenu.stop="onTextContextMenu"
         @click:append-outer="onTextAppendIconClick"
-      />
+      >
+        <template slot="item" slot-scope="{ item }">
+          <v-list-tile-content>
+            <v-list-tile-title v-text="item" />
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn
+              flat
+              small
+              color="primary"
+              @click.stop="(e) => onItemClick(e, item)"
+            >
+              delete
+            </v-btn>
+          </v-list-tile-action>
+        </template>
+      </v-autocomplete>
     </v-toolbar>
   </v-card>
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default {
   data() {
@@ -105,7 +121,20 @@ export default {
     onTextAppendIconClick() {
       this.searchFiles({ query: this.searchInput })
     },
+    onItemClick(e, item) {
+      this.removeQueryHistory({ queryHistory: item })
+    },
+    ...mapMutations('local/explorer', ['removeQueryHistory']),
     ...mapActions('local/explorer', ['searchFiles', 'viewFile', 'setDisplay'])
   }
 }
 </script>
+
+<style scope lang="scss">
+.v-autocomplete__content {
+  width: 0;
+  .v-list__tile__action {
+    min-width: unset;
+  }
+}
+</style>
