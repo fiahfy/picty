@@ -23,6 +23,21 @@
         </v-combobox>
 
         <v-subheader class="pl-0">EXPLORER</v-subheader>
+        <v-text-field
+          v-model="queryHistorySize"
+          label="Search History Size"
+          type="number"
+        >
+          <v-btn
+            slot="append-outer"
+            class="mt-0"
+            color="primary"
+            flat
+            @click="onClearClick"
+          >
+            Clear All Histories
+          </v-btn>
+        </v-text-field>
         <v-select
           v-model="previewWidth"
           :items="previewWidths"
@@ -61,6 +76,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import settings from '~/consts/settings'
 
 export default {
@@ -118,6 +134,16 @@ export default {
         })
       }
     },
+    queryHistorySize: {
+      get() {
+        return this.$store.state.settings.queryHistorySize
+      },
+      set(value) {
+        this.$store.commit('settings/setQueryHistorySize', {
+          queryHistorySize: value
+        })
+      }
+    },
     previewWidth: {
       get() {
         return this.$store.state.settings.previewWidth
@@ -164,7 +190,11 @@ export default {
       this.extensions = this.extensions.filter(
         (extension) => extension !== item
       )
-    }
+    },
+    onClearClick() {
+      this.clearQueryHistory()
+    },
+    ...mapActions('local/explorer', ['clearQueryHistory'])
   }
 }
 </script>

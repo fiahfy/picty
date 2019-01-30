@@ -224,12 +224,27 @@ export const actions = {
     })
     commit('setFiles', { files })
   },
-  searchFiles({ commit }, { query }) {
+  searchFiles({ commit, dispatch }, { query }) {
     commit('setQueryInput', { queryInput: query })
     commit('setQuery', { query })
     if (query) {
-      commit('addQueryHistory', { queryHistory: query })
+      dispatch('addQueryHistory', { queryHistory: query })
     }
+  },
+  addQueryHistory({ commit, state, rootState }, { queryHistory }) {
+    const queryHistories = [...state.queryHistories, queryHistory].slice(
+      -rootState.settings.queryHistorySize
+    )
+    commit('setQueryHistories', { queryHistories })
+  },
+  removeQueryHistory({ commit, state, rootState }, { queryHistory }) {
+    const queryHistories = state.queryHistories
+      .filter((history) => history !== queryHistory)
+      .slice(-rootState.settings.queryHistorySize)
+    commit('setQueryHistories', { queryHistories })
+  },
+  clearQueryHistory({ commit }) {
+    commit('setQueryHistories', { queryHistories: [] })
   },
   selectFile({ commit }, { filepath }) {
     commit('setSelectedFilepath', { selectedFilepath: filepath })
@@ -370,13 +385,8 @@ export const mutations = {
   setQueryInput(state, { queryInput }) {
     state.queryInput = queryInput
   },
-  addQueryHistory(state, { queryHistory }) {
-    state.queryHistories = [...state.queryHistories, queryHistory]
-  },
-  removeQueryHistory(state, { queryHistory }) {
-    state.queryHistories = state.queryHistories.filter(
-      (history) => history !== queryHistory
-    )
+  setQueryHistories(state, { queryHistories }) {
+    state.queryHistories = queryHistories
   },
   setDisplay(state, { display }) {
     state.display = display

@@ -93,6 +93,8 @@ export const plugins = [
   createPersistedState({
     paths: [
       'local.explorer.directory',
+      'local.explorer.queryHistories',
+      'local.explorer.display',
       'bookmark',
       'rating',
       'views',

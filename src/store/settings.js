@@ -6,6 +6,7 @@ export const state = () => ({
   fullScreen: false,
   recursive: false,
   imageStretched: false,
+  queryHistorySize: 1000,
   previewWidth: 'medium',
   thumbnailStyle: 'cover',
   thumbnailHeight: 'medium',
@@ -45,6 +46,9 @@ export const mutations = {
   },
   setImageStretched(state, { imageStretched }) {
     state.imageStretched = imageStretched
+  },
+  setQueryHistorySize(state, { queryHistorySize }) {
+    state.queryHistorySize = queryHistorySize
   },
   setPreviewWidth(state, { previewWidth }) {
     state.previewWidth = previewWidth

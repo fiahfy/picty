@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
   data() {
@@ -124,8 +124,12 @@ export default {
     onItemClick(e, item) {
       this.removeQueryHistory({ queryHistory: item })
     },
-    ...mapMutations('local/explorer', ['removeQueryHistory']),
-    ...mapActions('local/explorer', ['searchFiles', 'viewFile', 'setDisplay'])
+    ...mapActions('local/explorer', [
+      'searchFiles',
+      'viewFile',
+      'setDisplay',
+      'removeQueryHistory'
+    ])
   }
 }
 </script>
