@@ -250,7 +250,10 @@ const createWindow = async () => {
   mainWindow.on('closed', () => (mainWindow = null))
   mainWindow.on('enter-full-screen', () => send('enterFullScreen'))
   mainWindow.on('leave-full-screen', () => send('leaveFullScreen'))
-  mainWindow.on('app-command', (e, cmd) => send('appCommand', cmd))
+  mainWindow.on('app-command', (e, cmd) => {
+    e.preventDefault()
+    send('appCommand', cmd)
+  })
 }
 
 app.on('ready', createWindow)
