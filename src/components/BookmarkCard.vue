@@ -7,7 +7,7 @@
         icon
         @click="onAddClick"
       >
-        <v-icon>add</v-icon>
+        <v-icon>mdi-add</v-icon>
       </v-btn>
       <v-btn
         :title="'Remove' | accelerator('CmdOrCtrl+Backspace')"
@@ -16,7 +16,7 @@
         icon
         @click="onRemoveClick"
       >
-        <v-icon>remove</v-icon>
+        <v-icon>mdi-remove</v-icon>
       </v-btn>
     </v-toolbar>
     <v-dialog v-model="dialog" persistent max-width="500">
@@ -29,7 +29,7 @@
             <v-text-field
               v-model="form.filepath"
               :rules="[
-                () => form.filepath.length > 0 || 'This field is required'
+                () => form.filepath.length > 0 || 'This field is required',
               ]"
               required
               type="text"
@@ -57,13 +57,13 @@ export default {
     return {
       form: {
         valid: false,
-        filepath: ''
-      }
+        filepath: '',
+      },
     }
   },
   computed: {
     ...mapState('local/bookmark', ['dialog']),
-    ...mapGetters('local/bookmark', ['canRemoveBookmark'])
+    ...mapGetters('local/bookmark', ['canRemoveBookmark']),
   },
   methods: {
     onAddClick() {
@@ -84,8 +84,8 @@ export default {
       'addBookmark',
       'removeBookmark',
       'showDialog',
-      'dismissDialog'
-    ])
-  }
+      'dismissDialog',
+    ]),
+  },
 }
 </script>

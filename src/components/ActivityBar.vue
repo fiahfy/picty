@@ -22,26 +22,26 @@ export default {
       items: [
         {
           id: 1,
-          icon: 'explore',
+          icon: 'mdi-explore',
           title: 'Explorer',
           accelerator: 'CmdOrCtrl+Shift+E',
-          path: '/explorer'
+          path: '/explorer',
         },
         {
           id: 2,
-          icon: 'star',
+          icon: 'mdi-star',
           title: 'Bookmark',
           accelerator: 'CmdOrCtrl+Shift+B',
-          path: '/bookmark'
+          path: '/bookmark',
         },
         {
           id: 3,
-          icon: 'settings',
+          icon: 'mdi-ettings',
           title: 'Settings',
           accelerator: 'CmdOrCtrl+,',
-          path: '/settings'
-        }
-      ]
+          path: '/settings',
+        },
+      ],
     }
   },
   methods: {
@@ -51,9 +51,9 @@ export default {
     getActive(item) {
       return item.path === this.$route.path
     },
-    onItemClick(e, item) {
+    onItemClick(_e, item) {
       this.$router.push(item.path)
-    }
-  }
+    },
+  },
 }
 </script>

@@ -44,49 +44,49 @@ export default {
   props: {
     value: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     pagination: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     items: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     estimatedHeight: {
       type: Number,
-      default: 48
+      default: 48,
     },
     threshold: {
       type: Number,
-      default: 0
+      default: 0,
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     itemKey: {
       type: String,
-      default: 'id'
+      default: 'id',
     },
     sizes: {
       type: [Number, Array],
-      default: 6
+      default: 6,
     },
     containerClass: {
       type: [String],
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
       scrolling: false,
       padding: {
         top: 0,
-        bottom: 0
+        bottom: 0,
       },
-      renderItems: []
+      renderItems: [],
     }
   },
   computed: {
@@ -96,7 +96,7 @@ export default {
       },
       set(value) {
         this.$emit('update:pagination', value)
-      }
+      },
     },
     model: {
       get() {
@@ -104,22 +104,22 @@ export default {
       },
       set(value) {
         this.$emit('input', value)
-      }
+      },
     },
     classes() {
       return {
         [this.containerClass]: true,
-        scrolling: this.scrolling
+        scrolling: this.scrolling,
       }
     },
     calculatedSizes() {
       return Array.isArray(this.sizes) ? this.sizes : Array(5).fill(this.sizes)
-    }
+    },
   },
   watch: {
     items() {
       this.adjustItems()
-    }
+    },
   },
   mounted() {
     this.container = this.$el.querySelector('.v-data-iterator')
@@ -166,7 +166,7 @@ export default {
         top: firstIndex * this.estimatedHeight,
         bottom:
           (Math.ceil(this.items.length / size) - lastIndex) *
-          this.estimatedHeight
+          this.estimatedHeight,
       }
       this.renderItems = this.items.slice(firstIndex * size, lastIndex * size)
 
@@ -178,8 +178,8 @@ export default {
     onScroll(e) {
       this.adjustItems()
       this.$emit('scroll', e)
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -216,7 +216,7 @@ export default {
       top: -10px;
       z-index: 1;
     }
-    /deep/ .layout {
+    ::v-deep .layout {
       margin: 0px !important;
     }
   }

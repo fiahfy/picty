@@ -1,11 +1,11 @@
 export const state = () => ({
-  ratings: {}
+  ratings: {},
 })
 
 export const getters = {
   getRating(state) {
     return ({ filepath }) => state.ratings[filepath] || 0
-  }
+  },
 }
 
 export const mutations = {
@@ -13,7 +13,7 @@ export const mutations = {
     if (rating) {
       state.ratings = {
         ...state.ratings,
-        [filepath]: rating
+        [filepath]: rating,
       }
     } else {
       state.ratings = Object.keys(state.ratings)
@@ -23,5 +23,5 @@ export const mutations = {
           return carry
         }, {})
     }
-  }
+  },
 }

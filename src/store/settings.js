@@ -10,7 +10,7 @@ export const state = () => ({
   previewWidth: 'medium',
   thumbnailStyle: 'cover',
   thumbnailHeight: 'medium',
-  extensions: [...settings.DEFAULT_EXTENSIONS]
+  extensions: [...settings.DEFAULT_EXTENSIONS],
 })
 
 export const getters = {
@@ -31,7 +31,7 @@ export const getters = {
       }
       return state.extensions.includes(ext.slice(1))
     }
-  }
+  },
 }
 
 export const mutations = {
@@ -61,5 +61,5 @@ export const mutations = {
   },
   setExtensions(state, { extensions }) {
     state.extensions = extensions
-  }
+  },
 }

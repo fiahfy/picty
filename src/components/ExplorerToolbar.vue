@@ -9,7 +9,7 @@
       @click="onBackClick"
       @contextmenu.stop="onBackContextMenu"
     >
-      <v-icon>arrow_back</v-icon>
+      <v-icon>mdi-arrow_back</v-icon>
     </v-btn>
     <v-btn
       v-long-press="onForwardContextMenu"
@@ -20,7 +20,7 @@
       @click="onForwardClick"
       @contextmenu.stop="onForwardContextMenu"
     >
-      <v-icon>arrow_forward</v-icon>
+      <v-icon>mdi-arrow_forward</v-icon>
     </v-btn>
     <v-btn
       :title="'Up' | accelerator('CmdOrCtrl+Shift+P')"
@@ -28,10 +28,10 @@
       icon
       @click="onUpwardClick"
     >
-      <v-icon>arrow_upward</v-icon>
+      <v-icon>mdi-arrow_upward</v-icon>
     </v-btn>
     <v-btn title="Reload" flat icon @click="onRefreshClick">
-      <v-icon>refresh</v-icon>
+      <v-icon>mdi-efresh</v-icon>
     </v-btn>
     <v-btn
       :title="'Home' | accelerator('CmdOrCtrl+Shift+H')"
@@ -39,7 +39,7 @@
       icon
       @click="onHomeClick"
     >
-      <v-icon>home</v-icon>
+      <v-icon>mdi-home</v-icon>
     </v-btn>
     <v-btn
       :title="'Bookmark' | accelerator('CmdOrCtrl+D')"
@@ -48,14 +48,14 @@
       icon
       @click="onBookmarkClick"
     >
-      <v-icon>star</v-icon>
+      <v-icon>mdi-star</v-icon>
     </v-btn>
     <v-text-field
       v-model="directoryInput"
       class="ml-3 pt-0"
       name="directory"
       label="Path"
-      prepend-icon="folder"
+      prepend-icon="mdi-folder"
       single-line
       hide-details
       @click:prepend="onPrependClick"
@@ -76,9 +76,9 @@ export default {
       },
       set(value) {
         this.$store.commit('local/explorer/setDirectoryInput', {
-          directoryInput: value
+          directoryInput: value,
         })
-      }
+      },
     },
     backDisabled() {
       return !this.canBackDirectory
@@ -94,19 +94,19 @@ export default {
       'forwardDirectories',
       'canBackDirectory',
       'canForwardDirectory',
-      'directoryBookmarked'
-    ])
+      'directoryBookmarked',
+    ]),
   },
   methods: {
     onBackClick() {
       this.backDirectory()
     },
     onBackContextMenu() {
-      this.$contextMenu.show(
+      this.$contextMenu.open(
         this.backDirectories.map((directory, index) => {
           return {
             label: directory,
-            click: () => this.backDirectory({ offset: index })
+            click: () => this.backDirectory({ offset: index }),
           }
         })
       )
@@ -115,11 +115,11 @@ export default {
       this.forwardDirectory()
     },
     onForwardContextMenu() {
-      this.$contextMenu.show(
+      this.$contextMenu.open(
         this.forwardDirectories.map((directory, index) => {
           return {
             label: directory,
-            click: () => this.forwardDirectory({ offset: index })
+            click: () => this.forwardDirectory({ offset: index }),
           }
         })
       )
@@ -137,10 +137,10 @@ export default {
       this.toggleDirectoryBookmarked()
     },
     onTextContextMenu() {
-      this.$contextMenu.show([
+      this.$contextMenu.open([
         { role: 'cut' },
         { role: 'copy' },
-        { role: 'paste' }
+        { role: 'paste' },
       ])
     },
     onTextKeyUp(e) {
@@ -159,8 +159,8 @@ export default {
       'forwardDirectory',
       'reloadDirectory',
       'browseDirectory',
-      'toggleDirectoryBookmarked'
-    ])
-  }
+      'toggleDirectoryBookmarked',
+    ]),
+  },
 }
 </script>

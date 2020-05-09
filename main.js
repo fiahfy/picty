@@ -19,9 +19,9 @@ const createTemplate = () => {
         {
           label: 'Open...',
           accelerator: 'CmdOrCtrl+O',
-          click: () => send('openDirectory')
-        }
-      ]
+          click: () => send('openDirectory'),
+        },
+      ],
     },
     {
       label: 'Edit',
@@ -39,9 +39,9 @@ const createTemplate = () => {
         {
           label: 'Search...',
           accelerator: 'CmdOrCtrl+F',
-          click: () => send('search')
-        }
-      ]
+          click: () => send('search'),
+        },
+      ],
     },
     {
       label: 'View',
@@ -49,12 +49,12 @@ const createTemplate = () => {
         {
           label: 'Explorer',
           accelerator: 'CmdOrCtrl+Shift+E',
-          click: () => send('showExplorer')
+          click: () => send('showExplorer'),
         },
         {
           label: 'Bookmark',
           accelerator: 'CmdOrCtrl+Shift+B',
-          click: () => send('showBookmark')
+          click: () => send('showBookmark'),
         },
         { type: 'separator' },
         { role: 'reload' },
@@ -65,8 +65,8 @@ const createTemplate = () => {
         // { role: 'zoomin' },
         // { role: 'zoomout' },
         // { type: 'separator' },
-        { role: 'togglefullscreen' }
-      ]
+        { role: 'togglefullscreen' },
+      ],
     },
     {
       label: 'Explorer',
@@ -74,36 +74,36 @@ const createTemplate = () => {
         {
           label: 'Open Location...',
           accelerator: 'CmdOrCtrl+L',
-          click: () => send('openLocation')
+          click: () => send('openLocation'),
         },
         { type: 'separator' },
         {
           label: 'Back',
           accelerator: 'CmdOrCtrl+Left',
-          click: () => send('backDirectory')
+          click: () => send('backDirectory'),
         },
         {
           label: 'Forward',
           accelerator: 'CmdOrCtrl+Right',
-          click: () => send('forwardDirectory')
+          click: () => send('forwardDirectory'),
         },
         {
           label: 'Up',
           accelerator: 'CmdOrCtrl+Shift+P',
-          click: () => send('upDirectory')
+          click: () => send('upDirectory'),
         },
         {
           label: 'Home',
           accelerator: 'CmdOrCtrl+Shift+H',
-          click: () => send('changeHomeDirectory')
+          click: () => send('changeHomeDirectory'),
         },
         {
           label: 'Bookmark',
           accelerator: 'CmdOrCtrl+D',
-          click: () => send('bookmarkDirectory')
+          click: () => send('bookmarkDirectory'),
         },
-        { label: 'Browse', click: () => send('browseDirectory') }
-      ]
+        { label: 'Browse', click: () => send('browseDirectory') },
+      ],
     },
     {
       label: 'Viewer',
@@ -111,45 +111,45 @@ const createTemplate = () => {
         {
           label: 'Zoom In',
           accelerator: 'CmdOrCtrl+Plus',
-          click: () => send('zoomIn')
+          click: () => send('zoomIn'),
         },
         {
           label: 'Zoom Out',
           accelerator: 'CmdOrCtrl+-',
-          click: () => send('zoomOut')
+          click: () => send('zoomOut'),
         },
         {
           label: 'Reset Zoom',
           accelerator: 'CmdOrCtrl+0',
-          click: () => send('resetZoom')
-        }
-      ]
+          click: () => send('resetZoom'),
+        },
+      ],
     },
     {
       role: 'window',
-      submenu: [{ role: 'close' }, { role: 'minimize' }]
+      submenu: [{ role: 'close' }, { role: 'minimize' }],
     },
     {
       role: 'help',
       submenu: [
         {
           label: 'Learn More',
-          click: () => shell.openExternal('https://github.com/fiahfy/picty')
-        }
-      ]
-    }
+          click: () => shell.openExternal('https://github.com/fiahfy/picty'),
+        },
+      ],
+    },
   ]
 
   if (process.platform === 'darwin') {
     template.unshift({
-      label: app.getName(),
+      label: app.name,
       submenu: [
         { role: 'about' },
         { type: 'separator' },
         {
           label: 'Preferences...',
           accelerator: 'CmdOrCtrl+,',
-          click: () => send('showSettings')
+          click: () => send('showSettings'),
         },
         { type: 'separator' },
         { role: 'services', submenu: [] },
@@ -158,8 +158,8 @@ const createTemplate = () => {
         { role: 'hideothers' },
         { role: 'unhide' },
         { type: 'separator' },
-        { role: 'quit' }
-      ]
+        { role: 'quit' },
+      ],
     })
 
     template.forEach((menu) => {
@@ -168,7 +168,7 @@ const createTemplate = () => {
           { type: 'separator' },
           {
             label: 'Speech',
-            submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }]
+            submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }],
           }
         )
       } else if (menu.role === 'window') {
@@ -187,21 +187,22 @@ const createTemplate = () => {
 const createWindow = async () => {
   const windowState = windowStateKeeper({
     defaultWidth: 820,
-    defaultHeight: 600
+    defaultHeight: 600,
   })
 
   const options = {
     ...windowState,
     titleBarStyle: 'hidden',
     webPreferences: {
-      nodeIntegrationInWorker: true
-    }
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+    },
   }
 
   if (dev) {
     options.webPreferences = {
       ...options.webPreferences,
-      webSecurity: false
+      webSecurity: false,
     }
   }
 
@@ -211,12 +212,12 @@ const createWindow = async () => {
 
   if (dev) {
     // Disable security warnings
-    process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true
+    process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true
 
     // Install vue dev tool and open chrome dev tools
     const {
       default: installExtension,
-      VUEJS_DEVTOOLS
+      VUEJS_DEVTOOLS,
     } = require('electron-devtools-installer')
 
     const name = await installExtension(VUEJS_DEVTOOLS.id)

@@ -8,7 +8,7 @@
   >
     <td :title="bookmark.path">
       <v-layout class="align-center">
-        <v-icon class="pa-1" color="blue lighten-3">folder</v-icon>
+        <v-icon class="pa-1" color="blue lighten-3">mdi-folder</v-icon>
         <span class="ellipsis">{{ bookmark.path }}</span>
       </v-layout>
     </td>
@@ -27,14 +27,14 @@ export default {
   props: {
     bookmark: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   computed: {
     active() {
       return this.isBookmarkSelected({ filepath: this.bookmark.path })
     },
-    ...mapGetters('local/bookmark', ['isBookmarkSelected'])
+    ...mapGetters('local/bookmark', ['isBookmarkSelected']),
   },
   methods: {
     onClick() {
@@ -49,8 +49,8 @@ export default {
         {
           label: 'Open',
           click: () => this.openBookmark({ filepath: this.bookmark.path }),
-          accelerator: 'Enter'
-        }
+          accelerator: 'Enter',
+        },
       ]
       const text = getSelection().toString()
       if (text) {
@@ -62,24 +62,24 @@ export default {
         {
           label: 'New Bookmark',
           click: () => this.showDialog(),
-          accelerator: 'CmdOrCtrl+N'
+          accelerator: 'CmdOrCtrl+N',
         },
         { type: 'separator' },
         {
           label: 'Remove',
           click: () => this.removeBookmark(),
-          accelerator: 'CmdOrCtrl+Backspace'
-        }
+          accelerator: 'CmdOrCtrl+Backspace',
+        },
       ]
-      this.$contextMenu.show(template)
+      this.$contextMenu.open(template)
     },
     ...mapActions('local/bookmark', [
       'removeBookmark',
       'selectBookmark',
       'openBookmark',
-      'showDialog'
-    ])
-  }
+      'showDialog',
+    ]),
+  },
 }
 </script>
 

@@ -8,7 +8,7 @@ const reversed = {
   name: false,
   views: true,
   rating: true,
-  modified_at: true
+  modified_at: true,
 }
 
 const worker = workerPromisify(new Worker())
@@ -25,7 +25,7 @@ export const state = () => ({
   selectedFilepath: '',
   histories: [],
   historyIndex: -1,
-  orders: {}
+  orders: {},
 })
 
 export const getters = {
@@ -49,7 +49,7 @@ export const getters = {
   canViewFile(state) {
     return !!state.selectedFilepath
   },
-  directoryBookmarked(state, getters, rootState, rootGetters) {
+  directoryBookmarked(state, _getters, _rootState, rootGetters) {
     return rootGetters['bookmark/isBookmarked']({ filepath: state.directory })
   },
   scrollTop(state) {
@@ -59,7 +59,7 @@ export const getters = {
     return (
       state.orders[state.directory] || {
         by: 'name',
-        descending: false
+        descending: false,
       }
     )
   },
@@ -67,11 +67,11 @@ export const getters = {
     return state.files.concat().filter((file) => {
       return (
         !state.query ||
-        file.name.toLowerCase().indexOf(state.query.toLowerCase()) > -1
+        file.name.toLowerCase().includes(state.query.toLowerCase())
       )
     })
   },
-  selectedFileIndex(state, getters) {
+  selectedFileIndex(_state, getters) {
     return getters.filteredFiles.findIndex((file) =>
       getters.isFileSelected({ filepath: file.path })
     )
@@ -82,10 +82,10 @@ export const getters = {
   isFileSelected(state) {
     return ({ filepath }) => state.selectedFilepath === filepath
   },
-  isFileAvailable(state, getters, rootState, rootGetters) {
+  isFileAvailable(_state, _getters, _rootState, rootGetters) {
     return ({ filepath }) =>
       rootGetters['settings/isFileAvailable']({ filepath })
-  }
+  },
 }
 
 export const actions = {
@@ -113,8 +113,8 @@ export const actions = {
       ...state.histories.slice(0, historyIndex),
       {
         directory: dirpath,
-        scrollTop: 0
-      }
+        scrollTop: 0,
+      },
     ]
     commit('setSelectedFilepath', { selectedFilepath: '' })
     commit('setHistories', { histories })
@@ -180,7 +180,7 @@ export const actions = {
       commit('setFiles', { files: [] })
       const { data } = await worker.postMessage({
         method: 'listFiles',
-        args: [state.directory]
+        args: [state.directory],
       })
       const files = data
         .filter(
@@ -192,7 +192,7 @@ export const actions = {
           return {
             ...file,
             rating: rootGetters['rating/getRating']({ filepath: file.path }),
-            views: rootGetters['views/getViews']({ filepath: file.path })
+            views: rootGetters['views/getViews']({ filepath: file.path }),
           }
         })
       commit('setFiles', { files })
@@ -326,14 +326,14 @@ export const actions = {
   updateFileRating({ commit, rootGetters }, { filepath, rating }) {
     commit('rating/setRating', { filepath, rating }, { root: true })
     const file = {
-      rating: rootGetters['rating/getRating']({ filepath })
+      rating: rootGetters['rating/getRating']({ filepath }),
     }
     commit('updateFile', { filepath, file })
   },
   incrementFileViews({ commit, rootGetters }, { filepath }) {
     commit('views/incrementViews', { filepath }, { root: true })
     const file = {
-      views: rootGetters['views/getViews']({ filepath })
+      views: rootGetters['views/getViews']({ filepath }),
     }
     commit('updateFile', { filepath, file })
   },
@@ -343,7 +343,7 @@ export const actions = {
     }
     const history = {
       ...state.histories[state.historyIndex],
-      scrollTop
+      scrollTop,
     }
     commit('setHistory', { history, index: state.historyIndex })
   },
@@ -369,7 +369,7 @@ export const actions = {
         ? selector.EXPLORER_TABLE
         : selector.EXPLORER_GRID_LIST
     dispatch('focus', { selector: target }, { root: true })
-  }
+  },
 }
 
 export const mutations = {
@@ -409,7 +409,7 @@ export const mutations = {
     state.histories = [
       ...state.histories.slice(0, index),
       history,
-      ...state.histories.slice(index + 1, state.histories.length)
+      ...state.histories.slice(index + 1, state.histories.length),
     ]
   },
   setHistories(state, { histories }) {
@@ -421,7 +421,7 @@ export const mutations = {
   setOrder(state, { order, directory }) {
     state.orders = {
       ...state.orders,
-      [directory]: order
+      [directory]: order,
     }
-  }
+  },
 }

@@ -14,11 +14,11 @@ export default {
       snackbar: false,
       color: '',
       text: '',
-      messages: []
+      messages: [],
     }
   },
   computed: {
-    ...mapState(['message'])
+    ...mapState(['message']),
   },
   watch: {
     snackbar(value) {
@@ -39,7 +39,7 @@ export default {
         return
       }
       this.showSnackbar()
-    }
+    },
   },
   methods: {
     onCloseClick() {
@@ -54,7 +54,7 @@ export default {
       this.color = message.color
       this.text = message.text
     },
-    ...mapMutations(['setMessage'])
-  }
+    ...mapMutations(['setMessage']),
+  },
 }
 </script>

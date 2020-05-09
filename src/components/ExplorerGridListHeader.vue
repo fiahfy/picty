@@ -7,7 +7,7 @@
           v-model="order"
           :items="orders"
           single-line
-          append-outer-icon="sort"
+          append-outer-icon="mdi-sort"
         />
       </v-flex>
     </v-toolbar>
@@ -25,21 +25,21 @@ export default {
         { value: { by: 'views', descending: false }, text: 'Views descending' },
         {
           value: { by: 'rating', descending: true },
-          text: 'Rating ascending'
+          text: 'Rating ascending',
         },
         {
           value: { by: 'rating', descending: false },
-          text: 'Rating descending'
+          text: 'Rating descending',
         },
         {
           value: { by: 'modified_at', descending: true },
-          text: 'Date Modified ascending'
+          text: 'Date Modified ascending',
         },
         {
           value: { by: 'modified_at', descending: false },
-          text: 'Date Modified descending'
-        }
-      ]
+          text: 'Date Modified descending',
+        },
+      ],
     }
   },
   computed: {
@@ -49,8 +49,8 @@ export default {
       },
       set(value) {
         this.$store.dispatch('local/explorer/changeOrder', { order: value })
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>

@@ -16,7 +16,7 @@ import BookmarkTable from '~/components/BookmarkTable'
 export default {
   components: {
     BookmarkCard,
-    BookmarkTable
-  }
+    BookmarkTable,
+  },
 }
 </script>

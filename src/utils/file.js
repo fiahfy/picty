@@ -9,7 +9,7 @@ const getFile = (filepath) => {
     dirname: path.basename(path.dirname(filepath)),
     exists: false,
     directory: false,
-    modified_at: null
+    modified_at: null,
   }
   try {
     const stat = fs.lstatSync(filepath)
@@ -17,7 +17,7 @@ const getFile = (filepath) => {
       ...obj,
       exists: true,
       directory: stat.isDirectory(),
-      modified_at: stat.mtime
+      modified_at: stat.mtime,
     }
   } catch (e) {
     if (e.code === 'ENOENT') {
@@ -61,5 +61,5 @@ const getChildPathes = (dirpath) => {
 export default {
   getFile,
   listFiles,
-  getChildPathes
+  getChildPathes,
 }

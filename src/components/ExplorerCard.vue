@@ -8,11 +8,11 @@
         icon
         @click="onViewClick"
       >
-        <v-icon>photo</v-icon>
+        <v-icon>mdi-photo</v-icon>
       </v-btn>
       <v-spacer />
       <v-btn :color="listColor" title="List" flat icon @click="onListClick">
-        <v-icon>view_headline</v-icon>
+        <v-icon>mdi-view_headline</v-icon>
       </v-btn>
       <v-btn
         :color="thumbnailColor"
@@ -21,7 +21,7 @@
         icon
         @click="onThumbnailClick"
       >
-        <v-icon>view_module</v-icon>
+        <v-icon>mdi-view_module</v-icon>
       </v-btn>
       <v-autocomplete
         ref="autocomplete"
@@ -31,7 +31,7 @@
         :items="queryHistories.slice().reverse()"
         name="query"
         label="Search"
-        append-outer-icon="search"
+        append-outer-icon="mdi-search"
         single-line
         hide-details
         clearable
@@ -66,7 +66,7 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   data() {
     return {
-      searchInput: ''
+      searchInput: '',
     }
   },
   computed: {
@@ -76,9 +76,9 @@ export default {
       },
       set(value) {
         this.$store.commit('local/explorer/setQueryInput', {
-          queryInput: value
+          queryInput: value,
         })
-      }
+      },
     },
     listColor() {
       return this.display === 'list' ? 'primary' : null
@@ -89,9 +89,9 @@ export default {
     ...mapState('local/explorer', [
       'selectedFilepath',
       'display',
-      'queryHistories'
+      'queryHistories',
     ]),
-    ...mapGetters('local/explorer', ['canViewFile'])
+    ...mapGetters('local/explorer', ['canViewFile']),
   },
   methods: {
     onViewClick() {
@@ -112,25 +112,25 @@ export default {
       }
     },
     onTextContextMenu() {
-      this.$contextMenu.show([
+      this.$contextMenu.open([
         { role: 'cut' },
         { role: 'copy' },
-        { role: 'paste' }
+        { role: 'paste' },
       ])
     },
     onTextAppendIconClick() {
       this.searchFiles({ query: this.searchInput })
     },
-    onItemClick(e, item) {
+    onItemClick(_e, item) {
       this.removeQueryHistory({ queryHistory: item })
     },
     ...mapActions('local/explorer', [
       'searchFiles',
       'viewFile',
       'setDisplay',
-      'removeQueryHistory'
-    ])
-  }
+      'removeQueryHistory',
+    ]),
+  },
 }
 </script>
 

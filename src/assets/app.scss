@@ -1,3 +1,4 @@
+// reset
 html, body, #__nuxt, #__layout, #app {
   height: 100%;
   margin: 0;
@@ -6,6 +7,8 @@ html, body, #__nuxt, #__layout, #app {
 html {
   overflow-y: hidden;
 }
+
+// transition
 .no-transition-leave-active,
 .no-transition-enter-active {
   transition: none;

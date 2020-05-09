@@ -19,7 +19,7 @@ const scales = [
   2.5,
   3,
   4,
-  5
+  5,
 ]
 
 const worker = workerPromisify(new Worker())
@@ -31,7 +31,7 @@ export const state = () => ({
   currentFilepath: '',
   originalScale: 0,
   scale: 0,
-  scaling: false
+  scaling: false,
 })
 
 export const getters = {
@@ -40,7 +40,7 @@ export const getters = {
   },
   currentFile(state) {
     return state.files.find((file) => state.currentFilepath === file.path)
-  }
+  },
 }
 
 export const actions = {
@@ -53,16 +53,20 @@ export const actions = {
       let files = []
       let currentFilepath = ''
       if (dirpath) {
-        files = (await worker.postMessage({
-          method: 'listFiles',
-          args: [dirpath, { recursive: rootState.settings.recursive }]
-        })).data
+        files = (
+          await worker.postMessage({
+            method: 'listFiles',
+            args: [dirpath, { recursive: rootState.settings.recursive }],
+          })
+        ).data
       } else if (filepath) {
         const file = fileUtil.getFile(filepath)
-        files = (await worker.postMessage({
-          method: 'listFiles',
-          args: [file.dirpath]
-        })).data
+        files = (
+          await worker.postMessage({
+            method: 'listFiles',
+            args: [file.dirpath],
+          })
+        ).data
         currentFilepath = filepath
       }
       files = files.filter((file) =>
@@ -142,7 +146,7 @@ export const actions = {
   },
   dismiss({ dispatch }) {
     dispatch('dismissViewer', null, { root: true })
-  }
+  },
 }
 
 export const mutations = {
@@ -166,5 +170,5 @@ export const mutations = {
   },
   setScaling(state, { scaling }) {
     state.scaling = scaling
-  }
+  },
 }

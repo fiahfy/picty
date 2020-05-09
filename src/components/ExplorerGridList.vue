@@ -39,11 +39,11 @@ export default {
   components: {
     ExplorerGridListHeader,
     ExplorerGridListItem,
-    VirtualDataIterator
+    VirtualDataIterator,
   },
   data() {
     return {
-      sizes: [6, 4, 3, 2, 2]
+      sizes: [6, 4, 3, 2, 2],
     }
   },
   computed: {
@@ -66,13 +66,13 @@ export default {
       'directory',
       'query',
       'loading',
-      'selectedFilepath'
+      'selectedFilepath',
     ]),
     ...mapGetters('local/explorer', [
       'filteredFiles',
       'scrollTop',
-      'selectedFileIndex'
-    ])
+      'selectedFileIndex',
+    ]),
   },
   watch: {
     loading() {
@@ -87,11 +87,11 @@ export default {
         const offset = this.getItemOffset()
         const el = {
           offsetTop: this.estimatedHeight * Math.floor(index / offset),
-          offsetHeight: this.estimatedHeight
+          offsetHeight: this.estimatedHeight,
         }
         const iterator = {
           scrollTop: this.$refs.iterator.getScrollTop(),
-          offsetHeight: this.$refs.iterator.getOffsetHeight()
+          offsetHeight: this.$refs.iterator.getOffsetHeight(),
         }
         if (iterator.scrollTop > el.offsetTop) {
           this.$refs.iterator.setScrollTop(el.offsetTop)
@@ -104,7 +104,7 @@ export default {
           )
         }
       })
-    }
+    },
   },
   mounted() {
     this.restore()
@@ -159,9 +159,9 @@ export default {
       'selectRightFile',
       'selectBottomFile',
       'setScrollTop',
-      'viewFile'
-    ])
-  }
+      'viewFile',
+    ]),
+  },
 }
 </script>
 

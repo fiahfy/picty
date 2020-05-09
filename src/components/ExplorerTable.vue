@@ -38,7 +38,7 @@ export default {
   components: {
     ExplorerTableHeaderRow,
     ExplorerTableRow,
-    VirtualDataTable
+    VirtualDataTable,
   },
   data() {
     return {
@@ -47,24 +47,24 @@ export default {
       headers: [
         {
           text: 'Name',
-          value: 'name'
+          value: 'name',
         },
         {
           text: 'Views',
           value: 'views',
-          width: 96
+          width: 96,
         },
         {
           text: 'Rating',
           value: 'rating',
-          width: 238
+          width: 238,
         },
         {
           text: 'Date Modified',
           value: 'modified_at',
-          width: 150
-        }
-      ]
+          width: 150,
+        },
+      ],
     }
   },
   computed: {
@@ -78,13 +78,13 @@ export default {
       'directory',
       'query',
       'loading',
-      'selectedFilepath'
+      'selectedFilepath',
     ]),
     ...mapGetters('local/explorer', [
       'filteredFiles',
       'scrollTop',
-      'selectedFileIndex'
-    ])
+      'selectedFileIndex',
+    ]),
   },
   watch: {
     loading() {
@@ -98,11 +98,11 @@ export default {
         }
         const el = {
           offsetTop: this.rowHeight * index,
-          offsetHeight: this.rowHeight
+          offsetHeight: this.rowHeight,
         }
         const table = {
           scrollTop: this.$refs.table.getScrollTop(),
-          offsetHeight: this.$refs.table.getOffsetHeight() - this.headerHeight
+          offsetHeight: this.$refs.table.getOffsetHeight() - this.headerHeight,
         }
         if (table.scrollTop > el.offsetTop) {
           this.$refs.table.setScrollTop(el.offsetTop)
@@ -115,7 +115,7 @@ export default {
           )
         }
       })
-    }
+    },
   },
   mounted() {
     this.restore()
@@ -158,16 +158,16 @@ export default {
       'selectPreviousFile',
       'selectNextFile',
       'setScrollTop',
-      'viewFile'
-    ])
-  }
+      'viewFile',
+    ]),
+  },
 }
 </script>
 
 <style scoped lang="scss">
 .explorer-table {
   outline: none;
-  /deep/ .v-datatable {
+  ::v-deep .v-datatable {
     min-width: 768px;
   }
 }

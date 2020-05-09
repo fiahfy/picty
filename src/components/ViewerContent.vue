@@ -38,18 +38,18 @@ export default {
       dragging: false,
       centered: {
         horizontal: true,
-        vertical: true
+        vertical: true,
       },
       originalSize: {
         width: 0,
-        height: 0
-      }
+        height: 0,
+      },
     }
   },
   computed: {
     classes() {
       return {
-        dragging: this.dragging
+        dragging: this.dragging,
       }
     },
     message() {
@@ -72,14 +72,14 @@ export default {
         'horizontal-center': this.centered.horizontal,
         'vertical-center': this.centered.vertical,
         scaling: this.scaling,
-        stretched: this.imageStretched
+        stretched: this.imageStretched,
       }
     },
     imageStyles() {
       return this.scaling
         ? {
             width: this.originalSize.width * this.scale + 'px',
-            height: this.originalSize.height * this.scale + 'px'
+            height: this.originalSize.height * this.scale + 'px',
           }
         : {}
     },
@@ -90,8 +90,8 @@ export default {
       'files',
       'currentFilepath',
       'scale',
-      'scaling'
-    ])
+      'scaling',
+    ]),
   },
   watch: {
     currentFilepath() {
@@ -102,7 +102,7 @@ export default {
         return
       }
       this.$nextTick(() => {
-        var offsetX = 0
+        let offsetX = 0
         if (
           newValue > oldValue &&
           this.$el.clientWidth > this.originalSize.width * oldValue
@@ -110,7 +110,7 @@ export default {
           offsetX =
             (this.$el.clientWidth - this.originalSize.width * oldValue) / 2
         }
-        var offsetY = 0
+        let offsetY = 0
         if (
           newValue > oldValue &&
           this.$el.clientHeight > this.originalSize.height * oldValue
@@ -129,7 +129,7 @@ export default {
         this.centered.vertical =
           this.$el.clientHeight >= this.originalSize.height * newValue
       })
-    }
+    },
   },
   methods: {
     onMouseDown() {
@@ -165,15 +165,15 @@ export default {
       }
       this.originalSize = {
         width: imageWidth,
-        height: imageHeight
+        height: imageHeight,
       }
       this.setupZoom({ scale })
     },
     onImageError() {
       this.loadError = true
     },
-    ...mapActions('local/viewer', ['setupZoom'])
-  }
+    ...mapActions('local/viewer', ['setupZoom']),
+  },
 }
 </script>
 

@@ -31,37 +31,37 @@ export default {
   props: {
     value: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     pagination: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     items: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     estimatedHeight: {
       type: Number,
-      default: 48
+      default: 48,
     },
     threshold: {
       type: Number,
-      default: 0
+      default: 0,
     },
     stickyHeaders: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       scrolling: false,
       padding: {
         top: 0,
-        bottom: 0
+        bottom: 0,
       },
-      renderItems: []
+      renderItems: [],
     }
   },
   computed: {
@@ -71,7 +71,7 @@ export default {
       },
       set(value) {
         this.$emit('update:pagination', value)
-      }
+      },
     },
     model: {
       get() {
@@ -79,19 +79,19 @@ export default {
       },
       set(value) {
         this.$emit('input', value)
-      }
+      },
     },
     classes() {
       return {
         'sticky-headers': this.stickyHeaders,
-        scrolling: this.scrolling
+        scrolling: this.scrolling,
       }
-    }
+    },
   },
   watch: {
     items() {
       this.adjustItems()
-    }
+    },
   },
   mounted() {
     this.container = this.$el.querySelector('.v-table__overflow')
@@ -134,7 +134,7 @@ export default {
       this.scrolling = scrollTop > 0
       this.padding = {
         top: firstIndex * this.estimatedHeight,
-        bottom: (this.items.length - lastIndex) * this.estimatedHeight
+        bottom: (this.items.length - lastIndex) * this.estimatedHeight,
       }
       this.renderItems = this.items.slice(firstIndex, lastIndex)
 
@@ -146,14 +146,14 @@ export default {
     onScroll(e) {
       this.adjustItems()
       this.$emit('scroll', e)
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style scoped lang="scss">
 .virtual-data-table.sticky-headers {
-  /deep/ .v-table__overflow {
+  ::v-deep .v-table__overflow {
     height: 100%;
     overflow-y: scroll;
     &::-webkit-scrollbar {
@@ -196,7 +196,7 @@ export default {
       }
     }
   }
-  &.scrolling /deep/ .v-datatable > thead > tr {
+  &.scrolling ::v-deep .v-datatable > thead > tr {
     border-bottom: none;
     &.v-datatable__progress > th:after {
       height: 10px;
@@ -205,7 +205,7 @@ export default {
 }
 .theme--dark
   .virtual-data-table.sticky-headers
-  /deep/
+  ::v-deep
   .v-table__overflow::-webkit-scrollbar-thumb {
   background-color: #424242 !important;
   &:hover {

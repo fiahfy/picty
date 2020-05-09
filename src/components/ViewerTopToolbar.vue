@@ -6,7 +6,7 @@
       icon
       @click="onCloseClick"
     >
-      <v-icon>close</v-icon>
+      <v-icon>mdi-close</v-icon>
     </v-btn>
 
     <span class="px-3 ellipsis">{{ title }}</span>
@@ -19,7 +19,7 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   data() {
     return {
-      hovered: false
+      hovered: false,
     }
   },
   computed: {
@@ -29,7 +29,7 @@ export default {
       }
       return this.currentFile.dirname + ' - ' + this.currentFile.name
     },
-    ...mapGetters('local/viewer', ['currentFile'])
+    ...mapGetters('local/viewer', ['currentFile']),
   },
   methods: {
     onCloseClick() {
@@ -38,7 +38,7 @@ export default {
     isHover() {
       return !!this.$el.querySelector(':hover')
     },
-    ...mapActions('local/viewer', ['dismiss'])
-  }
+    ...mapActions('local/viewer', ['dismiss']),
+  },
 }
 </script>

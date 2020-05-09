@@ -1,6 +1,6 @@
 const reversed = {
   path: false,
-  added_at: true
+  added_at: true,
 }
 
 export const state = () => ({
@@ -8,19 +8,19 @@ export const state = () => ({
   scrollTop: 0,
   order: {
     by: 'path',
-    descending: false
+    descending: false,
   },
-  dialog: false
+  dialog: false,
 })
 
 export const getters = {
-  bookmarks(state, getters, rootState) {
+  bookmarks(state, _getters, rootState) {
     const { by, descending } = state.order
     return Object.keys(rootState.bookmark.bookmarks)
       .map((filepath) => {
         return {
           path: filepath,
-          ...rootState.bookmark.bookmarks[filepath]
+          ...rootState.bookmark.bookmarks[filepath],
         }
       })
       .sort((a, b) => {
@@ -44,14 +44,14 @@ export const getters = {
   canRemoveBookmark(state) {
     return !!state.selectedBookmarkPath
   },
-  selectedBookmarkIndex(state, getters) {
+  selectedBookmarkIndex(_state, getters) {
     return getters.bookmarks.findIndex((bookmark) =>
       getters.isBookmarkSelected({ filepath: bookmark.path })
     )
   },
   isBookmarkSelected(state) {
     return ({ filepath }) => state.selectedBookmarkPath === filepath
-  }
+  },
 }
 
 export const actions = {
@@ -92,12 +92,12 @@ export const actions = {
   },
   selectPreviousBookmark({ dispatch, getters }) {
     dispatch('selectBookmarkIndex', {
-      index: getters.selectedBookmarkIndex - 1
+      index: getters.selectedBookmarkIndex - 1,
     })
   },
   selectNextBookmark({ dispatch, getters }) {
     dispatch('selectBookmarkIndex', {
-      index: getters.selectedBookmarkIndex + 1
+      index: getters.selectedBookmarkIndex + 1,
     })
   },
   openBookmark({ dispatch }, { filepath }) {
@@ -114,7 +114,7 @@ export const actions = {
   },
   dismissDialog({ commit }) {
     commit('setDialog', { dialog: false })
-  }
+  },
 }
 
 export const mutations = {
@@ -129,5 +129,5 @@ export const mutations = {
   },
   setDialog(state, { dialog }) {
     state.dialog = dialog
-  }
+  },
 }

@@ -52,15 +52,15 @@ export default {
   props: {
     file: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   data() {
     return {
       loading: false,
       error: false,
       imageUrl: '',
-      images: ''
+      images: '',
     }
   },
   computed: {
@@ -71,18 +71,18 @@ export default {
       set(value) {
         this.$store.dispatch('local/explorer/updateFileRating', {
           filepath: this.file.path,
-          rating: value
+          rating: value,
         })
-      }
+      },
     },
     active() {
       return this.isFileSelected({ filepath: this.file.path })
     },
     icon() {
       if (this.file.exists) {
-        return this.file.directory ? 'folder' : 'photo'
+        return this.file.directory ? 'mdi-folder' : 'mdi-photo'
       }
-      return 'broken_image'
+      return 'mdi-broken_image'
     },
     iconColor() {
       if (this.file.exists) {
@@ -103,7 +103,7 @@ export default {
       return !this.previewWidthValue
     },
     ...mapGetters('settings', ['previewWidthValue', 'isFileAvailable']),
-    ...mapGetters('local/explorer', ['isFileSelected'])
+    ...mapGetters('local/explorer', ['isFileSelected']),
   },
   async created() {
     if (!this.file.directory) {
@@ -113,7 +113,7 @@ export default {
     this.loading = true
     const { data } = await worker.postMessage({
       key: this.file.path,
-      data: this.file.path
+      data: this.file.path,
     })
     const filepathes = data.filter((filepath) =>
       this.isFileAvailable({ filepath })
@@ -137,8 +137,8 @@ export default {
         {
           label: 'View',
           click: () => this.viewFile({ filepath: this.file.path }),
-          accelerator: 'Enter'
-        }
+          accelerator: 'Enter',
+        },
       ]
       const text = getSelection().toString()
       if (text) {
@@ -149,11 +149,11 @@ export default {
           {
             label: `Search "${text}"`,
             click: () => this.searchFiles({ query: text }),
-            accelerator: 'CmdOrCtrl+F'
-          }
+            accelerator: 'CmdOrCtrl+F',
+          },
         ]
       }
-      this.$contextMenu.show(template)
+      this.$contextMenu.open(template)
     },
     onError() {
       this.error = true
@@ -162,9 +162,9 @@ export default {
       'selectFile',
       'searchFiles',
       'openFile',
-      'viewFile'
-    ])
-  }
+      'viewFile',
+    ]),
+  },
 }
 </script>
 

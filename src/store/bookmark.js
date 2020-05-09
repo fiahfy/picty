@@ -1,11 +1,11 @@
 export const state = () => ({
-  bookmarks: {}
+  bookmarks: {},
 })
 
 export const getters = {
   isBookmarked(state) {
     return ({ filepath }) => !!state.bookmarks[filepath]
-  }
+  },
 }
 
 export const actions = {
@@ -15,7 +15,7 @@ export const actions = {
     } else {
       commit('addBookmark', { filepath })
     }
-  }
+  },
 }
 
 export const mutations = {
@@ -23,8 +23,8 @@ export const mutations = {
     state.bookmarks = {
       ...state.bookmarks,
       [filepath]: {
-        added_at: new Date()
-      }
+        added_at: new Date(),
+      },
     }
   },
   removeBookmark(state, { filepath }) {
@@ -34,5 +34,5 @@ export const mutations = {
         carry[key] = state.bookmarks[key]
         return carry
       }, {})
-  }
+  },
 }

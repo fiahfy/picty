@@ -7,13 +7,13 @@ export const state = () => ({
   title: Package.productName,
   message: null,
   fullScreen: false,
-  viewing: false
+  viewing: false,
 })
 
 export const getters = {
   titleBar(state) {
     return process.platform === 'darwin' && !state.fullScreen
-  }
+  },
 }
 
 export const actions = {
@@ -71,7 +71,7 @@ export const actions = {
   },
   showMessage({ commit }, message) {
     commit('setMessage', { message })
-  }
+  },
 }
 
 export const mutations = {
@@ -86,7 +86,7 @@ export const mutations = {
   },
   setViewing(state, { viewing }) {
     state.viewing = viewing
-  }
+  },
 }
 
 export const plugins = [
@@ -98,7 +98,7 @@ export const plugins = [
       'bookmark',
       'rating',
       'views',
-      'settings'
-    ]
-  })
+      'settings',
+    ],
+  }),
 ]

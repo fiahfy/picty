@@ -8,7 +8,7 @@ export default ({ store }) => {
   ipcRenderer.on('leaveFullScreen', () => {
     store.commit('setFullScreen', { fullScreen: false })
   })
-  ipcRenderer.on('appCommand', (e, cmd) => {
+  ipcRenderer.on('appCommand', (_e, cmd) => {
     switch (cmd) {
       case 'browser-backward':
         store.dispatch('local/explorer/backDirectory')
@@ -20,7 +20,7 @@ export default ({ store }) => {
   })
   ipcRenderer.on('openDirectory', () => {
     const filepathes = remote.dialog.showOpenDialog({
-      properties: ['openDirectory']
+      properties: ['openDirectory'],
     })
     if (!filepathes || !filepathes.length) {
       return

@@ -32,21 +32,21 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import TitleBar from '~/components/TitleBar'
 import ViewerContent from './ViewerContent'
 import ViewerBottomToolbar from './ViewerBottomToolbar'
 import ViewerTopToolbar from './ViewerTopToolbar'
+import TitleBar from '~/components/TitleBar'
 
 export default {
   components: {
     TitleBar,
     ViewerContent,
     ViewerBottomToolbar,
-    ViewerTopToolbar
+    ViewerTopToolbar,
   },
   data() {
     return {
-      toolbar: null
+      toolbar: null,
     }
   },
   computed: {
@@ -54,11 +54,11 @@ export default {
       return {
         'toolbar-hidden': this.toolbar === false,
         'toolbar-fade-in': this.toolbar === true,
-        'toolbar-fade-out': this.toolbar === false
+        'toolbar-fade-out': this.toolbar === false,
       }
     },
     ...mapState(['viewing']),
-    ...mapState('local/viewer', ['loading'])
+    ...mapState('local/viewer', ['loading']),
   },
   watch: {
     viewing(value) {
@@ -70,7 +70,7 @@ export default {
         this.clearTimer()
         document.body.removeEventListener('mousemove', this.onMouseMove)
       }
-    }
+    },
   },
   methods: {
     onKeyDown(e) {
@@ -121,8 +121,8 @@ export default {
       this.resetTimer()
     },
     ...mapActions(['dismissViewer']),
-    ...mapActions('local/viewer', ['movePreviousFile', 'moveNextFile'])
-  }
+    ...mapActions('local/viewer', ['movePreviousFile', 'moveNextFile']),
+  },
 }
 </script>
 

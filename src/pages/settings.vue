@@ -85,18 +85,18 @@ export default {
       defaultExtensions: settings.DEFAULT_EXTENSIONS,
       previewWidths: Object.keys(settings.PREVIEW_WIDTHS).map((size) => ({
         value: size,
-        text: size.charAt(0).toUpperCase() + size.slice(1)
+        text: size.charAt(0).toUpperCase() + size.slice(1),
       })),
       thumbnailStyles: settings.THUMBNAIL_STYLES.map((style) => ({
         value: style,
-        text: style.charAt(0).toUpperCase() + style.slice(1)
+        text: style.charAt(0).toUpperCase() + style.slice(1),
       })),
       thumbnailHeights: Object.keys(settings.THUMBNAIL_HEIGHTS).map(
         (height) => ({
           value: height,
-          text: height.charAt(0).toUpperCase() + height.slice(1)
+          text: height.charAt(0).toUpperCase() + height.slice(1),
         })
-      )
+      ),
     }
   },
   computed: {
@@ -106,7 +106,7 @@ export default {
       },
       set(value) {
         this.$store.commit('settings/setDarkTheme', { darkTheme: value })
-      }
+      },
     },
     fullScreen: {
       get() {
@@ -114,7 +114,7 @@ export default {
       },
       set(value) {
         this.$store.commit('settings/setFullScreen', { fullScreen: value })
-      }
+      },
     },
     recursive: {
       get() {
@@ -122,7 +122,7 @@ export default {
       },
       set(value) {
         this.$store.commit('settings/setRecursive', { recursive: value })
-      }
+      },
     },
     imageStretched: {
       get() {
@@ -130,9 +130,9 @@ export default {
       },
       set(value) {
         this.$store.commit('settings/setImageStretched', {
-          imageStretched: value
+          imageStretched: value,
         })
-      }
+      },
     },
     queryHistorySize: {
       get() {
@@ -140,9 +140,9 @@ export default {
       },
       set(value) {
         this.$store.commit('settings/setQueryHistorySize', {
-          queryHistorySize: value
+          queryHistorySize: value,
         })
-      }
+      },
     },
     previewWidth: {
       get() {
@@ -150,7 +150,7 @@ export default {
       },
       set(value) {
         this.$store.commit('settings/setPreviewWidth', { previewWidth: value })
-      }
+      },
     },
     thumbnailStyle: {
       get() {
@@ -158,9 +158,9 @@ export default {
       },
       set(value) {
         this.$store.commit('settings/setThumbnailStyle', {
-          thumbnailStyle: value
+          thumbnailStyle: value,
         })
-      }
+      },
     },
     thumbnailHeight: {
       get() {
@@ -168,9 +168,9 @@ export default {
       },
       set(value) {
         this.$store.commit('settings/setThumbnailHeight', {
-          thumbnailHeight: value
+          thumbnailHeight: value,
         })
-      }
+      },
     },
     extensions: {
       get() {
@@ -180,10 +180,10 @@ export default {
       },
       set(value) {
         this.$store.commit('settings/setExtensions', {
-          extensions: value.map((item) => item.toUpperCase())
+          extensions: value.map((item) => item.toUpperCase()),
         })
-      }
-    }
+      },
+    },
   },
   methods: {
     onChipInput(item) {
@@ -194,7 +194,7 @@ export default {
     onClearClick() {
       this.clearQueryHistory()
     },
-    ...mapActions('local/explorer', ['clearQueryHistory'])
-  }
+    ...mapActions('local/explorer', ['clearQueryHistory']),
+  },
 }
 </script>

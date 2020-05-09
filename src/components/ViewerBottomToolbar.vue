@@ -6,7 +6,7 @@
       icon
       @click="onPreviousClick"
     >
-      <v-icon>skip_previous</v-icon>
+      <v-icon>mdi-skip_previous</v-icon>
     </v-btn>
 
     <v-btn
@@ -15,7 +15,7 @@
       icon
       @click="onNextClick"
     >
-      <v-icon>skip_next</v-icon>
+      <v-icon>mdi-skip_next</v-icon>
     </v-btn>
 
     <span class="px-3 ellipsis">{{ page }} / {{ maxPage }}</span>
@@ -40,7 +40,7 @@
       nudge-top="12"
     >
       <v-btn slot="activator" title="Zoom" flat icon>
-        <v-icon>zoom_in</v-icon>
+        <v-icon>mdi-zoom_in</v-icon>
       </v-btn>
       <v-toolbar ref="toolbar" flat dense dark>
         <v-btn
@@ -49,7 +49,7 @@
           icon
           @click="onZoomInClick"
         >
-          <v-icon>zoom_in</v-icon>
+          <v-icon>mdi-zoom_in</v-icon>
         </v-btn>
         <span class="px-3">{{ percentage }}%</span>
         <v-btn
@@ -58,7 +58,7 @@
           icon
           @click="onZoomOutClick"
         >
-          <v-icon>zoom_out</v-icon>
+          <v-icon>mdi-zoom_out</v-icon>
         </v-btn>
         <v-btn
           :title="'Reset' | accelerator('CmdOrCtrl+0')"
@@ -76,7 +76,9 @@
       icon
       @click="onFullscreenClick"
     >
-      <v-icon>{{ fullScreen ? 'fullscreen_exit' : 'fullscreen' }}</v-icon>
+      <v-icon>
+        {{ fullScreen ? 'mdi-fullscreen_exit' : 'mdi-fullscreen' }}
+      </v-icon>
     </v-btn>
   </v-toolbar>
 </template>
@@ -88,7 +90,7 @@ export default {
   data() {
     return {
       hovered: false,
-      menu: false
+      menu: false,
     }
   },
   computed: {
@@ -98,7 +100,7 @@ export default {
       },
       set(value) {
         this.$store.dispatch('local/viewer/moveFile', { index: value - 1 })
-      }
+      },
     },
     maxPage() {
       return this.files.length
@@ -107,12 +109,12 @@ export default {
       return Math.floor(this.scale * 100)
     },
     ...mapState(['fullScreen']),
-    ...mapState('local/viewer', ['loading', 'files', 'scale'])
+    ...mapState('local/viewer', ['loading', 'files', 'scale']),
   },
   watch: {
     page() {
       this.$refs.slider && this.$refs.slider.$el.querySelector('input').blur()
-    }
+    },
   },
   methods: {
     onPreviousClick() {
@@ -148,14 +150,14 @@ export default {
       'zoomIn',
       'zoomOut',
       'resetZoom',
-      'toggleFullScreen'
-    ])
-  }
+      'toggleFullScreen',
+    ]),
+  },
 }
 </script>
 
 <style scoped lang="scss">
-.viewer-bottom-toolbar /deep/ .v-input--slider {
+.viewer-bottom-toolbar ::v-deep .v-input--slider {
   left: 0;
   position: absolute;
   right: 0;

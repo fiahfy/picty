@@ -20,13 +20,13 @@ import ExplorerGridList from '~/components/ExplorerGridList'
 export default {
   components: {
     ExplorerToolbar,
-    ExplorerCard
+    ExplorerCard,
   },
   computed: {
     component() {
       return this.display === 'list' ? ExplorerTable : ExplorerGridList
     },
-    ...mapState('local/explorer', ['display'])
-  }
+    ...mapState('local/explorer', ['display']),
+  },
 }
 </script>

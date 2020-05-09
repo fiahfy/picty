@@ -1,11 +1,11 @@
 export const state = () => ({
-  views: {}
+  views: {},
 })
 
 export const getters = {
   getViews(state) {
     return ({ filepath }) => state.views[filepath] || 0
-  }
+  },
 }
 
 export const mutations = {
@@ -13,7 +13,7 @@ export const mutations = {
     const views = state.views[filepath] || 0
     state.views = {
       ...state.views,
-      [filepath]: views + 1
+      [filepath]: views + 1,
     }
-  }
+  },
 }

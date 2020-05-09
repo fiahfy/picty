@@ -38,7 +38,7 @@ export default {
   components: {
     BookmarkTableHeaderRow,
     BookmarkTableRow,
-    VirtualDataTable
+    VirtualDataTable,
   },
   data() {
     return {
@@ -47,19 +47,19 @@ export default {
       headers: [
         {
           text: 'Path',
-          value: 'path'
+          value: 'path',
         },
         {
           text: 'Date Added',
           value: 'added_at',
-          width: 150
-        }
-      ]
+          width: 150,
+        },
+      ],
     }
   },
   computed: {
     ...mapState('local/bookmark', ['scrollTop', 'selectedBookmarkPath']),
-    ...mapGetters('local/bookmark', ['bookmarks', 'selectedBookmarkIndex'])
+    ...mapGetters('local/bookmark', ['bookmarks', 'selectedBookmarkIndex']),
   },
   watch: {
     loading() {
@@ -73,11 +73,11 @@ export default {
         }
         const el = {
           offsetTop: this.rowHeight * index,
-          offsetHeight: this.rowHeight
+          offsetHeight: this.rowHeight,
         }
         const table = {
           scrollTop: this.$refs.table.getScrollTop(),
-          offsetHeight: this.$refs.table.getOffsetHeight() - this.headerHeight
+          offsetHeight: this.$refs.table.getOffsetHeight() - this.headerHeight,
         }
         if (table.scrollTop > el.offsetTop) {
           this.$refs.table.setScrollTop(el.offsetTop)
@@ -90,7 +90,7 @@ export default {
           )
         }
       })
-    }
+    },
   },
   mounted() {
     this.restore()
@@ -143,10 +143,10 @@ export default {
         {
           label: 'New Bookmark',
           click: () => this.showDialog(),
-          accelerator: 'CmdOrCtrl+N'
-        }
+          accelerator: 'CmdOrCtrl+N',
+        },
       ]
-      this.$contextMenu.show(template)
+      this.$contextMenu.open(template)
     },
     ...mapMutations('local/bookmark', ['setScrollTop']),
     ...mapActions('local/bookmark', [
@@ -157,16 +157,16 @@ export default {
       'selectPreviousBookmark',
       'selectNextBookmark',
       'openBookmark',
-      'showDialog'
-    ])
-  }
+      'showDialog',
+    ]),
+  },
 }
 </script>
 
 <style scoped lang="scss">
 .bookmark-table {
   outline: none;
-  /deep/ .v-datatable {
+  ::v-deep .v-datatable {
     min-width: 512px;
   }
 }

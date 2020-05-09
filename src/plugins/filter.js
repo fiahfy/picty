@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import electronAcceleratorFormatter from '@fiahfy/electron-accelerator-formatter'
+import { format } from '@fiahfy/electron-accelerator-formatter'
 
 Vue.filter('accelerator', (title, accelerator) => {
-  return `${title} (${electronAcceleratorFormatter(accelerator)})`
+  return `${title} (${format(accelerator)})`
 })
 
 Vue.filter('readableSize', (bytes) => {
@@ -14,5 +14,5 @@ Vue.filter('readableSize', (bytes) => {
   }
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
   const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
-  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i]
+  return Math.round(bytes / 1024 ** i, 2) + ' ' + sizes[i]
 })

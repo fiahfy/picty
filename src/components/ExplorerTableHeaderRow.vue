@@ -7,7 +7,7 @@
       :style="getStyle(header)"
       @click="(e) => onHeaderClick(e, header)"
     >
-      <v-icon small>arrow_upward</v-icon>
+      <v-icon small>mdi-arrow_upward</v-icon>
       {{ header.text }}
     </th>
   </tr>
@@ -20,29 +20,29 @@ export default {
   props: {
     headers: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   computed: {
-    ...mapGetters('local/explorer', ['order'])
+    ...mapGetters('local/explorer', ['order']),
   },
   methods: {
     getClass(header) {
       return [
         'column sortable',
         this.order.descending ? 'desc' : 'asc',
-        header.value === this.order.by ? 'active' : ''
+        header.value === this.order.by ? 'active' : '',
       ]
     },
     getStyle(header) {
       return {
-        width: header.width ? `${header.width}px` : null
+        width: header.width ? `${header.width}px` : null,
       }
     },
-    onHeaderClick(e, header) {
+    onHeaderClick(_e, header) {
       this.changeOrderBy({ orderBy: header.value })
     },
-    ...mapActions('local/explorer', ['changeOrderBy'])
-  }
+    ...mapActions('local/explorer', ['changeOrderBy']),
+  },
 }
 </script>

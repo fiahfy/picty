@@ -25,18 +25,18 @@ export default {
     ActivityBar,
     NotificationBar,
     TitleBar,
-    Viewer
+    Viewer,
   },
   computed: {
     ...mapState(['viewing']),
-    ...mapState('settings', ['darkTheme'])
+    ...mapState('settings', ['darkTheme']),
   },
   created() {
     this.initialize()
   },
   methods: {
     onContextMenu() {
-      this.$contextMenu.show()
+      this.$contextMenu.open()
     },
     onDrop(e) {
       const files = Array.from(e.dataTransfer.files)
@@ -46,7 +46,7 @@ export default {
       const filepath = files[0].path
       this.open({ filepath })
     },
-    ...mapActions(['initialize', 'open'])
-  }
+    ...mapActions(['initialize', 'open']),
+  },
 }
 </script>
