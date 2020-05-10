@@ -9,19 +9,21 @@
     class="explorer-grid-list"
     container-class="grid-list-md"
     item-key="path"
-    hide-actions
+    hide-default-footer
     tabindex="0"
     @scroll="onScroll"
     @keydown.native="onKeyDown"
   >
-    <explorer-grid-list-header slot="header" />
-    <explorer-grid-list-item
-      slot="items"
-      :key="props.item.path"
-      slot-scope="props"
-      :file="props.item"
-      :class="classes"
-    />
+    <template v-slot:header>
+      <explorer-grid-list-header />
+    </template>
+    <template v-slot:item="props">
+      <explorer-grid-list-item
+        :key="props.item.path"
+        :file="props.item"
+        :class="classes"
+      />
+    </template>
     <v-progress-linear slot="progress" indeterminate />
     <v-card slot="no-data" class="ma-3 pa-3">{{ noDataText }}</v-card>
     <v-card slot="no-results" class="ma-3 pa-3">{{ noDataText }}</v-card>
@@ -54,8 +56,8 @@ export default {
       return this.query ? 'No matching records found' : 'No data available'
     },
     classes() {
-      return viewport.SIZES.map((s, i) => {
-        return s + this.sizes[i]
+      return viewport.SIZES.map((size, i) => {
+        return `col-${size}-${this.sizes[i]}`
       })
     },
     estimatedHeight() {

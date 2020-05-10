@@ -1,16 +1,29 @@
 <template>
-  <v-navigation-drawer class="activity-bar" mini-variant permanent app>
-    <v-list class="pt-0">
-      <v-list-tile
-        v-for="item in items"
-        :key="item.id"
-        :title="item.title | accelerator(item.accelerator)"
-        @click="(e) => onItemClick(e, item)"
-      >
-        <v-list-tile-action>
-          <v-icon :color="getColor(item)">{{ item.icon }}</v-icon>
-        </v-list-tile-action>
-      </v-list-tile>
+  <v-navigation-drawer
+    class="activity-bar"
+    permanent
+    app
+    mini-variant
+    mini-variant-width="48"
+  >
+    <v-list dense class="py-0">
+      <v-list-item-group v-model="index" color="primary">
+        <v-list-item
+          v-for="item in items"
+          :key="item.id"
+          class="py-1"
+          :title="item.title | accelerator(item.accelerator)"
+          @click="() => onItemClick(item)"
+        >
+          <v-list-item-icon>
+            <v-icon v-text="item.icon" />
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title v-text="item.title" />
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -19,24 +32,25 @@
 export default {
   data() {
     return {
+      index: 0,
       items: [
         {
-          id: 1,
-          icon: 'mdi-explore',
+          id: 'explorer',
+          icon: 'mdi-compass',
           title: 'Explorer',
           accelerator: 'CmdOrCtrl+Shift+E',
           path: '/explorer',
         },
         {
-          id: 2,
-          icon: 'mdi-star',
+          id: 'bookmark',
+          icon: 'mdi-star-outline',
           title: 'Bookmark',
           accelerator: 'CmdOrCtrl+Shift+B',
           path: '/bookmark',
         },
         {
-          id: 3,
-          icon: 'mdi-ettings',
+          id: 'settings',
+          icon: 'mdi-cog-outline',
           title: 'Settings',
           accelerator: 'CmdOrCtrl+,',
           path: '/settings',
@@ -45,13 +59,7 @@ export default {
     }
   },
   methods: {
-    getColor(item) {
-      return this.getActive(item) ? 'primary' : null
-    },
-    getActive(item) {
-      return item.path === this.$route.path
-    },
-    onItemClick(_e, item) {
+    onItemClick(item) {
       this.$router.push(item.path)
     },
   },

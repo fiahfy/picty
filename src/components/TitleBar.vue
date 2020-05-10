@@ -1,24 +1,58 @@
 <template>
-  <v-system-bar v-if="titleBar" class="title-bar" height="22" app status>
+  <v-system-bar
+    v-if="titleBar"
+    class="title-bar user-select-none"
+    :app="app"
+    :absolute="!app"
+    height="22"
+    @dblclick="onDoubleClick"
+  >
     <v-spacer />
-    <span>{{ title }}</span>
+    <span class="caption text-truncate" v-text="title" />
     <v-spacer />
   </v-system-bar>
 </template>
 
 <script>
+import { remote } from 'electron'
 import { mapGetters, mapState } from 'vuex'
 
 export default {
+  props: {
+    app: {
+      type: Boolean,
+      default: true,
+    },
+  },
   computed: {
     ...mapState(['title']),
     ...mapGetters(['titleBar']),
   },
+  methods: {
+    // @see https://github.com/electron/electron/issues/16385
+    onDoubleClick() {
+      const doubleClickAction = remote.systemPreferences.getUserDefault(
+        'AppleActionOnDoubleClick',
+        'string'
+      )
+      const win = remote.getCurrentWindow()
+      if (doubleClickAction === 'Minimize') {
+        win.minimize()
+      } else if (doubleClickAction === 'Maximize') {
+        if (win.isMaximized()) {
+          win.unmaximize()
+        } else {
+          win.maximize()
+        }
+      }
+    },
+  },
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .title-bar {
+  padding: 0 72px;
   -webkit-app-region: drag;
 }
 </style>

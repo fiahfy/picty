@@ -1,5 +1,5 @@
 <template>
-  <v-flex class="explorer-grid-list-item">
+  <v-col class="explorer-grid-list-item pa-1">
     <v-card
       flat
       tile
@@ -46,7 +46,7 @@
         <v-spacer />
       </v-card-actions>
     </v-card>
-  </v-flex>
+  </v-col>
 </template>
 
 <script>

@@ -8,27 +8,32 @@
         v-model="model"
         v-bind="$attrs"
         class="fill-height"
-        :pagination.sync="paginationModel"
+        :options.sync="optionsModel"
         :items="renderItems"
-        :disable-initial-sort="true"
+        disable-sort
+        disable-pagination
         content-tag="v-layout"
         row
         wrap
       >
-        <template slot="item" slot-scope="props">
-          <v-flex
-            v-if="props.index === 0"
-            :style="{ height: `${padding.top}px` }"
-            class="pa-0"
-            xs12
-          />
-          <slot v-bind="props" name="items" />
-          <v-flex
-            v-if="props.index === renderItems.length - 1"
-            :style="{ height: `${padding.bottom}px` }"
-            class="pa-0"
-            xs12
-          />
+        <template v-slot:default="props">
+          <v-row class="ma-0">
+            <v-col
+              :style="{ height: `${padding.top}px` }"
+              class="pa-0"
+              xs="12"
+              style="min-width: 100%;"
+            />
+            <template v-for="item in props.items">
+              <slot v-bind="{ item }" name="item" />
+            </template>
+            <v-col
+              :style="{ height: `${padding.bottom}px` }"
+              class="pa-0"
+              xs="12"
+              style="min-width: 100%;"
+            />
+          </v-row>
         </template>
         <slot slot="no-data" name="no-data" />
         <slot slot="no-results" name="no-results" />
@@ -90,7 +95,7 @@ export default {
     }
   },
   computed: {
-    paginationModel: {
+    optionsModel: {
       get() {
         return this.pagination
       },

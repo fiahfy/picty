@@ -2,20 +2,18 @@
   <v-toolbar class="viewer-bottom-toolbar" color="transparent" flat dense>
     <v-btn
       :title="'View previous image' | accelerator('Left')"
-      flat
       icon
       @click="onPreviousClick"
     >
-      <v-icon>mdi-skip_previous</v-icon>
+      <v-icon>mdi-skip-previous</v-icon>
     </v-btn>
 
     <v-btn
       :title="'View next image' | accelerator('Right')"
-      flat
       icon
       @click="onNextClick"
     >
-      <v-icon>mdi-skip_next</v-icon>
+      <v-icon>mdi-skip-next</v-icon>
     </v-btn>
 
     <span class="px-3 ellipsis">{{ page }} / {{ maxPage }}</span>
@@ -30,8 +28,6 @@
       hide-details
     />
 
-    <v-spacer />
-
     <v-menu
       v-model="menu"
       :close-on-content-click="false"
@@ -39,30 +35,30 @@
       offset-y
       nudge-top="12"
     >
-      <v-btn slot="activator" title="Zoom" flat icon>
-        <v-icon>mdi-zoom_in</v-icon>
-      </v-btn>
+      <template v-slot:activator="{ on }">
+        <v-btn slot="activator" title="Zoom" icon v-on="on">
+          <v-icon>mdi-magnify-plus-outline</v-icon>
+        </v-btn>
+      </template>
       <v-toolbar ref="toolbar" flat dense dark>
         <v-btn
           :title="'Zoom in' | accelerator('CmdOrCtrl+Plus')"
-          flat
           icon
           @click="onZoomInClick"
         >
-          <v-icon>mdi-zoom_in</v-icon>
+          <v-icon>mdi-magnify-plus-outline</v-icon>
         </v-btn>
         <span class="px-3">{{ percentage }}%</span>
         <v-btn
           :title="'Zoom out' | accelerator('CmdOrCtrl+-')"
-          flat
           icon
           @click="onZoomOutClick"
         >
-          <v-icon>mdi-zoom_out</v-icon>
+          <v-icon>mdi-magnify-minus-outline</v-icon>
         </v-btn>
         <v-btn
           :title="'Reset' | accelerator('CmdOrCtrl+0')"
-          flat
+          text
           @click="onResetClick"
         >
           Reset
@@ -72,12 +68,11 @@
 
     <v-btn
       :title="fullScreen ? 'Exit fullscreen' : 'Fullscreen'"
-      flat
       icon
       @click="onFullscreenClick"
     >
       <v-icon>
-        {{ fullScreen ? 'mdi-fullscreen_exit' : 'mdi-fullscreen' }}
+        {{ fullScreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen' }}
       </v-icon>
     </v-btn>
   </v-toolbar>
@@ -141,7 +136,7 @@ export default {
     isHover() {
       return !!(
         this.$el.querySelector(':hover') ||
-        this.$refs.toolbar.$el.querySelector(':hover')
+        this.$refs.toolbar?.$el.querySelector(':hover')
       )
     },
     ...mapActions('local/viewer', [

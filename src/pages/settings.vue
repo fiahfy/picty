@@ -13,7 +13,7 @@
         >
           <template slot="selection" slot-scope="data">
             <v-chip
-              :selected="data.selected"
+              :input-value="data.selected"
               close
               @input="onChipInput(data.item)"
             >
@@ -32,7 +32,7 @@
             slot="append-outer"
             class="mt-0"
             color="primary"
-            flat
+            text
             @click="onClearClick"
           >
             Clear All Histories

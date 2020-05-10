@@ -8,12 +8,12 @@
   >
     <v-card :class="classes" dark flat tile>
       <v-layout column fill-height>
-        <title-bar />
+        <title-bar :app="false" />
         <v-content class="fill-height pl-0">
           <v-container fill-height fluid pa-0>
             <v-layout column>
               <v-progress-linear v-if="loading" :indeterminate="true" />
-              <v-container fluid pa-0 overflow-hidden>
+              <v-container fluid pa-0 overflow-hidden fill-height>
                 <viewer-content class="fill-height" />
               </v-container>
             </v-layout>
@@ -107,8 +107,8 @@ export default {
     resetTimer() {
       this.clearTimer()
       if (
-        this.$refs['top-toolbar'].isHover() ||
-        this.$refs['bottom-toolbar'].isHover()
+        this.$refs['top-toolbar']?.isHover() ||
+        this.$refs['bottom-toolbar']?.isHover()
       ) {
         return
       }

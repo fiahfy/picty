@@ -4,24 +4,22 @@
       <v-btn
         :title="'View' | accelerator('Enter')"
         :disabled="!canViewFile"
-        flat
         icon
         @click="onViewClick"
       >
-        <v-icon>mdi-photo</v-icon>
+        <v-icon>mdi-image</v-icon>
       </v-btn>
       <v-spacer />
-      <v-btn :color="listColor" title="List" flat icon @click="onListClick">
-        <v-icon>mdi-view_headline</v-icon>
+      <v-btn :color="listColor" title="List" icon @click="onListClick">
+        <v-icon>mdi-view-headline</v-icon>
       </v-btn>
       <v-btn
         :color="thumbnailColor"
         title="Thumbnail"
-        flat
         icon
         @click="onThumbnailClick"
       >
-        <v-icon>mdi-view_module</v-icon>
+        <v-icon>mdi-view-module</v-icon>
       </v-btn>
       <v-autocomplete
         ref="autocomplete"
@@ -31,7 +29,7 @@
         :items="queryHistories.slice().reverse()"
         name="query"
         label="Search"
-        append-outer-icon="mdi-search"
+        append-outer-icon="mdi-magnify"
         single-line
         hide-details
         clearable
@@ -46,7 +44,6 @@
           </v-list-tile-content>
           <v-list-tile-action>
             <v-btn
-              flat
               small
               color="primary"
               @click.stop="(e) => onItemClick(e, item)"

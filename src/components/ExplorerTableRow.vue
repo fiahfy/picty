@@ -1,6 +1,6 @@
 <template>
   <tr
-    :active="active"
+    :class="{ 'v-data-table__selected': active }"
     class="explorer-table-row"
     @click="onClick"
     @dblclick="onDblClick"
@@ -8,10 +8,12 @@
   >
     <td>
       <v-layout class="align-center">
-        <v-menu :disabled="menuDisabled" open-on-hover right offset-x lazy>
-          <v-icon slot="activator" :color="iconColor" class="pa-1">
-            {{ icon }}
-          </v-icon>
+        <v-menu :disabled="menuDisabled" open-on-hover right offset-x>
+          <template v-slot:activator="{ on }">
+            <v-icon slot="activator" :color="iconColor" class="pa-1" v-on="on">
+              {{ icon }}
+            </v-icon>
+          </template>
           <v-card :width="previewWidthValue">
             <v-img :src="imageUrl" contain @error="onError">
               <v-layout fill-height align-center justify-center>
@@ -80,9 +82,9 @@ export default {
     },
     icon() {
       if (this.file.exists) {
-        return this.file.directory ? 'mdi-folder' : 'mdi-photo'
+        return this.file.directory ? 'mdi-folder' : 'mdi-image'
       }
-      return 'mdi-broken_image'
+      return 'mdi-image-broken-variant'
     },
     iconColor() {
       if (this.file.exists) {

@@ -1,16 +1,18 @@
 <template>
-  <tr class="explorer-table-header-row">
-    <th
-      v-for="header in headers"
-      :key="header.text"
-      :class="getClass(header)"
-      :style="getStyle(header)"
-      @click="(e) => onHeaderClick(e, header)"
-    >
-      <v-icon small>mdi-arrow_upward</v-icon>
-      {{ header.text }}
-    </th>
-  </tr>
+  <thead class="explorer-table-header v-data-table-header">
+    <tr>
+      <th
+        v-for="header in headers"
+        :key="header.text"
+        :class="getClass(header)"
+        :style="getStyle(header)"
+        @click="(e) => onHeaderClick(e, header)"
+      >
+        {{ header.text }}
+        <v-icon small class="v-data-table-header__icon">mdi-arrow-up</v-icon>
+      </th>
+    </tr>
+  </thead>
 </template>
 
 <script>
@@ -29,7 +31,7 @@ export default {
   methods: {
     getClass(header) {
       return [
-        'column sortable',
+        'sortable',
         this.order.descending ? 'desc' : 'asc',
         header.value === this.order.by ? 'active' : '',
       ]

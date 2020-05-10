@@ -6,7 +6,7 @@
     :items="bookmarks"
     item-key="path"
     no-data-text="No data available."
-    hide-actions
+    hide-default-footer
     sticky-headers
     tabindex="0"
     @scroll="onScroll"

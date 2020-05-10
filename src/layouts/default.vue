@@ -1,13 +1,14 @@
 <template>
   <v-app
-    :dark="darkTheme"
     @contextmenu.native="onContextMenu"
     @drop.native.prevent="onDrop"
     @dragover.native.prevent
   >
     <title-bar />
     <activity-bar />
-    <v-content class="fill-height"><router-view /></v-content>
+    <v-content class="fill-height">
+      <router-view class="fill-height" />
+    </v-content>
     <notification-bar />
     <viewer />
   </v-app>
@@ -31,7 +32,13 @@ export default {
     ...mapState(['viewing']),
     ...mapState('settings', ['darkTheme']),
   },
+  watch: {
+    darkTheme(value) {
+      this.$vuetify.theme.dark = value
+    },
+  },
   created() {
+    this.$vuetify.theme.dark = this.darkTheme
     this.initialize()
   },
   methods: {
@@ -50,3 +57,7 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+@import '~/assets/app.scss';
+</style>

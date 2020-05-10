@@ -4,38 +4,34 @@
       v-long-press="onBackContextMenu"
       :title="'Back' | accelerator('CmdOrCtrl+Left')"
       :disabled="backDisabled"
-      flat
       icon
       @click="onBackClick"
       @contextmenu.stop="onBackContextMenu"
     >
-      <v-icon>mdi-arrow_back</v-icon>
+      <v-icon>mdi-arrow-left</v-icon>
     </v-btn>
     <v-btn
       v-long-press="onForwardContextMenu"
       :title="'Forward' | accelerator('CmdOrCtrl+Right')"
       :disabled="forwardDisabled"
-      flat
       icon
       @click="onForwardClick"
       @contextmenu.stop="onForwardContextMenu"
     >
-      <v-icon>mdi-arrow_forward</v-icon>
+      <v-icon>mdi-arrow-right</v-icon>
     </v-btn>
     <v-btn
       :title="'Up' | accelerator('CmdOrCtrl+Shift+P')"
-      flat
       icon
       @click="onUpwardClick"
     >
-      <v-icon>mdi-arrow_upward</v-icon>
+      <v-icon>mdi-arrow-up</v-icon>
     </v-btn>
-    <v-btn title="Reload" flat icon @click="onRefreshClick">
-      <v-icon>mdi-efresh</v-icon>
+    <v-btn title="Reload" icon @click="onRefreshClick">
+      <v-icon>mdi-refresh</v-icon>
     </v-btn>
     <v-btn
       :title="'Home' | accelerator('CmdOrCtrl+Shift+H')"
-      flat
       icon
       @click="onHomeClick"
     >
@@ -44,7 +40,6 @@
     <v-btn
       :title="'Bookmark' | accelerator('CmdOrCtrl+D')"
       :color="bookmarkColor"
-      flat
       icon
       @click="onBookmarkClick"
     >

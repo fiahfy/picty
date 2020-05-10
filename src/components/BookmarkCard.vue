@@ -3,20 +3,18 @@
     <v-toolbar color="transparent" flat dense>
       <v-btn
         :title="'New Bookmark' | accelerator('CmdOrCtrl+N')"
-        flat
         icon
         @click="onAddClick"
       >
-        <v-icon>mdi-add</v-icon>
+        <v-icon>mdi-plus</v-icon>
       </v-btn>
       <v-btn
         :title="'Remove' | accelerator('CmdOrCtrl+Backspace')"
         :disabled="!canRemoveBookmark"
-        flat
         icon
         @click="onRemoveClick"
       >
-        <v-icon>mdi-remove</v-icon>
+        <v-icon>mdi-minus</v-icon>
       </v-btn>
     </v-toolbar>
     <v-dialog v-model="dialog" persistent max-width="500">
@@ -39,8 +37,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn flat @click="onCloseClick">Cancel</v-btn>
-          <v-btn color="primary" flat :disabled="!form.valid" @click="onSubmit">
+          <v-btn text @click="onCloseClick">Cancel</v-btn>
+          <v-btn color="primary" text :disabled="!form.valid" @click="onSubmit">
             Add
           </v-btn>
         </v-card-actions>

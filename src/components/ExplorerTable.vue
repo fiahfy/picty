@@ -7,36 +7,32 @@
     item-key="path"
     :loading="loading"
     :no-data-text="noDataText"
-    hide-actions
+    hide-default-header
+    hide-default-footer
     sticky-headers
     tabindex="0"
     @scroll="onScroll"
     @keydown.native="onKeyDown"
   >
-    <explorer-table-header-row
-      slot="headers"
-      slot-scope="props"
-      :headers="props.headers"
-    />
-    <explorer-table-row
-      slot="items"
-      :key="props.item.path"
-      slot-scope="props"
-      :file="props.item"
-    />
+    <template v-slot:header="props">
+      <explorer-table-header :headers="props.props.headers" />
+    </template>
+    <template v-slot:item="props">
+      <explorer-table-row :key="props.item.path" :file="props.item" />
+    </template>
     <v-progress-linear slot="progress" indeterminate />
   </virtual-data-table>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import ExplorerTableHeaderRow from './ExplorerTableHeaderRow'
+import ExplorerTableHeader from './ExplorerTableHeader'
 import ExplorerTableRow from './ExplorerTableRow'
 import VirtualDataTable from './VirtualDataTable'
 
 export default {
   components: {
-    ExplorerTableHeaderRow,
+    ExplorerTableHeader,
     ExplorerTableRow,
     VirtualDataTable,
   },

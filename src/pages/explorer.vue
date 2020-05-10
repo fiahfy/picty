@@ -1,9 +1,9 @@
 <template>
   <v-container class="explorer" fill-height fluid pa-0>
     <v-layout column>
-      <explorer-toolbar />
-      <explorer-card />
-      <v-container fluid pa-0 overflow-hidden>
+      <explorer-toolbar class="flex-grow-0" />
+      <explorer-card class="flex-grow-0" />
+      <v-container fluid pa-0 overflow-hidden flex-grow-1>
         <component :is="component" class="fill-height" />
       </v-container>
     </v-layout>

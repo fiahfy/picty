@@ -7,7 +7,16 @@ html, body, #__nuxt, #__layout, #app {
 html {
   overflow-y: hidden;
 }
-
+// custom classes
+.user-select-none {
+  user-select: none;
+}
+.pointer-events-none {
+  pointer-events: none;
+}
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
 // transition
 .no-transition-leave-active,
 .no-transition-enter-active {

@@ -4,17 +4,18 @@
     v-model="model"
     v-bind="$attrs"
     class="virtual-data-table"
-    :pagination.sync="paginationModel"
+    :options.sync="optionsModel"
     :items="renderItems"
     :class="classes"
-    :disable-initial-sort="true"
+    disable-sort
+    disable-pagination
   >
-    <template slot="headers" slot-scope="props">
-      <slot v-bind="props" name="headers" />
+    <template v-slot:header="props">
+      <slot v-bind="props" name="header" />
     </template>
-    <template slot="items" slot-scope="props">
+    <template v-slot:item="props">
       <tr v-if="props.index === 0" :style="{ height: `${padding.top}px` }" />
-      <slot v-bind="props" name="items" />
+      <slot v-bind="props" name="item" />
       <tr
         v-if="props.index === renderItems.length - 1"
         :style="{ height: `${padding.bottom}px` }"
@@ -65,7 +66,7 @@ export default {
     }
   },
   computed: {
-    paginationModel: {
+    optionsModel: {
       get() {
         return this.pagination
       },
@@ -94,7 +95,7 @@ export default {
     },
   },
   mounted() {
-    this.container = this.$el.querySelector('.v-table__overflow')
+    this.container = this.$el.querySelector('.v-data-table__wrapper')
     this.container.addEventListener('scroll', this.onScroll)
     this.observer = new ResizeObserver(this.onResize)
     this.observer.observe(this.container)
@@ -153,9 +154,10 @@ export default {
 
 <style scoped lang="scss">
 .virtual-data-table.sticky-headers {
-  ::v-deep .v-table__overflow {
+  ::v-deep .v-data-table__wrapper {
     height: 100%;
     overflow-y: scroll;
+    background: inherit;
     &::-webkit-scrollbar {
       width: 14px;
     }
@@ -168,8 +170,9 @@ export default {
         background-color: #ccc;
       }
     }
-    .v-datatable {
+    table {
       table-layout: fixed;
+      background: inherit;
       > thead {
         background: inherit;
         > tr {
@@ -180,33 +183,15 @@ export default {
             top: 0;
             z-index: 1;
           }
-          &.v-datatable__progress > th {
-            top: 56px;
-            z-index: 0;
-            &:after {
-              bottom: 0;
-              box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
-              content: '';
-              left: 0;
-              position: absolute;
-              width: 100%;
-            }
-          }
         }
       }
-    }
-  }
-  &.scrolling ::v-deep .v-datatable > thead > tr {
-    border-bottom: none;
-    &.v-datatable__progress > th:after {
-      height: 10px;
     }
   }
 }
 .theme--dark
   .virtual-data-table.sticky-headers
   ::v-deep
-  .v-table__overflow::-webkit-scrollbar-thumb {
+  .v-data-table__wrapper::-webkit-scrollbar-thumb {
   background-color: #424242 !important;
   &:hover {
     background-color: #505050 !important;
