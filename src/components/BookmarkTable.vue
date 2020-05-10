@@ -6,6 +6,7 @@
     :items="bookmarks"
     item-key="path"
     no-data-text="No data available."
+    hide-default-header
     hide-default-footer
     sticky-headers
     tabindex="0"
@@ -13,17 +14,12 @@
     @keydown.native="onKeyDown"
     @contextmenu.native.stop="onContextMenu"
   >
-    <bookmark-table-header-row
-      slot="headers"
-      slot-scope="props"
-      :headers="props.headers"
-    />
-    <bookmark-table-row
-      slot="items"
-      :key="props.item.path"
-      slot-scope="props"
-      :bookmark="props.item"
-    />
+    <template v-slot:header="props">
+      <bookmark-table-header-row :headers="props.props.headers" />
+    </template>
+    <template v-slot:item="props">
+      <bookmark-table-row :key="props.item.path" :bookmark="props.item" />
+    </template>
     <v-progress-linear slot="progress" indeterminate />
   </virtual-data-table>
 </template>

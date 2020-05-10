@@ -58,6 +58,11 @@ export default {
       ],
     }
   },
+  watch: {
+    $route(value) {
+      this.index = this.items.findIndex((item) => item.path === value.path)
+    },
+  },
   methods: {
     onItemClick(item) {
       this.$router.push(item.path)

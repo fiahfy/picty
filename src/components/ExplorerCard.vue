@@ -38,19 +38,20 @@
         @contextmenu.stop="onTextContextMenu"
         @click:append-outer="onTextAppendIconClick"
       >
-        <template slot="item" slot-scope="{ item }">
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item" />
-          </v-list-tile-content>
-          <v-list-tile-action>
+        <template v-slot:item="{ item }">
+          <v-list-item-content>
+            <v-list-item-title v-text="item" />
+          </v-list-item-content>
+          <v-list-item-action>
             <v-btn
               small
+              text
               color="primary"
               @click.stop="(e) => onItemClick(e, item)"
             >
               delete
             </v-btn>
-          </v-list-tile-action>
+          </v-list-item-action>
         </template>
       </v-autocomplete>
     </v-toolbar>
