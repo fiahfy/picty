@@ -2,14 +2,14 @@
   <v-card class="explorer-grid-list-header" flat tile>
     <v-toolbar color="transparent" flat dense>
       <v-spacer />
-      <v-flex xs12 sm6 md4>
-        <v-select
-          v-model="order"
-          :items="orders"
-          single-line
-          append-outer-icon="mdi-sort"
-        />
-      </v-flex>
+      <v-select
+        v-model="order"
+        :items="orders"
+        single-line
+        append-outer-icon="mdi-sort"
+        hide-details
+        style="max-width: 256px;"
+      />
     </v-toolbar>
   </v-card>
 </template>

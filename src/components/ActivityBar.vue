@@ -43,14 +43,14 @@ export default {
         },
         {
           id: 'bookmark',
-          icon: 'mdi-star-outline',
+          icon: 'mdi-star',
           title: 'Bookmark',
           accelerator: 'CmdOrCtrl+Shift+B',
           path: '/bookmark',
         },
         {
           id: 'settings',
-          icon: 'mdi-cog-outline',
+          icon: 'mdi-cog',
           title: 'Settings',
           accelerator: 'CmdOrCtrl+,',
           path: '/settings',
