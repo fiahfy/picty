@@ -8,14 +8,14 @@
     @dblclick="onDoubleClick"
   >
     <v-spacer />
-    <span class="caption text-truncate" v-text="title" />
+    <span class="caption text-truncate">Picty</span>
     <v-spacer />
   </v-system-bar>
 </template>
 
 <script>
 import { remote } from 'electron'
-import { mapGetters, mapState } from 'vuex'
+import { layoutStore } from '~/store'
 
 export default {
   props: {
@@ -25,8 +25,9 @@ export default {
     },
   },
   computed: {
-    ...mapState(['title']),
-    ...mapGetters(['titleBar']),
+    titleBar() {
+      return layoutStore.titleBar
+    },
   },
   methods: {
     // @see https://github.com/electron/electron/issues/16385

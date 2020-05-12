@@ -1,4 +1,4 @@
-import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import { bookmarkStore, layoutStore } from '~/store'
 
 const reversed: { [by: string]: boolean } = {
@@ -7,7 +7,7 @@ const reversed: { [by: string]: boolean } = {
 }
 
 @Module({
-  name: 'bookmark',
+  name: 'layout-bookmark',
   stateFactory: true,
   namespaced: true,
 })
@@ -63,13 +63,13 @@ export default class BookmarkModule extends VuexModule {
       this.selectedBookmarkPath === filepath
   }
 
-  @Mutation
+  @Action
   addBookmark({ filepath }: { filepath: string }) {
     bookmarkStore.addBookmark({ filepath })
     this.selectBookmark({ filepath })
   }
 
-  @Mutation
+  @Action
   removeBookmark() {
     if (!this.selectedBookmarkPath) {
       return
@@ -81,17 +81,17 @@ export default class BookmarkModule extends VuexModule {
     this.selectBookmarkIndex({ index })
   }
 
-  @Mutation
+  @Action
   selectBookmark({ filepath }: { filepath: string }) {
     this.setSelectedBookmarkPath({ selectedBookmarkPath: filepath })
   }
 
-  @Mutation
+  @Action
   unselectBookmark() {
     this.setSelectedBookmarkPath({ selectedBookmarkPath: undefined })
   }
 
-  @Mutation
+  @Action
   selectBookmarkIndex({ index }: { index: number }) {
     const bookmark = this.bookmarks[index]
     if (bookmark) {
@@ -99,36 +99,36 @@ export default class BookmarkModule extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   selectFirstBookmark() {
     this.selectBookmarkIndex({ index: 0 })
   }
 
-  @Mutation
+  @Action
   selectLastBookmark() {
     this.selectBookmarkIndex({ index: this.bookmarks.length - 1 })
   }
 
-  @Mutation
+  @Action
   selectPreviousBookmark() {
     this.selectBookmarkIndex({
       index: this.selectedBookmarkIndex - 1,
     })
   }
 
-  @Mutation
+  @Action
   selectNextBookmark() {
     this.selectBookmarkIndex({
       index: this.selectedBookmarkIndex + 1,
     })
   }
 
-  @Mutation
+  @Action
   openBookmark({ filepath }: { filepath: string }) {
     layoutStore.openDirectory({ dirpath: filepath })
   }
 
-  @Mutation
+  @Action
   changeOrderBy({ orderBy }: { orderBy: any }) {
     const descending =
       this.order.by === orderBy ? !this.order.descending : false
@@ -136,12 +136,12 @@ export default class BookmarkModule extends VuexModule {
     this.setOrder({ order })
   }
 
-  @Mutation
+  @Action
   showDialog() {
     this.setDialog({ dialog: true })
   }
 
-  @Mutation
+  @Action
   dismissDialog() {
     this.setDialog({ dialog: false })
   }

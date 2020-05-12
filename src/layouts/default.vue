@@ -15,11 +15,11 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
 import ActivityBar from '~/components/ActivityBar'
 import NotificationBar from '~/components/NotificationBar'
 import TitleBar from '~/components/TitleBar'
 import Viewer from '~/components/Viewer'
+import { layoutStore, settingsStore } from '~/store'
 
 export default {
   components: {
@@ -29,8 +29,12 @@ export default {
     Viewer,
   },
   computed: {
-    ...mapState(['viewing']),
-    ...mapState('settings', ['darkTheme']),
+    viewing() {
+      return layoutStore.viewing
+    },
+    darkTheme() {
+      return settingsStore.darkTheme
+    },
   },
   watch: {
     darkTheme(value) {
@@ -39,7 +43,7 @@ export default {
   },
   created() {
     this.$vuetify.theme.dark = this.darkTheme
-    this.initialize()
+    layoutStore.initialize()
   },
   methods: {
     onContextMenu() {
@@ -51,9 +55,8 @@ export default {
         return
       }
       const filepath = files[0].path
-      this.open({ filepath })
+      layoutStore.open({ filepath })
     },
-    ...mapActions(['initialize', 'open']),
   },
 }
 </script>

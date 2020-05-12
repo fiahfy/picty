@@ -1,4 +1,4 @@
-import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import { settingsStore, layoutStore } from '~/store'
 
 const workerPromisify = require('@fiahfy/worker-promisify').default
@@ -28,7 +28,7 @@ const scales = [
 const worker = workerPromisify(new Worker())
 
 @Module({
-  name: 'viewer',
+  name: 'layout-viewer',
   stateFactory: true,
   namespaced: true,
 })
@@ -49,7 +49,7 @@ export default class ViewerModule extends VuexModule {
     return this.files.find((file) => this.currentFilepath === file.path)
   }
 
-  @Mutation
+  @Action
   async loadFiles({
     dirpath,
     filepath,
@@ -102,7 +102,7 @@ export default class ViewerModule extends VuexModule {
     this.setLoading({ loading: false })
   }
 
-  @Mutation
+  @Action
   movePreviousFile() {
     let index = this.currentFileIndex - 1
     if (index < 0) {
@@ -111,7 +111,7 @@ export default class ViewerModule extends VuexModule {
     this.moveFile({ index })
   }
 
-  @Mutation
+  @Action
   moveNextFile() {
     let index = this.currentFileIndex + 1
     if (index > this.files.length - 1) {
@@ -120,7 +120,7 @@ export default class ViewerModule extends VuexModule {
     this.moveFile({ index })
   }
 
-  @Mutation
+  @Action
   moveFile({ index }: { index: number }) {
     const file = this.files[index]
     if (file) {
@@ -128,14 +128,14 @@ export default class ViewerModule extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   setupZoom({ scale }: { scale: number }) {
     this.setScale({ scale })
     this.setOriginalScale({ originalScale: scale })
     this.setScaling({ scaling: false })
   }
 
-  @Mutation
+  @Action
   zoomIn() {
     const scale =
       scales.find((scale) => {
@@ -145,7 +145,7 @@ export default class ViewerModule extends VuexModule {
     this.setScaling({ scaling: true })
   }
 
-  @Mutation
+  @Action
   zoomOut() {
     const scale =
       scales
@@ -158,13 +158,13 @@ export default class ViewerModule extends VuexModule {
     this.setScaling({ scaling: true })
   }
 
-  @Mutation
+  @Action
   resetZoom() {
     this.setScale({ scale: this.originalScale })
     this.setScaling({ scaling: false })
   }
 
-  @Mutation
+  @Action
   toggleFullScreen() {
     if (layoutStore.fullScreen) {
       layoutStore.leaveFullScreen()
@@ -173,7 +173,7 @@ export default class ViewerModule extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   dismiss() {
     layoutStore.dismissViewer()
   }

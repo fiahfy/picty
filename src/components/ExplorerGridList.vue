@@ -31,11 +31,11 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
 import ExplorerGridListHeader from './ExplorerGridListHeader'
 import ExplorerGridListItem from './ExplorerGridListItem'
 import VirtualDataIterator from './VirtualDataIterator'
 import viewport from '~/utils/viewport'
+import { layoutExplorerStore, settingsStore } from '~/store'
 
 export default {
   components: {
@@ -63,18 +63,30 @@ export default {
     estimatedHeight() {
       return this.thumbnailHeightValue + 77
     },
-    ...mapGetters('settings', ['thumbnailHeightValue']),
-    ...mapState('local/explorer', [
-      'directory',
-      'query',
-      'loading',
-      'selectedFilepath',
-    ]),
-    ...mapGetters('local/explorer', [
-      'filteredFiles',
-      'scrollTop',
-      'selectedFileIndex',
-    ]),
+    thumbnailHeightValue() {
+      return settingsStore.thumbnailHeightValue
+    },
+    directory() {
+      return layoutExplorerStore.directory
+    },
+    query() {
+      return layoutExplorerStore.query
+    },
+    loading() {
+      return layoutExplorerStore.loading
+    },
+    selectedFilepath() {
+      return layoutExplorerStore.selectedFilepath
+    },
+    filteredFiles() {
+      return layoutExplorerStore.filteredFiles
+    },
+    scrollTop() {
+      return layoutExplorerStore.scrollTop
+    },
+    selectedFileIndex() {
+      return layoutExplorerStore.selectedFileIndex
+    },
   },
   watch: {
     loading() {
@@ -123,46 +135,36 @@ export default {
     },
     onScroll(e) {
       const scrollTop = e.target.scrollTop
-      this.setScrollTop({ scrollTop })
+      layoutExplorerStore.setScrollTop({ scrollTop })
     },
     onKeyDown(e) {
       const offset = this.getItemOffset()
       switch (e.keyCode) {
         case 13:
-          this.viewFile({ filepath: this.selectedFilepath })
+          layoutExplorerStore.viewFile({ filepath: this.selectedFilepath })
           break
         case 37:
-          this.selectLeftFile({ offset })
+          layoutExplorerStore.selectLeftFile({ offset })
           break
         case 38:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirstFile()
+            layoutExplorerStore.selectFirstFile()
           } else {
-            this.selectTopFile({ offset })
+            layoutExplorerStore.selectTopFile({ offset })
           }
           break
         case 39:
-          this.selectRightFile({ offset })
+          layoutExplorerStore.selectRightFile({ offset })
           break
         case 40:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLastFile()
+            layoutExplorerStore.selectLastFile()
           } else {
-            this.selectBottomFile({ offset })
+            layoutExplorerStore.selectBottomFile({ offset })
           }
           break
       }
     },
-    ...mapActions('local/explorer', [
-      'selectFirstFile',
-      'selectLastFile',
-      'selectLeftFile',
-      'selectTopFile',
-      'selectRightFile',
-      'selectBottomFile',
-      'setScrollTop',
-      'viewFile',
-    ]),
   },
 }
 </script>

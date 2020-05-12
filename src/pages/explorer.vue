@@ -11,11 +11,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import ExplorerToolbar from '~/components/ExplorerToolbar'
 import ExplorerCard from '~/components/ExplorerCard'
 import ExplorerTable from '~/components/ExplorerTable'
 import ExplorerGridList from '~/components/ExplorerGridList'
+import { layoutExplorerStore } from '~/store'
 
 export default {
   components: {
@@ -24,9 +24,10 @@ export default {
   },
   computed: {
     component() {
-      return this.display === 'list' ? ExplorerTable : ExplorerGridList
+      return layoutExplorerStore.display === 'list'
+        ? ExplorerTable
+        : ExplorerGridList
     },
-    ...mapState('local/explorer', ['display']),
   },
 }
 </script>

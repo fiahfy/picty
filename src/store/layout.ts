@@ -1,5 +1,5 @@
 import { remote } from 'electron'
-import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import pkg from '~~/package.json'
 import { settingsStore, layoutExplorerStore, layoutViewerStore } from '~/store'
 
@@ -20,12 +20,12 @@ export default class LayoutModule extends VuexModule {
     return process.platform === 'darwin' && !this.fullScreen
   }
 
-  @Mutation
+  @Action
   initialize() {
     layoutExplorerStore.initialize()
   }
 
-  @Mutation
+  @Action
   open({ filepath }: { filepath: string }) {
     const file = fileUtil.getFile(filepath)
     if (file.directory) {
@@ -33,14 +33,14 @@ export default class LayoutModule extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   openDirectory({ dirpath }: { dirpath: string }) {
     layoutExplorerStore.changeDirectory({ dirpath })
     // @ts-ignore
     this.$router.push('/explorer')
   }
 
-  @Mutation
+  @Action
   showViewer(payload: any) {
     layoutViewerStore.loadFiles(payload)
     this.setViewing({ viewing: true })
@@ -49,7 +49,7 @@ export default class LayoutModule extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   dismissViewer() {
     if (layoutViewerStore.loading) {
       return
@@ -61,21 +61,21 @@ export default class LayoutModule extends VuexModule {
     layoutExplorerStore.focus()
   }
 
-  @Mutation
+  @Action
   enterFullScreen() {
     const browserWindow = remote.getCurrentWindow()
     browserWindow.setFullScreen(true)
     browserWindow.setMenuBarVisibility(false)
   }
 
-  @Mutation
+  @Action
   leaveFullScreen() {
     const browserWindow = remote.getCurrentWindow()
     browserWindow.setFullScreen(false)
     browserWindow.setMenuBarVisibility(true)
   }
 
-  @Mutation
+  @Action
   focus({ selector }: { selector: string }) {
     const el = document.querySelector<HTMLInputElement>(selector)
     if (el) {
@@ -83,7 +83,7 @@ export default class LayoutModule extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   select({ selector }: { selector: string }) {
     const el = document.querySelector<HTMLInputElement>(selector)
     if (el) {
@@ -91,7 +91,7 @@ export default class LayoutModule extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   showMessage(message: any) {
     this.setMessage({ message })
   }

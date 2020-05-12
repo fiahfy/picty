@@ -1,4 +1,4 @@
-import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 
 @Module({
   name: 'bookmark',
@@ -12,7 +12,7 @@ export default class BookmarkModule extends VuexModule {
     return ({ filepath }: { filepath: string }) => !!this.bookmarks[filepath]
   }
 
-  @Mutation
+  @Action
   toggleBookmarked({ filepath }: { filepath: string }) {
     if (this.isBookmarked({ filepath })) {
       this.removeBookmark({ filepath })

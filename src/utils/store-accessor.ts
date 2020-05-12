@@ -5,9 +5,9 @@ import rating from '~/store/rating'
 import settings from '~/store/settings'
 import view from '~/store/view'
 import layout from '~/store/layout'
-import layoutBookmark from '~/store/layout/bookmark'
-import layoutExplorer from '~/store/layout/explorer'
-import layoutViewer from '~/store/layout/viewer'
+import layoutBookmark from '~/store/layout-bookmark'
+import layoutExplorer from '~/store/layout-explorer'
+import layoutViewer from '~/store/layout-viewer'
 
 /* eslint-disable import/no-mutable-exports */
 let bookmarkStore: bookmark

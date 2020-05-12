@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { layoutBookmarkStore } from '~/store'
 
 export default {
   props: {
@@ -24,7 +24,9 @@ export default {
     },
   },
   computed: {
-    ...mapState('local/bookmark', ['order']),
+    order() {
+      return layoutBookmarkStore.order
+    },
   },
   methods: {
     getClass(header) {
@@ -40,9 +42,8 @@ export default {
       }
     },
     onHeaderClick(_e, header) {
-      this.changeOrderBy({ orderBy: header.value })
+      layoutBookmarkStore.changeOrderBy({ orderBy: header.value })
     },
-    ...mapActions('local/bookmark', ['changeOrderBy']),
   },
 }
 </script>

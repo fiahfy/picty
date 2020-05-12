@@ -77,7 +77,8 @@
 
 <script>
 import { mapActions } from 'vuex'
-import settings from '~/consts/settings'
+
+const settings = require('~/consts/settings')
 
 export default {
   data() {

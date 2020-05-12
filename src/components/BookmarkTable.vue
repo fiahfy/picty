@@ -25,10 +25,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState, mapMutations } from 'vuex'
 import BookmarkTableHeaderRow from './BookmarkTableHeaderRow'
 import BookmarkTableRow from './BookmarkTableRow'
 import VirtualDataTable from './VirtualDataTable'
+import { layoutBookmarkStore } from '~/store'
 
 export default {
   components: {
@@ -54,8 +54,18 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/bookmark', ['scrollTop', 'selectedBookmarkPath']),
-    ...mapGetters('local/bookmark', ['bookmarks', 'selectedBookmarkIndex']),
+    scrollTop() {
+      return layoutBookmarkStore.scrollTop
+    },
+    selectedBookmarkPath() {
+      return layoutBookmarkStore.selectedBookmarkPath
+    },
+    bookmarks() {
+      return layoutBookmarkStore.bookmarks
+    },
+    selectedBookmarkIndex() {
+      return layoutBookmarkStore.selectedBookmarkIndex
+    },
   },
   watch: {
     loading() {
@@ -100,61 +110,52 @@ export default {
     },
     onScroll(e) {
       const scrollTop = e.target.scrollTop
-      this.setScrollTop({ scrollTop })
+      layoutBookmarkStore.setScrollTop({ scrollTop })
     },
     onKeyDown(e) {
       switch (e.keyCode) {
         case 8:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.removeBookmark()
+            layoutBookmarkStore.removeBookmark()
           }
           break
         case 13:
-          this.openBookmark({ filepath: this.selectedBookmarkPath })
+          layoutBookmarkStore.openBookmark({
+            filepath: this.selectedBookmarkPath,
+          })
           break
         case 38:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirstBookmark()
+            layoutBookmarkStore.selectFirstBookmark()
           } else {
-            this.selectPreviousBookmark()
+            layoutBookmarkStore.selectPreviousBookmark()
           }
           break
         case 40:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLastBookmark()
+            layoutBookmarkStore.selectLastBookmark()
           } else {
-            this.selectNextBookmark()
+            layoutBookmarkStore.selectNextBookmark()
           }
           break
         case 78:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.showDialog()
+            layoutBookmarkStore.showDialog()
           }
           break
       }
     },
     onContextMenu() {
-      this.unselectBookmark()
+      layoutBookmarkStore.unselectBookmark()
       const template = [
         {
           label: 'New Bookmark',
-          click: () => this.showDialog(),
+          click: () => layoutBookmarkStore.showDialog(),
           accelerator: 'CmdOrCtrl+N',
         },
       ]
       this.$contextMenu.open(template)
     },
-    ...mapMutations('local/bookmark', ['setScrollTop']),
-    ...mapActions('local/bookmark', [
-      'removeBookmark',
-      'unselectBookmark',
-      'selectFirstBookmark',
-      'selectLastBookmark',
-      'selectPreviousBookmark',
-      'selectNextBookmark',
-      'openBookmark',
-      'showDialog',
-    ]),
   },
 }
 </script>

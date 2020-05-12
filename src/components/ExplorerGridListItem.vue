@@ -52,8 +52,8 @@
 <script>
 import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
-import { mapActions, mapGetters, mapState } from 'vuex'
 import Worker from '~/workers/fetch.worker.js'
+import { layoutExplorerStore, settingsStore } from '~/store'
 
 const worker = workerPromisify(new Worker())
 
@@ -111,9 +111,18 @@ export default {
       }
       return this.imageUrl ? '' : 'No images'
     },
-    ...mapState('settings', ['thumbnailStyle']),
-    ...mapGetters('settings', ['thumbnailHeightValue', 'isFileAvailable']),
-    ...mapGetters('local/explorer', ['isFileSelected']),
+    thumbnailStyle() {
+      return settingsStore.thumbnailStyle
+    },
+    thumbnailHeightValue() {
+      return settingsStore.thumbnailHeightValue
+    },
+    isFileAvailable() {
+      return settingsStore.isFileAvailable
+    },
+    isFileSelected() {
+      return layoutExplorerStore.isFileSelected
+    },
   },
   async created() {
     if (!this.file.directory) {
@@ -136,17 +145,18 @@ export default {
   },
   methods: {
     onClick() {
-      this.selectFile({ filepath: this.file.path })
+      layoutExplorerStore.selectFile({ filepath: this.file.path })
     },
     onDblClick() {
-      this.openFile({ filepath: this.file.path })
+      layoutExplorerStore.openFile({ filepath: this.file.path })
     },
     onContextMenu() {
-      this.selectFile({ filepath: this.file.path })
+      layoutExplorerStore.selectFile({ filepath: this.file.path })
       let template = [
         {
           label: 'View',
-          click: () => this.viewFile({ filepath: this.file.path }),
+          click: () =>
+            layoutExplorerStore.viewFile({ filepath: this.file.path }),
           accelerator: 'Enter',
         },
       ]
@@ -158,7 +168,7 @@ export default {
           { role: 'copy' },
           {
             label: `Search "${text}"`,
-            click: () => this.searchFiles({ query: text }),
+            click: () => layoutExplorerStore.searchFiles({ query: text }),
             accelerator: 'CmdOrCtrl+F',
           },
         ]
@@ -168,12 +178,6 @@ export default {
     onError() {
       this.error = true
     },
-    ...mapActions('local/explorer', [
-      'selectFile',
-      'searchFiles',
-      'openFile',
-      'viewFile',
-    ]),
   },
 }
 </script>

@@ -1,5 +1,5 @@
 import { remote, shell } from 'electron'
-import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import {
   settingsStore,
   layoutStore,
@@ -23,7 +23,7 @@ const reversed: any = {
 const worker = workerPromisify(new Worker())
 
 @Module({
-  name: 'explorer',
+  name: 'layout-explorer',
   stateFactory: true,
   namespaced: true,
 })
@@ -113,25 +113,25 @@ export default class ExplorerModule extends VuexModule {
       settingsStore.isFileAvailable({ filepath })
   }
 
-  @Mutation
+  @Action
   initialize() {
     const dirpath = this.directory
     this.changeDirectory({ dirpath, force: true })
   }
 
-  @Mutation
+  @Action
   upDirectory() {
     const dirpath = fileUtil.getFile(this.directory).dirpath
     this.changeDirectory({ dirpath })
   }
 
-  @Mutation
+  @Action
   changeHomeDirectory() {
     const dirpath = remote.app.getPath('home')
     this.changeDirectory({ dirpath })
   }
 
-  @Mutation
+  @Action
   changeDirectory({
     dirpath,
     force = false,
@@ -160,7 +160,7 @@ export default class ExplorerModule extends VuexModule {
     this.restoreDirectory({ historyIndex })
   }
 
-  @Mutation
+  @Action
   backDirectory({ offset = 0 } = {}) {
     if (!this.canBackDirectory) {
       return
@@ -169,7 +169,7 @@ export default class ExplorerModule extends VuexModule {
     this.restoreDirectory({ historyIndex })
   }
 
-  @Mutation
+  @Action
   forwardDirectory({ offset = 0 } = {}) {
     if (!this.canForwardDirectory) {
       return
@@ -178,14 +178,14 @@ export default class ExplorerModule extends VuexModule {
     this.restoreDirectory({ historyIndex })
   }
 
-  @Mutation
+  @Action
   reloadDirectory() {
     this.setSelectedFilepath({ selectedFilepath: '' })
     this.setScrollTop({ scrollTop: 0 })
     this.restoreDirectory({ historyIndex: this.historyIndex })
   }
 
-  @Mutation
+  @Action
   restoreDirectory({ historyIndex }: { historyIndex: number }) {
     if (this.loading) {
       return
@@ -200,7 +200,7 @@ export default class ExplorerModule extends VuexModule {
     this.loadFiles()
   }
 
-  @Mutation
+  @Action
   browseDirectory() {
     const result = shell.openItem(this.directory)
     if (!result) {
@@ -208,12 +208,12 @@ export default class ExplorerModule extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   toggleDirectoryBookmarked() {
     bookmarkStore.toggleBookmarked({ filepath: this.directory })
   }
 
-  @Mutation
+  @Action
   async loadFiles() {
     if (this.loading) {
       return
@@ -247,7 +247,7 @@ export default class ExplorerModule extends VuexModule {
     this.setLoading({ loading: false })
   }
 
-  @Mutation
+  @Action
   sortFiles() {
     const { by, descending } = this.order
     const files = this.files.concat().sort((a, b) => {
@@ -270,7 +270,7 @@ export default class ExplorerModule extends VuexModule {
     this.setFiles({ files })
   }
 
-  @Mutation
+  @Action
   searchFiles({ query }: { query: string }) {
     this.setQueryInput({ queryInput: query })
     this.setQuery({ query })
@@ -279,7 +279,7 @@ export default class ExplorerModule extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   addQueryHistory({ queryHistory }: { queryHistory: any }) {
     const queryHistories = [...this.queryHistories, queryHistory].slice(
       -settingsStore.queryHistorySize
@@ -287,7 +287,7 @@ export default class ExplorerModule extends VuexModule {
     this.setQueryHistories({ queryHistories })
   }
 
-  @Mutation
+  @Action
   removeQueryHistory({ queryHistory }: { queryHistory: any }) {
     const queryHistories = this.queryHistories
       .filter((history) => history !== queryHistory)
@@ -295,17 +295,17 @@ export default class ExplorerModule extends VuexModule {
     this.setQueryHistories({ queryHistories })
   }
 
-  @Mutation
+  @Action
   clearQueryHistory() {
     this.setQueryHistories({ queryHistories: [] })
   }
 
-  @Mutation
+  @Action
   selectFile({ filepath }: { filepath: string }) {
     this.setSelectedFilepath({ selectedFilepath: filepath })
   }
 
-  @Mutation
+  @Action
   selectFileIndex({ index }: { index: number }) {
     const file = this.filteredFiles[index]
     if (file) {
@@ -313,27 +313,27 @@ export default class ExplorerModule extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   selectFirstFile() {
     this.selectFileIndex({ index: 0 })
   }
 
-  @Mutation
+  @Action
   selectLastFile() {
     this.selectFileIndex({ index: this.filteredFiles.length - 1 })
   }
 
-  @Mutation
+  @Action
   selectPreviousFile() {
     this.selectFileIndex({ index: this.selectedFileIndex - 1 })
   }
 
-  @Mutation
+  @Action
   selectNextFile() {
     this.selectFileIndex({ index: this.selectedFileIndex + 1 })
   }
 
-  @Mutation
+  @Action
   selectLeftFile({ offset }: { offset: number }) {
     let index
     if (this.selectedFileIndex % offset === 0) {
@@ -347,7 +347,7 @@ export default class ExplorerModule extends VuexModule {
     this.selectFileIndex({ index })
   }
 
-  @Mutation
+  @Action
   selectTopFile({ offset }: { offset: number }) {
     const index = this.selectedFileIndex - offset
     if (index < 0) {
@@ -356,7 +356,7 @@ export default class ExplorerModule extends VuexModule {
     this.selectFileIndex({ index })
   }
 
-  @Mutation
+  @Action
   selectRightFile({ offset }: { offset: number }) {
     let index
     if (this.selectedFileIndex % offset === offset - 1) {
@@ -370,7 +370,7 @@ export default class ExplorerModule extends VuexModule {
     this.selectFileIndex({ index })
   }
 
-  @Mutation
+  @Action
   selectBottomFile({ offset }: { offset: number }) {
     const index =
       this.selectedFileIndex > -1 ? this.selectedFileIndex + offset : 0
@@ -380,7 +380,7 @@ export default class ExplorerModule extends VuexModule {
     this.selectFileIndex({ index })
   }
 
-  @Mutation
+  @Action
   openFile({ filepath }: { filepath: string }) {
     const file = this.getFile({ filepath })
     if (file.directory) {
@@ -390,7 +390,7 @@ export default class ExplorerModule extends VuexModule {
     }
   }
 
-  @Mutation
+  @Action
   viewFile({ filepath }: { filepath: string }) {
     const file = this.getFile({ filepath })
     if (file.directory) {
@@ -401,7 +401,7 @@ export default class ExplorerModule extends VuexModule {
     this.incrementFileViews({ filepath: file.path })
   }
 
-  @Mutation
+  @Action
   updateFileRating({ filepath, rating }: { filepath: string; rating: number }) {
     ratingStore.setRating({ filepath, rating })
     const file = {
@@ -410,7 +410,7 @@ export default class ExplorerModule extends VuexModule {
     this.updateFile({ filepath, file })
   }
 
-  @Mutation
+  @Action
   incrementFileViews({ filepath }: { filepath: string }) {
     viewStore.incrementViews({ filepath })
     const file = {
@@ -419,7 +419,7 @@ export default class ExplorerModule extends VuexModule {
     this.updateFile({ filepath, file })
   }
 
-  @Mutation
+  @Action
   setScrollTop({ scrollTop }: { scrollTop: number }) {
     if (this.loading) {
       return
@@ -431,13 +431,13 @@ export default class ExplorerModule extends VuexModule {
     this.setHistory({ history, index: this.historyIndex })
   }
 
-  @Mutation
+  @Action
   changeOrder({ order }: { order: any }) {
     this.setOrder({ order, directory: this.directory })
     this.sortFiles()
   }
 
-  @Mutation
+  @Action
   changeOrderBy({ orderBy }: { orderBy: string }) {
     const descending =
       this.order.by === orderBy ? !this.order.descending : false
@@ -445,7 +445,7 @@ export default class ExplorerModule extends VuexModule {
     this.changeOrder({ order })
   }
 
-  @Mutation
+  @Action
   setDisplay({ display }: { display: string }) {
     this.setDisplay_({ display })
     this.setSelectedFilepath({ selectedFilepath: '' })
@@ -453,7 +453,7 @@ export default class ExplorerModule extends VuexModule {
     this.focus()
   }
 
-  @Mutation
+  @Action
   focus() {
     const target =
       this.display === 'list'

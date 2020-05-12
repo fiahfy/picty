@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { layoutBookmarkStore } from '~/store'
 
 export default {
   props: {
@@ -32,23 +32,28 @@ export default {
   },
   computed: {
     active() {
-      return this.isBookmarkSelected({ filepath: this.bookmark.path })
+      return layoutBookmarkStore.isBookmarkSelected({
+        filepath: this.bookmark.path,
+      })
     },
-    ...mapGetters('local/bookmark', ['isBookmarkSelected']),
+    isBookmarkSelected() {
+      return layoutBookmarkStore.isBookmarkSelected
+    },
   },
   methods: {
     onClick() {
-      this.selectBookmark({ filepath: this.bookmark.path })
+      layoutBookmarkStore.selectBookmark({ filepath: this.bookmark.path })
     },
     onDblClick() {
-      this.openBookmark({ filepath: this.bookmark.path })
+      layoutBookmarkStore.openBookmark({ filepath: this.bookmark.path })
     },
     onContextMenu() {
-      this.selectBookmark({ filepath: this.bookmark.path })
+      layoutBookmarkStore.selectBookmark({ filepath: this.bookmark.path })
       let template = [
         {
           label: 'Open',
-          click: () => this.openBookmark({ filepath: this.bookmark.path }),
+          click: () =>
+            layoutBookmarkStore.openBookmark({ filepath: this.bookmark.path }),
           accelerator: 'Enter',
         },
       ]
@@ -61,24 +66,18 @@ export default {
         { type: 'separator' },
         {
           label: 'New Bookmark',
-          click: () => this.showDialog(),
+          click: () => layoutBookmarkStore.showDialog(),
           accelerator: 'CmdOrCtrl+N',
         },
         { type: 'separator' },
         {
           label: 'Remove',
-          click: () => this.removeBookmark(),
+          click: () => layoutBookmarkStore.removeBookmark(),
           accelerator: 'CmdOrCtrl+Backspace',
         },
       ]
       this.$contextMenu.open(template)
     },
-    ...mapActions('local/bookmark', [
-      'removeBookmark',
-      'selectBookmark',
-      'openBookmark',
-      'showDialog',
-    ]),
   },
 }
 </script>

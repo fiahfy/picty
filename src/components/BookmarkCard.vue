@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { layoutBookmarkStore } from '~/store'
 
 export default {
   data() {
@@ -60,8 +60,12 @@ export default {
     }
   },
   computed: {
-    ...mapState('local/bookmark', ['dialog']),
-    ...mapGetters('local/bookmark', ['canRemoveBookmark']),
+    dialog() {
+      return layoutBookmarkStore.dialog
+    },
+    canRemoveBookmark() {
+      return layoutBookmarkStore.canRemoveBookmark
+    },
   },
   methods: {
     onAddClick() {
@@ -78,12 +82,18 @@ export default {
       this.form.filepath = ''
       this.dismissDialog()
     },
-    ...mapActions('local/bookmark', [
-      'addBookmark',
-      'removeBookmark',
-      'showDialog',
-      'dismissDialog',
-    ]),
+    addBookmark() {
+      layoutBookmarkStore.addBookmark()
+    },
+    removeBookmark() {
+      layoutBookmarkStore.removeBookmark()
+    },
+    showDialog() {
+      layoutBookmarkStore.showDialog()
+    },
+    dismissDialog() {
+      layoutBookmarkStore.dismissDialog()
+    },
   },
 }
 </script>

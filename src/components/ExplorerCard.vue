@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { layoutBookmarkStore } from '~/store'
 
 export default {
   data() {
@@ -84,29 +84,35 @@ export default {
     thumbnailColor() {
       return this.display === 'thumbnail' ? 'primary' : null
     },
-    ...mapState('local/explorer', [
-      'selectedFilepath',
-      'display',
-      'queryHistories',
-    ]),
-    ...mapGetters('local/explorer', ['canViewFile']),
+    selectedFilepath() {
+      return layoutBookmarkStore.selectedFilepath
+    },
+    display() {
+      return layoutBookmarkStore.display
+    },
+    queryHistories() {
+      return layoutBookmarkStore.queryHistories
+    },
+    canViewFile() {
+      return layoutBookmarkStore.canViewFile
+    },
   },
   methods: {
     onViewClick() {
-      this.viewFile({ filepath: this.selectedFilepath })
+      layoutBookmarkStore.viewFile({ filepath: this.selectedFilepath })
     },
     onListClick() {
-      this.setDisplay({ display: 'list' })
+      layoutBookmarkStore.setDisplay({ display: 'list' })
     },
     onThumbnailClick() {
-      this.setDisplay({ display: 'thumbnail' })
+      layoutBookmarkStore.setDisplay({ display: 'thumbnail' })
     },
     onTextInput(value) {
-      this.searchFiles({ query: value })
+      layoutBookmarkStore.searchFiles({ query: value })
     },
     onTextKeyUp(e) {
       if (e.keyCode === 13) {
-        this.searchFiles({ query: e.target.value })
+        layoutBookmarkStore.searchFiles({ query: e.target.value })
       }
     },
     onTextContextMenu() {
@@ -117,17 +123,11 @@ export default {
       ])
     },
     onTextAppendIconClick() {
-      this.searchFiles({ query: this.searchInput })
+      layoutBookmarkStore.searchFiles({ query: this.searchInput })
     },
     onItemClick(_e, item) {
-      this.removeQueryHistory({ queryHistory: item })
+      layoutBookmarkStore.removeQueryHistory({ queryHistory: item })
     },
-    ...mapActions('local/explorer', [
-      'searchFiles',
-      'viewFile',
-      'setDisplay',
-      'removeQueryHistory',
-    ]),
   },
 }
 </script>
