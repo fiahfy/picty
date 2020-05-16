@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { layoutViewerStore } from '~/store'
 
 export default {
   data() {
@@ -19,21 +19,23 @@ export default {
   },
   computed: {
     title() {
-      if (!this.currentFile) {
+      if (!layoutViewerStore.currentFile) {
         return ''
       }
-      return this.currentFile.dirname + ' - ' + this.currentFile.name
+      return (
+        layoutViewerStore.currentFile.dirname +
+        ' - ' +
+        layoutViewerStore.currentFile.name
+      )
     },
-    ...mapGetters('local/viewer', ['currentFile']),
   },
   methods: {
     onCloseClick() {
-      this.dismiss()
+      layoutViewerStore.dismiss()
     },
     isHover() {
       return !!this.$el.querySelector(':hover')
     },
-    ...mapActions('local/viewer', ['dismiss']),
   },
 }
 </script>

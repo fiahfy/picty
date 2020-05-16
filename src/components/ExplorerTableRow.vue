@@ -45,8 +45,8 @@
 <script>
 import workerPromisify from '@fiahfy/worker-promisify'
 import fileUrl from 'file-url'
-import { mapActions, mapGetters } from 'vuex'
 import Worker from '~/workers/fetch.worker.js'
+import { layoutExplorerStore } from '~/store'
 
 const worker = workerPromisify(new Worker())
 
@@ -78,7 +78,7 @@ export default {
       },
     },
     active() {
-      return this.isFileSelected({ filepath: this.file.path })
+      return layoutExplorerStore.isFileSelected({ filepath: this.file.path })
     },
     icon() {
       if (this.file.exists) {
@@ -104,8 +104,9 @@ export default {
     menuDisabled() {
       return !this.previewWidthValue
     },
-    ...mapGetters('settings', ['previewWidthValue', 'isFileAvailable']),
-    ...mapGetters('local/explorer', ['isFileSelected']),
+    previewWidthValue() {
+      return layoutExplorerStore.previewWidthValue
+    },
   },
   async created() {
     if (!this.file.directory) {
@@ -118,7 +119,7 @@ export default {
       data: this.file.path,
     })
     const filepathes = data.filter((filepath) =>
-      this.isFileAvailable({ filepath })
+      layoutExplorerStore.isFileAvailable({ filepath })
     )
     if (filepathes.length) {
       this.imageUrl = fileUrl(filepathes[0])
@@ -128,17 +129,18 @@ export default {
   },
   methods: {
     onClick() {
-      this.selectFile({ filepath: this.file.path })
+      layoutExplorerStore.selectFile({ filepath: this.file.path })
     },
     onDblClick() {
-      this.openFile({ filepath: this.file.path })
+      layoutExplorerStore.openFile({ filepath: this.file.path })
     },
     onContextMenu() {
-      this.selectFile({ filepath: this.file.path })
+      layoutExplorerStore.selectFile({ filepath: this.file.path })
       let template = [
         {
           label: 'View',
-          click: () => this.viewFile({ filepath: this.file.path }),
+          click: () =>
+            layoutExplorerStore.viewFile({ filepath: this.file.path }),
           accelerator: 'Enter',
         },
       ]
@@ -150,7 +152,7 @@ export default {
           { role: 'copy' },
           {
             label: `Search "${text}"`,
-            click: () => this.searchFiles({ query: text }),
+            click: () => layoutExplorerStore.searchFiles({ query: text }),
             accelerator: 'CmdOrCtrl+F',
           },
         ]
@@ -160,12 +162,6 @@ export default {
     onError() {
       this.error = true
     },
-    ...mapActions('local/explorer', [
-      'selectFile',
-      'searchFiles',
-      'openFile',
-      'viewFile',
-    ]),
   },
 }
 </script>

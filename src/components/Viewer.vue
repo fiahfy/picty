@@ -31,11 +31,11 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
 import ViewerContent from './ViewerContent'
 import ViewerBottomToolbar from './ViewerBottomToolbar'
 import ViewerTopToolbar from './ViewerTopToolbar'
 import TitleBar from '~/components/TitleBar'
+import { layoutStore, layoutViewerStore } from '~/store'
 
 export default {
   components: {
@@ -57,8 +57,12 @@ export default {
         'toolbar-fade-out': this.toolbar === false,
       }
     },
-    ...mapState(['viewing']),
-    ...mapState('local/viewer', ['loading']),
+    viewing() {
+      return layoutStore.viewing
+    },
+    loading() {
+      return layoutViewerStore.loading
+    },
   },
   watch: {
     viewing(value) {
@@ -76,19 +80,19 @@ export default {
     onKeyDown(e) {
       switch (e.keyCode) {
         case 27:
-          this.dismissViewer()
+          layoutStore.dismissViewer()
           break
         case 37:
-          this.movePreviousFile()
+          layoutViewerStore.movePreviousFile()
           break
         case 38:
-          this.movePreviousFile()
+          layoutViewerStore.movePreviousFile()
           break
         case 39:
-          this.moveNextFile()
+          layoutViewerStore.moveNextFile()
           break
         case 40:
-          this.moveNextFile()
+          layoutViewerStore.moveNextFile()
           break
       }
     },
@@ -120,8 +124,6 @@ export default {
       }
       this.resetTimer()
     },
-    ...mapActions(['dismissViewer']),
-    ...mapActions('local/viewer', ['movePreviousFile', 'moveNextFile']),
   },
 }
 </script>

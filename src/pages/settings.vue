@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { settingsStore } from '~/store'
 
 const settings = require('~/consts/settings')
 
@@ -103,84 +103,82 @@ export default {
   computed: {
     darkTheme: {
       get() {
-        return this.$store.state.settings.darkTheme
+        return settingsStore.darkTheme
       },
       set(value) {
-        this.$store.commit('settings/setDarkTheme', { darkTheme: value })
+        settingsStore.setDarkTheme({ darkTheme: value })
       },
     },
     fullScreen: {
       get() {
-        return this.$store.state.settings.fullScreen
+        return settingsStore.fullScreen
       },
       set(value) {
-        this.$store.commit('settings/setFullScreen', { fullScreen: value })
+        settingsStore.setFullScreen({ fullScreen: value })
       },
     },
     recursive: {
       get() {
-        return this.$store.state.settings.recursive
+        return settingsStore.recursive
       },
       set(value) {
-        this.$store.commit('settings/setRecursive', { recursive: value })
+        settingsStore.setRecursive({ recursive: value })
       },
     },
     imageStretched: {
       get() {
-        return this.$store.state.settings.imageStretched
+        return settingsStore.imageStretched
       },
       set(value) {
-        this.$store.commit('settings/setImageStretched', {
+        settingsStore.setImageStretched({
           imageStretched: value,
         })
       },
     },
     queryHistorySize: {
       get() {
-        return this.$store.state.settings.queryHistorySize
+        return settingsStore.queryHistorySize
       },
       set(value) {
-        this.$store.commit('settings/setQueryHistorySize', {
+        settingsStore.setQueryHistorySize({
           queryHistorySize: value,
         })
       },
     },
     previewWidth: {
       get() {
-        return this.$store.state.settings.previewWidth
+        return settingsStore.previewWidth
       },
       set(value) {
-        this.$store.commit('settings/setPreviewWidth', { previewWidth: value })
+        settingsStore.setPreviewWidth({ previewWidth: value })
       },
     },
     thumbnailStyle: {
       get() {
-        return this.$store.state.settings.thumbnailStyle
+        return settingsStore.thumbnailStyle
       },
       set(value) {
-        this.$store.commit('settings/setThumbnailStyle', {
+        settingsStore.setThumbnailStyle({
           thumbnailStyle: value,
         })
       },
     },
     thumbnailHeight: {
       get() {
-        return this.$store.state.settings.thumbnailHeight
+        return settingsStore.thumbnailHeight
       },
       set(value) {
-        this.$store.commit('settings/setThumbnailHeight', {
+        settingsStore.setThumbnailHeight({
           thumbnailHeight: value,
         })
       },
     },
     extensions: {
       get() {
-        return this.$store.state.settings.extensions.map((item) =>
-          item.toUpperCase()
-        )
+        return settingsStore.extensions.map((item) => item.toUpperCase())
       },
       set(value) {
-        this.$store.commit('settings/setExtensions', {
+        settingsStore.setExtensions({
           extensions: value.map((item) => item.toUpperCase()),
         })
       },
@@ -193,9 +191,8 @@ export default {
       )
     },
     onClearClick() {
-      this.clearQueryHistory()
+      settingsStore.clearQueryHistory()
     },
-    ...mapActions('local/explorer', ['clearQueryHistory']),
   },
 }
 </script>

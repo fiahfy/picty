@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { layoutBookmarkStore } from '~/store'
+import { layoutExplorerStore } from '~/store'
 
 export default {
   data() {
@@ -70,10 +70,10 @@ export default {
   computed: {
     queryInput: {
       get() {
-        return this.$store.state.local.explorer.queryInput
+        return layoutExplorerStore.queryInput
       },
       set(value) {
-        this.$store.commit('local/explorer/setQueryInput', {
+        layoutExplorerStore.setQueryInput({
           queryInput: value,
         })
       },
@@ -85,34 +85,34 @@ export default {
       return this.display === 'thumbnail' ? 'primary' : null
     },
     selectedFilepath() {
-      return layoutBookmarkStore.selectedFilepath
+      return layoutExplorerStore.selectedFilepath
     },
     display() {
-      return layoutBookmarkStore.display
+      return layoutExplorerStore.display
     },
     queryHistories() {
-      return layoutBookmarkStore.queryHistories
+      return layoutExplorerStore.queryHistories
     },
     canViewFile() {
-      return layoutBookmarkStore.canViewFile
+      return layoutExplorerStore.canViewFile
     },
   },
   methods: {
     onViewClick() {
-      layoutBookmarkStore.viewFile({ filepath: this.selectedFilepath })
+      layoutExplorerStore.viewFile({ filepath: this.selectedFilepath })
     },
     onListClick() {
-      layoutBookmarkStore.setDisplay({ display: 'list' })
+      layoutExplorerStore.setDisplay({ display: 'list' })
     },
     onThumbnailClick() {
-      layoutBookmarkStore.setDisplay({ display: 'thumbnail' })
+      layoutExplorerStore.setDisplay({ display: 'thumbnail' })
     },
     onTextInput(value) {
-      layoutBookmarkStore.searchFiles({ query: value })
+      layoutExplorerStore.searchFiles({ query: value })
     },
     onTextKeyUp(e) {
       if (e.keyCode === 13) {
-        layoutBookmarkStore.searchFiles({ query: e.target.value })
+        layoutExplorerStore.searchFiles({ query: e.target.value })
       }
     },
     onTextContextMenu() {
@@ -123,10 +123,10 @@ export default {
       ])
     },
     onTextAppendIconClick() {
-      layoutBookmarkStore.searchFiles({ query: this.searchInput })
+      layoutExplorerStore.searchFiles({ query: this.searchInput })
     },
     onItemClick(_e, item) {
-      layoutBookmarkStore.removeQueryHistory({ queryHistory: item })
+      layoutExplorerStore.removeQueryHistory({ queryHistory: item })
     },
   },
 }

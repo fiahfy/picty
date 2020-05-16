@@ -15,7 +15,7 @@
         @error="onError"
       >
         <v-layout slot="placeholder" fill-height align-center justify-center>
-          <v-flex class="text-xs-center caption">{{ message }}</v-flex>
+          <v-flex class="text-center caption">{{ message }}</v-flex>
         </v-layout>
         <div v-if="images" class="images caption white--text ma-2 px-1">
           {{ images }} images

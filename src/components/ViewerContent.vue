@@ -3,7 +3,7 @@
     <v-layout fill-height>
       <v-flex v-if="message">
         <v-layout fill-height align-center justify-center>
-          <v-flex text-xs-center body-1>{{ message }}</v-flex>
+          <v-flex text-center body-1>{{ message }}</v-flex>
         </v-layout>
       </v-flex>
       <v-flex
@@ -29,7 +29,7 @@
 
 <script>
 import fileUrl from 'file-url'
-import { mapActions, mapState } from 'vuex'
+import { layoutStore, layoutViewerStore } from '~/store'
 
 export default {
   data() {
@@ -53,45 +53,44 @@ export default {
       }
     },
     message() {
-      if (this.loading) {
+      if (layoutViewerStore.loading) {
         return 'Loading...'
       }
-      if (!this.files.length) {
+      if (!layoutViewerStore.files.length) {
         return 'No images'
       }
       if (this.loadError) {
         return 'Invalid image'
       }
-      return this.error ? this.error.message : ''
+      return layoutViewerStore.error ? layoutViewerStore.error.message : ''
     },
     imageSrc() {
-      return this.currentFilepath ? fileUrl(this.currentFilepath) : ''
+      return layoutViewerStore.currentFilepath
+        ? fileUrl(layoutViewerStore.currentFilepath)
+        : ''
     },
     imageClasses() {
       return {
         'horizontal-center': this.centered.horizontal,
         'vertical-center': this.centered.vertical,
-        scaling: this.scaling,
-        stretched: this.imageStretched,
+        scaling: layoutViewerStore.scaling,
+        stretched: layoutStore.imageStretched,
       }
     },
     imageStyles() {
-      return this.scaling
+      return layoutViewerStore.scaling
         ? {
-            width: this.originalSize.width * this.scale + 'px',
-            height: this.originalSize.height * this.scale + 'px',
+            width: this.originalSize.width * layoutViewerStore.scale + 'px',
+            height: this.originalSize.height * layoutViewerStore.scale + 'px',
           }
         : {}
     },
-    ...mapState('settings', ['imageStretched']),
-    ...mapState('local/viewer', [
-      'loading',
-      'error',
-      'files',
-      'currentFilepath',
-      'scale',
-      'scaling',
-    ]),
+    currentFilepath() {
+      return layoutViewerStore.currentFilepath
+    },
+    scale() {
+      return layoutViewerStore.scale
+    },
   },
   watch: {
     currentFilepath() {
@@ -160,19 +159,18 @@ export default {
       const scaleX = maxWidth / imageWidth
       const scaleY = maxHeight / imageHeight
       let scale = scaleX < scaleY ? scaleX : scaleY
-      if (scale >= 1 && !this.imageStretched) {
+      if (scale >= 1 && !layoutStore.imageStretched) {
         scale = 1
       }
       this.originalSize = {
         width: imageWidth,
         height: imageHeight,
       }
-      this.setupZoom({ scale })
+      layoutViewerStore.setupZoom({ scale })
     },
     onImageError() {
       this.loadError = true
     },
-    ...mapActions('local/viewer', ['setupZoom']),
   },
 }
 </script>

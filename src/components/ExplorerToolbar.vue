@@ -61,75 +61,69 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { layoutExplorerStore } from '~/store'
 
 export default {
   computed: {
     directoryInput: {
       get() {
-        return this.$store.state.local.explorer.directoryInput
+        return layoutExplorerStore.directoryInput
       },
       set(value) {
-        this.$store.commit('local/explorer/setDirectoryInput', {
+        layoutExplorerStore.setDirectoryInput({
           directoryInput: value,
         })
       },
     },
     backDisabled() {
-      return !this.canBackDirectory
+      return !layoutExplorerStore.canBackDirectory
     },
     forwardDisabled() {
-      return !this.canForwardDirectory
+      return !layoutExplorerStore.canForwardDirectory
     },
     bookmarkColor() {
-      return this.directoryBookmarked ? 'primary' : null
+      return layoutExplorerStore.directoryBookmarked ? 'primary' : null
     },
-    ...mapGetters('local/explorer', [
-      'backDirectories',
-      'forwardDirectories',
-      'canBackDirectory',
-      'canForwardDirectory',
-      'directoryBookmarked',
-    ]),
   },
   methods: {
     onBackClick() {
-      this.backDirectory()
+      layoutExplorerStore.backDirectory()
     },
     onBackContextMenu() {
       this.$contextMenu.open(
-        this.backDirectories.map((directory, index) => {
+        layoutExplorerStore.backDirectories.map((directory, index) => {
           return {
             label: directory,
-            click: () => this.backDirectory({ offset: index }),
+            click: () => layoutExplorerStore.backDirectory({ offset: index }),
           }
         })
       )
     },
     onForwardClick() {
-      this.forwardDirectory()
+      layoutExplorerStore.forwardDirectory()
     },
     onForwardContextMenu() {
       this.$contextMenu.open(
-        this.forwardDirectories.map((directory, index) => {
+        layoutExplorerStore.forwardDirectories.map((directory, index) => {
           return {
             label: directory,
-            click: () => this.forwardDirectory({ offset: index }),
+            click: () =>
+              layoutExplorerStore.forwardDirectory({ offset: index }),
           }
         })
       )
     },
     onUpwardClick() {
-      this.upDirectory()
+      layoutExplorerStore.upDirectory()
     },
     onRefreshClick() {
-      this.reloadDirectory()
+      layoutExplorerStore.reloadDirectory()
     },
     onHomeClick() {
-      this.changeHomeDirectory()
+      layoutExplorerStore.changeHomeDirectory()
     },
     onBookmarkClick() {
-      this.toggleDirectoryBookmarked()
+      layoutExplorerStore.toggleDirectoryBookmarked()
     },
     onTextContextMenu() {
       this.$contextMenu.open([
@@ -140,22 +134,12 @@ export default {
     },
     onTextKeyUp(e) {
       if (e.keyCode === 13) {
-        this.changeDirectory({ dirpath: e.target.value })
+        layoutExplorerStore.changeDirectory({ dirpath: e.target.value })
       }
     },
     onPrependClick() {
-      this.browseDirectory()
+      layoutExplorerStore.browseDirectory()
     },
-    ...mapActions('local/explorer', [
-      'upDirectory',
-      'changeHomeDirectory',
-      'changeDirectory',
-      'backDirectory',
-      'forwardDirectory',
-      'reloadDirectory',
-      'browseDirectory',
-      'toggleDirectoryBookmarked',
-    ]),
   },
 }
 </script>

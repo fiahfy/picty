@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { layoutStore } from '~/store'
 
 export default {
   data() {
@@ -17,8 +17,8 @@ export default {
       messages: [],
     }
   },
-  computed: {
-    ...mapState(['message']),
+  message() {
+    return layoutStore.message
   },
   watch: {
     snackbar(value) {
@@ -34,7 +34,7 @@ export default {
         return
       }
       this.messages.push(value)
-      this.setMessage({ message: null })
+      layoutStore.setMessage({ message: null })
       if (this.snackbar) {
         return
       }
@@ -54,7 +54,6 @@ export default {
       this.color = message.color
       this.text = message.text
     },
-    ...mapMutations(['setMessage']),
   },
 }
 </script>

@@ -69,29 +69,17 @@ export default {
   },
   methods: {
     onAddClick() {
-      this.showDialog()
-    },
-    onRemoveClick() {
-      this.removeBookmark()
-    },
-    onCloseClick() {
-      this.dismissDialog()
-    },
-    onSubmit() {
-      this.addBookmark({ filepath: this.form.filepath })
-      this.form.filepath = ''
-      this.dismissDialog()
-    },
-    addBookmark() {
-      layoutBookmarkStore.addBookmark()
-    },
-    removeBookmark() {
-      layoutBookmarkStore.removeBookmark()
-    },
-    showDialog() {
       layoutBookmarkStore.showDialog()
     },
-    dismissDialog() {
+    onRemoveClick() {
+      layoutBookmarkStore.removeBookmark()
+    },
+    onCloseClick() {
+      layoutBookmarkStore.dismissDialog()
+    },
+    onSubmit() {
+      layoutBookmarkStore.addBookmark({ filepath: this.form.filepath })
+      this.form.filepath = ''
       layoutBookmarkStore.dismissDialog()
     },
   },

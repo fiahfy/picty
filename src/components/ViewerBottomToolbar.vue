@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { layoutStore, layoutViewerStore } from '~/store'
 
 export default {
   data() {
@@ -91,20 +91,24 @@ export default {
   computed: {
     page: {
       get() {
-        return this.$store.getters['local/viewer/currentFileIndex'] + 1
+        return layoutViewerStore.currentFileIndex + 1
       },
       set(value) {
-        this.$store.dispatch('local/viewer/moveFile', { index: value - 1 })
+        layoutViewerStore.moveFile({ index: value - 1 })
       },
     },
     maxPage() {
-      return this.files.length
+      return layoutViewerStore.files.length
     },
     percentage() {
-      return Math.floor(this.scale * 100)
+      return Math.floor(layoutViewerStore.scale * 100)
     },
-    ...mapState(['fullScreen']),
-    ...mapState('local/viewer', ['loading', 'files', 'scale']),
+    fullScreen() {
+      return layoutStore.fullScreen
+    },
+    loading() {
+      return layoutViewerStore.loading
+    },
   },
   watch: {
     page() {
@@ -113,22 +117,22 @@ export default {
   },
   methods: {
     onPreviousClick() {
-      this.movePreviousFile()
+      layoutViewerStore.movePreviousFile()
     },
     onNextClick() {
-      this.moveNextFile()
+      layoutViewerStore.moveNextFile()
     },
     onZoomInClick() {
-      this.zoomIn()
+      layoutViewerStore.zoomIn()
     },
     onZoomOutClick() {
-      this.zoomOut()
+      layoutViewerStore.zoomOut()
     },
     onResetClick() {
-      this.resetZoom()
+      layoutViewerStore.resetZoom()
     },
     onFullscreenClick() {
-      this.toggleFullScreen()
+      layoutViewerStore.toggleFullScreen()
     },
     hideMenu() {
       this.menu = false
@@ -139,14 +143,6 @@ export default {
         this.$refs.toolbar?.$el.querySelector(':hover')
       )
     },
-    ...mapActions('local/viewer', [
-      'movePreviousFile',
-      'moveNextFile',
-      'zoomIn',
-      'zoomOut',
-      'resetZoom',
-      'toggleFullScreen',
-    ]),
   },
 }
 </script>

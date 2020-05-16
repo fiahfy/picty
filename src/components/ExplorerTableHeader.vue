@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { layoutExplorerStore } from '~/store'
 
 export default {
   props: {
@@ -25,15 +25,12 @@ export default {
       default: () => [],
     },
   },
-  computed: {
-    ...mapGetters('local/explorer', ['order']),
-  },
   methods: {
     getClass(header) {
       return [
         'sortable',
-        this.order.descending ? 'desc' : 'asc',
-        header.value === this.order.by ? 'active' : '',
+        layoutExplorerStore.order.descending ? 'desc' : 'asc',
+        header.value === layoutExplorerStore.order.by ? 'active' : '',
       ]
     },
     getStyle(header) {
@@ -42,9 +39,8 @@ export default {
       }
     },
     onHeaderClick(_e, header) {
-      this.changeOrderBy({ orderBy: header.value })
+      layoutExplorerStore.changeOrderBy({ orderBy: header.value })
     },
-    ...mapActions('local/explorer', ['changeOrderBy']),
   },
 }
 </script>

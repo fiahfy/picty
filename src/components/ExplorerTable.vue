@@ -25,10 +25,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
 import ExplorerTableHeader from './ExplorerTableHeader'
 import ExplorerTableRow from './ExplorerTableRow'
 import VirtualDataTable from './VirtualDataTable'
+import { layoutExplorerStore } from '~/store'
 
 export default {
   components: {
@@ -64,23 +64,23 @@ export default {
     }
   },
   computed: {
+    loading() {
+      return layoutExplorerStore.loading
+    },
     noDataText() {
-      if (this.loading) {
+      if (layoutExplorerStore.loading) {
         return 'Loading...'
       }
-      return this.query ? 'No matching records found.' : 'No data available.'
+      return layoutExplorerStore.query
+        ? 'No matching records found.'
+        : 'No data available.'
     },
-    ...mapState('local/explorer', [
-      'directory',
-      'query',
-      'loading',
-      'selectedFilepath',
-    ]),
-    ...mapGetters('local/explorer', [
-      'filteredFiles',
-      'scrollTop',
-      'selectedFileIndex',
-    ]),
+    filteredFiles() {
+      return layoutExplorerStore.filteredFiles
+    },
+    selectedFileIndex() {
+      return layoutExplorerStore.selectedFileIndex
+    },
   },
   watch: {
     loading() {
@@ -118,44 +118,38 @@ export default {
   },
   methods: {
     restore() {
-      const scrollTop = this.scrollTop
+      const scrollTop = layoutExplorerStore.scrollTop
       this.$nextTick(() => {
         this.$refs.table.setScrollTop(scrollTop)
       })
     },
     onScroll(e) {
       const scrollTop = e.target.scrollTop
-      this.setScrollTop({ scrollTop })
+      layoutExplorerStore.setScrollTop({ scrollTop })
     },
     onKeyDown(e) {
       switch (e.keyCode) {
         case 13:
-          this.viewFile({ filepath: this.selectedFilepath })
+          layoutExplorerStore.viewFile({
+            filepath: layoutExplorerStore.selectedFilepath,
+          })
           break
         case 38:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirstFile()
+            layoutExplorerStore.selectFirstFile()
           } else {
-            this.selectPreviousFile()
+            layoutExplorerStore.selectPreviousFile()
           }
           break
         case 40:
           if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLastFile()
+            layoutExplorerStore.selectLastFile()
           } else {
-            this.selectNextFile()
+            layoutExplorerStore.selectNextFile()
           }
           break
       }
     },
-    ...mapActions('local/explorer', [
-      'selectFirstFile',
-      'selectLastFile',
-      'selectPreviousFile',
-      'selectNextFile',
-      'setScrollTop',
-      'viewFile',
-    ]),
   },
 }
 </script>
