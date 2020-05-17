@@ -25,9 +25,9 @@
 </template>
 
 <script>
-import BookmarkTableHeaderRow from './BookmarkTableHeaderRow'
-import BookmarkTableRow from './BookmarkTableRow'
-import VirtualDataTable from './VirtualDataTable'
+import BookmarkTableHeaderRow from '~/components/BookmarkTableHeaderRow'
+import BookmarkTableRow from '~/components/BookmarkTableRow'
+import VirtualDataTable from '~/components/VirtualDataTable'
 import { layoutBookmarkStore } from '~/store'
 
 export default {

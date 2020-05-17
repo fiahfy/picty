@@ -31,9 +31,9 @@
 </template>
 
 <script>
-import ExplorerGridListHeader from './ExplorerGridListHeader'
-import ExplorerGridListItem from './ExplorerGridListItem'
-import VirtualDataIterator from './VirtualDataIterator'
+import ExplorerGridListHeader from '~/components/ExplorerGridListHeader'
+import ExplorerGridListItem from '~/components/ExplorerGridListItem'
+import VirtualDataIterator from '~/components/VirtualDataIterator'
 import viewport from '~/utils/viewport'
 import { layoutExplorerStore, settingsStore } from '~/store'
 

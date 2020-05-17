@@ -31,9 +31,9 @@
 </template>
 
 <script>
-import ViewerContent from './ViewerContent'
-import ViewerBottomToolbar from './ViewerBottomToolbar'
-import ViewerTopToolbar from './ViewerTopToolbar'
+import ViewerContent from '~/components/ViewerContent'
+import ViewerBottomToolbar from '~/components/ViewerBottomToolbar'
+import ViewerTopToolbar from '~/components/ViewerTopToolbar'
 import TitleBar from '~/components/TitleBar'
 import { layoutStore, layoutViewerStore } from '~/store'
 

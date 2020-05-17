@@ -25,9 +25,9 @@
 </template>
 
 <script>
-import ExplorerTableHeader from './ExplorerTableHeader'
-import ExplorerTableRow from './ExplorerTableRow'
-import VirtualDataTable from './VirtualDataTable'
+import ExplorerTableHeader from '~/components/ExplorerTableHeader'
+import ExplorerTableRow from '~/components/ExplorerTableRow'
+import VirtualDataTable from '~/components/VirtualDataTable'
 import { layoutExplorerStore } from '~/store'
 
 export default {
