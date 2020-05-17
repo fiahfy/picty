@@ -1,12 +1,13 @@
 import { ipcRenderer, remote } from 'electron'
 import selector from '~/consts/selector'
+import { layoutStore } from '~/store'
 
 export default ({ store }) => {
   ipcRenderer.on('enterFullScreen', () => {
-    store.commit('setFullScreen', { fullScreen: true })
+    layoutStore.setFullScreen({ fullScreen: true })
   })
   ipcRenderer.on('leaveFullScreen', () => {
-    store.commit('setFullScreen', { fullScreen: false })
+    layoutStore.setFullScreen({ fullScreen: false })
   })
   ipcRenderer.on('appCommand', (_e, cmd) => {
     switch (cmd) {

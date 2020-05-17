@@ -13,6 +13,7 @@
     "@fiahfy/worker-promisify": "^0.0.4",
     "@mdi/font": "^5.2.45",
     "@nuxtjs/vuetify": "^1.11.2",
+    "@vue/composition-api": "^0.5.0",
     "electron-devtools-installer": "^3.0.0",
     "electron-window-state": "^5.0.3",
     "file-url": "^3.0.0",
@@ -20,7 +21,6 @@
     "typeface-roboto": "^0.0.75",
     "vue-long-press-directive": "^1.0.2",
     "vue-moment": "^4.1.0",
-    "vue-property-decorator": "^8.4.2",
     "vuex-module-decorators": "^0.17.0",
     "vuex-persistedstate": "^3.0.1"
   },

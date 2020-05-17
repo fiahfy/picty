@@ -92,6 +92,7 @@ module.exports = {
     '~/plugins/vue-long-press',
     '~/plugins/vue-moment',
     '~/plugins/vuetify',
+    '~/plugins/vue-composition-api',
     '~/plugins/vuex-persistedstate',
   ],
 

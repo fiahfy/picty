@@ -5,7 +5,7 @@
     :app="app"
     :absolute="!app"
     height="22"
-    @dblclick="onDoubleClick"
+    @dblclick="handleDoubleClick"
   >
     <v-spacer />
     <span class="caption text-truncate">Picty</span>
@@ -13,25 +13,27 @@
   </v-system-bar>
 </template>
 
-<script>
+<script lang="ts">
 import { remote } from 'electron'
+import { defineComponent, computed } from '@vue/composition-api'
 import { layoutStore } from '~/store'
 
-export default {
+type Props = {
+  app: boolean
+}
+
+export default defineComponent({
   props: {
     app: {
       type: Boolean,
       default: true,
     },
   },
-  computed: {
-    titleBar() {
-      return layoutStore.titleBar
-    },
-  },
-  methods: {
+  setup(_props: Props) {
+    const titleBar = computed(() => layoutStore.titleBar)
+
     // @see https://github.com/electron/electron/issues/16385
-    onDoubleClick() {
+    const handleDoubleClick = () => {
       const doubleClickAction = remote.systemPreferences.getUserDefault(
         'AppleActionOnDoubleClick',
         'string'
@@ -46,9 +48,14 @@ export default {
           win.maximize()
         }
       }
-    },
+    }
+
+    return {
+      titleBar,
+      handleDoubleClick,
+    }
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>

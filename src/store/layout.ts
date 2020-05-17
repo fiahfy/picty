@@ -36,8 +36,7 @@ export default class LayoutModule extends VuexModule {
   @Action
   openDirectory({ dirpath }: { dirpath: string }) {
     layoutExplorerStore.changeDirectory({ dirpath })
-    // @ts-ignore
-    this.$router.push('/explorer')
+    this.store.$router.push('/explorer')
   }
 
   @Action

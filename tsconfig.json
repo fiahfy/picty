@@ -11,15 +11,10 @@
       "~/*": ["./src/*"],
       "~~/*": ["./*"],
     },
-    "types": [
-      "@types/node",
-      "@nuxt/types",
-      "@nuxtjs/vuetify"
-    ],
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
 }
