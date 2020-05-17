@@ -1,6 +1,7 @@
 import { Store } from 'vuex'
 import { getModule } from 'vuex-module-decorators'
 import bookmark from '~/store/bookmark'
+import explorer from '~/store/explorer'
 import rating from '~/store/rating'
 import settings from '~/store/settings'
 import view from '~/store/view'
@@ -11,6 +12,7 @@ import layoutViewer from '~/store/layout-viewer'
 
 /* eslint-disable import/no-mutable-exports */
 let bookmarkStore: bookmark
+let explorerkStore: explorer
 let ratingStore: rating
 let settingsStore: settings
 let viewStore: view
@@ -22,6 +24,7 @@ let layoutViewerStore: layoutViewer
 
 function initializeStores(store: Store<any>): void {
   bookmarkStore = getModule(bookmark, store)
+  explorerkStore = getModule(explorer, store)
   ratingStore = getModule(rating, store)
   settingsStore = getModule(settings, store)
   viewStore = getModule(view, store)
@@ -34,6 +37,7 @@ function initializeStores(store: Store<any>): void {
 export {
   initializeStores,
   bookmarkStore,
+  explorerkStore,
   ratingStore,
   settingsStore,
   viewStore,
