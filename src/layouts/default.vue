@@ -1,7 +1,7 @@
 <template>
   <v-app
-    @contextmenu.native="onContextMenu"
-    @drop.native.prevent="onDrop"
+    @contextmenu.native="handleContextMenu"
+    @drop.native.prevent="handleDrop"
     @dragover.native.prevent
   >
     <title-bar />
@@ -14,51 +14,54 @@
   </v-app>
 </template>
 
-<script>
-import ActivityBar from '~/components/ActivityBar'
-import NotificationBar from '~/components/NotificationBar'
-import TitleBar from '~/components/TitleBar'
-import Viewer from '~/components/Viewer'
+<script lang="ts">
+import {
+  defineComponent,
+  watchEffect,
+  SetupContext,
+  computed,
+} from '@vue/composition-api'
+import ActivityBar from '~/components/ActivityBar.vue'
+import NotificationBar from '~/components/NotificationBar.vue'
+import TitleBar from '~/components/TitleBar.vue'
+import Viewer from '~/components/Viewer.vue'
 import { layoutStore, settingsStore } from '~/store'
 
-export default {
+export default defineComponent({
   components: {
     ActivityBar,
     NotificationBar,
     TitleBar,
     Viewer,
   },
-  computed: {
-    viewing() {
-      return layoutStore.viewing
-    },
-    darkTheme() {
-      return settingsStore.darkTheme
-    },
-  },
-  watch: {
-    darkTheme(value) {
-      this.$vuetify.theme.dark = value
-    },
-  },
-  created() {
-    this.$vuetify.theme.dark = this.darkTheme
-    layoutStore.initialize()
-  },
-  methods: {
-    onContextMenu() {
-      this.$contextMenu.open()
-    },
-    onDrop(e) {
-      const files = Array.from(e.dataTransfer.files)
+  setup(_props: {}, context: SetupContext) {
+    const viewing = computed(() => layoutStore.viewing)
+
+    watchEffect(() => {
+      context.root.$vuetify.theme.dark = settingsStore.darkTheme
+    })
+
+    const handleContextMenu = () => {
+      context.root.$contextMenu.open()
+    }
+    const handleDrop = (e: DragEvent) => {
+      const files = Array.from(e.dataTransfer?.files ?? [])
       if (!files.length) {
         return
       }
       const filepath = files[0].path
       layoutStore.open({ filepath })
-    },
+    }
+
+    layoutStore.initialize()
+
+    return {
+      viewing,
+      handleContextMenu,
+      handleDrop,
+    }
   },
-}
+})
 </script>
 
 <style lang="scss">
