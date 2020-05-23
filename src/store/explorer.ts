@@ -8,11 +8,16 @@ import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
 })
 export default class ExplorerModule extends VuexModule {
   location = remote.app.getPath('home')
-  display = 'list'
+  listStyle = 'list'
 
   @Mutation
   setLocation({ location }: { location: string }) {
     this.location = location
+  }
+
+  @Mutation
+  setListStyle({ listStyle }: { listStyle: string }) {
+    this.listStyle = listStyle
   }
   // get isBookmarked() {
   //   return ({ filepath }: { filepath: string }) => !!this.bookmarks[filepath]

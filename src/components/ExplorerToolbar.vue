@@ -37,20 +37,13 @@
     >
       <v-icon>mdi-home</v-icon>
     </v-btn>
-    <!-- <v-btn
-      :title="'Bookmark' | accelerator('CmdOrCtrl+D')"
-      :color="bookmarkColor"
-      icon
-      @click="onBookmarkClick"
-    >
-      <v-icon>mdi-star</v-icon>
-    </v-btn> -->
     <v-text-field
       v-model="state.location"
       class="ml-3"
       name="location"
       label="Path"
       prepend-icon="mdi-folder"
+      dense
       single-line
       hide-details
       @click:prepend="handleClickFolder"
@@ -66,7 +59,7 @@ import {
   defineComponent,
   computed,
   reactive,
-  watchEffect,
+  watch,
   SetupContext,
 } from '@vue/composition-api'
 import { explorerStore, historyStore } from '~/store'
@@ -78,9 +71,12 @@ export default defineComponent({
     const canBack = computed(() => historyStore.canBack)
     const canForward = computed(() => historyStore.canForward)
 
-    watchEffect(() => {
-      state.location = explorerStore.location
-    })
+    watch(
+      () => explorerStore.location,
+      (location) => {
+        state.location = location
+      }
+    )
 
     const handleClickBack = () => {
       context.emit('click-back')

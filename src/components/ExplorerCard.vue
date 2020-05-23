@@ -5,49 +5,49 @@
         :title="'View' | accelerator('Enter')"
         :disabled="!canViewFile"
         icon
-        @click="onViewClick"
+        @click="handleClickView"
       >
         <v-icon>mdi-image</v-icon>
       </v-btn>
       <v-spacer />
-      <v-btn :color="listColor" title="List" icon @click="onListClick">
+      <v-btn :color="listColor" title="List" icon @click="handleClickList">
         <v-icon>mdi-view-headline</v-icon>
       </v-btn>
       <v-btn
         :color="thumbnailColor"
         title="Thumbnail"
         icon
-        @click="onThumbnailClick"
+        @click="handleClickThumbnail"
       >
         <v-icon>mdi-view-module</v-icon>
       </v-btn>
       <v-autocomplete
         ref="autocomplete"
-        v-model="queryInput"
-        :search-input.sync="searchInput"
-        class="ml-3 pt-0"
-        :items="queryHistories.slice().reverse()"
+        :search-input.sync="state.searchInput"
+        class="ml-3"
+        :items="queryHistories"
         name="query"
         label="Search"
         append-outer-icon="mdi-magnify"
+        dense
         single-line
         hide-details
         clearable
-        @input="onTextInput"
-        @keyup="onTextKeyUp"
-        @contextmenu.stop="onTextContextMenu"
-        @click:append-outer="onTextAppendIconClick"
+        @input="handleInput"
+        @keyup.enter="handleKeyUpEnter"
+        @contextmenu.stop="handleContextMenu"
+        @click:append-outer="handleClickMagnify"
       >
         <template v-slot:item="{ item }">
           <v-list-item-content>
             <v-list-item-title v-text="item" />
           </v-list-item-content>
-          <v-list-item-action>
+          <v-list-item-action class="my-0">
             <v-btn
               small
               text
               color="primary"
-              @click.stop="(e) => onItemClick(e, item)"
+              @click.stop="() => handleClickItemDelete(item)"
             >
               delete
             </v-btn>
@@ -58,78 +58,79 @@
   </v-card>
 </template>
 
-<script>
-import { layoutExplorerStore } from '~/store'
+<script lang="ts">
+import {
+  defineComponent,
+  SetupContext,
+  reactive,
+  computed,
+} from '@vue/composition-api'
+import { explorerStore, queryHistoryStore } from '~/store'
 
-export default {
-  data() {
-    return {
+export default defineComponent({
+  setup(_props: {}, context: SetupContext) {
+    const state = reactive({
       searchInput: '',
+    })
+
+    const listColor = computed(() => {
+      return explorerStore.listStyle === 'list' ? 'primary' : null
+    })
+    const thumbnailColor = computed(() => {
+      return explorerStore.listStyle === 'thumbnail' ? 'primary' : null
+    })
+    const canViewFile = computed(() => {
+      return false
+    })
+    const queryHistories = computed(() => {
+      return queryHistoryStore.histories.slice().reverse()
+    })
+
+    const handleClickView = () => {}
+    const handleClickList = () => {
+      explorerStore.setListStyle({ listStyle: 'list' })
     }
-  },
-  computed: {
-    queryInput: {
-      get() {
-        return layoutExplorerStore.queryInput
-      },
-      set(value) {
-        layoutExplorerStore.setQueryInput({
-          queryInput: value,
-        })
-      },
-    },
-    listColor() {
-      return this.display === 'list' ? 'primary' : null
-    },
-    thumbnailColor() {
-      return this.display === 'thumbnail' ? 'primary' : null
-    },
-    selectedFilepath() {
-      return layoutExplorerStore.selectedFilepath
-    },
-    display() {
-      return layoutExplorerStore.display
-    },
-    queryHistories() {
-      return layoutExplorerStore.queryHistories
-    },
-    canViewFile() {
-      return layoutExplorerStore.canViewFile
-    },
-  },
-  methods: {
-    onViewClick() {
-      layoutExplorerStore.viewFile({ filepath: this.selectedFilepath })
-    },
-    onListClick() {
-      layoutExplorerStore.setDisplay({ display: 'list' })
-    },
-    onThumbnailClick() {
-      layoutExplorerStore.setDisplay({ display: 'thumbnail' })
-    },
-    onTextInput(value) {
-      layoutExplorerStore.searchFiles({ query: value })
-    },
-    onTextKeyUp(e) {
-      if (e.keyCode === 13) {
-        layoutExplorerStore.searchFiles({ query: e.target.value })
+    const handleClickThumbnail = () => {
+      explorerStore.setListStyle({ listStyle: 'thumbnail' })
+    }
+    const handleInput = (value?: string) => {
+      context.emit('change-query', value ?? '')
+    }
+    const handleKeyUpEnter = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement) {
+        context.emit('change-query', e.target.value)
       }
-    },
-    onTextContextMenu() {
-      this.$contextMenu.open([
+    }
+    const handleContextMenu = () => {
+      context.root.$contextMenu.open([
         { role: 'cut' },
         { role: 'copy' },
         { role: 'paste' },
       ])
-    },
-    onTextAppendIconClick() {
-      layoutExplorerStore.searchFiles({ query: this.searchInput })
-    },
-    onItemClick(_e, item) {
-      layoutExplorerStore.removeQueryHistory({ queryHistory: item })
-    },
+    }
+    const handleClickMagnify = () => {
+      context.emit('change-query', state.searchInput)
+    }
+    const handleClickItemDelete = (item: string) => {
+      queryHistoryStore.removeHistory({ history: item })
+    }
+    return {
+      state,
+      listColor,
+      thumbnailColor,
+      queryHistories,
+      canViewFile,
+      handleClickView,
+      handleClickList,
+      handleClickThumbnail,
+      handleInput,
+      handleKeyUpEnter,
+      handleContextMenu,
+      handleClickMagnify,
+      handleClickItemDelete,
+    }
   },
-}
+})
 </script>
 
 <style scope lang="scss">

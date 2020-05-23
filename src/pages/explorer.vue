@@ -9,11 +9,11 @@
         @click-reload="handleClickReload"
         @click-home="handleClickHome"
       />
-      <explorer-card class="flex-grow-0" />
+      <explorer-card class="flex-grow-0" @change-query="handleChangeQuery" />
       <v-container fluid pa-0 overflow-hidden flex-grow-1>
         <component
           :is="component"
-          :items="state.files"
+          :items="items"
           :loading="state.loading"
           :selected="state.selectedFile"
           :sort-by="state.sortBy"
@@ -49,6 +49,7 @@ import {
   viewStore,
   historyStore,
   layoutExplorerStore,
+  queryHistoryStore,
 } from '~/store'
 
 const workerPromisify = require('@fiahfy/worker-promisify').default
@@ -69,10 +70,30 @@ export default defineComponent({
       selectedFile: undefined,
       sortBy: '',
       sortDesc: false,
+      query: '',
     })
     const component = computed(() =>
-      explorerStore.display === 'list' ? ExplorerTable : ExplorerGridList
+      explorerStore.listStyle === 'list' ? ExplorerTable : ExplorerGridList
     )
+    const items = computed(() => {
+      return state.files
+        .concat()
+        .sort((a, b) => {
+          let result = 0
+          if (a[state.sortBy] > b[state.sortBy]) {
+            result = 1
+          } else if (a[state.sortBy] < b[state.sortBy]) {
+            result = -1
+          }
+          return state.sortDesc ? -1 * result : result
+        })
+        .filter((file) => {
+          return (
+            !state.query ||
+            file.name.toLowerCase().includes(state.query.toLowerCase())
+          )
+        })
+    })
 
     const load = async () => {
       if (state.loading) {
@@ -148,15 +169,6 @@ export default defineComponent({
     const handleClickHeader = (header: any) => {
       state.sortDesc = state.sortBy === header.value ? !state.sortDesc : false
       state.sortBy = header.value
-      state.files = state.files.concat().sort((a, b) => {
-        let result = 0
-        if (a[state.sortBy] > b[state.sortBy]) {
-          result = 1
-        } else if (a[state.sortBy] < b[state.sortBy]) {
-          result = -1
-        }
-        return state.sortDesc ? -1 * result : result
-      })
     }
 
     const handleClickItem = (file: any) => {
@@ -207,12 +219,17 @@ export default defineComponent({
       )
     }
 
+    const handleChangeQuery = (query: string) => {
+      queryHistoryStore.addHistory({ history: query })
+      state.query = query
+    }
+
     load()
 
     return {
       state,
       component,
-      load,
+      items,
       handleClickBack,
       handleClickForward,
       handleClickUpward,
@@ -223,6 +240,7 @@ export default defineComponent({
       handleDoubleClickItem,
       handleContextMenuItem,
       handleChangeRating,
+      handleChangeQuery,
     }
   },
 })
