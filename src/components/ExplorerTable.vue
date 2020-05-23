@@ -3,155 +3,135 @@
     ref="table"
     class="explorer-table"
     :headers="headers"
-    :items="filteredFiles"
-    item-key="path"
+    :items="items"
     :loading="loading"
-    :no-data-text="noDataText"
+    item-key="path"
     hide-default-header
     hide-default-footer
     sticky-headers
     tabindex="0"
-    @scroll="onScroll"
-    @keydown.native="onKeyDown"
+    @scroll="handleScroll"
   >
     <template v-slot:header="props">
-      <explorer-table-header :headers="props.props.headers" />
+      <explorer-table-header
+        :headers="props.props.headers"
+        :sort-by="sortBy"
+        :sort-desc="sortDesc"
+        @click="handleClickHeader"
+      />
     </template>
     <template v-slot:item="props">
-      <explorer-table-row :key="props.item.path" :file="props.item" />
+      <explorer-table-row
+        :key="props.item.path"
+        :item="props.item"
+        :class="{ 'v-data-table__selected': isSelected(props.item) }"
+        @click.native="() => handleClickRow(props.item)"
+        @dblclick.native="() => handleDoubleClickRow(props.item)"
+        @contextmenu.native="() => handleContextMenuRow(props.item)"
+        @change-rating="(rating) => handleChangeRating(props.item, rating)"
+      />
     </template>
     <v-progress-linear slot="progress" indeterminate />
   </virtual-data-table>
 </template>
 
-<script>
-import ExplorerTableHeader from '~/components/ExplorerTableHeader'
-import ExplorerTableRow from '~/components/ExplorerTableRow'
-import VirtualDataTable from '~/components/VirtualDataTable'
-import { layoutExplorerStore } from '~/store'
+<script lang="ts">
+import { defineComponent, SetupContext } from '@vue/composition-api'
+import ExplorerTableHeader from '~/components/ExplorerTableHeader.vue'
+import ExplorerTableRow from '~/components/ExplorerTableRow.vue'
+import VirtualDataTable from '~/components/VirtualDataTable.vue'
 
-export default {
+const headers = [
+  {
+    text: 'Name',
+    value: 'name',
+  },
+  {
+    text: 'Views',
+    value: 'views',
+    width: 96,
+  },
+  {
+    text: 'Rating',
+    value: 'rating',
+    width: 238,
+  },
+  {
+    text: 'Date Modified',
+    value: 'modified_at',
+    width: 150,
+  },
+]
+
+type Props = {
+  items: any[]
+  loading: boolean
+  selected?: any
+  sortBy?: string
+  sortDesc: boolean
+}
+
+export default defineComponent({
   components: {
     ExplorerTableHeader,
     ExplorerTableRow,
     VirtualDataTable,
   },
-  data() {
+  props: {
+    items: {
+      type: Array,
+      default: () => [],
+    },
+    loading: {
+      type: Boolean,
+      default: true,
+    },
+    selected: {
+      type: Object,
+      default: undefined,
+    },
+    sortBy: {
+      type: String,
+      default: undefined,
+    },
+    sortDesc: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup(props: Props, context: SetupContext) {
+    const handleScroll = () => {}
+    const handleClickHeader = (header: any) => {
+      context.emit('click-header', header)
+    }
+    const handleClickRow = (file: any) => {
+      context.emit('click-item', file)
+    }
+    const handleDoubleClickRow = (file: any) => {
+      context.emit('dblclick-item', file)
+    }
+    const handleContextMenuRow = (file: any) => {
+      context.emit('contextmenu-item', file)
+    }
+    const handleChangeRating = (file: any, rating: number) => {
+      context.emit('change-rating', file, rating)
+    }
+    const isSelected = (file: any) => {
+      return file.path === props.selected?.path
+    }
+
     return {
-      headerHeight: 58,
-      rowHeight: 48,
-      headers: [
-        {
-          text: 'Name',
-          value: 'name',
-        },
-        {
-          text: 'Views',
-          value: 'views',
-          width: 96,
-        },
-        {
-          text: 'Rating',
-          value: 'rating',
-          width: 238,
-        },
-        {
-          text: 'Date Modified',
-          value: 'modified_at',
-          width: 150,
-        },
-      ],
+      headers,
+      handleScroll,
+      handleClickHeader,
+      handleClickRow,
+      handleDoubleClickRow,
+      handleContextMenuRow,
+      handleChangeRating,
+      isSelected,
     }
   },
-  computed: {
-    loading() {
-      return layoutExplorerStore.loading
-    },
-    noDataText() {
-      if (layoutExplorerStore.loading) {
-        return 'Loading...'
-      }
-      return layoutExplorerStore.query
-        ? 'No matching records found.'
-        : 'No data available.'
-    },
-    filteredFiles() {
-      return layoutExplorerStore.filteredFiles
-    },
-    selectedFileIndex() {
-      return layoutExplorerStore.selectedFileIndex
-    },
-  },
-  watch: {
-    loading() {
-      this.restore()
-    },
-    selectedFileIndex(value) {
-      this.$nextTick(() => {
-        const index = value
-        if (index === -1) {
-          return
-        }
-        const el = {
-          offsetTop: this.rowHeight * index,
-          offsetHeight: this.rowHeight,
-        }
-        const table = {
-          scrollTop: this.$refs.table.getScrollTop(),
-          offsetHeight: this.$refs.table.getOffsetHeight() - this.headerHeight,
-        }
-        if (table.scrollTop > el.offsetTop) {
-          this.$refs.table.setScrollTop(el.offsetTop)
-        } else if (
-          table.scrollTop <
-          el.offsetTop + el.offsetHeight - table.offsetHeight
-        ) {
-          this.$refs.table.setScrollTop(
-            el.offsetTop + el.offsetHeight - table.offsetHeight
-          )
-        }
-      })
-    },
-  },
-  mounted() {
-    this.restore()
-  },
-  methods: {
-    restore() {
-      const scrollTop = layoutExplorerStore.scrollTop
-      this.$nextTick(() => {
-        this.$refs.table.setScrollTop(scrollTop)
-      })
-    },
-    onScroll(e) {
-      const scrollTop = e.target.scrollTop
-      layoutExplorerStore.setScrollTop({ scrollTop })
-    },
-    onKeyDown(e) {
-      switch (e.keyCode) {
-        case 13:
-          layoutExplorerStore.viewFile({
-            filepath: layoutExplorerStore.selectedFilepath,
-          })
-          break
-        case 38:
-          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            layoutExplorerStore.selectFirstFile()
-          } else {
-            layoutExplorerStore.selectPreviousFile()
-          }
-          break
-        case 40:
-          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            layoutExplorerStore.selectLastFile()
-          } else {
-            layoutExplorerStore.selectNextFile()
-          }
-          break
-      }
-    },
-  },
-}
+})
 </script>
 
 <style scoped lang="scss">

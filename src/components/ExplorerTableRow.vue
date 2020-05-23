@@ -1,11 +1,5 @@
 <template>
-  <tr
-    :class="{ 'v-data-table__selected': active }"
-    class="explorer-table-row"
-    @click="onClick"
-    @dblclick="onDblClick"
-    @contextmenu.stop="onContextMenu"
-  >
+  <tr class="explorer-table-row">
     <td>
       <v-layout class="align-center">
         <v-menu :disabled="menuDisabled" open-on-hover right offset-x>
@@ -15,155 +9,142 @@
             </v-icon>
           </template>
           <v-card :width="previewWidthValue">
-            <v-img :src="imageUrl" contain @error="onError">
-              <v-layout fill-height align-center justify-center>
-                <v-flex class="py-3 text-xs-center caption">
-                  {{ message }}
-                </v-flex>
-              </v-layout>
+            <v-img :src="state.imageUrl" contain @error="handleError">
+              <div class="py-3 text-center caption">
+                {{ message }}
+              </div>
             </v-img>
           </v-card>
         </v-menu>
-        <span :title="file.name" class="ellipsis spacer">{{ file.name }}</span>
-        <span v-if="images !== ''" class="images text-xs-right caption ml-3">
-          {{ images }} images
+        <span :title="item.name" class="ellipsis spacer">{{ item.name }}</span>
+        <span
+          v-if="state.images !== ''"
+          class="images text-xs-right caption ml-3"
+        >
+          {{ state.images }} images
         </span>
       </v-layout>
     </td>
-    <td class="text-xs-right">{{ file.views || '' }}</td>
+    <td class="text-xs-right">{{ item.views || '' }}</td>
     <td @click.stop @dblclick.stop>
       <v-rating v-model="rating" half-increments clearable />
     </td>
     <td class="no-wrap">
-      <template v-if="file.modified_at">
-        {{ file.modified_at | moment('YYYY-MM-DD HH:mm') }}
+      <template v-if="item.modified_at">
+        {{ item.modified_at | moment('YYYY-MM-DD HH:mm') }}
       </template>
     </td>
   </tr>
 </template>
 
-<script>
-import workerPromisify from '@fiahfy/worker-promisify'
-import fileUrl from 'file-url'
-import Worker from '~/workers/fetch.worker.js'
-import { layoutExplorerStore } from '~/store'
+<script lang="ts">
+import {
+  defineComponent,
+  reactive,
+  computed,
+  SetupContext,
+} from '@vue/composition-api'
+import { layoutExplorerStore, settingsStore } from '~/store'
+
+const fileUrl = require('file-url')
+const workerPromisify = require('@fiahfy/worker-promisify').default
+const Worker = require('~/workers/fetch.worker.js')
 
 const worker = workerPromisify(new Worker())
 
-export default {
+type Props = {
+  item: any
+}
+
+export default defineComponent({
   props: {
-    file: {
+    item: {
       type: Object,
       default: () => ({}),
     },
   },
-  data() {
-    return {
+  setup(props: Props, context: SetupContext) {
+    const state = reactive({
       loading: false,
       error: false,
       imageUrl: '',
       images: '',
-    }
-  },
-  computed: {
-    rating: {
+    })
+
+    const rating = computed({
       get() {
-        return this.file.rating
+        return props.item.rating
       },
       set(value) {
-        this.$store.dispatch('local/explorer/updateFileRating', {
-          filepath: this.file.path,
-          rating: value,
-        })
+        context.emit('change-rating', Number(value))
       },
-    },
-    active() {
-      return layoutExplorerStore.isFileSelected({ filepath: this.file.path })
-    },
-    icon() {
-      if (this.file.exists) {
-        return this.file.directory ? 'mdi-folder' : 'mdi-image'
+    })
+    const icon = computed(() => {
+      if (props.item.exists) {
+        return props.item.directory ? 'mdi-folder' : 'mdi-image'
       }
       return 'mdi-image-broken-variant'
-    },
-    iconColor() {
-      if (this.file.exists) {
-        return this.file.directory ? 'blue lighten-3' : 'green lighten-3'
+    })
+    const iconColor = computed(() => {
+      if (props.item.exists) {
+        return props.item.directory ? 'blue lighten-3' : 'green lighten-3'
       }
       return 'grey'
-    },
-    message() {
-      if (this.loading) {
+    })
+    const message = computed(() => {
+      if (state.loading) {
         return 'Loading...'
       }
-      if (this.error) {
+      if (state.error) {
         return 'Load failed'
       }
-      return this.imageUrl ? '' : 'No images'
-    },
-    menuDisabled() {
-      return !this.previewWidthValue
-    },
-    previewWidthValue() {
-      return layoutExplorerStore.previewWidthValue
-    },
-  },
-  async created() {
-    if (!this.file.directory) {
-      this.imageUrl = fileUrl(this.file.path)
-      return
-    }
-    this.loading = true
-    const { data } = await worker.postMessage({
-      key: this.file.path,
-      data: this.file.path,
+      return state.imageUrl ? '' : 'No images'
     })
-    const filepathes = data.filter((filepath) =>
-      layoutExplorerStore.isFileAvailable({ filepath })
-    )
-    if (filepathes.length) {
-      this.imageUrl = fileUrl(filepathes[0])
+    const previewWidthValue = computed(() => {
+      return settingsStore.previewWidthValue
+    })
+    const menuDisabled = computed(() => {
+      return !previewWidthValue.value
+    })
+
+    const handleError = () => {
+      state.error = true
     }
-    this.images = filepathes.length
-    this.loading = false
-  },
-  methods: {
-    onClick() {
-      layoutExplorerStore.selectFile({ filepath: this.file.path })
-    },
-    onDblClick() {
-      layoutExplorerStore.openFile({ filepath: this.file.path })
-    },
-    onContextMenu() {
-      layoutExplorerStore.selectFile({ filepath: this.file.path })
-      let template = [
-        {
-          label: 'View',
-          click: () =>
-            layoutExplorerStore.viewFile({ filepath: this.file.path }),
-          accelerator: 'Enter',
-        },
-      ]
-      const text = getSelection().toString()
-      if (text) {
-        template = [
-          ...template,
-          { type: 'separator' },
-          { role: 'copy' },
-          {
-            label: `Search "${text}"`,
-            click: () => layoutExplorerStore.searchFiles({ query: text }),
-            accelerator: 'CmdOrCtrl+F',
-          },
-        ]
+
+    const load = async () => {
+      if (!props.item.directory) {
+        state.imageUrl = fileUrl(props.item.path)
+      } else {
+        state.loading = true
+        const { data } = await worker.postMessage({
+          key: props.item.path,
+          data: props.item.path,
+        })
+        const filepathes = data.filter((filepath: string) =>
+          layoutExplorerStore.isFileAvailable({ filepath })
+        )
+        if (filepathes.length) {
+          state.imageUrl = fileUrl(filepathes[0])
+        }
+        state.images = filepathes.length
+        state.loading = false
       }
-      this.$contextMenu.open(template)
-    },
-    onError() {
-      this.error = true
-    },
+    }
+
+    load()
+
+    return {
+      state,
+      rating,
+      icon,
+      iconColor,
+      message,
+      previewWidthValue,
+      menuDisabled,
+      handleError,
+    }
   },
-}
+})
 </script>
 
 <style scoped lang="scss">

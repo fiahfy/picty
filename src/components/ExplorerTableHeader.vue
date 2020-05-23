@@ -6,41 +6,63 @@
         :key="header.text"
         :class="getClass(header)"
         :style="getStyle(header)"
-        @click="(e) => onHeaderClick(e, header)"
+        @click="() => handleClickRow(header)"
       >
-        {{ header.text }}
+        <span>{{ header.text }}</span>
         <v-icon small class="v-data-table-header__icon">mdi-arrow-up</v-icon>
       </th>
     </tr>
   </thead>
 </template>
 
-<script>
-import { layoutExplorerStore } from '~/store'
+<script lang="ts">
+import { defineComponent, SetupContext } from '@vue/composition-api'
 
-export default {
+type Props = {
+  header: any[]
+  sortBy?: string
+  sortDesc: boolean
+}
+
+export default defineComponent({
   props: {
     headers: {
       type: Array,
       default: () => [],
     },
+    sortBy: {
+      type: String,
+      default: undefined,
+    },
+    sortDesc: {
+      type: Boolean,
+      default: false,
+    },
   },
-  methods: {
-    getClass(header) {
+  setup(props: Props, context: SetupContext) {
+    const handleClickRow = (header: any) => {
+      context.emit('click', header)
+    }
+
+    const getClass = (header: any) => {
       return [
+        'text-start',
         'sortable',
-        layoutExplorerStore.order.descending ? 'desc' : 'asc',
-        header.value === layoutExplorerStore.order.by ? 'active' : '',
+        header.value === props.sortBy ? 'active' : '',
+        props.sortDesc ? 'desc' : 'asc',
       ]
-    },
-    getStyle(header) {
+    }
+    const getStyle = (header: any) => {
       return {
-        width: header.width ? `${header.width}px` : null,
+        width: header.width ? `${header.width}px` : undefined,
       }
-    },
-    onHeaderClick(_e, header) {
-      layoutExplorerStore.changeOrderBy({ orderBy: header.value })
-    },
+    }
+
+    return {
+      handleClickRow,
+      getClass,
+      getStyle,
+    }
   },
-}
+})
 </script>

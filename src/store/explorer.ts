@@ -1,5 +1,5 @@
 import { remote } from 'electron'
-import { Module, VuexModule } from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
 
 @Module({
   name: 'explorer',
@@ -7,8 +7,13 @@ import { Module, VuexModule } from 'vuex-module-decorators'
   namespaced: true,
 })
 export default class ExplorerModule extends VuexModule {
-  dirpath = remote.app.getPath('home')
+  location = remote.app.getPath('home')
+  display = 'list'
 
+  @Mutation
+  setLocation({ location }: { location: string }) {
+    this.location = location
+  }
   // get isBookmarked() {
   //   return ({ filepath }: { filepath: string }) => !!this.bookmarks[filepath]
   // }
