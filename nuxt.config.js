@@ -87,6 +87,7 @@ module.exports = {
    */
   plugins: [
     '~/plugins/context-menu',
+    '~/plugins/event-bus',
     '~/plugins/filter',
     '~/plugins/ipc-listener',
     '~/plugins/vue-long-press',

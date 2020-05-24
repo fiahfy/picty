@@ -9,7 +9,13 @@
         @click-reload="handleClickReload"
         @click-home="handleClickHome"
       />
-      <explorer-card class="flex-grow-0" @change-query="handleChangeQuery" />
+      <explorer-card
+        class="flex-grow-0"
+        :can-view="!!state.selectedFile"
+        :query="state.query"
+        @click-view="handleClickView"
+        @change-query="handleChangeQuery"
+      />
       <v-container fluid pa-0 overflow-hidden flex-grow-1>
         <component
           :is="component"
@@ -130,6 +136,11 @@ export default defineComponent({
       load()
     }
 
+    const search = (query: string) => {
+      queryHistoryStore.addHistory({ history: query })
+      state.query = query
+    }
+
     const handleClickBack = async () => {
       if (state.loading) {
         return
@@ -166,6 +177,10 @@ export default defineComponent({
       load()
     }
 
+    const handleClickView = () => {
+      context.root.$eventBus.$emit('showViewer')
+    }
+
     const handleClickHeader = (header: any) => {
       state.sortDesc = state.sortBy === header.value ? !state.sortDesc : false
       state.sortBy = header.value
@@ -196,7 +211,7 @@ export default defineComponent({
           { role: 'copy' },
           {
             label: `Search "${text}"`,
-            click: () => layoutExplorerStore.searchFiles({ query: text }),
+            click: () => search(text),
             accelerator: 'CmdOrCtrl+F',
           },
         ]
@@ -220,8 +235,7 @@ export default defineComponent({
     }
 
     const handleChangeQuery = (query: string) => {
-      queryHistoryStore.addHistory({ history: query })
-      state.query = query
+      search(query)
     }
 
     load()
@@ -235,6 +249,7 @@ export default defineComponent({
       handleClickUpward,
       handleClickHome,
       handleClickReload,
+      handleClickView,
       handleClickItem,
       handleClickHeader,
       handleDoubleClickItem,

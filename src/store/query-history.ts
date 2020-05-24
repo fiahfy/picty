@@ -10,6 +10,10 @@ export default class QueryHistoryModule extends VuexModule {
 
   @Mutation
   addHistory({ history }: { history: string }) {
+    const exists = this.histories.includes(history)
+    if (!history || exists) {
+      return
+    }
     this.histories = [...this.histories, history]
   }
 

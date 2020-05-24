@@ -10,7 +10,7 @@
       <router-view class="fill-height" />
     </v-content>
     <notification-bar />
-    <viewer />
+    <viewer-dialog />
   </v-app>
 </template>
 
@@ -24,7 +24,7 @@ import {
 import ActivityBar from '~/components/ActivityBar.vue'
 import NotificationBar from '~/components/NotificationBar.vue'
 import TitleBar from '~/components/TitleBar.vue'
-import Viewer from '~/components/Viewer.vue'
+import ViewerDialog from '~/components/ViewerDialog.vue'
 import { layoutStore, settingsStore } from '~/store'
 
 export default defineComponent({
@@ -32,7 +32,7 @@ export default defineComponent({
     ActivityBar,
     NotificationBar,
     TitleBar,
-    Viewer,
+    ViewerDialog,
   },
   setup(_props: {}, context: SetupContext) {
     const viewing = computed(() => layoutStore.viewing)

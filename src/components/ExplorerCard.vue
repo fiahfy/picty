@@ -3,7 +3,7 @@
     <v-toolbar color="transparent" flat dense>
       <v-btn
         :title="'View' | accelerator('Enter')"
-        :disabled="!canViewFile"
+        :disabled="!canView"
         icon
         @click="handleClickView"
       >
@@ -23,6 +23,7 @@
       </v-btn>
       <v-autocomplete
         ref="autocomplete"
+        :value="state.queryInput"
         :search-input.sync="state.searchInput"
         class="ml-3"
         :items="queryHistories"
@@ -64,13 +65,34 @@ import {
   SetupContext,
   reactive,
   computed,
+  watchEffect,
 } from '@vue/composition-api'
 import { explorerStore, queryHistoryStore } from '~/store'
 
+type Props = {
+  canView: boolean
+  query: string
+}
+
 export default defineComponent({
-  setup(_props: {}, context: SetupContext) {
+  props: {
+    canView: {
+      type: Boolean,
+      default: false,
+    },
+    query: {
+      type: String,
+      default: '',
+    },
+  },
+  setup(props: Props, context: SetupContext) {
     const state = reactive({
+      queryInput: '',
       searchInput: '',
+    })
+
+    watchEffect(() => {
+      state.queryInput = props.query
     })
 
     const listColor = computed(() => {
@@ -79,14 +101,13 @@ export default defineComponent({
     const thumbnailColor = computed(() => {
       return explorerStore.listStyle === 'thumbnail' ? 'primary' : null
     })
-    const canViewFile = computed(() => {
-      return false
-    })
     const queryHistories = computed(() => {
       return queryHistoryStore.histories.slice().reverse()
     })
 
-    const handleClickView = () => {}
+    const handleClickView = () => {
+      context.emit('click-view')
+    }
     const handleClickList = () => {
       explorerStore.setListStyle({ listStyle: 'list' })
     }
@@ -119,7 +140,6 @@ export default defineComponent({
       listColor,
       thumbnailColor,
       queryHistories,
-      canViewFile,
       handleClickView,
       handleClickList,
       handleClickThumbnail,

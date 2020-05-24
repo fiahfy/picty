@@ -1,6 +1,6 @@
 <template>
   <v-toolbar class="viewer-top-toolbar" color="transparent" flat dense>
-    <v-btn :title="'Close' | accelerator('Esc')" icon @click="onCloseClick">
+    <v-btn :title="'Close' | accelerator('Esc')" icon @click="handleClickClose">
       <v-icon>mdi-close</v-icon>
     </v-btn>
 
@@ -8,34 +8,35 @@
   </v-toolbar>
 </template>
 
-<script>
-import { layoutViewerStore } from '~/store'
+<script lang="ts">
+import { defineComponent, SetupContext } from '@vue/composition-api'
 
-export default {
-  data() {
+export default defineComponent({
+  setup(_props: {}, context: SetupContext) {
+    const isHover = () => {
+      return !!context.root.$el.querySelector(':hover')
+    }
+    const handleClickClose = () => {
+      context.emit('click-close')
+    }
+
     return {
-      hovered: false,
+      title: '',
+      isHover,
+      handleClickClose,
     }
   },
-  computed: {
-    title() {
-      if (!layoutViewerStore.currentFile) {
-        return ''
-      }
-      return (
-        layoutViewerStore.currentFile.dirname +
-        ' - ' +
-        layoutViewerStore.currentFile.name
-      )
-    },
-  },
-  methods: {
-    onCloseClick() {
-      layoutViewerStore.dismiss()
-    },
-    isHover() {
-      return !!this.$el.querySelector(':hover')
-    },
-  },
-}
+  // computed: {
+  //   title() {
+  //     if (!layoutViewerStore.currentFile) {
+  //       return ''
+  //     }
+  //     return (
+  //       layoutViewerStore.currentFile.dirname +
+  //       ' - ' +
+  //       layoutViewerStore.currentFile.name
+  //     )
+  //   },
+  // },
+})
 </script>
