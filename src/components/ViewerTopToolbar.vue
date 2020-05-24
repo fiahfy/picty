@@ -9,34 +9,34 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext } from '@vue/composition-api'
+import { defineComponent, computed, SetupContext } from '@vue/composition-api'
+
+type Props = {
+  file: any
+}
 
 export default defineComponent({
-  setup(_props: {}, context: SetupContext) {
+  setup(props: Props, context: SetupContext) {
+    const title = computed(() => {
+      if (!props.file) {
+        return ''
+      }
+      return props.file.dirname + ' - ' + props.file.name
+    })
+
     const isHover = () => {
       return !!context.root.$el.querySelector(':hover')
     }
+
     const handleClickClose = () => {
       context.emit('click-close')
     }
 
     return {
-      title: '',
+      title,
       isHover,
       handleClickClose,
     }
   },
-  // computed: {
-  //   title() {
-  //     if (!layoutViewerStore.currentFile) {
-  //       return ''
-  //     }
-  //     return (
-  //       layoutViewerStore.currentFile.dirname +
-  //       ' - ' +
-  //       layoutViewerStore.currentFile.name
-  //     )
-  //   },
-  // },
 })
 </script>

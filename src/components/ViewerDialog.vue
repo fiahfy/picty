@@ -22,11 +22,24 @@
           <v-layout class="top-overlay pb-5">
             <viewer-top-toolbar
               ref="topToolbar"
+              :file="state.currentFile"
               @click-close="handleClickClose"
             />
           </v-layout>
           <v-layout class="bottom-overlay pt-5">
-            <viewer-bottom-toolbar ref="bottomToolbar" />
+            <viewer-bottom-toolbar
+              ref="bottomToolbar"
+              :page="page"
+              :max-page="maxPage"
+              :scale="state.scale"
+              @click-previous="handleClickPrevious"
+              @click-next="handleClickNext"
+              @click-zoom-in="handleClickZoomIn"
+              @click-zoom-out="handleClickZoomOut"
+              @click-zoom-reset="handleClickZoomReset"
+              @click-toggle-full-screen="handleClickToggleFullScreen"
+              @change-page="handleChangePage"
+            />
           </v-layout>
           <v-progress-linear :active="state.loading" :indeterminate="true" />
         </v-content>
@@ -50,6 +63,12 @@ import TitleBar from '~/components/TitleBar.vue'
 import ViewerBottomToolbar from '~/components/ViewerBottomToolbar.vue'
 import ViewerContent from '~/components/ViewerContent.vue'
 import ViewerTopToolbar from '~/components/ViewerTopToolbar.vue'
+import { settingsStore } from '~/store'
+
+const workerPromisify = require('@fiahfy/worker-promisify').default
+const Worker = require('~/workers/file.worker.js')
+
+const worker = workerPromisify(new Worker())
 
 export default defineComponent({
   components: {
@@ -64,11 +83,21 @@ export default defineComponent({
       loading: boolean
       toolbar?: boolean
       timer?: number
+      target?: any
+      files: any[]
+      currentFile?: any
+      error?: Error
+      scale: number
     }>({
       active: false,
       loading: false,
       toolbar: undefined,
       timer: undefined,
+      target: unescape,
+      files: [],
+      currentFile: undefined,
+      error: undefined,
+      scale: 1,
     })
 
     const classes = computed(() => {
@@ -78,12 +107,20 @@ export default defineComponent({
         'toolbar-fade-out': state.toolbar === false,
       }
     })
+    const page = computed(
+      () =>
+        state.files.findIndex((file) => file.path === state.currentFile.path) +
+        1
+    )
+    const maxPage = computed(() => state.files.length)
 
     const topToolbar = ref<InstanceType<typeof ViewerTopToolbar>>(null)
     const bottomToolbar = ref<InstanceType<typeof ViewerBottomToolbar>>(null)
 
-    const showViewer = () => {
+    const showViewer = (file: any) => {
       state.active = true
+      state.target = file
+      load()
     }
     const hideViewer = () => {
       state.active = false
@@ -109,6 +146,41 @@ export default defineComponent({
         state.toolbar = true
       }
       resetTimer()
+    }
+    const load = async () => {
+      if (state.loading) {
+        return
+      }
+      state.loading = true
+      state.files = []
+      state.currentFile = undefined
+      state.error = undefined
+      try {
+        let files = []
+        if (state.target.directory) {
+          const { data } = await worker.postMessage({
+            method: 'listFiles',
+            args: [state.target.path, { recursive: settingsStore.recursive }],
+          })
+          files = data
+        } else {
+          const { data } = await worker.postMessage({
+            method: 'listFiles',
+            args: [state.target.dirpath],
+          })
+          files = data
+          state.currentFile = state.target
+        }
+        state.files = files.filter((file: any) =>
+          settingsStore.isFileAvailable({ filepath: file.path })
+        )
+        if (!state.currentFile) {
+          state.currentFile = state.files[0]
+        }
+      } catch (e) {
+        state.error = e
+      }
+      state.loading = false
     }
 
     watch(
@@ -166,15 +238,56 @@ export default defineComponent({
     const handleClickClose = () => {
       hideViewer()
     }
+    const handleClickPrevious = () => {
+      let newPage = page.value - 1
+      if (newPage <= 1) {
+        newPage = maxPage.value
+      }
+      state.currentFile = state.files[newPage - 1]
+    }
+    const handleClickNext = () => {
+      let newPage = page.value + 1
+      if (newPage >= maxPage.value) {
+        newPage = 1
+      }
+      state.currentFile = state.files[newPage - 1]
+    }
+    const handleClickZoomIn = () => {
+      state.scale = 1
+    }
+    const handleClickZoomOut = () => {
+      state.scale = 1
+    }
+    const handleClickZoomReset = () => {
+      state.scale = 1
+    }
+    const handleClickToggleFullScreen = () => {
+      //
+    }
+    const handleChangePage = (page: number) => {
+      if (page < 1 || page > maxPage.value) {
+        return
+      }
+      state.currentFile = state.files[page - 1]
+    }
 
     return {
       state,
       classes,
+      page,
+      maxPage,
       topToolbar,
       bottomToolbar,
       handleKeyDown,
       handleMouseMove,
       handleClickClose,
+      handleClickPrevious,
+      handleClickNext,
+      handleClickZoomIn,
+      handleClickZoomOut,
+      handleClickZoomReset,
+      handleClickToggleFullScreen,
+      handleChangePage,
     }
   },
 })

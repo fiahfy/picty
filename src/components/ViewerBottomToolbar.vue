@@ -3,7 +3,7 @@
     <v-btn
       :title="'View previous image' | accelerator('Left')"
       icon
-      @click="onPreviousClick"
+      @click="handleClickPrevious"
     >
       <v-icon>mdi-skip-previous</v-icon>
     </v-btn>
@@ -11,7 +11,7 @@
     <v-btn
       :title="'View next image' | accelerator('Right')"
       icon
-      @click="onNextClick"
+      @click="handleClickNext"
     >
       <v-icon>mdi-skip-next</v-icon>
     </v-btn>
@@ -19,9 +19,8 @@
     <span class="px-3 ellipsis">{{ page }} / {{ maxPage }}</span>
 
     <v-slider
-      v-if="!loading"
       ref="slider"
-      v-model="page"
+      v-model="modelPage"
       class="px-3"
       :min="1"
       :max="maxPage"
@@ -29,7 +28,7 @@
     />
 
     <v-menu
-      v-model="menu"
+      v-model="state.active"
       :close-on-content-click="false"
       top
       offset-y
@@ -44,22 +43,22 @@
         <v-btn
           :title="'Zoom in' | accelerator('CmdOrCtrl+Plus')"
           icon
-          @click="onZoomInClick"
+          @click="handleClickZoomIn"
         >
           <v-icon>mdi-magnify-plus-outline</v-icon>
         </v-btn>
-        <span class="px-3">{{ percentage }}%</span>
+        <span class="px-3">{{ scale * 100 }}%</span>
         <v-btn
           :title="'Zoom out' | accelerator('CmdOrCtrl+-')"
           icon
-          @click="onZoomOutClick"
+          @click="handleClickZoomOut"
         >
           <v-icon>mdi-magnify-minus-outline</v-icon>
         </v-btn>
         <v-btn
           :title="'Reset' | accelerator('CmdOrCtrl+0')"
           text
-          @click="onResetClick"
+          @click="handleClickZoomReset"
         >
           Reset
         </v-btn>
@@ -69,7 +68,7 @@
     <v-btn
       :title="fullScreen ? 'Exit fullscreen' : 'Fullscreen'"
       icon
-      @click="onFullscreenClick"
+      @click="handleClickToggleFullScreen"
     >
       <v-icon>
         {{ fullScreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen' }}
@@ -78,73 +77,94 @@
   </v-toolbar>
 </template>
 
-<script>
-import { layoutStore, layoutViewerStore } from '~/store'
+<script lang="ts">
+import {
+  defineComponent,
+  SetupContext,
+  computed,
+  reactive,
+  ref,
+} from '@vue/composition-api'
 
-export default {
-  data() {
-    return {
-      hovered: false,
-      menu: false,
-    }
-  },
-  computed: {
+type Props = {
+  page: number
+  maxPage: number
+  scale: number
+}
+
+export default defineComponent({
+  props: {
     page: {
+      type: Number,
+      default: 0,
+    },
+    maxPage: {
+      type: Number,
+      default: 0,
+    },
+    scale: {
+      type: Number,
+      default: 1,
+    },
+  },
+  setup(props: Props, context: SetupContext) {
+    const state = reactive({ active: false })
+
+    const modelPage = computed({
       get() {
-        return layoutViewerStore.currentFileIndex + 1
+        return props.page
       },
       set(value) {
-        layoutViewerStore.moveFile({ index: value - 1 })
+        context.emit('change-page', value)
       },
-    },
-    maxPage() {
-      return layoutViewerStore.files.length
-    },
-    percentage() {
-      return Math.floor(layoutViewerStore.scale * 100)
-    },
-    fullScreen() {
-      return layoutStore.fullScreen
-    },
-    loading() {
-      return layoutViewerStore.loading
-    },
-  },
-  watch: {
-    page() {
-      this.$refs.slider && this.$refs.slider.$el.querySelector('input').blur()
-    },
-  },
-  methods: {
-    onPreviousClick() {
-      layoutViewerStore.movePreviousFile()
-    },
-    onNextClick() {
-      layoutViewerStore.moveNextFile()
-    },
-    onZoomInClick() {
-      layoutViewerStore.zoomIn()
-    },
-    onZoomOutClick() {
-      layoutViewerStore.zoomOut()
-    },
-    onResetClick() {
-      layoutViewerStore.resetZoom()
-    },
-    onFullscreenClick() {
-      layoutViewerStore.toggleFullScreen()
-    },
-    hideMenu() {
-      this.menu = false
-    },
-    isHover() {
+    })
+
+    const toolbar = ref<InstanceType<typeof HTMLElement>>(null)
+
+    const isHover = () => {
       return !!(
-        this.$el.querySelector(':hover') ||
-        this.$refs.toolbar?.$el.querySelector(':hover')
+        context.root.$el.querySelector(':hover') ||
+        toolbar.value?.querySelector(':hover')
       )
-    },
+    }
+    const hideMenu = () => {
+      state.active = false
+    }
+
+    const handleClickPrevious = () => {
+      context.emit('click-previous')
+    }
+    const handleClickNext = () => {
+      context.emit('click-next')
+    }
+    const handleClickZoomIn = () => {
+      context.emit('click-zoom-in')
+    }
+    const handleClickZoomOut = () => {
+      context.emit('click-zoom-out')
+    }
+    const handleClickZoomReset = () => {
+      context.emit('click-zoom-reset')
+    }
+    const handleClickToggleFullScreen = () => {
+      context.emit('click-toggle-full-screen')
+    }
+
+    return {
+      state,
+      modelPage,
+      fullScreen: false,
+      isHover,
+      hideMenu,
+      handleClickPrevious,
+      handleClickNext,
+      handleClickZoomIn,
+      handleClickZoomOut,
+      handleClickZoomReset,
+      handleClickToggleFullScreen,
+    }
   },
-}
+})
 </script>
 
 <style scoped lang="scss">

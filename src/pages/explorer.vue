@@ -178,7 +178,7 @@ export default defineComponent({
     }
 
     const handleClickView = () => {
-      context.root.$eventBus.$emit('showViewer')
+      context.root.$eventBus.$emit('showViewer', state.selectedFile)
     }
 
     const handleClickHeader = (header: any) => {
