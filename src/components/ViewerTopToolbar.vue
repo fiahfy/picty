@@ -16,6 +16,12 @@ type Props = {
 }
 
 export default defineComponent({
+  props: {
+    file: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   setup(props: Props, context: SetupContext) {
     const title = computed(() => {
       if (!props.file) {

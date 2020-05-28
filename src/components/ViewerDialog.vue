@@ -15,7 +15,13 @@
           <v-container fill-height fluid pa-0>
             <v-layout column>
               <v-container fluid pa-0 overflow-hidden fill-height>
-                <viewer-content class="fill-height" />
+                <viewer-content
+                  class="fill-height"
+                  :loading="state.loading"
+                  :scale="state.scale"
+                  :file="state.currentFile"
+                  @change-zoom="handleChangeZoom"
+                />
               </v-container>
             </v-layout>
           </v-container>
@@ -70,6 +76,26 @@ const Worker = require('~/workers/file.worker.js')
 
 const worker = workerPromisify(new Worker())
 
+const scales = [
+  0.25,
+  0.33,
+  0.5,
+  0.67,
+  0.75,
+  0.8,
+  0.9,
+  1,
+  1.1,
+  1.25,
+  1.5,
+  1.75,
+  2,
+  2.5,
+  3,
+  4,
+  5,
+]
+
 export default defineComponent({
   components: {
     TitleBar,
@@ -88,6 +114,7 @@ export default defineComponent({
       currentFile?: any
       error?: Error
       scale: number
+      originalScale: number
     }>({
       active: false,
       loading: false,
@@ -98,6 +125,7 @@ export default defineComponent({
       currentFile: undefined,
       error: undefined,
       scale: 1,
+      originalScale: 1,
     })
 
     const classes = computed(() => {
@@ -240,7 +268,7 @@ export default defineComponent({
     }
     const handleClickPrevious = () => {
       let newPage = page.value - 1
-      if (newPage <= 1) {
+      if (newPage <= 0) {
         newPage = maxPage.value
       }
       state.currentFile = state.files[newPage - 1]
@@ -253,13 +281,17 @@ export default defineComponent({
       state.currentFile = state.files[newPage - 1]
     }
     const handleClickZoomIn = () => {
-      state.scale = 1
+      state.scale = scales.find((scale) => scale > state.scale) ?? state.scale
     }
     const handleClickZoomOut = () => {
-      state.scale = 1
+      state.scale =
+        scales
+          .concat()
+          .reverse()
+          .find((scale) => scale < state.scale) ?? state.scale
     }
     const handleClickZoomReset = () => {
-      state.scale = 1
+      state.scale = state.originalScale
     }
     const handleClickToggleFullScreen = () => {
       //
@@ -269,6 +301,10 @@ export default defineComponent({
         return
       }
       state.currentFile = state.files[page - 1]
+    }
+    const handleChangeZoom = (scale: number) => {
+      state.scale = scale
+      state.originalScale = scale
     }
 
     return {
@@ -288,6 +324,7 @@ export default defineComponent({
       handleClickZoomReset,
       handleClickToggleFullScreen,
       handleChangePage,
+      handleChangeZoom,
     }
   },
 })

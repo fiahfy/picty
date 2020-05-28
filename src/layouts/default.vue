@@ -19,13 +19,12 @@ import {
   defineComponent,
   watchEffect,
   SetupContext,
-  computed,
 } from '@vue/composition-api'
 import ActivityBar from '~/components/ActivityBar.vue'
 import NotificationBar from '~/components/NotificationBar.vue'
 import TitleBar from '~/components/TitleBar.vue'
 import ViewerDialog from '~/components/ViewerDialog.vue'
-import { layoutStore, settingsStore } from '~/store'
+import { settingsStore } from '~/store'
 
 export default defineComponent({
   components: {
@@ -35,8 +34,6 @@ export default defineComponent({
     ViewerDialog,
   },
   setup(_props: {}, context: SetupContext) {
-    const viewing = computed(() => layoutStore.viewing)
-
     watchEffect(() => {
       context.root.$vuetify.theme.dark = settingsStore.darkTheme
     })
@@ -49,14 +46,13 @@ export default defineComponent({
       if (!files.length) {
         return
       }
-      const filepath = files[0].path
-      layoutStore.open({ filepath })
+      const filepath = files[0].path // eslint-disable-line
+      // layoutStore.open({ filepath })
     }
 
-    layoutStore.initialize()
+    // layoutStore.initialize()
 
     return {
-      viewing,
       handleContextMenu,
       handleDrop,
     }

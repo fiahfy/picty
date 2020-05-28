@@ -15,8 +15,8 @@
 
 <script lang="ts">
 import { remote } from 'electron'
-import { defineComponent, computed } from '@vue/composition-api'
-import { layoutStore } from '~/store'
+import { defineComponent } from '@vue/composition-api'
+// import { layoutStore } from '~/store'
 
 type Props = {
   app: boolean
@@ -30,7 +30,7 @@ export default defineComponent({
     },
   },
   setup(_props: Props) {
-    const titleBar = computed(() => layoutStore.titleBar)
+    // const titleBar = computed(() => layoutStore.titleBar)
 
     // @see https://github.com/electron/electron/issues/16385
     const handleDoubleClick = () => {
@@ -51,7 +51,7 @@ export default defineComponent({
     }
 
     return {
-      titleBar,
+      titleBar: true,
       handleDoubleClick,
     }
   },

@@ -47,7 +47,7 @@
         >
           <v-icon>mdi-magnify-plus-outline</v-icon>
         </v-btn>
-        <span class="px-3">{{ scale * 100 }}%</span>
+        <span class="px-3">{{ displayScale }}%</span>
         <v-btn
           :title="'Zoom out' | accelerator('CmdOrCtrl+-')"
           icon
@@ -118,6 +118,9 @@ export default defineComponent({
         context.emit('change-page', value)
       },
     })
+    const displayScale = computed(() => {
+      return (props.scale * 100).toFixed(2)
+    })
 
     const toolbar = ref<InstanceType<typeof HTMLElement>>(null)
 
@@ -153,6 +156,7 @@ export default defineComponent({
     return {
       state,
       modelPage,
+      displayScale,
       fullScreen: false,
       isHover,
       hideMenu,

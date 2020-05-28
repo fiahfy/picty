@@ -10,169 +10,230 @@
         v-else
         ref="wrapper"
         class="wrapper"
-        @mousemove="onMouseMove"
-        @mousedown="onMouseDown"
-        @mouseup="onMouseUp"
+        @mousemove="handleMouseMove"
+        @mousedown="handleMouseDown"
+        @mouseup="handleMouseUp"
       >
         <img
-          :src="imageSrc"
+          :src="src"
           :class="imageClasses"
           :style="imageStyles"
           draggable="false"
-          @load="onImageLoad"
-          @error="onImageError"
+          @load="handleLoad"
+          @error="handleError"
         />
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
+import {
+  defineComponent,
+  computed,
+  reactive,
+  ref,
+  watch,
+  SetupContext,
+} from '@vue/composition-api'
 import fileUrl from 'file-url'
-import { layoutStore, layoutViewerStore } from '~/store'
+import { settingsStore } from '~/store'
 
-export default {
-  data() {
-    return {
-      loadError: false,
+type Props = {
+  loading: boolean
+  scale: number
+  file: any
+}
+
+export default defineComponent({
+  props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    scale: {
+      type: Number,
+      default: 1,
+    },
+    file: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  setup(props: Props, context: SetupContext) {
+    const state = reactive<{
+      error: boolean
+      dragging: boolean
+      alignCenter: boolean
+      verticalAlignMiddle: boolean
+      originalSize: {
+        width: number
+        height: number
+      }
+      scrollPosition?: {
+        x: number
+        y: number
+      }
+    }>({
+      error: false,
       dragging: false,
-      centered: {
-        horizontal: true,
-        vertical: true,
-      },
+      alignCenter: true,
+      verticalAlignMiddle: true,
       originalSize: {
         width: 0,
         height: 0,
       },
-    }
-  },
-  computed: {
-    classes() {
+      scrollPosition: {
+        x: 0,
+        y: 0,
+      },
+    })
+
+    const classes = computed(() => ({
+      dragging: state.dragging,
+    }))
+    const imageClasses = computed(() => ({
+      'horizontal-center': state.alignCenter,
+      'vertical-center': state.verticalAlignMiddle,
+      // scaling: props.scale !== 1,
+      // scaling: layoutViewerStore.scaling,
+      stretched: settingsStore.imageStretched,
+    }))
+    const imageStyles = computed(() => {
       return {
-        dragging: this.dragging,
+        width: state.originalSize.width * props.scale + 'px',
+        height: state.originalSize.height * props.scale + 'px',
       }
-    },
-    message() {
-      if (layoutViewerStore.loading) {
+    })
+    const message = computed(() => {
+      if (props.loading) {
         return 'Loading...'
       }
-      if (!layoutViewerStore.files.length) {
-        return 'No images'
-      }
-      if (this.loadError) {
+      // if (!layoutViewerStore.files.length) {
+      //   return 'No images'
+      // }
+      if (state.error) {
         return 'Invalid image'
       }
-      return layoutViewerStore.error ? layoutViewerStore.error.message : ''
-    },
-    imageSrc() {
-      return layoutViewerStore.currentFilepath
-        ? fileUrl(layoutViewerStore.currentFilepath)
-        : ''
-    },
-    imageClasses() {
-      return {
-        'horizontal-center': this.centered.horizontal,
-        'vertical-center': this.centered.vertical,
-        scaling: layoutViewerStore.scaling,
-        stretched: layoutStore.imageStretched,
+      // return layoutViewerStore.error ? layoutViewerStore.error.message : ''
+      return ''
+    })
+    const src = computed(() => (props.file ? fileUrl(props.file.path) : ''))
+
+    const wrapper = ref<HTMLDivElement>(null)
+
+    watch(
+      () => props.file,
+      () => {
+        state.error = false
       }
-    },
-    imageStyles() {
-      return layoutViewerStore.scaling
-        ? {
-            width: this.originalSize.width * layoutViewerStore.scale + 'px',
-            height: this.originalSize.height * layoutViewerStore.scale + 'px',
+    )
+    watch(
+      () => props.scale,
+      (newValue, oldValue) => {
+        if (message.value) {
+          return
+        }
+        context.root.$nextTick(() => {
+          if (!wrapper.value) {
+            return
           }
-        : {}
-    },
-    currentFilepath() {
-      return layoutViewerStore.currentFilepath
-    },
-    scale() {
-      return layoutViewerStore.scale
-    },
-  },
-  watch: {
-    currentFilepath() {
-      this.loadError = false
-    },
-    scale(newValue, oldValue) {
-      if (this.message) {
+
+          let offsetX = 0
+          if (
+            newValue > oldValue &&
+            context.root.$el.clientWidth > state.originalSize.width * oldValue
+          ) {
+            offsetX =
+              (context.root.$el.clientWidth -
+                state.originalSize.width * oldValue) /
+              2
+          }
+          let offsetY = 0
+          if (
+            newValue > oldValue &&
+            context.root.$el.clientHeight > state.originalSize.height * oldValue
+          ) {
+            offsetY =
+              (context.root.$el.clientHeight -
+                state.originalSize.height * oldValue) /
+              2
+          }
+
+          wrapper.value.scrollLeft +=
+            ((newValue - oldValue) * state.originalSize.width) / 2 - offsetX
+          wrapper.value.scrollTop +=
+            ((newValue - oldValue) * state.originalSize.height) / 2 - offsetY
+
+          state.alignCenter =
+            context.root.$el.clientWidth >= state.originalSize.width * newValue
+          state.verticalAlignMiddle =
+            context.root.$el.clientHeight >=
+            state.originalSize.height * newValue
+        })
+      }
+    )
+
+    const handleMouseDown = () => {
+      state.dragging = true
+    }
+    const handleMouseUp = () => {
+      state.dragging = false
+      state.scrollPosition = undefined
+    }
+    const handleMouseMove = (e: MouseEvent) => {
+      if (message.value || !wrapper.value) {
         return
       }
-      this.$nextTick(() => {
-        let offsetX = 0
-        if (
-          newValue > oldValue &&
-          this.$el.clientWidth > this.originalSize.width * oldValue
-        ) {
-          offsetX =
-            (this.$el.clientWidth - this.originalSize.width * oldValue) / 2
-        }
-        let offsetY = 0
-        if (
-          newValue > oldValue &&
-          this.$el.clientHeight > this.originalSize.height * oldValue
-        ) {
-          offsetY =
-            (this.$el.clientHeight - this.originalSize.height * oldValue) / 2
-        }
-
-        this.$refs.wrapper.scrollLeft +=
-          ((newValue - oldValue) * this.originalSize.width) / 2 - offsetX
-        this.$refs.wrapper.scrollTop +=
-          ((newValue - oldValue) * this.originalSize.height) / 2 - offsetY
-
-        this.centered.horizontal =
-          this.$el.clientWidth >= this.originalSize.width * newValue
-        this.centered.vertical =
-          this.$el.clientHeight >= this.originalSize.height * newValue
-      })
-    },
-  },
-  methods: {
-    onMouseDown() {
-      this.dragging = true
-    },
-    onMouseUp() {
-      this.dragging = false
-      this.scrollPosition = null
-    },
-    onMouseMove(e) {
-      if (this.message) {
-        return
-      }
-      if (this.dragging) {
+      if (state.dragging) {
         const position = { x: e.clientX, y: e.clientY }
-        if (this.scrollPosition) {
-          this.$refs.wrapper.scrollLeft += this.scrollPosition.x - position.x
-          this.$refs.wrapper.scrollTop += this.scrollPosition.y - position.y
+        if (state.scrollPosition) {
+          wrapper.value.scrollLeft += state.scrollPosition.x - position.x
+          wrapper.value.scrollTop += state.scrollPosition.y - position.y
         }
-        this.scrollPosition = position
+        state.scrollPosition = position
       }
-    },
-    onImageLoad(e) {
-      const maxWidth = this.$el.clientWidth
-      const maxHeight = this.$el.clientHeight
+    }
+    const handleLoad = (e: Event) => {
+      if (!(e.target instanceof HTMLImageElement)) {
+        return
+      }
+      const maxWidth = wrapper.value?.offsetWidth ?? 0
+      const maxHeight = wrapper.value?.offsetHeight ?? 0
       const imageWidth = e.target.naturalWidth
       const imageHeight = e.target.naturalHeight
       const scaleX = maxWidth / imageWidth
       const scaleY = maxHeight / imageHeight
       let scale = scaleX < scaleY ? scaleX : scaleY
-      if (scale >= 1 && !layoutStore.imageStretched) {
+      if (scale >= 1 && !settingsStore.imageStretched) {
         scale = 1
       }
-      this.originalSize = {
+      state.originalSize = {
         width: imageWidth,
         height: imageHeight,
       }
-      layoutViewerStore.setupZoom({ scale })
-    },
-    onImageError() {
-      this.loadError = true
-    },
+      context.emit('change-zoom', scale)
+    }
+    const handleError = () => {
+      state.error = true
+    }
+
+    return {
+      state,
+      classes,
+      imageClasses,
+      imageStyles,
+      message,
+      src,
+      wrapper,
+      handleMouseDown,
+      handleMouseUp,
+      handleMouseMove,
+      handleLoad,
+      handleError,
+    }
   },
-}
+})
 </script>
 
 <style scoped lang="scss">
@@ -201,15 +262,15 @@ export default {
         margin-top: auto;
         margin-bottom: auto;
       }
-      &:not(.scaling) {
-        max-height: 100%;
-        max-width: 100%;
-        &.stretched {
-          height: 100%;
-          object-fit: contain;
-          width: 100%;
-        }
+      // &:not(.scaling) {
+      // max-height: 100%;
+      // max-width: 100%;
+      &.stretched {
+        height: 100%;
+        object-fit: contain;
+        width: 100%;
       }
+      // }
     }
   }
 }
