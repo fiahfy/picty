@@ -1,24 +1,17 @@
 <template>
   <v-col class="explorer-grid-list-item pa-1">
-    <v-card
-      flat
-      tile
-      :active="active"
-      @click.native="onClick"
-      @dblclick="onDblClick"
-      @contextmenu.stop="onContextMenu"
-    >
+    <v-card flat tile>
       <v-img
-        :src="imageUrl"
+        :src="state.imageUrl"
         :contain="contain"
         :height="thumbnailHeightValue"
-        @error="onError"
+        @error="handleError"
       >
         <v-layout slot="placeholder" fill-height align-center justify-center>
           <v-flex class="text-center caption">{{ message }}</v-flex>
         </v-layout>
-        <div v-if="images" class="images caption white--text ma-2 px-1">
-          {{ images }} images
+        <div v-if="state.images" class="images caption white--text ma-2 px-1">
+          {{ state.images }} images
         </div>
       </v-img>
       <v-icon :color="iconColor" class="pa-1">{{ icon }}</v-icon>
@@ -27,8 +20,8 @@
         <v-spacer />
         <div class="title">
           <div>
-            <span :title="file.name" class="text-xs-center caption">
-              {{ file.name }}
+            <span :title="item.name" class="text-xs-center caption">
+              {{ item.name }}
             </span>
           </div>
         </div>
@@ -49,137 +42,114 @@
   </v-col>
 </template>
 
-<script>
-import workerPromisify from '@fiahfy/worker-promisify'
-import fileUrl from 'file-url'
-import Worker from '~/workers/fetch.worker.js'
-import { layoutExplorerStore, settingsStore } from '~/store'
+<script lang="ts">
+import {
+  defineComponent,
+  SetupContext,
+  reactive,
+  computed,
+} from '@vue/composition-api'
+import { settingsStore } from '~/store'
+
+const fileUrl = require('file-url')
+const workerPromisify = require('@fiahfy/worker-promisify').default
+const Worker = require('~/workers/fetch.worker.js')
 
 const worker = workerPromisify(new Worker())
 
-export default {
+type Props = {
+  item: any
+}
+
+export default defineComponent({
   props: {
-    file: {
+    item: {
       type: Object,
       default: () => ({}),
     },
   },
-  data() {
-    return {
+  setup(props: Props, context: SetupContext) {
+    const state = reactive({
       loading: false,
       error: false,
       imageUrl: '',
       images: '',
-    }
-  },
-  computed: {
-    rating: {
+    })
+
+    const rating = computed({
       get() {
-        return this.file.rating
+        return props.item.rating
       },
       set(value) {
-        this.$store.dispatch('local/explorer/updateFileRating', {
-          filepath: this.file.path,
-          rating: value,
-        })
+        context.emit('change-rating', Number(value))
       },
-    },
-    active() {
-      return this.isFileSelected({ filepath: this.file.path })
-    },
-    icon() {
-      if (this.file.exists) {
-        return this.file.directory ? 'mdi-folder' : 'mdi-photo'
+    })
+    const icon = computed(() => {
+      if (props.item.exists) {
+        return props.item.directory ? 'mdi-folder' : 'mdi-image'
       }
-      return 'mdi-broken_image'
-    },
-    iconColor() {
-      if (this.file.exists) {
-        return this.file.directory ? 'blue lighten-3' : 'green lighten-3'
+      return 'mdi-image-broken-variant'
+    })
+    const iconColor = computed(() => {
+      if (props.item.exists) {
+        return props.item.directory ? 'blue lighten-3' : 'green lighten-3'
       }
       return 'grey'
-    },
-    contain() {
-      return this.thumbnailStyle === 'contain'
-    },
-    message() {
-      if (this.loading) {
+    })
+    const message = computed(() => {
+      if (state.loading) {
         return 'Loading...'
       }
-      if (this.error) {
+      if (state.error) {
         return 'Load failed'
       }
-      return this.imageUrl ? '' : 'No images'
-    },
-    thumbnailStyle() {
-      return settingsStore.thumbnailStyle
-    },
-    thumbnailHeightValue() {
-      return settingsStore.thumbnailHeightValue
-    },
-    isFileAvailable() {
-      return settingsStore.isFileAvailable
-    },
-    isFileSelected() {
-      return layoutExplorerStore.isFileSelected
-    },
-  },
-  async created() {
-    if (!this.file.directory) {
-      this.imageUrl = fileUrl(this.file.path)
-      return
-    }
-    this.loading = true
-    const { data } = await worker.postMessage({
-      key: this.file.path,
-      data: this.file.path,
+      return state.imageUrl ? '' : 'No images'
     })
-    const filepathes = data.filter((filepath) =>
-      this.isFileAvailable({ filepath })
-    )
-    if (filepathes.length) {
-      this.imageUrl = fileUrl(filepathes[0])
-    }
-    this.images = filepathes.length
-    this.loading = false
-  },
-  methods: {
-    onClick() {
-      layoutExplorerStore.selectFile({ filepath: this.file.path })
-    },
-    onDblClick() {
-      layoutExplorerStore.openFile({ filepath: this.file.path })
-    },
-    onContextMenu() {
-      layoutExplorerStore.selectFile({ filepath: this.file.path })
-      let template = [
-        {
-          label: 'View',
-          click: () =>
-            layoutExplorerStore.viewFile({ filepath: this.file.path }),
-          accelerator: 'Enter',
-        },
-      ]
-      const text = getSelection().toString()
-      if (text) {
-        template = [
-          ...template,
-          { type: 'separator' },
-          { role: 'copy' },
-          {
-            label: `Search "${text}"`,
-            click: () => layoutExplorerStore.searchFiles({ query: text }),
-            accelerator: 'CmdOrCtrl+F',
-          },
-        ]
+    const contain = computed(() => {
+      return settingsStore.thumbnailStyle === 'contain'
+    })
+    const thumbnailHeightValue = computed(() => {
+      return settingsStore.thumbnailHeightValue
+    })
+
+    const load = async () => {
+      if (!props.item.directory) {
+        state.imageUrl = fileUrl(props.item.path)
+      } else {
+        state.loading = true
+        const { data } = await worker.postMessage({
+          key: props.item.path,
+          data: props.item.path,
+        })
+        const filepathes = data.filter((filepath: string) =>
+          settingsStore.isFileAvailable({ filepath })
+        )
+        if (filepathes.length) {
+          state.imageUrl = fileUrl(filepathes[0])
+        }
+        state.images = filepathes.length
+        state.loading = false
       }
-      this.$contextMenu.open(template)
-    },
-    onError() {
-      this.error = true
-    },
+    }
+
+    const handleError = () => {
+      state.error = true
+    }
+
+    load()
+
+    return {
+      state,
+      rating,
+      icon,
+      iconColor,
+      message,
+      contain,
+      thumbnailHeightValue,
+      handleError,
+    }
   },
-}
+})
 </script>
 
 <style scoped lang="scss">

@@ -88,7 +88,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api'
-import { settingsStore, layoutExplorerStore } from '~/store'
+import { settingsStore, queryHistoryStore } from '~/store'
 
 const settings = require('~/consts/settings')
 
@@ -189,7 +189,7 @@ export default defineComponent({
       )
     }
     const handleClearHistories = () => {
-      layoutExplorerStore.clearQueryHistory()
+      queryHistoryStore.clearHistory()
     }
 
     return {

@@ -21,9 +21,6 @@
         :style="{ height: `${padding.bottom}px` }"
       />
     </template>
-    <slot slot="progress" name="progress" />
-    <slot slot="no-data" name="no-data" />
-    <slot slot="no-results" name="no-results" />
   </v-data-table>
 </template>
 

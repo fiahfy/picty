@@ -30,6 +30,7 @@
           @dblclick-item="handleDoubleClickItem"
           @contextmenu-item="handleContextMenuItem"
           @change-rating="handleChangeRating"
+          @change-sort-option="handleChangeSortOption"
         />
       </v-container>
     </v-layout>
@@ -54,7 +55,6 @@ import {
   ratingStore,
   viewStore,
   historyStore,
-  layoutExplorerStore,
   queryHistoryStore,
 } from '~/store'
 
@@ -72,6 +72,7 @@ export default defineComponent({
   setup(_props: {}, context: SetupContext) {
     const state = reactive({
       loading: false,
+      error: undefined,
       files: [] as any[],
       selectedFile: undefined,
       sortBy: '',
@@ -107,26 +108,29 @@ export default defineComponent({
       }
       state.loading = true
       state.files = []
-      const { data } = await worker.postMessage({
-        method: 'listFiles',
-        args: [explorerStore.location],
-      })
-      state.files = data
-        .filter(
-          (file: any) =>
-            file.directory ||
-            settingsStore.isFileAvailable({ filepath: file.path })
-        )
-        .map((file: any) => {
-          return {
-            ...file,
-            rating: ratingStore.getRating({ filepath: file.path }),
-            views: viewStore.getViews({ filepath: file.path }),
-          }
+      try {
+        const { data } = await worker.postMessage({
+          method: 'listFiles',
+          args: [explorerStore.location],
         })
+        state.files = data
+          .filter(
+            (file: any) =>
+              file.directory ||
+              settingsStore.isFileAvailable({ filepath: file.path })
+          )
+          .map((file: any) => {
+            return {
+              ...file,
+              rating: ratingStore.getRating({ filepath: file.path }),
+              views: viewStore.getViews({ filepath: file.path }),
+            }
+          })
+      } catch (e) {
+        state.error = e
+      }
       state.loading = false
     }
-
     const move = (location: string) => {
       if (state.loading) {
         return
@@ -135,7 +139,6 @@ export default defineComponent({
       explorerStore.setLocation({ location })
       load()
     }
-
     const search = (query: string) => {
       queryHistoryStore.addHistory({ history: query })
       state.query = query
@@ -151,7 +154,6 @@ export default defineComponent({
         load()
       }
     }
-
     const handleClickForward = async () => {
       if (state.loading) {
         return
@@ -162,44 +164,36 @@ export default defineComponent({
         load()
       }
     }
-
     const handleClickUpward = () => {
       const path = fileUtil.getFile(explorerStore.location).dirpath
       move(path)
     }
-
     const handleClickHome = () => {
       const path = remote.app.getPath('home')
       move(path)
     }
-
     const handleClickReload = () => {
       load()
     }
-
     const handleClickView = () => {
       context.root.$eventBus.$emit('showViewer', state.selectedFile)
     }
-
     const handleClickHeader = (header: any) => {
       state.sortDesc = state.sortBy === header.value ? !state.sortDesc : false
       state.sortBy = header.value
     }
-
     const handleClickItem = (file: any) => {
       state.selectedFile = file
     }
-
     const handleDoubleClickItem = (file: any) => {
       move(file.path)
     }
-
     const handleContextMenuItem = (file: any) => {
       state.selectedFile = file
       let template: MenuItemConstructorOptions[] = [
         {
           label: 'View',
-          click: () => layoutExplorerStore.viewFile({ filepath: file.path }),
+          click: () => context.root.$eventBus.$emit('showViewer', file),
           accelerator: 'Enter',
         },
       ]
@@ -218,7 +212,6 @@ export default defineComponent({
       }
       context.root.$contextMenu.open(template)
     }
-
     const handleChangeRating = (file: any, rating: number) => {
       ratingStore.setRating({
         filepath: file.path,
@@ -233,9 +226,18 @@ export default defineComponent({
           : item
       )
     }
-
     const handleChangeQuery = (query: string) => {
       search(query)
+    }
+    const handleChangeSortOption = ({
+      by,
+      desc,
+    }: {
+      by: string
+      desc: boolean
+    }) => {
+      state.sortBy = by
+      state.sortDesc = desc
     }
 
     load()
@@ -256,6 +258,7 @@ export default defineComponent({
       handleContextMenuItem,
       handleChangeRating,
       handleChangeQuery,
+      handleChangeSortOption,
     }
   },
 })

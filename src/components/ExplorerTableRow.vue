@@ -107,10 +107,6 @@ export default defineComponent({
       return !previewWidthValue.value
     })
 
-    const handleError = () => {
-      state.error = true
-    }
-
     const load = async () => {
       if (!props.item.directory) {
         state.imageUrl = fileUrl(props.item.path)
@@ -129,6 +125,10 @@ export default defineComponent({
         state.images = filepathes.length
         state.loading = false
       }
+    }
+
+    const handleError = () => {
+      state.error = true
     }
 
     load()

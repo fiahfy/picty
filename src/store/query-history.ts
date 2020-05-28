@@ -1,4 +1,5 @@
 import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
+import { settingsStore } from '~/store'
 
 @Module({
   name: 'query-history',
@@ -14,11 +15,20 @@ export default class QueryHistoryModule extends VuexModule {
     if (!history || exists) {
       return
     }
-    this.histories = [...this.histories, history]
+    this.histories = [...this.histories, history].slice(
+      -settingsStore.queryHistorySize
+    )
   }
 
   @Mutation
   removeHistory({ history }: { history: string }) {
-    this.histories = this.histories.filter((item) => item !== history)
+    this.histories = this.histories
+      .filter((item) => item !== history)
+      .slice(-settingsStore.queryHistorySize)
+  }
+
+  @Mutation
+  clearHistory() {
+    this.histories = []
   }
 }

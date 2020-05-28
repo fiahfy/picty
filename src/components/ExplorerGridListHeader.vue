@@ -3,8 +3,9 @@
     <v-toolbar color="transparent" flat dense>
       <v-spacer />
       <v-select
-        v-model="order"
+        v-model="orderModel"
         :items="orders"
+        dense
         single-line
         append-outer-icon="mdi-sort"
         hide-details
@@ -14,43 +15,56 @@
   </v-card>
 </template>
 
-<script>
-export default {
-  data() {
+<script lang="ts">
+import { defineComponent, computed, SetupContext } from '@vue/composition-api'
+
+const orders = [
+  { value: { by: 'name', desc: false }, text: 'Name ascending' },
+  { value: { by: 'name', desc: true }, text: 'Name descending' },
+  { value: { by: 'views', desc: true }, text: 'Views ascending' },
+  { value: { by: 'views', desc: false }, text: 'Views descending' },
+  {
+    value: { by: 'rating', desc: true },
+    text: 'Rating ascending',
+  },
+  {
+    value: { by: 'rating', desc: false },
+    text: 'Rating descending',
+  },
+  {
+    value: { by: 'modified_at', desc: true },
+    text: 'Date Modified ascending',
+  },
+  {
+    value: { by: 'modified_at', desc: false },
+    text: 'Date Modified descending',
+  },
+]
+
+type Props = {
+  header: any[]
+  sortBy?: string
+  sortDesc: boolean
+}
+
+export default defineComponent({
+  setup(props: Props, context: SetupContext) {
+    const orderModel = computed<{
+      by: string
+      desc: boolean
+    }>({
+      get() {
+        return { by: props.sortBy ?? 'name', desc: props.sortDesc }
+      },
+      set(option) {
+        context.emit('change-sort-options', option)
+      },
+    })
+
     return {
-      orders: [
-        { value: { by: 'name', descending: false }, text: 'Name ascending' },
-        { value: { by: 'name', descending: true }, text: 'Name descending' },
-        { value: { by: 'views', descending: true }, text: 'Views ascending' },
-        { value: { by: 'views', descending: false }, text: 'Views descending' },
-        {
-          value: { by: 'rating', descending: true },
-          text: 'Rating ascending',
-        },
-        {
-          value: { by: 'rating', descending: false },
-          text: 'Rating descending',
-        },
-        {
-          value: { by: 'modified_at', descending: true },
-          text: 'Date Modified ascending',
-        },
-        {
-          value: { by: 'modified_at', descending: false },
-          text: 'Date Modified descending',
-        },
-      ],
+      orders,
+      orderModel,
     }
   },
-  computed: {
-    order: {
-      get() {
-        return this.$store.getters['local/explorer/order']
-      },
-      set(value) {
-        this.$store.dispatch('local/explorer/changeOrder', { order: value })
-      },
-    },
-  },
-}
+})
 </script>

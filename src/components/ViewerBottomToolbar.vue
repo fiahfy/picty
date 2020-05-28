@@ -20,7 +20,7 @@
 
     <v-slider
       ref="slider"
-      v-model="modelPage"
+      v-model="pageModel"
       class="px-3"
       :min="1"
       :max="maxPage"
@@ -110,7 +110,7 @@ export default defineComponent({
   setup(props: Props, context: SetupContext) {
     const state = reactive({ active: false })
 
-    const modelPage = computed({
+    const pageModel = computed({
       get() {
         return props.page
       },
@@ -155,7 +155,7 @@ export default defineComponent({
 
     return {
       state,
-      modelPage,
+      pageModel,
       displayScale,
       fullScreen: false,
       isHover,

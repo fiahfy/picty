@@ -1,8 +1,6 @@
 <template>
   <v-layout class="virtual-data-iterator" column>
-    <slot name="header" />
     <v-container :class="classes" fluid pa-0 overflow-hidden>
-      <slot v-if="loading" name="progress" />
       <v-data-iterator
         ref="iterator"
         v-model="model"
@@ -16,6 +14,11 @@
         row
         wrap
       >
+        <template v-slot:header="props">
+          <div class="header">
+            <slot v-bind="props" name="header" />
+          </div>
+        </template>
         <template v-slot:default="props">
           <v-row class="ma-0">
             <v-col
@@ -35,8 +38,6 @@
             />
           </v-row>
         </template>
-        <slot slot="no-data" name="no-data" />
-        <slot slot="no-results" name="no-results" />
       </v-data-iterator>
     </v-container>
   </v-layout>
@@ -67,10 +68,6 @@ export default {
       type: Number,
       default: 0,
     },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
     itemKey: {
       type: String,
       default: 'id',
@@ -82,6 +79,10 @@ export default {
     containerClass: {
       type: [String],
       default: '',
+    },
+    stickyHeaders: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -114,6 +115,7 @@ export default {
     classes() {
       return {
         [this.containerClass]: true,
+        'sticky-headers': this.stickyHeaders,
         scrolling: this.scrolling,
       }
     },
@@ -191,15 +193,9 @@ export default {
 <style scoped lang="scss">
 .virtual-data-iterator > .container {
   position: relative;
-  .v-progress-linear {
-    left: 0;
-    margin: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
   .v-data-iterator {
     overflow-y: scroll;
+    text-align: center;
     &::-webkit-scrollbar {
       width: 14px;
     }
@@ -212,21 +208,11 @@ export default {
         background-color: #ccc;
       }
     }
-    &:before {
-      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
-      content: '';
-      left: 0;
-      position: absolute;
-      right: 14px;
-      top: -10px;
-      z-index: 1;
-    }
-    ::v-deep .layout {
-      margin: 0px !important;
-    }
   }
-  &.scrolling .v-data-iterator:before {
-    height: 10px;
+  ::v-deep .header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
 }
 .theme--dark .virtual-data-iterator .v-data-iterator::-webkit-scrollbar-thumb {

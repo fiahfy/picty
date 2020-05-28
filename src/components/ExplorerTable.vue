@@ -31,7 +31,6 @@
         @change-rating="(rating) => handleChangeRating(props.item, rating)"
       />
     </template>
-    <v-progress-linear slot="progress" indeterminate />
   </virtual-data-table>
 </template>
 
