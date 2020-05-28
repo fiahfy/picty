@@ -44,7 +44,7 @@ import {
   computed,
   SetupContext,
 } from '@vue/composition-api'
-import { layoutExplorerStore, settingsStore } from '~/store'
+import { settingsStore } from '~/store'
 
 const fileUrl = require('file-url')
 const workerPromisify = require('@fiahfy/worker-promisify').default
@@ -121,7 +121,7 @@ export default defineComponent({
           data: props.item.path,
         })
         const filepathes = data.filter((filepath: string) =>
-          layoutExplorerStore.isFileAvailable({ filepath })
+          settingsStore.isFileAvailable({ filepath })
         )
         if (filepathes.length) {
           state.imageUrl = fileUrl(filepathes[0])
