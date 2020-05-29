@@ -2,29 +2,46 @@
   <v-navigation-drawer
     class="activity-bar"
     permanent
-    app
     mini-variant
     mini-variant-width="48"
   >
-    <v-list dense class="py-0">
-      <v-list-item-group v-model="index" color="primary">
+    <v-layout column fill-height>
+      <v-list dense class="py-0">
+        <v-list-item-group v-model="index" color="primary">
+          <v-list-item
+            v-for="item in items"
+            :key="item.id"
+            :title="item.title | accelerator(item.accelerator)"
+            class="py-1"
+            @click="() => handleClickItem(item)"
+          >
+            <v-list-item-icon>
+              <v-icon v-text="item.icon" />
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+      <v-spacer />
+      <v-list dense class="py-0">
         <v-list-item
-          v-for="item in items"
-          :key="item.id"
+          :title="'Settings' | accelerator('CmdOrCtrl+,')"
           class="py-1"
-          :title="item.title | accelerator(item.accelerator)"
-          @click="() => handleClickItem(item)"
+          @click="() => handleClickItem(items[0])"
         >
           <v-list-item-icon>
-            <v-icon v-text="item.icon" />
+            <v-icon>mdi-cog</v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
+            <v-list-item-title>Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-      </v-list-item-group>
-    </v-list>
+      </v-list>
+    </v-layout>
   </v-navigation-drawer>
 </template>
 
@@ -58,13 +75,6 @@ const items = [
     title: 'Bookmark',
     accelerator: 'CmdOrCtrl+Shift+B',
     path: '/bookmark',
-  },
-  {
-    id: 'settings',
-    icon: 'mdi-cog',
-    title: 'Settings',
-    accelerator: 'CmdOrCtrl+,',
-    path: '/settings',
   },
 ]
 

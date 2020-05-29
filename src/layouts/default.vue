@@ -5,11 +5,10 @@
     @dragover.native.prevent
   >
     <title-bar />
-    <activity-bar />
+    <sidebar />
     <v-content class="fill-height">
       <router-view class="fill-height" />
     </v-content>
-    <notification-bar />
     <viewer-dialog />
   </v-app>
 </template>
@@ -20,16 +19,14 @@ import {
   watchEffect,
   SetupContext,
 } from '@vue/composition-api'
-import ActivityBar from '~/components/ActivityBar.vue'
-import NotificationBar from '~/components/NotificationBar.vue'
+import Sidebar from '~/components/Sidebar.vue'
 import TitleBar from '~/components/TitleBar.vue'
 import ViewerDialog from '~/components/ViewerDialog.vue'
 import { settingsStore } from '~/store'
 
 export default defineComponent({
   components: {
-    ActivityBar,
-    NotificationBar,
+    Sidebar,
     TitleBar,
     ViewerDialog,
   },
