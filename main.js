@@ -206,8 +206,6 @@ const createWindow = async () => {
     }
   }
 
-  const path = '#/explorer'
-
   mainWindow = new BrowserWindow(options)
 
   if (dev) {
@@ -224,7 +222,7 @@ const createWindow = async () => {
     console.log(`Added Extension: ${name}`) // eslint-disable-line no-console
 
     // Wait for nuxt to build
-    const url = `http://localhost:${port}/${path}`
+    const url = `http://localhost:${port}`
     const pollServer = () => {
       http
         .get(url, (res) => {
@@ -239,7 +237,7 @@ const createWindow = async () => {
     }
     pollServer()
   } else {
-    mainWindow.loadURL(`file://${__dirname}/app/index.html${path}`)
+    mainWindow.loadURL(`file://${__dirname}/app/index.html`)
   }
 
   windowState.manage(mainWindow)

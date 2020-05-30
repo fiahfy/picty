@@ -30,7 +30,7 @@
         <v-list-item
           :title="'Settings' | accelerator('CmdOrCtrl+,')"
           class="py-1"
-          @click="() => handleClickItem(items[0])"
+          @click="handleClickSettings"
         >
           <v-list-item-icon>
             <v-icon>mdi-cog</v-icon>
@@ -96,10 +96,15 @@ export default defineComponent({
       context.root.$router.push(item.path)
     }
 
+    const handleClickSettings = () => {
+      context.root.$eventBus.$emit('show-settings')
+    }
+
     return {
       index,
       items,
       handleClickItem,
+      handleClickSettings,
     }
   },
 })

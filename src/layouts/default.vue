@@ -9,6 +9,7 @@
     <v-content class="fill-height">
       <router-view class="fill-height" />
     </v-content>
+    <settings-dialog />
     <viewer-dialog />
   </v-app>
 </template>
@@ -21,6 +22,7 @@ import {
 } from '@vue/composition-api'
 import Sidebar from '~/components/Sidebar.vue'
 import TitleBar from '~/components/TitleBar.vue'
+import SettingsDialog from '~/components/SettingsDialog.vue'
 import ViewerDialog from '~/components/ViewerDialog.vue'
 import { settingsStore } from '~/store'
 
@@ -28,6 +30,7 @@ export default defineComponent({
   components: {
     Sidebar,
     TitleBar,
+    SettingsDialog,
     ViewerDialog,
   },
   setup(_props: {}, context: SetupContext) {
