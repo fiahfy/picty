@@ -31,7 +31,7 @@
     </td>
     <td class="no-wrap">
       <template v-if="item.modified_at">
-        {{ item.modified_at | moment('YYYY-MM-DD HH:mm') }}
+        {{ item.modified_at | date('YYYY-MM-DD HH:mm') }}
       </template>
     </td>
   </tr>

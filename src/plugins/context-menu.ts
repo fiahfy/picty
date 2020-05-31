@@ -1,5 +1,4 @@
 import { Plugin } from '@nuxt/types'
-import Vue from 'vue'
 import { open } from '@fiahfy/electron-context-menu'
 
 const contextMenu = { open }

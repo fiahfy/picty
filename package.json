@@ -19,8 +19,8 @@
     "file-url": "^3.0.0",
     "nuxt": "^2.12.2",
     "typeface-roboto": "^0.0.75",
+    "vue-date-fns": "^1.1.0",
     "vue-long-press-directive": "^1.0.2",
-    "vue-moment": "^4.1.0",
     "vuex-module-decorators": "^0.17.0",
     "vuex-persistedstate": "^3.0.1"
   },

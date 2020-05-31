@@ -11,9 +11,6 @@
       "~/*": ["./src/*"],
       "~~/*": ["./*"],
     },
-    "types": [
-      "vuetify",
-    ],
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,

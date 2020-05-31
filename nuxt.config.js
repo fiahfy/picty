@@ -90,10 +90,9 @@ module.exports = {
     '~/plugins/event-bus',
     '~/plugins/filter',
     '~/plugins/ipc-listener',
-    '~/plugins/vue-long-press',
-    '~/plugins/vue-moment',
-    '~/plugins/vuetify',
     '~/plugins/vue-composition-api',
+    '~/plugins/vue-date-fns',
+    '~/plugins/vue-long-press',
     '~/plugins/vuex-persistedstate',
   ],
 

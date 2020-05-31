@@ -7,10 +7,10 @@
   >
     <v-layout column fill-height>
       <v-list dense class="py-0">
-        <v-list-item-group v-model="index" color="primary">
+        <v-list-item-group :value="index" color="primary">
           <v-list-item
             v-for="item in items"
-            :key="item.id"
+            :key="item.navigator"
             :title="item.title | accelerator(item.accelerator)"
             class="py-1"
             @click="() => handleClickItem(item)"
@@ -46,15 +46,10 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  watchEffect,
-  SetupContext,
-  ref,
-} from '@vue/composition-api'
+import { defineComponent, computed, SetupContext } from '@vue/composition-api'
 
 type Item = {
-  id: string
+  navigator: string
   icon: string
   title: string
   accelerator: string
@@ -63,37 +58,31 @@ type Item = {
 
 const items = [
   {
-    id: 'explorer',
+    navigator: 'files',
     icon: 'mdi-compass',
     title: 'Explorer',
     accelerator: 'CmdOrCtrl+Shift+E',
-    path: '/explorer',
-  },
-  {
-    id: 'bookmark',
-    icon: 'mdi-star',
-    title: 'Bookmark',
-    accelerator: 'CmdOrCtrl+Shift+B',
-    path: '/bookmark',
   },
 ]
 
-const useList = (context: SetupContext) => {
-  const index = ref(0)
-  watchEffect(() => {
-    index.value = items.findIndex(
-      (item) => item.path === context.root.$route.path
-    )
-  })
-  return { index }
+type Props = {
+  navigator?: string
 }
 
 export default defineComponent({
-  setup(_props: {}, context: SetupContext) {
-    const { index } = useList(context)
+  props: {
+    navigator: {
+      type: String,
+      default: undefined,
+    },
+  },
+  setup(props: Props, context: SetupContext) {
+    const index = computed(() => {
+      return items.findIndex((item) => item.navigator === props.navigator)
+    })
 
     const handleClickItem = (item: Item) => {
-      context.root.$router.push(item.path)
+      context.emit('click-menu', item)
     }
 
     const handleClickSettings = () => {
@@ -101,8 +90,8 @@ export default defineComponent({
     }
 
     return {
-      index,
       items,
+      index,
       handleClickItem,
       handleClickSettings,
     }

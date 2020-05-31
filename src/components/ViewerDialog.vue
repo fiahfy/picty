@@ -1,9 +1,9 @@
 <template>
   <v-dialog
     v-model="state.active"
+    :transition="false"
     class="viewer-dialog"
     content-class="viewer-dialog-content"
-    transition="no-transition"
     fullscreen
     hide-overlay
     @keydown="handleKeyDown"

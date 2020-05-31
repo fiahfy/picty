@@ -1,7 +1,11 @@
 <template>
-  <v-navigation-drawer class="sidebar" permanent app>
+  <v-navigation-drawer class="sidebar" permanent app :width="width">
     <v-row class="fill-height flex-nowrap" no-gutters>
-      <activity-bar class="flex-shrink-0" />
+      <activity-bar
+        class="flex-shrink-0"
+        :navigator="state.navigator"
+        @click-menu="handleClickMenu"
+      />
       <v-layout column>
         <v-toolbar flat dense class="flex-grow-0">
           <span class="overline user-select-none flex-grow-0">
@@ -19,11 +23,11 @@
             item-key="path"
           >
             <template v-slot:prepend="{ item, open }">
-              <v-icon v-if="!item.file">
+              <v-icon v-if="item.children">
                 {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
               </v-icon>
               <v-icon v-else>
-                {{ state.files[item.file] }}
+                {{ state.files[item.file] || 'mdi-file' }}
               </v-icon>
             </template>
           </v-treeview>
@@ -34,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from '@vue/composition-api'
+import { defineComponent, reactive, computed } from '@vue/composition-api'
 import ActivityBar from '~/components/ActivityBar.vue'
 
 const workerPromisify = require('@fiahfy/worker-promisify').default
@@ -48,6 +52,7 @@ export default defineComponent({
   },
   setup(_props: {}) {
     const state = reactive({
+      navigator: 'files',
       active: [],
       files: {
         html: 'mdi-language-html5',
@@ -69,6 +74,15 @@ export default defineComponent({
       ],
     })
 
+    const width = computed(() => {
+      return state.navigator ? 512 : 48
+    })
+
+    const handleClickMenu = (item: any) => {
+      state.navigator =
+        state.navigator === item.navigator ? undefined : item.navigator
+    }
+
     const fetchChildren = async (item: any) => {
       try {
         const { data } = await worker.postMessage({
@@ -89,6 +103,8 @@ export default defineComponent({
 
     return {
       state,
+      width,
+      handleClickMenu,
       fetchChildren,
     }
   },
