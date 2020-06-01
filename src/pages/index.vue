@@ -44,6 +44,8 @@ import {
   computed,
   reactive,
   SetupContext,
+  onMounted,
+  onUnmounted,
 } from '@vue/composition-api'
 import ExplorerToolbar from '~/components/ExplorerToolbar.vue'
 import ExplorerCard from '~/components/ExplorerCard.vue'
@@ -79,6 +81,7 @@ export default defineComponent({
       sortDesc: false,
       query: '',
     })
+
     const component = computed(() =>
       explorerStore.listStyle === 'list' ? ExplorerTable : ExplorerGridList
     )
@@ -241,6 +244,14 @@ export default defineComponent({
     }
 
     load()
+
+    onMounted(() => {
+      context.root.$eventBus.$on('change-location', move)
+    })
+
+    onUnmounted(() => {
+      context.root.$eventBus.$off('change-location', move)
+    })
 
     return {
       state,
