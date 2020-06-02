@@ -86,10 +86,10 @@ module.exports = {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    '~/plugins/context-menu',
+    '~/plugins/electron-accelerator-formatter',
+    '~/plugins/electron-context-menu',
     '~/plugins/event-bus',
-    '~/plugins/filter',
-    '~/plugins/ipc-listener',
+    '~/plugins/ipc',
     '~/plugins/vue-composition-api',
     '~/plugins/vue-date-fns',
     '~/plugins/vue-long-press',
