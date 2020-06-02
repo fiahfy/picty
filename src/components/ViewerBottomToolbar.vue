@@ -171,7 +171,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .viewer-bottom-toolbar ::v-deep .v-input--slider {
   left: 0;
   position: absolute;

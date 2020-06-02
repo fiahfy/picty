@@ -149,7 +149,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .virtual-data-table.sticky-headers {
   ::v-deep .v-data-table__wrapper {
     height: 100%;

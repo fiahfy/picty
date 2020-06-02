@@ -23,7 +23,7 @@
           </v-icon>
         </template>
         <template v-slot:label="{ item }">
-          <div @click="() => handleClickItem(item)">
+          <div class="node" @click="() => handleClickItem(item)">
             {{ item.name }}
           </div>
         </template>
@@ -37,8 +37,8 @@ import path from 'path'
 import {
   defineComponent,
   reactive,
-  SetupContext,
   watch,
+  SetupContext,
 } from '@vue/composition-api'
 import ActivityBar from '~/components/ActivityBar.vue'
 import { explorerStore } from '~/store'
@@ -70,10 +70,14 @@ export default defineComponent({
     ActivityBar,
   },
   setup(_props: {}, context: SetupContext) {
-    const state = reactive({
-      active: [] as string[],
-      open: [] as string[],
-      items: [] as Item[],
+    const state = reactive<{
+      active: string[]
+      open: string[]
+      items: Item[]
+    }>({
+      active: [],
+      open: [],
+      items: [],
     })
 
     const fetch = async (dirpath: string) => {
@@ -162,3 +166,13 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.files-navigator ::v-deep .node {
+  cursor: pointer;
+  height: 40px;
+  line-height: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>

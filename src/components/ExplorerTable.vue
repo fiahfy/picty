@@ -133,7 +133,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .explorer-table {
   outline: none;
   ::v-deep .v-datatable {

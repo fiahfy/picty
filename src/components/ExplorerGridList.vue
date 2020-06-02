@@ -127,7 +127,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .explorer-grid-list ::v-deep .v-data-iterator {
   outline: none;
 }

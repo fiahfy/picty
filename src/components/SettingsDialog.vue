@@ -275,7 +275,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .v-card {
   height: 100% !important;
 }

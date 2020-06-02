@@ -330,7 +330,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @keyframes fade-in {
   from {
     opacity: 0;

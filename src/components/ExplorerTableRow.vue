@@ -147,7 +147,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .explorer-table-row {
   cursor: pointer;
   td {

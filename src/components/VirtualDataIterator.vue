@@ -190,7 +190,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .virtual-data-iterator > .container {
   position: relative;
   .v-data-iterator {

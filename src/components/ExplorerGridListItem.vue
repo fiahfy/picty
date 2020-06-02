@@ -152,7 +152,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .explorer-grid-list-item .v-card {
   cursor: pointer;
   position: relative;
