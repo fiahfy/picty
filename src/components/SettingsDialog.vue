@@ -67,22 +67,15 @@
                   </v-btn>
                 </v-text-field>
                 <v-select
-                  v-model="previewWidth"
-                  :items="previewWidths"
-                  label="Preview Width"
-                  dense
-                  class="pt-3"
-                />
-                <v-select
                   v-model="thumbnailStyle"
-                  :items="thumbnailStyles"
+                  :items="thumbnailStyleOptions"
                   label="Thumbnail Style"
                   dense
                   class="pt-3"
                 />
                 <v-select
                   v-model="thumbnailHeight"
-                  :items="thumbnailHeights"
+                  :items="thumbnailHeightOptions"
                   label="Thumbnail Height"
                   dense
                   class="pt-3"
@@ -127,24 +120,21 @@ import {
 } from '@vue/composition-api'
 import TitleBar from '~/components/TitleBar.vue'
 import { settingsStore, queryHistoryStore } from '~/store'
+import {
+  defaultExtensions,
+  thumbnailStyles,
+  thumbnailHeights,
+} from '~/store/settings'
 
-const settings = require('~/consts/settings')
-
-const defaultExtensions = settings.DEFAULT_EXTENSIONS
-const previewWidths = Object.keys(settings.PREVIEW_WIDTHS).map((size) => ({
-  value: size,
-  text: size.charAt(0).toUpperCase() + size.slice(1),
-}))
-const thumbnailStyles = settings.THUMBNAIL_STYLES.map((style: string) => ({
+const thumbnailStyleOptions = thumbnailStyles.map((style: string) => ({
   value: style,
   text: style.charAt(0).toUpperCase() + style.slice(1),
 }))
-const thumbnailHeights = Object.keys(settings.THUMBNAIL_HEIGHTS).map(
-  (height) => ({
-    value: height,
-    text: height.charAt(0).toUpperCase() + height.slice(1),
-  })
-)
+
+const thumbnailHeightOptions = Object.keys(thumbnailHeights).map((height) => ({
+  value: height,
+  text: height.charAt(0).toUpperCase() + height.slice(1),
+}))
 
 export default defineComponent({
   components: {
@@ -193,14 +183,6 @@ export default defineComponent({
       },
       set: (value) => {
         settingsStore.setQueryHistorySize({ queryHistorySize: value })
-      },
-    })
-    const previewWidth = computed({
-      get: () => {
-        return settingsStore.previewWidth
-      },
-      set: (value) => {
-        settingsStore.setPreviewWidth({ previewWidth: value })
       },
     })
     const thumbnailStyle = computed({
@@ -255,15 +237,13 @@ export default defineComponent({
     return {
       state,
       defaultExtensions,
-      previewWidths,
-      thumbnailStyles,
-      thumbnailHeights,
+      thumbnailStyleOptions,
+      thumbnailHeightOptions,
       darkTheme,
       fullScreen,
       recursive,
       imageStretched,
       queryHistorySize,
-      previewWidth,
       thumbnailStyle,
       thumbnailHeight,
       extensions,

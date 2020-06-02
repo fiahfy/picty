@@ -40,7 +40,7 @@ import { defineComponent, SetupContext, computed } from '@vue/composition-api'
 import ExplorerGridListHeader from '~/components/ExplorerGridListHeader.vue'
 import ExplorerGridListItem from '~/components/ExplorerGridListItem.vue'
 import VirtualDataIterator from '~/components/VirtualDataIterator.vue'
-import viewport from '~/utils/viewport'
+import * as viewport from '~/utils/viewport'
 import { settingsStore } from '~/store'
 
 const sizes = [6, 4, 3, 2, 2]
@@ -83,7 +83,7 @@ export default defineComponent({
   },
   setup(props: Props, context: SetupContext) {
     const classes = computed(() => {
-      return viewport.SIZES.map((size, i) => {
+      return viewport.sizes.map((size, i) => {
         return `col-${size}-${sizes[i]}`
       })
     })

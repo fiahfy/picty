@@ -1,6 +1,30 @@
 import path from 'path'
 import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
-import * as settings from '~/consts/settings'
+
+export const defaultExtensions = [
+  'BMP',
+  'GIF',
+  'ICO',
+  'JPEG',
+  'JPG',
+  'PNG',
+  'SVG',
+  'TIF',
+  'TIFF',
+  'WEBP',
+]
+
+export const thumbnailHeights: { [key in ThumbnailHeight]: number } = {
+  short: 128,
+  medium: 192,
+  tall: 256,
+}
+
+export const thumbnailStyles = ['cover', 'contain']
+
+export type PreviewWidth = 'none' | 'narrow' | 'medium' | 'wide'
+export type ThumbnailStyle = 'cover' | 'contain'
+export type ThumbnailHeight = 'short' | 'medium' | 'tall'
 
 @Module({
   name: 'settings',
@@ -13,17 +37,12 @@ export default class SettingsModule extends VuexModule {
   recursive = false
   imageStretched = false
   queryHistorySize = 1000
-  previewWidth = 'medium'
-  thumbnailStyle = 'cover'
-  thumbnailHeight = 'medium'
-  extensions = [...settings.DEFAULT_EXTENSIONS]
-
-  get previewWidthValue() {
-    return settings.PREVIEW_WIDTHS[this.previewWidth]
-  }
+  thumbnailStyle: ThumbnailStyle = 'cover'
+  thumbnailHeight: ThumbnailHeight = 'medium'
+  extensions = [...defaultExtensions]
 
   get thumbnailHeightValue() {
-    return settings.THUMBNAIL_HEIGHTS[this.thumbnailHeight]
+    return thumbnailHeights[this.thumbnailHeight]
   }
 
   get isFileAvailable() {
@@ -65,17 +84,16 @@ export default class SettingsModule extends VuexModule {
   }
 
   @Mutation
-  setPreviewWidth({ previewWidth }: { previewWidth: string }) {
-    this.previewWidth = previewWidth
-  }
-
-  @Mutation
-  setThumbnailStyle({ thumbnailStyle }: { thumbnailStyle: string }) {
+  setThumbnailStyle({ thumbnailStyle }: { thumbnailStyle: ThumbnailStyle }) {
     this.thumbnailStyle = thumbnailStyle
   }
 
   @Mutation
-  setThumbnailHeight({ thumbnailHeight }: { thumbnailHeight: string }) {
+  setThumbnailHeight({
+    thumbnailHeight,
+  }: {
+    thumbnailHeight: ThumbnailHeight
+  }) {
     this.thumbnailHeight = thumbnailHeight
   }
 

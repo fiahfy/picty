@@ -2,21 +2,12 @@
   <tr class="explorer-table-row">
     <td>
       <v-layout class="align-center">
-        <v-menu :disabled="menuDisabled" open-on-hover right offset-x>
-          <template v-slot:activator="{ on }">
-            <v-icon slot="activator" :color="iconColor" class="pa-1" v-on="on">
-              {{ icon }}
-            </v-icon>
-          </template>
-          <v-card :width="previewWidthValue">
-            <v-img :src="state.imageUrl" contain @error="handleError">
-              <div class="py-3 text-center caption">
-                {{ message }}
-              </div>
-            </v-img>
-          </v-card>
-        </v-menu>
-        <span :title="item.name" class="ellipsis spacer">{{ item.name }}</span>
+        <v-icon :color="iconColor" class="pa-1">
+          {{ icon }}
+        </v-icon>
+        <span :title="item.name" class="text-truncate spacer">
+          {{ item.name }}
+        </span>
         <span
           v-if="state.images !== ''"
           class="images text-xs-right caption ml-3"
@@ -46,7 +37,6 @@ import {
 } from '@vue/composition-api'
 import { settingsStore } from '~/store'
 
-const fileUrl = require('file-url')
 const workerPromisify = require('@fiahfy/worker-promisify').default
 const Worker = require('~/workers/fetch.worker.js')
 
@@ -67,7 +57,6 @@ export default defineComponent({
     const state = reactive({
       loading: false,
       error: false,
-      imageUrl: '',
       images: '',
     })
 
@@ -91,44 +80,21 @@ export default defineComponent({
       }
       return 'grey'
     })
-    const message = computed(() => {
-      if (state.loading) {
-        return 'Loading...'
-      }
-      if (state.error) {
-        return 'Load failed'
-      }
-      return state.imageUrl ? '' : 'No images'
-    })
-    const previewWidthValue = computed(() => {
-      return settingsStore.previewWidthValue
-    })
-    const menuDisabled = computed(() => {
-      return !previewWidthValue.value
-    })
 
     const load = async () => {
       if (!props.item.directory) {
-        state.imageUrl = fileUrl(props.item.path)
-      } else {
-        state.loading = true
-        const { data } = await worker.postMessage({
-          key: props.item.path,
-          data: props.item.path,
-        })
-        const filepathes = data.filter((filepath: string) =>
-          settingsStore.isFileAvailable({ filepath })
-        )
-        if (filepathes.length) {
-          state.imageUrl = fileUrl(filepathes[0])
-        }
-        state.images = filepathes.length
-        state.loading = false
+        return
       }
-    }
-
-    const handleError = () => {
-      state.error = true
+      state.loading = true
+      const { data } = await worker.postMessage({
+        key: props.item.path,
+        data: props.item.path,
+      })
+      const filepathes = data.filter((filepath: string) =>
+        settingsStore.isFileAvailable({ filepath })
+      )
+      state.images = filepathes.length
+      state.loading = false
     }
 
     load()
@@ -138,10 +104,6 @@ export default defineComponent({
       rating,
       icon,
       iconColor,
-      message,
-      previewWidthValue,
-      menuDisabled,
-      handleError,
     }
   },
 })

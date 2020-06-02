@@ -46,7 +46,7 @@ export default defineComponent({
 
     const getClass = (header: any) => {
       return [
-        'text-start',
+        'text-no-wrap',
         'sortable',
         header.value === props.sortBy ? 'active' : '',
         props.sortDesc ? 'desc' : 'asc',

@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import viewport from '~/utils/viewport'
+import * as viewport from '~/utils/viewport'
 
 export default {
   props: {
