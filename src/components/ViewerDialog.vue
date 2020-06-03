@@ -69,10 +69,11 @@ import TitleBar from '~/components/TitleBar.vue'
 import ViewerBottomToolbar from '~/components/ViewerBottomToolbar.vue'
 import ViewerContent from '~/components/ViewerContent.vue'
 import ViewerTopToolbar from '~/components/ViewerTopToolbar.vue'
+import { File } from '~/models'
 import { settingsStore } from '~/store'
 
 const workerPromisify = require('@fiahfy/worker-promisify').default
-const Worker = require('~/workers/file.worker.js')
+const Worker = require('~/workers/fetch-files.worker')
 
 const worker = workerPromisify(new Worker())
 
@@ -109,9 +110,9 @@ export default defineComponent({
       loading: boolean
       toolbar?: boolean
       timer?: number
-      target?: any
-      files: any[]
-      currentFile?: any
+      target?: File
+      files: File[]
+      currentFile?: File
       error?: Error
       scale: number
       originalScale: number
@@ -120,7 +121,7 @@ export default defineComponent({
       loading: false,
       toolbar: undefined,
       timer: undefined,
-      target: unescape,
+      target: undefined,
       files: [],
       currentFile: undefined,
       error: undefined,
@@ -137,7 +138,7 @@ export default defineComponent({
     })
     const page = computed(
       () =>
-        state.files.findIndex((file) => file.path === state.currentFile.path) +
+        state.files.findIndex((file) => file.path === state.currentFile?.path) +
         1
     )
     const maxPage = computed(() => state.files.length)
@@ -145,7 +146,7 @@ export default defineComponent({
     const topToolbar = ref<InstanceType<typeof ViewerTopToolbar>>(null)
     const bottomToolbar = ref<InstanceType<typeof ViewerBottomToolbar>>(null)
 
-    const showViewer = (file: any) => {
+    const showViewer = (file: File) => {
       state.active = true
       state.target = file
       load()
@@ -176,7 +177,7 @@ export default defineComponent({
       resetTimer()
     }
     const load = async () => {
-      if (state.loading) {
+      if (state.loading || !state.target) {
         return
       }
       state.loading = true
@@ -187,20 +188,19 @@ export default defineComponent({
         let files = []
         if (state.target.directory) {
           const { data } = await worker.postMessage({
-            method: 'listFiles',
-            args: [state.target.path, { recursive: settingsStore.recursive }],
+            dirPath: state.target.path,
+            recursive: settingsStore.recursive,
           })
           files = data
         } else {
           const { data } = await worker.postMessage({
-            method: 'listFiles',
-            args: [state.target.dirpath],
+            dirPath: state.target.dirpath,
           })
           files = data
           state.currentFile = state.target
         }
-        state.files = files.filter((file: any) =>
-          settingsStore.isFileAvailable({ filepath: file.path })
+        state.files = files.filter((file: File) =>
+          settingsStore.isFileAvailable({ filePath: file.path })
         )
         if (!state.currentFile) {
           state.currentFile = state.files[0]

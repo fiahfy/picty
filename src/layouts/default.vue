@@ -46,8 +46,8 @@ export default defineComponent({
       if (!files.length) {
         return
       }
-      const filepath = files[0].path // eslint-disable-line
-      // layoutStore.open({ filepath })
+      const filePath = files[0].path // eslint-disable-line
+      // layoutStore.open({ filePath })
     }
 
     // layoutStore.initialize()

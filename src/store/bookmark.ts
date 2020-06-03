@@ -6,35 +6,35 @@ import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
   namespaced: true,
 })
 export default class BookmarkModule extends VuexModule {
-  bookmarks: { [filepath: string]: { createdAt: number } } = {}
+  bookmarks: { [filePath: string]: { createdAt: number } } = {}
 
   get isBookmarked() {
-    return ({ filepath }: { filepath: string }) => !!this.bookmarks[filepath]
+    return ({ filePath }: { filePath: string }) => !!this.bookmarks[filePath]
   }
 
   @Action
-  toggleBookmarked({ filepath }: { filepath: string }) {
-    if (this.isBookmarked({ filepath })) {
-      this.removeBookmark({ filepath })
+  toggleBookmarked({ filePath }: { filePath: string }) {
+    if (this.isBookmarked({ filePath })) {
+      this.removeBookmark({ filePath })
     } else {
-      this.addBookmark({ filepath })
+      this.addBookmark({ filePath })
     }
   }
 
   @Mutation
-  addBookmark({ filepath }: { filepath: string }) {
+  addBookmark({ filePath }: { filePath: string }) {
     this.bookmarks = {
       ...this.bookmarks,
-      [filepath]: {
+      [filePath]: {
         createdAt: Date.now(),
       },
     }
   }
 
   @Mutation
-  removeBookmark({ filepath }: { filepath: string }) {
+  removeBookmark({ filePath }: { filePath: string }) {
     const bookmarks = { ...this.bookmarks }
-    delete bookmarks[filepath]
+    delete bookmarks[filePath]
     this.bookmarks = bookmarks
   }
 }

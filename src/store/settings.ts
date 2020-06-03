@@ -46,11 +46,11 @@ export default class SettingsModule extends VuexModule {
   }
 
   get isFileAvailable() {
-    return ({ filepath }: { filepath: string }) => {
-      if (!filepath) {
+    return ({ filePath }: { filePath: string }) => {
+      if (!filePath) {
         return false
       }
-      const ext = path.extname(filepath).toUpperCase()
+      const ext = path.extname(filePath).toUpperCase()
       if (!ext) {
         return false
       }

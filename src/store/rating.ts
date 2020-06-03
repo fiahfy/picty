@@ -6,22 +6,22 @@ import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
   namespaced: true,
 })
 export default class RatingModule extends VuexModule {
-  ratings: { [filepath: string]: number } = {}
+  ratings: { [filePath: string]: number } = {}
 
   get getRating() {
-    return ({ filepath }: { filepath: string }) => this.ratings[filepath] || 0
+    return ({ filePath }: { filePath: string }) => this.ratings[filePath] || 0
   }
 
   @Mutation
-  setRating({ filepath, rating }: { filepath: string; rating: number }) {
+  setRating({ filePath, rating }: { filePath: string; rating: number }) {
     if (rating) {
       this.ratings = {
         ...this.ratings,
-        [filepath]: rating,
+        [filePath]: rating,
       }
     } else {
       const ratings = { ...this.ratings }
-      delete ratings[filepath]
+      delete ratings[filePath]
       this.ratings = ratings
     }
   }

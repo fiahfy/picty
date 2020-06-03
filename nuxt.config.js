@@ -11,7 +11,7 @@ module.exports = {
         config.target = 'electron-renderer'
         config.output.globalObject = 'this'
         config.module.rules.unshift({
-          test: /\.worker\.js$/,
+          test: /\.worker\.ts$/,
           loader: 'worker-loader',
         })
       }

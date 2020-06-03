@@ -40,15 +40,16 @@ import { defineComponent, SetupContext, computed } from '@vue/composition-api'
 import ExplorerGridListHeader from '~/components/ExplorerGridListHeader.vue'
 import ExplorerGridListItem from '~/components/ExplorerGridListItem.vue'
 import VirtualDataIterator from '~/components/VirtualDataIterator.vue'
-import * as viewport from '~/utils/viewport'
+import { File } from '~/models'
 import { settingsStore } from '~/store'
+import * as viewport from '~/utils/viewport'
 
 const sizes = [6, 4, 3, 2, 2]
 
 type Props = {
-  items: any[]
+  items: File[]
   loading: boolean
-  selected?: any
+  selected?: File
   sortBy?: string
   sortDesc: boolean
 }
@@ -95,19 +96,19 @@ export default defineComponent({
     const handleChangeSortOption = (option: { by: string; desc: boolean }) => {
       context.emit('change-sort-option', option)
     }
-    const handleClickRow = (file: any) => {
+    const handleClickRow = (file: File) => {
       context.emit('click-item', file)
     }
-    const handleDoubleClickRow = (file: any) => {
+    const handleDoubleClickRow = (file: File) => {
       context.emit('dblclick-item', file)
     }
-    const handleContextMenuRow = (file: any) => {
+    const handleContextMenuRow = (file: File) => {
       context.emit('contextmenu-item', file)
     }
-    const handleChangeRating = (file: any, rating: number) => {
+    const handleChangeRating = (file: File, rating: number) => {
       context.emit('change-rating', file, rating)
     }
-    const isSelected = (file: any) => {
+    const isSelected = (file: File) => {
       return file.path === props.selected?.path
     }
 

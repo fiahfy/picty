@@ -6,18 +6,18 @@ import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
   namespaced: true,
 })
 export default class ViewModule extends VuexModule {
-  views: { [filepath: string]: number } = {}
+  views: { [filePath: string]: number } = {}
 
   get getViews() {
-    return ({ filepath }: { filepath: string }) => this.views[filepath] || 0
+    return ({ filePath }: { filePath: string }) => this.views[filePath] || 0
   }
 
   @Mutation
-  incrementViews({ filepath }: { filepath: string }) {
-    const view = this.views[filepath] || 0
+  incrementViews({ filePath }: { filePath: string }) {
+    const view = this.views[filePath] || 0
     this.views = {
       ...this.views,
-      [filepath]: view + 1,
+      [filePath]: view + 1,
     }
   }
 }

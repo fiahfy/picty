@@ -37,12 +37,13 @@ import {
   SetupContext,
 } from '@vue/composition-api'
 import fileUrl from 'file-url'
+import { File } from '~/models'
 import { settingsStore } from '~/store'
 
 type Props = {
   loading: boolean
   scale: number
-  file: any
+  file: File
 }
 
 export default defineComponent({

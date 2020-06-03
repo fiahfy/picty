@@ -38,6 +38,7 @@
 </template>
 
 <script lang="ts">
+import path from 'path'
 import { remote, MenuItemConstructorOptions } from 'electron'
 import {
   defineComponent,
@@ -51,6 +52,7 @@ import ExplorerToolbar from '~/components/ExplorerToolbar.vue'
 import ExplorerCard from '~/components/ExplorerCard.vue'
 import ExplorerTable from '~/components/ExplorerTable.vue'
 import ExplorerGridList from '~/components/ExplorerGridList.vue'
+import { File } from '~/models'
 import {
   explorerStore,
   settingsStore,
@@ -61,8 +63,7 @@ import {
 } from '~/store'
 
 const workerPromisify = require('@fiahfy/worker-promisify').default
-const Worker = require('~/workers/file.worker.js')
-const fileUtil = require('~/utils/file').default
+const Worker = require('~/workers/fetch-files.worker')
 
 const worker = workerPromisify(new Worker())
 
@@ -72,12 +73,20 @@ export default defineComponent({
     ExplorerCard,
   },
   setup(_props: {}, context: SetupContext) {
-    const state = reactive({
+    const state = reactive<{
+      loading: boolean
+      error?: Error
+      files: File[]
+      selectedFile?: File
+      sortBy: keyof File
+      sortDesc: boolean
+      query: string
+    }>({
       loading: false,
       error: undefined,
-      files: [] as any[],
+      files: [] as File[],
       selectedFile: undefined,
-      sortBy: '',
+      sortBy: 'name',
       sortDesc: false,
       query: '',
     })
@@ -90,10 +99,16 @@ export default defineComponent({
         .concat()
         .sort((a, b) => {
           let result = 0
-          if (a[state.sortBy] > b[state.sortBy]) {
-            result = 1
-          } else if (a[state.sortBy] < b[state.sortBy]) {
-            result = -1
+          const aValue = a[state.sortBy]
+          const bValue = b[state.sortBy]
+          if (aValue && bValue) {
+            if (aValue > bValue) {
+              result = 1
+            } else if (aValue < bValue) {
+              result = -1
+            }
+          } else {
+            result = 0
           }
           return state.sortDesc ? -1 * result : result
         })
@@ -113,20 +128,19 @@ export default defineComponent({
       state.files = []
       try {
         const { data } = await worker.postMessage({
-          method: 'listFiles',
-          args: [explorerStore.location],
+          dirPath: explorerStore.location,
         })
         state.files = data
           .filter(
-            (file: any) =>
+            (file: File) =>
               file.directory ||
-              settingsStore.isFileAvailable({ filepath: file.path })
+              settingsStore.isFileAvailable({ filePath: file.path })
           )
-          .map((file: any) => {
+          .map((file: File) => {
             return {
               ...file,
-              rating: ratingStore.getRating({ filepath: file.path }),
-              views: viewStore.getViews({ filepath: file.path }),
+              rating: ratingStore.getRating({ filePath: file.path }),
+              views: viewStore.getViews({ filePath: file.path }),
             }
           })
       } catch (e) {
@@ -168,12 +182,12 @@ export default defineComponent({
       }
     }
     const handleClickUpward = () => {
-      const path = fileUtil.getFile(explorerStore.location).dirpath
-      move(path)
+      const filePath = path.dirname(explorerStore.location)
+      move(filePath)
     }
     const handleClickHome = () => {
-      const path = remote.app.getPath('home')
-      move(path)
+      const filePath = remote.app.getPath('home')
+      move(filePath)
     }
     const handleClickReload = () => {
       load()
@@ -185,13 +199,13 @@ export default defineComponent({
       state.sortDesc = state.sortBy === header.value ? !state.sortDesc : false
       state.sortBy = header.value
     }
-    const handleClickItem = (file: any) => {
+    const handleClickItem = (file: File) => {
       state.selectedFile = file
     }
-    const handleDoubleClickItem = (file: any) => {
+    const handleDoubleClickItem = (file: File) => {
       move(file.path)
     }
-    const handleContextMenuItem = (file: any) => {
+    const handleContextMenuItem = (file: File) => {
       state.selectedFile = file
       let template: MenuItemConstructorOptions[] = [
         {
@@ -215,9 +229,9 @@ export default defineComponent({
       }
       context.root.$contextMenu.open(template)
     }
-    const handleChangeRating = (file: any, rating: number) => {
+    const handleChangeRating = (file: File, rating: number) => {
       ratingStore.setRating({
-        filepath: file.path,
+        filePath: file.path,
         rating,
       })
       state.files = state.files.map((item) =>
@@ -236,7 +250,7 @@ export default defineComponent({
       by,
       desc,
     }: {
-      by: string
+      by: keyof File
       desc: boolean
     }) => {
       state.sortBy = by

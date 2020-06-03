@@ -39,6 +39,7 @@ import { defineComponent, SetupContext } from '@vue/composition-api'
 import ExplorerTableHeader from '~/components/ExplorerTableHeader.vue'
 import ExplorerTableRow from '~/components/ExplorerTableRow.vue'
 import VirtualDataTable from '~/components/VirtualDataTable.vue'
+import { File } from '~/models'
 
 const headers = [
   {
@@ -63,9 +64,9 @@ const headers = [
 ]
 
 type Props = {
-  items: any[]
+  items: File[]
   loading: boolean
-  selected?: any
+  selected?: File
   sortBy?: string
   sortDesc: boolean
 }
@@ -100,22 +101,22 @@ export default defineComponent({
   },
   setup(props: Props, context: SetupContext) {
     const handleScroll = () => {}
-    const handleClickHeader = (header: any) => {
+    const handleClickHeader = (header: File) => {
       context.emit('click-header', header)
     }
-    const handleClickRow = (file: any) => {
+    const handleClickRow = (file: File) => {
       context.emit('click-item', file)
     }
-    const handleDoubleClickRow = (file: any) => {
+    const handleDoubleClickRow = (file: File) => {
       context.emit('dblclick-item', file)
     }
-    const handleContextMenuRow = (file: any) => {
+    const handleContextMenuRow = (file: File) => {
       context.emit('contextmenu-item', file)
     }
-    const handleChangeRating = (file: any, rating: number) => {
+    const handleChangeRating = (file: File, rating: number) => {
       context.emit('change-rating', file, rating)
     }
-    const isSelected = (file: any) => {
+    const isSelected = (file: File) => {
       return file.path === props.selected?.path
     }
 

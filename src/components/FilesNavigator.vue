@@ -41,10 +41,11 @@ import {
   SetupContext,
 } from '@vue/composition-api'
 import ActivityBar from '~/components/ActivityBar.vue'
+import { File } from '~/models'
 import { explorerStore } from '~/store'
 
 const workerPromisify = require('@fiahfy/worker-promisify').default
-const Worker = require('~/workers/file.worker.js')
+const Worker = require('~/workers/fetch-files.worker')
 
 const worker = workerPromisify(new Worker())
 
@@ -80,13 +81,10 @@ export default defineComponent({
       items: [],
     })
 
-    const fetch = async (dirpath: string) => {
+    const fetch = async (dirPath: string) => {
       try {
-        const { data } = await worker.postMessage({
-          method: 'listFiles',
-          args: [dirpath],
-        })
-        return data.map((item: any) => {
+        const { data } = await worker.postMessage({ dirPath })
+        return data.map((item: File) => {
           return {
             name: item.name,
             path: item.path,
@@ -97,22 +95,22 @@ export default defineComponent({
         return []
       }
     }
-    const loadDirectory = async (dirpath: string) => {
-      const dirnames = dirpath.split(path.sep)
+    const loadDirectory = async (dirPath: string) => {
+      const dirnames = dirPath.split(path.sep)
 
       // for osx
       if (dirnames[0] === '') {
         dirnames[0] = '/'
       }
-      if (dirpath === '') {
-        dirpath = '/'
+      if (dirPath === '') {
+        dirPath = '/'
       }
 
       if (dirnames.length === 1 && !state.items.length) {
         state.items = [
           {
-            name: dirpath,
-            path: dirpath,
+            name: dirPath,
+            path: dirPath,
             children: [],
           },
         ]
@@ -126,10 +124,10 @@ export default defineComponent({
       )
       if (item) {
         if (item.children && !item.children.length) {
-          item.children = await fetch(dirpath)
+          item.children = await fetch(dirPath)
         }
-        if (!state.open.includes(dirpath)) {
-          state.open = [...state.open, dirpath]
+        if (!state.open.includes(dirPath)) {
+          state.open = [...state.open, dirPath]
         }
       }
     }
@@ -138,20 +136,22 @@ export default defineComponent({
       item.children = await fetch(item.path)
     }
     const handleClickItem = (item: Item) => {
-      context.root.$eventBus.$emit('change-location', item.path)
+      if (item.children) {
+        context.root.$eventBus.$emit('change-location', item.path)
+      }
     }
 
     watch(
       () => explorerStore.location,
       async (location) => {
-        const dirpathes = location.split(path.sep).reduce((carry, dirname) => {
-          const dirpath = carry.length
+        const dirPathes = location.split(path.sep).reduce((carry, dirname) => {
+          const dirPath = carry.length
             ? carry[carry.length - 1] + path.sep + dirname
             : dirname
-          return [...carry, dirpath]
+          return [...carry, dirPath]
         }, [] as string[])
-        for (const dirpath of dirpathes) {
-          await loadDirectory(dirpath)
+        for (const dirPath of dirPathes.slice(0, -1)) {
+          await loadDirectory(dirPath)
         }
         state.active = [location]
       }

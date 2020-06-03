@@ -10,9 +10,10 @@
 
 <script lang="ts">
 import { defineComponent, computed, SetupContext } from '@vue/composition-api'
+import { File } from '~/models'
 
 type Props = {
-  file: any
+  file: File
 }
 
 export default defineComponent({

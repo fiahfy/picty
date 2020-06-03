@@ -49,16 +49,17 @@ import {
   reactive,
   computed,
 } from '@vue/composition-api'
+import { File } from '~/models'
 import { settingsStore } from '~/store'
 
 const fileUrl = require('file-url')
 const workerPromisify = require('@fiahfy/worker-promisify').default
-const Worker = require('~/workers/fetch.worker.js')
+const Worker = require('~/workers/fetch-pathes.worker')
 
 const worker = workerPromisify(new Worker())
 
 type Props = {
-  item: any
+  item: File
 }
 
 export default defineComponent({
@@ -119,15 +120,15 @@ export default defineComponent({
         state.loading = true
         const { data } = await worker.postMessage({
           key: props.item.path,
-          data: props.item.path,
+          path: props.item.path,
         })
-        const filepathes = data.filter((filepath: string) =>
-          settingsStore.isFileAvailable({ filepath })
+        const filePathes = data.filter((filePath: string) =>
+          settingsStore.isFileAvailable({ filePath })
         )
-        if (filepathes.length) {
-          state.imageUrl = fileUrl(filepathes[0])
+        if (filePathes.length) {
+          state.imageUrl = fileUrl(filePathes[0])
         }
-        state.images = filepathes.length
+        state.images = filePathes.length
         state.loading = false
       }
     }
