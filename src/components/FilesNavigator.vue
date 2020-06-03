@@ -11,19 +11,20 @@
         :open.sync="state.open"
         :items="state.items"
         :load-children="handleLoadChildren"
-        dense
         item-key="path"
+        dense
+        class="user-select-none"
       >
         <template v-slot:prepend="{ item, open }">
-          <v-icon v-if="item.children">
+          <v-icon v-if="item.children" color="blue lighten-3">
             {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
           </v-icon>
-          <v-icon v-else>
-            {{ icons[item.extension] || 'mdi-file' }}
+          <v-icon v-else color="green lighten-3">
+            mdi-file-image
           </v-icon>
         </template>
         <template v-slot:label="{ item }">
-          <div class="node" @click="() => handleClickItem(item)">
+          <div class="node text-truncate" @click="() => handleClickItem(item)">
             {{ item.name }}
           </div>
         </template>
@@ -42,23 +43,12 @@ import {
 } from '@vue/composition-api'
 import ActivityBar from '~/components/ActivityBar.vue'
 import { File } from '~/models'
-import { explorerStore } from '~/store'
+import { explorerStore, settingsStore } from '~/store'
 
 const workerPromisify = require('@fiahfy/worker-promisify').default
 const Worker = require('~/workers/fetch-files.worker')
 
 const worker = workerPromisify(new Worker())
-
-const icons = {
-  html: 'mdi-language-html5',
-  js: 'mdi-nodejs',
-  json: 'mdi-json',
-  md: 'mdi-markdown',
-  pdf: 'mdi-file-pdf',
-  png: 'mdi-file-image',
-  txt: 'mdi-file-document-outline',
-  xls: 'mdi-file-excel',
-}
 
 type Item = {
   name: string
@@ -84,13 +74,19 @@ export default defineComponent({
     const fetch = async (dirPath: string) => {
       try {
         const { data } = await worker.postMessage({ dirPath })
-        return data.map((item: File) => {
-          return {
-            name: item.name,
-            path: item.path,
-            children: item.directory ? [] : undefined,
-          }
-        })
+        return data
+          .filter(
+            (file: File) =>
+              file.directory ||
+              settingsStore.isFileAvailable({ filePath: file.path })
+          )
+          .map((item: File) => {
+            return {
+              name: item.name,
+              path: item.path,
+              children: item.directory ? [] : undefined,
+            }
+          })
       } catch (e) {
         return []
       }
@@ -159,7 +155,6 @@ export default defineComponent({
 
     return {
       state,
-      icons,
       handleLoadChildren,
       handleClickItem,
     }
@@ -172,7 +167,5 @@ export default defineComponent({
   cursor: pointer;
   height: 40px;
   line-height: 40px;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 </style>

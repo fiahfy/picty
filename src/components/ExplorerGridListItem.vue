@@ -86,16 +86,10 @@ export default defineComponent({
       },
     })
     const icon = computed(() => {
-      if (props.item.exists) {
-        return props.item.directory ? 'mdi-folder' : 'mdi-image'
-      }
-      return 'mdi-image-broken-variant'
+      return props.item.directory ? 'mdi-folder' : 'mdi-file-image'
     })
     const iconColor = computed(() => {
-      if (props.item.exists) {
-        return props.item.directory ? 'blue lighten-3' : 'green lighten-3'
-      }
-      return 'grey'
+      return props.item.directory ? 'blue lighten-3' : 'green lighten-3'
     })
     const message = computed(() => {
       if (state.loading) {

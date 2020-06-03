@@ -1,5 +1,12 @@
 <template>
-  <v-navigation-drawer class="sidebar" permanent app :width="width">
+  <v-navigation-drawer
+    ref="sidebar"
+    class="sidebar"
+    permanent
+    app
+    :width="width"
+    :class="classes"
+  >
     <v-row class="fill-height flex-nowrap" no-gutters>
       <activity-bar
         class="flex-shrink-0"
@@ -7,14 +14,26 @@
         @click-menu="handleClickMenu"
       />
       <FilesNavigator />
+      <div v-show="state.navigator" ref="resizer" class="resizer" />
     </v-row>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed } from '@vue/composition-api'
+import {
+  defineComponent,
+  reactive,
+  computed,
+  ref,
+  onMounted,
+  onUnmounted,
+} from '@vue/composition-api'
 import ActivityBar from '~/components/ActivityBar.vue'
 import FilesNavigator from '~/components/FilesNavigator.vue'
+import { settingsStore } from '~/store'
+
+const offsetWidth = 48
+const minWidth = 256
 
 export default defineComponent({
   components: {
@@ -23,23 +42,101 @@ export default defineComponent({
   },
   setup(_props: {}) {
     const state = reactive({
+      resizing: false,
       navigator: 'files',
     })
 
-    const width = computed(() => {
-      return state.navigator ? 512 : 48
+    const width = computed({
+      get() {
+        return state.navigator
+          ? settingsStore.sidebarWidth + offsetWidth
+          : offsetWidth
+      },
+      set(value: number) {
+        settingsStore.setSidebarWidth({ sidebarWidth: value - offsetWidth })
+      },
     })
+    const classes = computed(() => {
+      return { resizing: state.resizing }
+    })
+
+    const sidebar = ref<Vue>(null)
+    const resizer = ref<HTMLDivElement>(null)
 
     const handleClickMenu = (item: any) => {
       state.navigator =
         state.navigator === item.navigator ? undefined : item.navigator
     }
 
+    onMounted(() => {
+      if (resizer.value) {
+        resizer.value.addEventListener('mousedown', handleMouseDown)
+        document.addEventListener('mouseup', handleMouseUp)
+      }
+    })
+
+    onUnmounted(() => {
+      if (resizer.value) {
+        resizer.value.removeEventListener('mousedown', handleMouseDown)
+        document.removeEventListener('mouseup', handleMouseUp)
+      }
+    })
+
+    const handleMouseDown = () => {
+      state.resizing = true
+      document.body.style.cursor = 'ew-resize'
+      document.addEventListener('mousemove', handleMouseMove)
+    }
+
+    const handleMouseUp = () => {
+      if (!state.resizing) {
+        return
+      }
+      state.resizing = false
+      width.value = (sidebar.value?.$el as HTMLElement).offsetWidth ?? 0
+      document.body.style.cursor = ''
+      document.removeEventListener('mousemove', handleMouseMove)
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (sidebar.value) {
+        const width = e.clientX - sidebar.value.$el.getBoundingClientRect().left
+        if (
+          width < minWidth + offsetWidth ||
+          width > window.innerWidth - minWidth
+        ) {
+          return
+        }
+        ;(sidebar.value?.$el as HTMLElement).style.width = width + 'px'
+      }
+    }
+
     return {
       state,
       width,
+      classes,
+      sidebar,
+      resizer,
       handleClickMenu,
     }
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.sidebar {
+  &.resizing {
+    transition: none;
+  }
+  ::v-deep .v-navigation-drawer__content {
+    .resizer {
+      position: absolute;
+      right: -1px;
+      height: 100%;
+      padding: 0 1px;
+      z-index: 1;
+      cursor: ew-resize;
+    }
+  }
+}
+</style>

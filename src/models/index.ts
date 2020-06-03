@@ -1,2 +1,1 @@
-import File from '~/models/file'
-export { File }
+export * from '~/models/file'

@@ -7,7 +7,7 @@
         icon
         @click="handleClickView"
       >
-        <v-icon>mdi-image</v-icon>
+        <v-icon>mdi-play-box-outline</v-icon>
       </v-btn>
       <v-spacer />
       <v-btn :color="listColor" title="List" icon @click="handleClickList">

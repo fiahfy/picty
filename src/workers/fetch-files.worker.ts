@@ -1,37 +1,22 @@
 import fs from 'fs'
 import path from 'path'
-import File from '~/models/file'
+import { File } from '~/models'
 
 const ctx: Worker = self as any
 
 const getFile = (filePath: string): File => {
-  const file: File = {
+  const stat = fs.lstatSync(filePath)
+  return {
     path: filePath,
     name: path.basename(filePath),
     dirpath: path.dirname(filePath),
     dirname: path.basename(path.dirname(filePath)),
-    exists: false,
-    directory: false,
-    file: false,
-    link: false,
-  }
-  try {
-    const stat = fs.lstatSync(filePath)
-    return {
-      ...file,
-      exists: true,
-      directory: stat.isDirectory(),
-      file: stat.isFile(),
-      link: stat.isSymbolicLink(),
-      createdAt: stat.birthtimeMs,
-      modifiedAt: stat.mtimeMs,
-      accessedAt: stat.atimeMs,
-    }
-  } catch (e) {
-    if (e.code === 'ENOENT') {
-      return file
-    }
-    throw e
+    directory: stat.isDirectory(),
+    file: stat.isFile(),
+    link: stat.isSymbolicLink(),
+    createdAt: stat.birthtimeMs,
+    modifiedAt: stat.mtimeMs,
+    accessedAt: stat.atimeMs,
   }
 }
 

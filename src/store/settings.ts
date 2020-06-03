@@ -40,6 +40,7 @@ export default class SettingsModule extends VuexModule {
   thumbnailStyle: ThumbnailStyle = 'cover'
   thumbnailHeight: ThumbnailHeight = 'medium'
   extensions = [...defaultExtensions]
+  sidebarWidth = 256
 
   get thumbnailHeightValue() {
     return thumbnailHeights[this.thumbnailHeight]
@@ -100,5 +101,10 @@ export default class SettingsModule extends VuexModule {
   @Mutation
   setExtensions({ extensions }: { extensions: string[] }) {
     this.extensions = extensions
+  }
+
+  @Mutation
+  setSidebarWidth({ sidebarWidth }: { sidebarWidth: number }) {
+    this.sidebarWidth = sidebarWidth
   }
 }

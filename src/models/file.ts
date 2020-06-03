@@ -1,13 +1,12 @@
-export default interface File {
+export type File = {
   path: string
   name: string
   dirpath: string
   dirname: string
-  exists: boolean
   directory: boolean
   file: boolean
   link: boolean
-  createdAt?: number
-  modifiedAt?: number
-  accessedAt?: number
+  createdAt: number
+  modifiedAt: number
+  accessedAt: number
 }
