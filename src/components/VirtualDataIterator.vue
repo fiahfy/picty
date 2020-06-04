@@ -10,7 +10,6 @@
         :items="renderItems"
         disable-sort
         disable-pagination
-        content-tag="v-layout"
         row
         wrap
       >
@@ -130,6 +129,7 @@ export default {
   },
   mounted() {
     this.container = this.$el.querySelector('.v-data-iterator')
+    this.container.classList.add('scrollbar')
     this.container.addEventListener('scroll', this.onScroll)
     this.observer = new ResizeObserver(this.onResize)
     this.observer.observe(this.container)
@@ -196,32 +196,11 @@ export default {
   .v-data-iterator {
     overflow-y: scroll;
     text-align: center;
-    &::-webkit-scrollbar {
-      width: 14px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: #eee;
-      &:hover {
-        background-color: #ddd;
-      }
-      &:active {
-        background-color: #ccc;
-      }
-    }
   }
   ::v-deep .header {
     position: sticky;
     top: 0;
     z-index: 1;
-  }
-}
-.theme--dark .virtual-data-iterator .v-data-iterator::-webkit-scrollbar-thumb {
-  background-color: #424242 !important;
-  &:hover {
-    background-color: #505050 !important;
-  }
-  &:active {
-    background-color: #616161 !important;
   }
 }
 </style>

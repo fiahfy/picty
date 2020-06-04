@@ -211,36 +211,6 @@ export default defineComponent({
       state.loading = false
     }
 
-    watch(
-      () => state.active,
-      (active) => {
-        if (active) {
-          showToolbar()
-          document.body.addEventListener('mousemove', handleMouseMove)
-          context.root.$nextTick(() => {
-            const content = document.querySelector('.viewer-dialog-content')
-            if (content?.parentElement instanceof HTMLElement) {
-              content.parentElement.focus()
-            }
-          })
-        } else {
-          state.toolbar = undefined
-          clearTimer()
-          document.body.removeEventListener('mousemove', handleMouseMove)
-        }
-      }
-    )
-
-    onMounted(() => {
-      context.root.$eventBus.$on('showViewer', showViewer)
-      context.root.$eventBus.$on('hideViewer', hideViewer)
-    })
-
-    onUnmounted(() => {
-      context.root.$eventBus.$off('showViewer', showViewer)
-      context.root.$eventBus.$off('hideViewer', hideViewer)
-    })
-
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.keyCode) {
         case 27:
@@ -306,6 +276,36 @@ export default defineComponent({
       state.scale = scale
       state.originalScale = scale
     }
+
+    watch(
+      () => state.active,
+      (active) => {
+        if (active) {
+          showToolbar()
+          document.body.addEventListener('mousemove', handleMouseMove)
+          context.root.$nextTick(() => {
+            const content = document.querySelector('.viewer-dialog-content')
+            if (content?.parentElement instanceof HTMLElement) {
+              content.parentElement.focus()
+            }
+          })
+        } else {
+          state.toolbar = undefined
+          clearTimer()
+          document.body.removeEventListener('mousemove', handleMouseMove)
+        }
+      }
+    )
+
+    onMounted(() => {
+      context.root.$eventBus.$on('showViewer', showViewer)
+      context.root.$eventBus.$on('hideViewer', hideViewer)
+    })
+
+    onUnmounted(() => {
+      context.root.$eventBus.$off('showViewer', showViewer)
+      context.root.$eventBus.$off('hideViewer', hideViewer)
+    })
 
     return {
       state,

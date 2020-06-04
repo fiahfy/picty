@@ -29,6 +29,7 @@
     "@fiahfy/ico-convert": "^0.0.7",
     "@nuxt/typescript-build": "^0.6.6",
     "@nuxtjs/eslint-config-typescript": "^2.0.0",
+    "@types/file-url": "^3.0.2",
     "@types/node": "12.12.25",
     "cross-env": "^7.0.2",
     "electron": "^8.3.0",

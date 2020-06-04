@@ -71,13 +71,6 @@ export default defineComponent({
     const canBack = computed(() => historyStore.canBack)
     const canForward = computed(() => historyStore.canForward)
 
-    watch(
-      () => explorerStore.location,
-      (location) => {
-        state.location = location
-      }
-    )
-
     const handleClickBack = () => {
       context.emit('click-back')
     }
@@ -100,6 +93,13 @@ export default defineComponent({
     const handleContextMenuLocation = () => {}
     const handleContextMenuBack = () => {}
     const handleContextMenuForward = () => {}
+
+    watch(
+      () => explorerStore.location,
+      (location) => {
+        state.location = location
+      }
+    )
 
     return {
       state,

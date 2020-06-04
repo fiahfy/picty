@@ -5,7 +5,7 @@
         Files
       </span>
     </v-toolbar>
-    <v-row no-gutters class="overflow-auto">
+    <v-row no-gutters class="overflow-auto scrollbar">
       <v-treeview
         :active.sync="state.active"
         :open.sync="state.open"

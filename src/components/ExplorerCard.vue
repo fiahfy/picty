@@ -91,10 +91,6 @@ export default defineComponent({
       searchInput: '',
     })
 
-    watchEffect(() => {
-      state.queryInput = props.query
-    })
-
     const listColor = computed(() => {
       return explorerStore.listStyle === 'list' ? 'primary' : null
     })
@@ -135,6 +131,11 @@ export default defineComponent({
     const handleClickItemDelete = (item: string) => {
       queryHistoryStore.removeHistory({ history: item })
     }
+
+    watchEffect(() => {
+      state.queryInput = props.query
+    })
+
     return {
       state,
       listColor,

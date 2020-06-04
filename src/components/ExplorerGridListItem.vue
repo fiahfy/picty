@@ -43,6 +43,7 @@
 </template>
 
 <script lang="ts">
+import fileUrl from 'file-url'
 import {
   defineComponent,
   SetupContext,
@@ -52,7 +53,6 @@ import {
 import { File } from '~/models'
 import { settingsStore } from '~/store'
 
-const fileUrl = require('file-url')
 const workerPromisify = require('@fiahfy/worker-promisify').default
 const Worker = require('~/workers/fetch-pathes.worker')
 
@@ -148,53 +148,55 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.explorer-grid-list-item .v-card {
-  cursor: pointer;
-  position: relative;
-  &[active] {
-    background-color: #f5f5f5;
-  }
-  &:hover {
-    background-color: #eeeeee;
-  }
-  .v-image .images {
-    background-color: rgba(0, 0, 0, 0.8);
-    position: absolute;
-    bottom: 0;
-    right: 0;
-  }
-  .v-icon {
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-  .v-card__title .title {
-    display: table;
-    > div {
-      display: table-cell;
-      height: 28px;
-      vertical-align: middle;
-      > span {
-        display: -webkit-box;
-        line-height: 1.2;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        word-break: break-all;
-        /* autoprefixer: ignore next */
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+.explorer-grid-list-item {
+  .v-card {
+    cursor: pointer;
+    position: relative;
+    .v-image .images {
+      background-color: rgba(0, 0, 0, 0.8);
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+    .v-icon {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    .v-card__title .title {
+      display: table;
+      > div {
+        display: table-cell;
+        height: 28px;
+        vertical-align: middle;
+        > span {
+          display: -webkit-box;
+          line-height: 1.2;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-all;
+          /* autoprefixer: ignore next */
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+        }
       }
     }
+    .v-rating {
+      height: 32px;
+    }
   }
-  .v-rating {
-    height: 32px;
+  &.selected .v-card {
+    background-color: #f5f5f5;
+  }
+  &:hover .v-card {
+    background-color: #eeeeee;
   }
 }
-.theme--dark .explorer-grid-list-item .v-card {
-  &[active] {
+.theme--dark .explorer-grid-list-item {
+  &.selected .v-card {
     background-color: #505050;
   }
-  &:hover {
+  &:hover .v-card {
     background-color: #616161;
   }
 }

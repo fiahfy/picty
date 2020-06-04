@@ -41,7 +41,10 @@ export default defineComponent({
     FilesNavigator,
   },
   setup(_props: {}) {
-    const state = reactive({
+    const state = reactive<{
+      resizing: boolean
+      navigator?: string
+    }>({
       resizing: false,
       navigator: 'files',
     })
@@ -63,24 +66,10 @@ export default defineComponent({
     const sidebar = ref<Vue>(null)
     const resizer = ref<HTMLDivElement>(null)
 
-    const handleClickMenu = (item: any) => {
+    const handleClickMenu = (menu: { navigator: string }) => {
       state.navigator =
-        state.navigator === item.navigator ? undefined : item.navigator
+        state.navigator === menu.navigator ? undefined : menu.navigator
     }
-
-    onMounted(() => {
-      if (resizer.value) {
-        resizer.value.addEventListener('mousedown', handleMouseDown)
-        document.addEventListener('mouseup', handleMouseUp)
-      }
-    })
-
-    onUnmounted(() => {
-      if (resizer.value) {
-        resizer.value.removeEventListener('mousedown', handleMouseDown)
-        document.removeEventListener('mouseup', handleMouseUp)
-      }
-    })
 
     const handleMouseDown = () => {
       state.resizing = true
@@ -110,6 +99,20 @@ export default defineComponent({
         ;(sidebar.value?.$el as HTMLElement).style.width = width + 'px'
       }
     }
+
+    onMounted(() => {
+      if (resizer.value) {
+        resizer.value.addEventListener('mousedown', handleMouseDown)
+        document.addEventListener('mouseup', handleMouseUp)
+      }
+    })
+
+    onUnmounted(() => {
+      if (resizer.value) {
+        resizer.value.removeEventListener('mousedown', handleMouseDown)
+        document.removeEventListener('mouseup', handleMouseUp)
+      }
+    })
 
     return {
       state,

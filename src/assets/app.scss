@@ -17,8 +17,34 @@ html {
 .overflow-y-scroll {
   overflow-y: scroll;
 }
-// transition
-.no-transition-leave-active,
-.no-transition-enter-active {
-  transition: none;
+.scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+// theme
+.theme--light {
+  .scrollbar {
+    &::-webkit-scrollbar-thumb {
+      background-color: #e0e0e0;
+      &:hover {
+        background-color: #d2d2d2;
+      }
+      &:active {
+        background-color: #bdbdbd;
+      }
+    }
+  }
+}
+.theme--dark {
+  .scrollbar {
+    &::-webkit-scrollbar-thumb {
+      background-color: #424242;
+      &:hover {
+        background-color: #505050;
+      }
+      &:active {
+        background-color: #616161;
+      }
+    }
+  }
 }

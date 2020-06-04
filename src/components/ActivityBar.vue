@@ -9,18 +9,18 @@
       <v-list dense class="py-0">
         <v-list-item-group :value="index" color="primary">
           <v-list-item
-            v-for="item in items"
-            :key="item.navigator"
-            :title="item.title | accelerator(item.accelerator)"
+            v-for="menu in menus"
+            :key="menu.navigator"
+            :title="menu.title | accelerator(menu.accelerator)"
             class="py-1"
-            @click="() => handleClickItem(item)"
+            @click="() => handleClickItem(menu)"
           >
             <v-list-item-icon>
-              <v-icon v-text="item.icon" />
+              <v-icon v-text="menu.icon" />
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title v-text="item.title" />
+              <v-list-item-title v-text="menu.title" />
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -48,15 +48,14 @@
 <script lang="ts">
 import { defineComponent, computed, SetupContext } from '@vue/composition-api'
 
-type Item = {
+type Menu = {
   navigator: string
   icon: string
   title: string
   accelerator: string
-  path: string
 }
 
-const items = [
+const menus: Menu[] = [
   {
     navigator: 'files',
     icon: 'mdi-compass',
@@ -78,11 +77,11 @@ export default defineComponent({
   },
   setup(props: Props, context: SetupContext) {
     const index = computed(() => {
-      return items.findIndex((item) => item.navigator === props.navigator)
+      return menus.findIndex((menu) => menu.navigator === props.navigator)
     })
 
-    const handleClickItem = (item: Item) => {
-      context.emit('click-menu', item)
+    const handleClickItem = (menu: Menu) => {
+      context.emit('click-menu', menu)
     }
 
     const handleClickSettings = () => {
@@ -90,7 +89,7 @@ export default defineComponent({
     }
 
     return {
-      items,
+      menus,
       index,
       handleClickItem,
       handleClickSettings,

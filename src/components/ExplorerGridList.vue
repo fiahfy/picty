@@ -12,7 +12,6 @@
     hide-default-footer
     sticky-headers
     tabindex="0"
-    @scroll="handleScroll"
   >
     <template v-slot:header>
       <explorer-grid-list-header
@@ -25,7 +24,7 @@
       <explorer-grid-list-item
         :key="props.item.path"
         :item="props.item"
-        :class="classes"
+        :class="[...classes, isSelected(props.item) && 'selected']"
         @click.native="() => handleClickRow(props.item)"
         @dblclick.native="() => handleDoubleClickRow(props.item)"
         @contextmenu.native="() => handleContextMenuRow(props.item)"
@@ -48,8 +47,8 @@ const sizes = [6, 4, 3, 2, 2]
 
 type Props = {
   items: File[]
-  loading: boolean
   selected?: File
+  loading: boolean
   sortBy?: string
   sortDesc: boolean
 }
@@ -65,13 +64,13 @@ export default defineComponent({
       type: Array,
       default: () => [],
     },
-    loading: {
-      type: Boolean,
-      default: true,
-    },
     selected: {
       type: Object,
       default: undefined,
+    },
+    loading: {
+      type: Boolean,
+      default: true,
     },
     sortBy: {
       type: String,
@@ -92,7 +91,9 @@ export default defineComponent({
       return settingsStore.thumbnailHeightValue + 77
     })
 
-    const handleScroll = () => {}
+    const isSelected = (file: File) => {
+      return file.path === props.selected?.path
+    }
     const handleChangeSortOption = (option: { by: string; desc: boolean }) => {
       context.emit('change-sort-option', option)
     }
@@ -108,28 +109,18 @@ export default defineComponent({
     const handleChangeRating = (file: File, rating: number) => {
       context.emit('change-rating', file, rating)
     }
-    const isSelected = (file: File) => {
-      return file.path === props.selected?.path
-    }
 
     return {
       classes,
       estimatedHeight,
       sizes,
-      handleScroll,
+      isSelected,
       handleChangeSortOption,
       handleClickRow,
       handleDoubleClickRow,
       handleContextMenuRow,
       handleChangeRating,
-      isSelected,
     }
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.explorer-grid-list ::v-deep .v-data-iterator {
-  outline: none;
-}
-</style>

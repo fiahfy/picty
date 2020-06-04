@@ -10,7 +10,6 @@
     hide-default-footer
     sticky-headers
     tabindex="0"
-    @scroll="handleScroll"
   >
     <template v-slot:header="props">
       <explorer-table-header
@@ -65,8 +64,8 @@ const headers = [
 
 type Props = {
   items: File[]
-  loading: boolean
   selected?: File
+  loading: boolean
   sortBy?: string
   sortDesc: boolean
 }
@@ -82,13 +81,13 @@ export default defineComponent({
       type: Array,
       default: () => [],
     },
-    loading: {
-      type: Boolean,
-      default: true,
-    },
     selected: {
       type: Object,
       default: undefined,
+    },
+    loading: {
+      type: Boolean,
+      default: true,
     },
     sortBy: {
       type: String,
@@ -100,7 +99,9 @@ export default defineComponent({
     },
   },
   setup(props: Props, context: SetupContext) {
-    const handleScroll = () => {}
+    const isSelected = (file: File) => {
+      return file.path === props.selected?.path
+    }
     const handleClickHeader = (header: File) => {
       context.emit('click-header', header)
     }
@@ -116,29 +117,16 @@ export default defineComponent({
     const handleChangeRating = (file: File, rating: number) => {
       context.emit('change-rating', file, rating)
     }
-    const isSelected = (file: File) => {
-      return file.path === props.selected?.path
-    }
 
     return {
       headers,
-      handleScroll,
+      isSelected,
       handleClickHeader,
       handleClickRow,
       handleDoubleClickRow,
       handleContextMenuRow,
       handleChangeRating,
-      isSelected,
     }
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.explorer-table {
-  outline: none;
-  ::v-deep .v-datatable {
-    min-width: 768px;
-  }
-}
-</style>

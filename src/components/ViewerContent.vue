@@ -28,6 +28,7 @@
 </template>
 
 <script lang="ts">
+import fileUrl from 'file-url'
 import {
   defineComponent,
   computed,
@@ -36,7 +37,6 @@ import {
   watch,
   SetupContext,
 } from '@vue/composition-api'
-import fileUrl from 'file-url'
 import { File } from '~/models'
 import { settingsStore } from '~/store'
 

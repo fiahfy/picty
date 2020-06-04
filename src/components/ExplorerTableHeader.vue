@@ -18,8 +18,14 @@
 <script lang="ts">
 import { defineComponent, SetupContext } from '@vue/composition-api'
 
+type Header = {
+  text: string
+  value: string
+  width?: number
+}
+
 type Props = {
-  header: any[]
+  header: Header[]
   sortBy?: string
   sortDesc: boolean
 }
@@ -40,11 +46,7 @@ export default defineComponent({
     },
   },
   setup(props: Props, context: SetupContext) {
-    const handleClickRow = (header: any) => {
-      context.emit('click', header)
-    }
-
-    const getClass = (header: any) => {
+    const getClass = (header: Header) => {
       return [
         'text-no-wrap',
         'sortable',
@@ -52,16 +54,20 @@ export default defineComponent({
         props.sortDesc ? 'desc' : 'asc',
       ]
     }
-    const getStyle = (header: any) => {
+    const getStyle = (header: Header) => {
       return {
         width: header.width ? `${header.width}px` : undefined,
       }
     }
 
+    const handleClickRow = (header: Header) => {
+      context.emit('click', header)
+    }
+
     return {
-      handleClickRow,
       getClass,
       getStyle,
+      handleClickRow,
     }
   },
 })

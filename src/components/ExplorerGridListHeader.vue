@@ -42,12 +42,21 @@ const orders = [
 ]
 
 type Props = {
-  header: any[]
   sortBy?: string
   sortDesc: boolean
 }
 
 export default defineComponent({
+  props: {
+    sortBy: {
+      type: String,
+      default: undefined,
+    },
+    sortDesc: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup(props: Props, context: SetupContext) {
     const orderModel = computed<{
       by: string
@@ -57,7 +66,7 @@ export default defineComponent({
         return { by: props.sortBy ?? 'name', desc: props.sortDesc }
       },
       set(option) {
-        context.emit('change-sort-options', option)
+        context.emit('change-sort-option', option)
       },
     })
 

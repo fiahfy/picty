@@ -93,6 +93,7 @@ export default {
   },
   mounted() {
     this.container = this.$el.querySelector('.v-data-table__wrapper')
+    this.container.classList.add('scrollbar')
     this.container.addEventListener('scroll', this.onScroll)
     this.observer = new ResizeObserver(this.onResize)
     this.observer.observe(this.container)
@@ -155,18 +156,6 @@ export default {
     height: 100%;
     overflow-y: scroll;
     background: inherit;
-    &::-webkit-scrollbar {
-      width: 14px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: #eee;
-      &:hover {
-        background-color: #ddd;
-      }
-      &:active {
-        background-color: #ccc;
-      }
-    }
     table {
       table-layout: fixed;
       background: inherit;
@@ -183,18 +172,6 @@ export default {
         }
       }
     }
-  }
-}
-.theme--dark
-  .virtual-data-table.sticky-headers
-  ::v-deep
-  .v-data-table__wrapper::-webkit-scrollbar-thumb {
-  background-color: #424242 !important;
-  &:hover {
-    background-color: #505050 !important;
-  }
-  &:active {
-    background-color: #616161 !important;
   }
 }
 </style>

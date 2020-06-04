@@ -195,9 +195,9 @@ export default defineComponent({
     const handleClickView = () => {
       context.root.$eventBus.$emit('showViewer', state.selectedFile)
     }
-    const handleClickHeader = (header: any) => {
+    const handleClickHeader = (header: { value: string }) => {
       state.sortDesc = state.sortBy === header.value ? !state.sortDesc : false
-      state.sortBy = header.value
+      state.sortBy = header.value as keyof File
     }
     const handleClickItem = (file: File) => {
       state.selectedFile = file
@@ -250,10 +250,10 @@ export default defineComponent({
       by,
       desc,
     }: {
-      by: keyof File
+      by: string
       desc: boolean
     }) => {
-      state.sortBy = by
+      state.sortBy = by as keyof File
       state.sortDesc = desc
     }
 
