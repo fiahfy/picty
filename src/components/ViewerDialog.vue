@@ -215,6 +215,7 @@ export default defineComponent({
         case 27:
           hideViewer()
           break
+        // TODO: handle keydown
         // case 37:
         //   layoutViewerStore.movePreviousFile()
         //   break

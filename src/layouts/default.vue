@@ -46,11 +46,10 @@ export default defineComponent({
       if (!files.length) {
         return
       }
+      // TODO: handle file drop
       const filePath = files[0].path // eslint-disable-line
       // layoutStore.open({ filePath })
     }
-
-    // layoutStore.initialize()
 
     return {
       handleContextMenu,

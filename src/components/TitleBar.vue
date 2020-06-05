@@ -16,7 +16,6 @@
 <script lang="ts">
 import { remote } from 'electron'
 import { defineComponent } from '@vue/composition-api'
-// import { layoutStore } from '~/store'
 
 type Props = {
   app: boolean
@@ -30,6 +29,7 @@ export default defineComponent({
     },
   },
   setup(_props: Props) {
+    // TODO: handle titlebar visibility
     // const titleBar = computed(() => layoutStore.titleBar)
 
     // @see https://github.com/electron/electron/issues/16385

@@ -1,3 +1,4 @@
+// TODO: handle ipc event
 // import { Plugin } from '@nuxt/types'
 // import { ipcRenderer } from 'electron'
 // import { layoutStore } from '~/store'

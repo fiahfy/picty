@@ -37,13 +37,13 @@ import {
   watch,
   SetupContext,
 } from '@vue/composition-api'
-import { Item } from '~/models'
+import { File } from '~/models'
 import { settingsStore } from '~/store'
 
 type Props = {
   loading: boolean
   scale: number
-  item: Item
+  file: File
 }
 
 export default defineComponent({
@@ -56,7 +56,7 @@ export default defineComponent({
       type: Number,
       default: 1,
     },
-    item: {
+    file: {
       type: Object,
       default: () => ({}),
     },
@@ -96,8 +96,6 @@ export default defineComponent({
     const imageClasses = computed(() => ({
       'horizontal-center': state.alignCenter,
       'vertical-center': state.verticalAlignMiddle,
-      // scaling: props.scale !== 1,
-      // scaling: layoutViewerStore.scaling,
       stretched: settingsStore.imageStretched,
     }))
     const imageStyles = computed(() => {
@@ -110,21 +108,17 @@ export default defineComponent({
       if (props.loading) {
         return 'Loading...'
       }
-      // if (!layoutViewerStore.files.length) {
-      //   return 'No images'
-      // }
       if (state.error) {
         return 'Invalid image'
       }
-      // return layoutViewerStore.error ? layoutViewerStore.error.message : ''
       return ''
     })
-    const src = computed(() => (props.item ? fileUrl(props.item.path) : ''))
+    const src = computed(() => (props.file ? fileUrl(props.file.path) : ''))
 
     const wrapper = ref<HTMLDivElement>(null)
 
     watch(
-      () => props.item,
+      () => props.file,
       () => {
         state.error = false
       }
@@ -263,15 +257,11 @@ export default defineComponent({
         margin-top: auto;
         margin-bottom: auto;
       }
-      // &:not(.scaling) {
-      // max-height: 100%;
-      // max-width: 100%;
       &.stretched {
         height: 100%;
         object-fit: contain;
         width: 100%;
       }
-      // }
     }
   }
 }
