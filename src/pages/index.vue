@@ -11,7 +11,7 @@
       />
       <explorer-card
         class="flex-grow-0"
-        :can-view="!!state.selectedFile"
+        :can-view="!!state.selected"
         :query="state.query"
         @click-view="handleClickView"
         @change-query="handleChangeQuery"
@@ -21,7 +21,7 @@
           :is="component"
           :items="items"
           :loading="state.loading"
-          :selected="state.selectedFile"
+          :selected="state.selected"
           :sort-by="state.sortBy"
           :sort-desc="state.sortDesc"
           class="fill-height"
@@ -101,7 +101,7 @@ export default defineComponent({
           let result = 0
           const aValue = a[state.sortBy]
           const bValue = b[state.sortBy]
-          if (aValue && bValue) {
+          if (aValue !== undefined && bValue !== undefined) {
             if (aValue > bValue) {
               result = 1
             } else if (aValue < bValue) {
@@ -127,16 +127,16 @@ export default defineComponent({
       state.loading = true
       state.items = []
       try {
-        const { data } = await worker.postMessage({
+        const { data }: { data: File[] } = await worker.postMessage({
           dirPath: explorerStore.location,
         })
         state.items = data
           .filter(
-            (file: File) =>
+            (file) =>
               file.directory ||
               settingsStore.isFileAvailable({ filePath: file.path })
           )
-          .map((file: File) => {
+          .map((file) => {
             return {
               ...file,
               rating: ratingStore.getRating({ filePath: file.path }),

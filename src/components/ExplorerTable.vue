@@ -40,7 +40,13 @@ import ExplorerTableRow from '~/components/ExplorerTableRow.vue'
 import VirtualDataTable from '~/components/VirtualDataTable.vue'
 import { Item } from '~/models'
 
-const headers = [
+type Header = {
+  text: string
+  value: keyof Item
+  width?: number
+}
+
+const headers: Header[] = [
   {
     text: 'Name',
     value: 'name',
@@ -56,8 +62,8 @@ const headers = [
     width: 238,
   },
   {
-    text: 'Date Modified',
-    value: 'modified_at',
+    text: 'Last Modified',
+    value: 'lastModified',
     width: 150,
   },
 ]

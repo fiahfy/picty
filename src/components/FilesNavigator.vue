@@ -73,14 +73,14 @@ export default defineComponent({
 
     const fetch = async (dirPath: string) => {
       try {
-        const { data } = await worker.postMessage({ dirPath })
+        const { data }: { data: File[] } = await worker.postMessage({ dirPath })
         return data
           .filter(
-            (file: File) =>
+            (file) =>
               file.directory ||
               settingsStore.isFileAvailable({ filePath: file.path })
           )
-          .map((file: File) => {
+          .map((file) => {
             return {
               name: file.name,
               path: file.path,

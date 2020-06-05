@@ -8,10 +8,7 @@
         <span :title="item.name" class="text-truncate spacer">
           {{ item.name }}
         </span>
-        <span
-          v-if="state.images !== ''"
-          class="images text-xs-right caption ml-3"
-        >
+        <span v-if="state.images" class="images text-xs-right caption ml-3">
           {{ state.images }} images
         </span>
       </v-layout>
@@ -21,9 +18,7 @@
       <v-rating v-model="rating" half-increments clearable />
     </td>
     <td class="no-wrap">
-      <template v-if="item.modifiedAt">
-        {{ item.modifiedAt | date('YYYY-MM-DD HH:mm') }}
-      </template>
+      {{ item.lastModified | date('YYYY-MM-DD HH:mm') }}
     </td>
   </tr>
 </template>
@@ -58,7 +53,7 @@ export default defineComponent({
     const state = reactive({
       loading: false,
       error: false,
-      images: '',
+      images: 0,
     })
 
     const rating = computed({

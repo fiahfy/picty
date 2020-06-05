@@ -3,8 +3,8 @@
     <v-toolbar color="transparent" flat dense>
       <v-spacer />
       <v-select
-        v-model="orderModel"
-        :items="orders"
+        v-model="option"
+        :items="options"
         dense
         filled
         rounded
@@ -19,32 +19,38 @@
 
 <script lang="ts">
 import { defineComponent, computed, SetupContext } from '@vue/composition-api'
+import { Item } from '~/models'
 
-const orders = [
+type Option = {
+  value: { by: keyof Item; desc: boolean }
+  text: string
+}
+
+const options: Option[] = [
   { value: { by: 'name', desc: false }, text: 'Name ascending' },
   { value: { by: 'name', desc: true }, text: 'Name descending' },
-  { value: { by: 'views', desc: true }, text: 'Views ascending' },
-  { value: { by: 'views', desc: false }, text: 'Views descending' },
+  { value: { by: 'views', desc: false }, text: 'Views ascending' },
+  { value: { by: 'views', desc: true }, text: 'Views descending' },
   {
-    value: { by: 'rating', desc: true },
+    value: { by: 'rating', desc: false },
     text: 'Rating ascending',
   },
   {
-    value: { by: 'rating', desc: false },
+    value: { by: 'rating', desc: true },
     text: 'Rating descending',
   },
   {
-    value: { by: 'modified_at', desc: true },
-    text: 'Date Modified ascending',
+    value: { by: 'lastModified', desc: false },
+    text: 'Last Modified ascending',
   },
   {
-    value: { by: 'modified_at', desc: false },
-    text: 'Date Modified descending',
+    value: { by: 'lastModified', desc: true },
+    text: 'Last Modified descending',
   },
 ]
 
 type Props = {
-  sortBy?: string
+  sortBy?: keyof Item
   sortDesc: boolean
 }
 
@@ -60,7 +66,7 @@ export default defineComponent({
     },
   },
   setup(props: Props, context: SetupContext) {
-    const orderModel = computed<{
+    const option = computed<{
       by: string
       desc: boolean
     }>({
@@ -73,8 +79,8 @@ export default defineComponent({
     })
 
     return {
-      orders,
-      orderModel,
+      options,
+      option,
     }
   },
 })

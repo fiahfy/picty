@@ -186,19 +186,19 @@ export default defineComponent({
       try {
         let files = []
         if (state.target.directory) {
-          const { data } = await worker.postMessage({
+          const { data }: { data: File[] } = await worker.postMessage({
             dirPath: state.target.path,
             recursive: settingsStore.recursive,
           })
           files = data
         } else {
-          const { data } = await worker.postMessage({
+          const { data }: { data: File[] } = await worker.postMessage({
             dirPath: state.target.parent,
           })
           files = data
           state.current = state.target
         }
-        state.files = files.filter((file: File) =>
+        state.files = files.filter((file) =>
           settingsStore.isFileAvailable({ filePath: file.path })
         )
         if (!state.current) {
