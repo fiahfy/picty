@@ -38,7 +38,7 @@ import { defineComponent, SetupContext } from '@vue/composition-api'
 import ExplorerTableHeader from '~/components/ExplorerTableHeader.vue'
 import ExplorerTableRow from '~/components/ExplorerTableRow.vue'
 import VirtualDataTable from '~/components/VirtualDataTable.vue'
-import { File } from '~/models'
+import { Item } from '~/models'
 
 const headers = [
   {
@@ -63,8 +63,8 @@ const headers = [
 ]
 
 type Props = {
-  items: File[]
-  selected?: File
+  items: Item[]
+  selected?: Item
   loading: boolean
   sortBy?: string
   sortDesc: boolean
@@ -99,23 +99,23 @@ export default defineComponent({
     },
   },
   setup(props: Props, context: SetupContext) {
-    const isSelected = (file: File) => {
-      return file.path === props.selected?.path
+    const isSelected = (item: Item) => {
+      return item.path === props.selected?.path
     }
     const handleClickHeader = (header: File) => {
       context.emit('click-header', header)
     }
-    const handleClickRow = (file: File) => {
-      context.emit('click-item', file)
+    const handleClickRow = (item: Item) => {
+      context.emit('click-item', item)
     }
-    const handleDoubleClickRow = (file: File) => {
-      context.emit('dblclick-item', file)
+    const handleDoubleClickRow = (item: Item) => {
+      context.emit('dblclick-item', item)
     }
-    const handleContextMenuRow = (file: File) => {
-      context.emit('contextmenu-item', file)
+    const handleContextMenuRow = (item: Item) => {
+      context.emit('contextmenu-item', item)
     }
-    const handleChangeRating = (file: File, rating: number) => {
-      context.emit('change-rating', file, rating)
+    const handleChangeRating = (item: Item, rating: number) => {
+      context.emit('change-rating', item, rating)
     }
 
     return {

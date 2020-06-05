@@ -28,7 +28,7 @@ export default defineComponent({
       if (!props.file) {
         return ''
       }
-      return props.file.dirname + ' - ' + props.file.name
+      return props.file.parent + ' - ' + props.file.name
     })
 
     const isHover = () => {

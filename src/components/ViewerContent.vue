@@ -37,13 +37,13 @@ import {
   watch,
   SetupContext,
 } from '@vue/composition-api'
-import { File } from '~/models'
+import { Item } from '~/models'
 import { settingsStore } from '~/store'
 
 type Props = {
   loading: boolean
   scale: number
-  file: File
+  item: Item
 }
 
 export default defineComponent({
@@ -56,7 +56,7 @@ export default defineComponent({
       type: Number,
       default: 1,
     },
-    file: {
+    item: {
       type: Object,
       default: () => ({}),
     },
@@ -119,12 +119,12 @@ export default defineComponent({
       // return layoutViewerStore.error ? layoutViewerStore.error.message : ''
       return ''
     })
-    const src = computed(() => (props.file ? fileUrl(props.file.path) : ''))
+    const src = computed(() => (props.item ? fileUrl(props.item.path) : ''))
 
     const wrapper = ref<HTMLDivElement>(null)
 
     watch(
-      () => props.file,
+      () => props.item,
       () => {
         state.error = false
       }

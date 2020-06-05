@@ -9,14 +9,10 @@ const getFile = (filePath: string): File => {
   return {
     path: filePath,
     name: path.basename(filePath),
-    dirpath: path.dirname(filePath),
-    dirname: path.basename(path.dirname(filePath)),
+    parent: path.dirname(filePath),
     directory: stat.isDirectory(),
     file: stat.isFile(),
-    link: stat.isSymbolicLink(),
-    createdAt: stat.birthtimeMs,
-    modifiedAt: stat.mtimeMs,
-    accessedAt: stat.atimeMs,
+    lastModified: stat.mtimeMs,
   }
 }
 

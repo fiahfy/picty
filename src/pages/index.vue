@@ -52,7 +52,7 @@ import ExplorerToolbar from '~/components/ExplorerToolbar.vue'
 import ExplorerCard from '~/components/ExplorerCard.vue'
 import ExplorerTable from '~/components/ExplorerTable.vue'
 import ExplorerGridList from '~/components/ExplorerGridList.vue'
-import { File } from '~/models'
+import { File, Item } from '~/models'
 import {
   explorerStore,
   settingsStore,
@@ -76,16 +76,16 @@ export default defineComponent({
     const state = reactive<{
       loading: boolean
       error?: Error
-      files: File[]
-      selectedFile?: File
-      sortBy: keyof File
+      items: Item[]
+      selected?: Item
+      sortBy: keyof Item
       sortDesc: boolean
       query: string
     }>({
       loading: false,
       error: undefined,
-      files: [] as File[],
-      selectedFile: undefined,
+      items: [],
+      selected: undefined,
       sortBy: 'name',
       sortDesc: false,
       query: '',
@@ -95,7 +95,7 @@ export default defineComponent({
       explorerStore.listStyle === 'list' ? ExplorerTable : ExplorerGridList
     )
     const items = computed(() => {
-      return state.files
+      return state.items
         .concat()
         .sort((a, b) => {
           let result = 0
@@ -112,10 +112,10 @@ export default defineComponent({
           }
           return state.sortDesc ? -1 * result : result
         })
-        .filter((file) => {
+        .filter((item) => {
           return (
             !state.query ||
-            file.name.toLowerCase().includes(state.query.toLowerCase())
+            item.name.toLowerCase().includes(state.query.toLowerCase())
           )
         })
     })
@@ -125,12 +125,12 @@ export default defineComponent({
         return
       }
       state.loading = true
-      state.files = []
+      state.items = []
       try {
         const { data } = await worker.postMessage({
           dirPath: explorerStore.location,
         })
-        state.files = data
+        state.items = data
           .filter(
             (file: File) =>
               file.directory ||
@@ -193,24 +193,24 @@ export default defineComponent({
       load()
     }
     const handleClickView = () => {
-      context.root.$eventBus.$emit('showViewer', state.selectedFile)
+      context.root.$eventBus.$emit('showViewer', state.selected)
     }
     const handleClickHeader = (header: { value: string }) => {
       state.sortDesc = state.sortBy === header.value ? !state.sortDesc : false
-      state.sortBy = header.value as keyof File
+      state.sortBy = header.value as keyof Item
     }
-    const handleClickItem = (file: File) => {
-      state.selectedFile = file
+    const handleClickItem = (item: Item) => {
+      state.selected = item
     }
-    const handleDoubleClickItem = (file: File) => {
-      move(file.path)
+    const handleDoubleClickItem = (item: Item) => {
+      move(item.path)
     }
-    const handleContextMenuItem = (file: File) => {
-      state.selectedFile = file
+    const handleContextMenuItem = (item: Item) => {
+      state.selected = item
       let template: MenuItemConstructorOptions[] = [
         {
           label: 'View',
-          click: () => context.root.$eventBus.$emit('showViewer', file),
+          click: () => context.root.$eventBus.$emit('showViewer', item),
           accelerator: 'Enter',
         },
       ]
@@ -229,18 +229,18 @@ export default defineComponent({
       }
       context.root.$contextMenu.open(template)
     }
-    const handleChangeRating = (file: File, rating: number) => {
+    const handleChangeRating = (item: Item, rating: number) => {
       ratingStore.setRating({
-        filePath: file.path,
+        filePath: item.path,
         rating,
       })
-      state.files = state.files.map((item) =>
-        item.path === file.path
+      state.items = state.items.map((current) =>
+        current.path === item.path
           ? {
-              ...item,
+              ...current,
               rating,
             }
-          : item
+          : current
       )
     }
     const handleChangeQuery = (query: string) => {
@@ -253,7 +253,7 @@ export default defineComponent({
       by: string
       desc: boolean
     }) => {
-      state.sortBy = by as keyof File
+      state.sortBy = by as keyof Item
       state.sortDesc = desc
     }
 

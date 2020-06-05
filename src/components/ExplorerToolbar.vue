@@ -42,11 +42,13 @@
       class="ml-3"
       name="location"
       label="Path"
-      prepend-icon="mdi-folder"
+      prepend-inner-icon="mdi-folder"
       dense
+      filled
+      rounded
       single-line
       hide-details
-      @click:prepend="handleClickFolder"
+      @click:prepend-inner="handleClickFolder"
       @keyup.enter="handleKeyUpEnter"
       @contextmenu.stop="handleContextMenuLocation"
     />

@@ -19,7 +19,7 @@
                   class="fill-height"
                   :loading="state.loading"
                   :scale="state.scale"
-                  :file="state.currentFile"
+                  :file="state.current"
                   @change-zoom="handleChangeZoom"
                 />
               </v-container>
@@ -28,7 +28,7 @@
           <v-layout class="top-overlay pb-5">
             <viewer-top-toolbar
               ref="topToolbar"
-              :file="state.currentFile"
+              :file="state.current"
               @click-close="handleClickClose"
             />
           </v-layout>
@@ -112,7 +112,7 @@ export default defineComponent({
       timer?: number
       target?: File
       files: File[]
-      currentFile?: File
+      current?: File
       error?: Error
       scale: number
       originalScale: number
@@ -123,7 +123,7 @@ export default defineComponent({
       timer: undefined,
       target: undefined,
       files: [],
-      currentFile: undefined,
+      current: undefined,
       error: undefined,
       scale: 1,
       originalScale: 1,
@@ -138,8 +138,7 @@ export default defineComponent({
     })
     const page = computed(
       () =>
-        state.files.findIndex((file) => file.path === state.currentFile?.path) +
-        1
+        state.files.findIndex((file) => file.path === state.current?.path) + 1
     )
     const maxPage = computed(() => state.files.length)
 
@@ -182,7 +181,7 @@ export default defineComponent({
       }
       state.loading = true
       state.files = []
-      state.currentFile = undefined
+      state.current = undefined
       state.error = undefined
       try {
         let files = []
@@ -194,16 +193,16 @@ export default defineComponent({
           files = data
         } else {
           const { data } = await worker.postMessage({
-            dirPath: state.target.dirpath,
+            dirPath: state.target.parent,
           })
           files = data
-          state.currentFile = state.target
+          state.current = state.target
         }
         state.files = files.filter((file: File) =>
           settingsStore.isFileAvailable({ filePath: file.path })
         )
-        if (!state.currentFile) {
-          state.currentFile = state.files[0]
+        if (!state.current) {
+          state.current = state.files[0]
         }
       } catch (e) {
         state.error = e
@@ -241,14 +240,14 @@ export default defineComponent({
       if (newPage <= 0) {
         newPage = maxPage.value
       }
-      state.currentFile = state.files[newPage - 1]
+      state.current = state.files[newPage - 1]
     }
     const handleClickNext = () => {
       let newPage = page.value + 1
       if (newPage >= maxPage.value) {
         newPage = 1
       }
-      state.currentFile = state.files[newPage - 1]
+      state.current = state.files[newPage - 1]
     }
     const handleClickZoomIn = () => {
       state.scale = scales.find((scale) => scale > state.scale) ?? state.scale
@@ -270,7 +269,7 @@ export default defineComponent({
       if (page < 1 || page > maxPage.value) {
         return
       }
-      state.currentFile = state.files[page - 1]
+      state.current = state.files[page - 1]
     }
     const handleChangeZoom = (scale: number) => {
       state.scale = scale

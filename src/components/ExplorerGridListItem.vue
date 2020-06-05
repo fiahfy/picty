@@ -50,7 +50,7 @@ import {
   reactive,
   computed,
 } from '@vue/composition-api'
-import { File } from '~/models'
+import { Item } from '~/models'
 import { settingsStore } from '~/store'
 
 const workerPromisify = require('@fiahfy/worker-promisify').default
@@ -59,7 +59,7 @@ const Worker = require('~/workers/fetch-pathes.worker')
 const worker = workerPromisify(new Worker())
 
 type Props = {
-  item: File
+  item: Item
 }
 
 export default defineComponent({

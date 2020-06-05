@@ -29,15 +29,17 @@
         :items="queryHistories"
         name="query"
         label="Search"
-        append-outer-icon="mdi-magnify"
+        prepend-inner-icon="mdi-magnify"
         dense
+        filled
+        rounded
         single-line
         hide-details
         clearable
         @input="handleInput"
         @keyup.enter="handleKeyUpEnter"
         @contextmenu.stop="handleContextMenu"
-        @click:append-outer="handleClickMagnify"
+        @click:prepend-inner="handleClickMagnify"
       >
         <template v-slot:item="{ item }">
           <v-list-item-content>
@@ -46,11 +48,11 @@
           <v-list-item-action class="my-0">
             <v-btn
               small
-              text
+              icon
               color="primary"
-              @click.stop="() => handleClickItemDelete(item)"
+              @click="() => handleClickItemDelete(item)"
             >
-              delete
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-list-item-action>
         </template>

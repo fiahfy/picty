@@ -6,8 +6,10 @@
         v-model="orderModel"
         :items="orders"
         dense
+        filled
+        rounded
         single-line
-        append-outer-icon="mdi-sort"
+        prepend-inner-icon="mdi-sort"
         hide-details
         style="max-width: 256px;"
       />

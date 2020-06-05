@@ -9,7 +9,7 @@
       <v-treeview
         :active.sync="state.active"
         :open.sync="state.open"
-        :items="state.items"
+        :items="state.nodes"
         :load-children="handleLoadChildren"
         item-key="path"
         dense
@@ -24,7 +24,7 @@
           </v-icon>
         </template>
         <template v-slot:label="{ item }">
-          <div class="node text-truncate" @click="() => handleClickItem(item)">
+          <div class="node text-truncate" @click="() => handleClickNode(item)">
             {{ item.name }}
           </div>
         </template>
@@ -50,10 +50,10 @@ const Worker = require('~/workers/fetch-files.worker')
 
 const worker = workerPromisify(new Worker())
 
-type Item = {
+type Node = {
   name: string
   path: string
-  children?: Item[]
+  children?: Node[]
 }
 
 export default defineComponent({
@@ -64,11 +64,11 @@ export default defineComponent({
     const state = reactive<{
       active: string[]
       open: string[]
-      items: Item[]
+      nodes: Node[]
     }>({
       active: [],
       open: [],
-      items: [],
+      nodes: [],
     })
 
     const fetch = async (dirPath: string) => {
@@ -80,11 +80,11 @@ export default defineComponent({
               file.directory ||
               settingsStore.isFileAvailable({ filePath: file.path })
           )
-          .map((item: File) => {
+          .map((file: File) => {
             return {
-              name: item.name,
-              path: item.path,
-              children: item.directory ? [] : undefined,
+              name: file.name,
+              path: file.path,
+              children: file.directory ? [] : undefined,
             }
           })
       } catch (e) {
@@ -102,8 +102,8 @@ export default defineComponent({
         dirPath = '/'
       }
 
-      if (dirnames.length === 1 && !state.items.length) {
-        state.items = [
+      if (dirnames.length === 1 && !state.nodes.length) {
+        state.nodes = [
           {
             name: dirPath,
             path: dirPath,
@@ -112,15 +112,15 @@ export default defineComponent({
         ]
       }
 
-      const item = dirnames.reduce(
-        (carry: Item | undefined, dirname) => {
-          return carry?.children?.find((item) => item.name === dirname)
+      const node = dirnames.reduce(
+        (carry: Node | undefined, dirname) => {
+          return carry?.children?.find((node) => node.name === dirname)
         },
-        { name: 'root', path: 'root', children: state.items }
+        { name: 'root', path: 'root', children: state.nodes }
       )
-      if (item) {
-        if (item.children && !item.children.length) {
-          item.children = await fetch(dirPath)
+      if (node) {
+        if (node.children && !node.children.length) {
+          node.children = await fetch(dirPath)
         }
         if (!state.open.includes(dirPath)) {
           state.open = [...state.open, dirPath]
@@ -128,12 +128,12 @@ export default defineComponent({
       }
     }
 
-    const handleLoadChildren = async (item: Item) => {
-      item.children = await fetch(item.path)
+    const handleLoadChildren = async (node: Node) => {
+      node.children = await fetch(node.path)
     }
-    const handleClickItem = (item: Item) => {
-      if (item.children) {
-        context.root.$eventBus.$emit('change-location', item.path)
+    const handleClickNode = (node: Node) => {
+      if (node.children) {
+        context.root.$eventBus.$emit('change-location', node.path)
       }
     }
 
@@ -156,7 +156,7 @@ export default defineComponent({
     return {
       state,
       handleLoadChildren,
-      handleClickItem,
+      handleClickNode,
     }
   },
 })
