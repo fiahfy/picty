@@ -81,7 +81,9 @@
                   class="pt-3"
                 />
 
-                <v-subheader class="pl-0 text-uppercase">Viewer</v-subheader>
+                <v-subheader class="pl-0 text-uppercase">
+                  Presentation
+                </v-subheader>
                 <v-checkbox
                   v-model="fullScreen"
                   class="mt-0"

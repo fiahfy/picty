@@ -1,11 +1,11 @@
 <template>
-  <v-toolbar class="viewer-bottom-toolbar" color="transparent" flat dense>
+  <v-toolbar class="presentation-bottom-toolbar" color="transparent" flat dense>
     <v-btn
       :title="'View previous image' | accelerator('Left')"
       icon
       @click="handleClickPrevious"
     >
-      <v-icon>mdi-skip-previous</v-icon>
+      <v-icon>mdi-chevron-left</v-icon>
     </v-btn>
 
     <v-btn
@@ -13,7 +13,7 @@
       icon
       @click="handleClickNext"
     >
-      <v-icon>mdi-skip-next</v-icon>
+      <v-icon>mdi-chevron-right</v-icon>
     </v-btn>
 
     <span class="px-3 ellipsis">{{ page }} / {{ maxPage }}</span>
@@ -172,7 +172,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.viewer-bottom-toolbar ::v-deep .v-input--slider {
+.presentation-bottom-toolbar ::v-deep .v-input--slider {
   left: 0;
   position: absolute;
   right: 0;

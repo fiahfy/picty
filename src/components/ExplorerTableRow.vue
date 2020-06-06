@@ -13,7 +13,6 @@
         </span>
       </v-layout>
     </td>
-    <td class="text-xs-right">{{ item.views || '' }}</td>
     <td @click.stop @dblclick.stop>
       <v-rating v-model="rating" half-increments clearable />
     </td>

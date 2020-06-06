@@ -6,7 +6,6 @@ import history from '~/store/history'
 import queryHistory from '~/store/query-history'
 import rating from '~/store/rating'
 import settings from '~/store/settings'
-import view from '~/store/view'
 
 /* eslint-disable import/no-mutable-exports */
 let bookmarkStore: bookmark
@@ -15,7 +14,6 @@ let historyStore: history
 let queryHistoryStore: queryHistory
 let ratingStore: rating
 let settingsStore: settings
-let viewStore: view
 /* eslint-enable import/no-mutable-exports */
 
 function initializeStores(store: Store<any>): void {
@@ -25,7 +23,6 @@ function initializeStores(store: Store<any>): void {
   queryHistoryStore = getModule(queryHistory, store)
   ratingStore = getModule(rating, store)
   settingsStore = getModule(settings, store)
-  viewStore = getModule(view, store)
 }
 
 export {
@@ -36,5 +33,4 @@ export {
   queryHistoryStore,
   ratingStore,
   settingsStore,
-  viewStore,
 }

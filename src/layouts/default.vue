@@ -10,7 +10,7 @@
       <router-view class="fill-height" />
     </v-content>
     <settings-dialog />
-    <viewer-dialog />
+    <presentation-dialog />
   </v-app>
 </template>
 
@@ -20,18 +20,18 @@ import {
   watchEffect,
   SetupContext,
 } from '@vue/composition-api'
+import PresentationDialog from '~/components/PresentationDialog.vue'
+import SettingsDialog from '~/components/SettingsDialog.vue'
 import Sidebar from '~/components/Sidebar.vue'
 import TitleBar from '~/components/TitleBar.vue'
-import SettingsDialog from '~/components/SettingsDialog.vue'
-import ViewerDialog from '~/components/ViewerDialog.vue'
 import { settingsStore } from '~/store'
 
 export default defineComponent({
   components: {
+    PresentationDialog,
+    SettingsDialog,
     Sidebar,
     TitleBar,
-    SettingsDialog,
-    ViewerDialog,
   },
   setup(_props: {}, context: SetupContext) {
     watchEffect(() => {

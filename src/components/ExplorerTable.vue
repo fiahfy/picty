@@ -52,11 +52,6 @@ const headers: Header[] = [
     value: 'name',
   },
   {
-    text: 'Views',
-    value: 'views',
-    width: 96,
-  },
-  {
     text: 'Rating',
     value: 'rating',
     width: 238,

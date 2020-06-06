@@ -29,9 +29,6 @@ export default defineComponent({
     },
   },
   setup(_props: Props) {
-    // TODO: handle titlebar visibility
-    // const titleBar = computed(() => layoutStore.titleBar)
-
     // @see https://github.com/electron/electron/issues/16385
     const handleDoubleClick = () => {
       const doubleClickAction = remote.systemPreferences.getUserDefault(

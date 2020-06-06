@@ -1,5 +1,9 @@
 // reset
-html, body, #__nuxt, #__layout, #app {
+html,
+body,
+#__nuxt,
+#__layout,
+#app {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -17,9 +21,14 @@ html {
 .overflow-y-scroll {
   overflow-y: scroll;
 }
-.scrollbar::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+.scrollbar {
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
 }
 // theme
 .theme--light {

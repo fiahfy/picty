@@ -86,7 +86,7 @@ export default defineComponent({
       },
     })
     const icon = computed(() => {
-      return props.item.directory ? 'mdi-folder' : 'mdi-file-image'
+      return props.item.dir ? 'mdi-folder' : 'mdi-file-image'
     })
     const iconColor = computed(() => {
       return props.item.directory ? 'blue lighten-3' : 'green lighten-3'
@@ -185,6 +185,8 @@ export default defineComponent({
       height: 32px;
     }
   }
+}
+.theme--light .explorer-grid-list-item {
   &.selected .v-card {
     background-color: #f5f5f5;
   }

@@ -1,5 +1,5 @@
 <template>
-  <v-container :class="classes" class="viewer-content" fluid pa-0>
+  <v-container :class="classes" class="presentation-content" fluid pa-0>
     <v-layout fill-height>
       <v-flex v-if="message">
         <v-layout fill-height align-center justify-center>
@@ -232,7 +232,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.viewer-content {
+.presentation-content {
   cursor: -webkit-grab;
   &.dragging {
     cursor: -webkit-grabbing;

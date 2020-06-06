@@ -11,9 +11,9 @@
       />
       <explorer-card
         class="flex-grow-0"
-        :can-view="!!state.selected"
+        :can-presentation="!!state.selected"
         :query="state.query"
-        @click-view="handleClickView"
+        @click-presentation="handleClickPresentation"
         @change-query="handleChangeQuery"
       />
       <v-container fluid pa-0 overflow-hidden flex-grow-1>
@@ -57,7 +57,6 @@ import {
   explorerStore,
   settingsStore,
   ratingStore,
-  viewStore,
   historyStore,
   queryHistoryStore,
 } from '~/store'
@@ -140,7 +139,6 @@ export default defineComponent({
             return {
               ...file,
               rating: ratingStore.getRating({ filePath: file.path }),
-              views: viewStore.getViews({ filePath: file.path }),
             }
           })
       } catch (e) {
@@ -192,7 +190,7 @@ export default defineComponent({
     const handleClickReload = () => {
       load()
     }
-    const handleClickView = () => {
+    const handleClickPresentation = () => {
       context.root.$eventBus.$emit('showViewer', state.selected)
     }
     const handleClickHeader = (header: { value: string }) => {
@@ -276,7 +274,7 @@ export default defineComponent({
       handleClickUpward,
       handleClickHome,
       handleClickReload,
-      handleClickView,
+      handleClickPresentation,
       handleClickItem,
       handleClickHeader,
       handleDoubleClickItem,

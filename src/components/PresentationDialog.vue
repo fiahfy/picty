@@ -2,8 +2,8 @@
   <v-dialog
     v-model="state.active"
     :transition="false"
-    class="viewer-dialog"
-    content-class="viewer-dialog-content"
+    class="presentation-dialog"
+    content-class="presentation-dialog-content"
     fullscreen
     hide-overlay
     @keydown="handleKeyDown"
@@ -15,7 +15,7 @@
           <v-container fill-height fluid pa-0>
             <v-layout column>
               <v-container fluid pa-0 overflow-hidden fill-height>
-                <viewer-content
+                <presentation-content
                   class="fill-height"
                   :loading="state.loading"
                   :scale="state.scale"
@@ -26,14 +26,14 @@
             </v-layout>
           </v-container>
           <v-layout class="top-overlay pb-5">
-            <viewer-top-toolbar
+            <presentation-top-toolbar
               ref="topToolbar"
               :file="state.current"
               @click-close="handleClickClose"
             />
           </v-layout>
           <v-layout class="bottom-overlay pt-5">
-            <viewer-bottom-toolbar
+            <presentation-bottom-toolbar
               ref="bottomToolbar"
               :page="page"
               :max-page="maxPage"
@@ -66,9 +66,9 @@ import {
   onUnmounted,
 } from '@vue/composition-api'
 import TitleBar from '~/components/TitleBar.vue'
-import ViewerBottomToolbar from '~/components/ViewerBottomToolbar.vue'
-import ViewerContent from '~/components/ViewerContent.vue'
-import ViewerTopToolbar from '~/components/ViewerTopToolbar.vue'
+import PresentationBottomToolbar from '~/components/PresentationBottomToolbar.vue'
+import PresentationContent from '~/components/PresentationContent.vue'
+import PresentationTopToolbar from '~/components/PresentationTopToolbar.vue'
 import { File } from '~/models'
 import { settingsStore } from '~/store'
 
@@ -100,9 +100,9 @@ const scales = [
 export default defineComponent({
   components: {
     TitleBar,
-    ViewerContent,
-    ViewerBottomToolbar,
-    ViewerTopToolbar,
+    PresentationContent,
+    PresentationBottomToolbar,
+    PresentationTopToolbar,
   },
   setup(_props: {}, context: SetupContext) {
     const state = reactive<{
@@ -142,15 +142,17 @@ export default defineComponent({
     )
     const maxPage = computed(() => state.files.length)
 
-    const topToolbar = ref<InstanceType<typeof ViewerTopToolbar>>(null)
-    const bottomToolbar = ref<InstanceType<typeof ViewerBottomToolbar>>(null)
+    const topToolbar = ref<InstanceType<typeof PresentationTopToolbar>>(null)
+    const bottomToolbar = ref<InstanceType<typeof PresentationBottomToolbar>>(
+      null
+    )
 
-    const showViewer = (file: File) => {
+    const showPresentation = (file: File) => {
       state.active = true
       state.target = file
       load()
     }
-    const hideViewer = () => {
+    const hidePresentation = () => {
       state.active = false
     }
     const clearTimer = () => {
@@ -213,20 +215,20 @@ export default defineComponent({
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.keyCode) {
         case 27:
-          hideViewer()
+          hidePresentation()
           break
         // TODO: handle keydown
         // case 37:
-        //   layoutViewerStore.movePreviousFile()
+        //   layoutPresentationStore.movePreviousFile()
         //   break
         // case 38:
-        //   layoutViewerStore.movePreviousFile()
+        //   layoutPresentationStore.movePreviousFile()
         //   break
         // case 39:
-        //   layoutViewerStore.moveNextFile()
+        //   layoutPresentationStore.moveNextFile()
         //   break
         // case 40:
-        //   layoutViewerStore.moveNextFile()
+        //   layoutPresentationStore.moveNextFile()
         //   break
       }
     }
@@ -234,7 +236,7 @@ export default defineComponent({
       showToolbar()
     }
     const handleClickClose = () => {
-      hideViewer()
+      hidePresentation()
     }
     const handleClickPrevious = () => {
       let newPage = page.value - 1
@@ -284,7 +286,9 @@ export default defineComponent({
           showToolbar()
           document.body.addEventListener('mousemove', handleMouseMove)
           context.root.$nextTick(() => {
-            const content = document.querySelector('.viewer-dialog-content')
+            const content = document.querySelector(
+              '.presentation-dialog-content'
+            )
             if (content?.parentElement instanceof HTMLElement) {
               content.parentElement.focus()
             }
@@ -298,13 +302,13 @@ export default defineComponent({
     )
 
     onMounted(() => {
-      context.root.$eventBus.$on('showViewer', showViewer)
-      context.root.$eventBus.$on('hideViewer', hideViewer)
+      context.root.$eventBus.$on('showPresentation', showPresentation)
+      context.root.$eventBus.$on('hidePresentation', hidePresentation)
     })
 
     onUnmounted(() => {
-      context.root.$eventBus.$off('showViewer', showViewer)
-      context.root.$eventBus.$off('hideViewer', hideViewer)
+      context.root.$eventBus.$off('showPresentation', showPresentation)
+      context.root.$eventBus.$off('hidePresentation', hidePresentation)
     })
 
     return {
@@ -351,7 +355,7 @@ export default defineComponent({
 .v-card {
   height: 100% !important;
   &.toolbar-hidden {
-    .viewer-content {
+    .presentation-content {
       cursor: none;
     }
   }

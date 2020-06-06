@@ -29,8 +29,6 @@ type Option = {
 const options: Option[] = [
   { value: { by: 'name', desc: false }, text: 'Name ascending' },
   { value: { by: 'name', desc: true }, text: 'Name descending' },
-  { value: { by: 'views', desc: false }, text: 'Views ascending' },
-  { value: { by: 'views', desc: true }, text: 'Views descending' },
   {
     value: { by: 'rating', desc: false },
     text: 'Rating ascending',

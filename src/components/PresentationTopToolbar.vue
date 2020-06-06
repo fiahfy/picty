@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar class="viewer-top-toolbar" color="transparent" flat dense>
+  <v-toolbar class="presentation-top-toolbar" color="transparent" flat dense>
     <v-btn :title="'Close' | accelerator('Esc')" icon @click="handleClickClose">
       <v-icon>mdi-close</v-icon>
     </v-btn>

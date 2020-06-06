@@ -2,12 +2,12 @@
   <v-card class="explorer-card" flat tile>
     <v-toolbar color="transparent" flat dense>
       <v-btn
-        :title="'View' | accelerator('Enter')"
-        :disabled="!canView"
+        :title="'Presentation' | accelerator('Enter')"
+        :disabled="!canPresentation"
         icon
-        @click="handleClickView"
+        @click="handleClickPresentation"
       >
-        <v-icon>mdi-play-box-outline</v-icon>
+        <v-icon>mdi-presentation</v-icon>
       </v-btn>
       <v-spacer />
       <v-btn :color="listColor" title="List" icon @click="handleClickList">
@@ -72,13 +72,13 @@ import {
 import { explorerStore, queryHistoryStore } from '~/store'
 
 type Props = {
-  canView: boolean
+  canPresentation: boolean
   query: string
 }
 
 export default defineComponent({
   props: {
-    canView: {
+    canPresentation: {
       type: Boolean,
       default: false,
     },
@@ -103,8 +103,8 @@ export default defineComponent({
       return queryHistoryStore.histories.slice().reverse()
     })
 
-    const handleClickView = () => {
-      context.emit('click-view')
+    const handleClickPresentation = () => {
+      context.emit('click-presentation')
     }
     const handleClickList = () => {
       explorerStore.setListStyle({ listStyle: 'list' })
@@ -143,7 +143,7 @@ export default defineComponent({
       listColor,
       thumbnailColor,
       queryHistories,
-      handleClickView,
+      handleClickPresentation,
       handleClickList,
       handleClickThumbnail,
       handleInput,
