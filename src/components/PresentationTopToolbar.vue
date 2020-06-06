@@ -1,5 +1,11 @@
 <template>
-  <v-toolbar class="presentation-top-toolbar" color="transparent" flat dense>
+  <v-toolbar
+    ref="toolbar"
+    class="presentation-top-toolbar"
+    color="transparent"
+    flat
+    dense
+  >
     <v-btn :title="'Close' | accelerator('Esc')" icon @click="handleClickClose">
       <v-icon>mdi-close</v-icon>
     </v-btn>
@@ -9,7 +15,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, SetupContext } from '@vue/composition-api'
+import {
+  defineComponent,
+  computed,
+  ref,
+  SetupContext,
+} from '@vue/composition-api'
 import { File } from '~/models'
 
 type Props = {
@@ -31,8 +42,10 @@ export default defineComponent({
       return props.file.parent + ' - ' + props.file.name
     })
 
+    const toolbar = ref<Vue>(null)
+
     const isHover = () => {
-      return !!context.root.$el.querySelector(':hover')
+      return !!toolbar.value?.$el.querySelector(':hover')
     }
 
     const handleClickClose = () => {
@@ -41,6 +54,7 @@ export default defineComponent({
 
     return {
       title,
+      toolbar,
       isHover,
       handleClickClose,
     }

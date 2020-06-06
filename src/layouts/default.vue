@@ -34,10 +34,6 @@ export default defineComponent({
     TitleBar,
   },
   setup(_props: {}, context: SetupContext) {
-    watchEffect(() => {
-      context.root.$vuetify.theme.dark = settingsStore.darkTheme
-    })
-
     const handleContextMenu = () => {
       context.root.$contextMenu.open()
     }
@@ -50,6 +46,10 @@ export default defineComponent({
       const filePath = files[0].path // eslint-disable-line
       // layoutStore.open({ filePath })
     }
+
+    watchEffect(() => {
+      context.root.$vuetify.theme.dark = settingsStore.darkTheme
+    })
 
     return {
       handleContextMenu,

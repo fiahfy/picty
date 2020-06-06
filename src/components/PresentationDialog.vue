@@ -1,12 +1,12 @@
 <template>
   <v-dialog
+    ref="dialog"
     v-model="state.active"
     :transition="false"
     class="presentation-dialog"
     content-class="presentation-dialog-content"
     fullscreen
     hide-overlay
-    @keydown="handleKeyDown"
   >
     <v-card :class="classes" dark flat tile>
       <v-layout column fill-height>
@@ -38,6 +38,7 @@
               :page="page"
               :max-page="maxPage"
               :scale="state.scale"
+              :full-screen="state.fullScreen"
               @click-previous="handleClickPrevious"
               @click-next="handleClickNext"
               @click-zoom-in="handleClickZoomIn"
@@ -108,25 +109,27 @@ export default defineComponent({
     const state = reactive<{
       active: boolean
       loading: boolean
-      toolbar?: boolean
-      timer?: number
-      target?: File
+      error?: Error
       files: File[]
       current?: File
-      error?: Error
+      target?: File
+      toolbar?: boolean
+      timer?: number
       scale: number
       originalScale: number
+      fullScreen: boolean
     }>({
       active: false,
       loading: false,
-      toolbar: undefined,
-      timer: undefined,
-      target: undefined,
+      error: undefined,
       files: [],
       current: undefined,
-      error: undefined,
+      target: undefined,
+      toolbar: undefined,
+      timer: undefined,
       scale: 1,
       originalScale: 1,
+      fullScreen: false,
     })
 
     const classes = computed(() => {
@@ -142,17 +145,22 @@ export default defineComponent({
     )
     const maxPage = computed(() => state.files.length)
 
+    const dialog = ref<Vue>(null)
     const topToolbar = ref<InstanceType<typeof PresentationTopToolbar>>(null)
     const bottomToolbar = ref<InstanceType<typeof PresentationBottomToolbar>>(
       null
     )
 
-    const showPresentation = (file: File) => {
+    const showPresentation = async (file: File) => {
       state.active = true
       state.target = file
+      if (settingsStore.fullScreen) {
+        dialog.value && (await dialog.value?.$el.requestFullscreen())
+      }
       load()
     }
-    const hidePresentation = () => {
+    const hidePresentation = async () => {
+      document.fullscreenElement && (await document.exitFullscreen())
       state.active = false
     }
     const clearTimer = () => {
@@ -211,25 +219,34 @@ export default defineComponent({
       }
       state.loading = false
     }
+    const movePrevious = () => {
+      let newPage = page.value - 1
+      if (newPage <= 0) {
+        newPage = maxPage.value
+      }
+      state.current = state.files[newPage - 1]
+    }
+    const movekNext = () => {
+      let newPage = page.value + 1
+      if (newPage >= maxPage.value) {
+        newPage = 1
+      }
+      state.current = state.files[newPage - 1]
+    }
 
+    const handleFullScreenChange = () => {
+      state.fullScreen = !!document.fullscreenElement
+    }
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.keyCode) {
         case 27:
-          hidePresentation()
-          break
-        // TODO: handle keydown
-        // case 37:
-        //   layoutPresentationStore.movePreviousFile()
-        //   break
-        // case 38:
-        //   layoutPresentationStore.movePreviousFile()
-        //   break
-        // case 39:
-        //   layoutPresentationStore.moveNextFile()
-        //   break
-        // case 40:
-        //   layoutPresentationStore.moveNextFile()
-        //   break
+          return hidePresentation()
+        case 37:
+        case 38:
+          return movePrevious()
+        case 39:
+        case 40:
+          return movekNext()
       }
     }
     const handleMouseMove = () => {
@@ -239,18 +256,10 @@ export default defineComponent({
       hidePresentation()
     }
     const handleClickPrevious = () => {
-      let newPage = page.value - 1
-      if (newPage <= 0) {
-        newPage = maxPage.value
-      }
-      state.current = state.files[newPage - 1]
+      movePrevious()
     }
     const handleClickNext = () => {
-      let newPage = page.value + 1
-      if (newPage >= maxPage.value) {
-        newPage = 1
-      }
-      state.current = state.files[newPage - 1]
+      movekNext()
     }
     const handleClickZoomIn = () => {
       state.scale = scales.find((scale) => scale > state.scale) ?? state.scale
@@ -265,8 +274,12 @@ export default defineComponent({
     const handleClickZoomReset = () => {
       state.scale = state.originalScale
     }
-    const handleClickToggleFullScreen = () => {
-      //
+    const handleClickToggleFullScreen = async () => {
+      if (state.fullScreen) {
+        await document.exitFullscreen()
+      } else {
+        dialog.value && (await dialog.value?.$el.requestFullscreen())
+      }
     }
     const handleChangePage = (page: number) => {
       if (page < 1 || page > maxPage.value) {
@@ -302,11 +315,18 @@ export default defineComponent({
     )
 
     onMounted(() => {
+      document.body.addEventListener('keydown', handleKeyDown)
+      document.body.addEventListener('fullscreenchange', handleFullScreenChange)
       context.root.$eventBus.$on('showPresentation', showPresentation)
       context.root.$eventBus.$on('hidePresentation', hidePresentation)
     })
 
     onUnmounted(() => {
+      document.body.removeEventListener('keydown', handleKeyDown)
+      document.body.removeEventListener(
+        'fullscreenchange',
+        handleFullScreenChange
+      )
       context.root.$eventBus.$off('showPresentation', showPresentation)
       context.root.$eventBus.$off('hidePresentation', hidePresentation)
     })
@@ -316,10 +336,9 @@ export default defineComponent({
       classes,
       page,
       maxPage,
+      dialog,
       topToolbar,
       bottomToolbar,
-      handleKeyDown,
-      handleMouseMove,
       handleClickClose,
       handleClickPrevious,
       handleClickNext,

@@ -1,5 +1,11 @@
 <template>
-  <v-toolbar class="presentation-bottom-toolbar" color="transparent" flat dense>
+  <v-toolbar
+    ref="toolbar"
+    class="presentation-bottom-toolbar"
+    color="transparent"
+    flat
+    dense
+  >
     <v-btn
       :title="'View previous image' | accelerator('Left')"
       icon
@@ -24,8 +30,11 @@
       class="px-3"
       :min="1"
       :max="maxPage"
+      dense
       hide-details
     />
+
+    <v-spacer />
 
     <v-menu
       v-model="state.active"
@@ -39,7 +48,7 @@
           <v-icon>mdi-magnify-plus-outline</v-icon>
         </v-btn>
       </template>
-      <v-toolbar ref="toolbar" flat dense dark>
+      <v-toolbar ref="menubar" flat dense dark>
         <v-btn
           :title="'Zoom in' | accelerator('CmdOrCtrl+Plus')"
           icon
@@ -90,6 +99,7 @@ type Props = {
   page: number
   maxPage: number
   scale: number
+  fullScreen: boolean
 }
 
 export default defineComponent({
@@ -105,6 +115,10 @@ export default defineComponent({
     scale: {
       type: Number,
       default: 1,
+    },
+    fullScreen: {
+      type: Boolean,
+      default: false,
     },
   },
   setup(props: Props, context: SetupContext) {
@@ -122,12 +136,13 @@ export default defineComponent({
       return (props.scale * 100).toFixed(2)
     })
 
-    const toolbar = ref<InstanceType<typeof HTMLElement>>(null)
+    const toolbar = ref<Vue>(null)
+    const menubar = ref<Vue>(null)
 
     const isHover = () => {
       return !!(
-        context.root.$el.querySelector(':hover') ||
-        toolbar.value?.querySelector(':hover')
+        toolbar.value?.$el.querySelector(':hover') ||
+        menubar.value?.$el.querySelector(':hover')
       )
     }
     const hideMenu = () => {
@@ -157,7 +172,8 @@ export default defineComponent({
       state,
       pageModel,
       displayScale,
-      fullScreen: false,
+      toolbar,
+      menubar,
       isHover,
       hideMenu,
       handleClickPrevious,
@@ -172,14 +188,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.presentation-bottom-toolbar ::v-deep .v-input--slider {
+.presentation-bottom-toolbar ::v-deep .v-input__slider {
   left: 0;
   position: absolute;
   right: 0;
-  top: 1px;
+  top: -17px;
   z-index: 1;
-  .v-slider {
-    height: 0;
-  }
 }
 </style>

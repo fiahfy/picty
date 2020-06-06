@@ -123,6 +123,7 @@ export default defineComponent({
       if (state.loading) {
         return
       }
+      state.selected = undefined
       state.loading = true
       state.items = []
       try {
@@ -191,7 +192,7 @@ export default defineComponent({
       load()
     }
     const handleClickPresentation = () => {
-      context.root.$eventBus.$emit('showViewer', state.selected)
+      context.root.$eventBus.$emit('showPresentation', state.selected)
     }
     const handleClickHeader = (header: { value: string }) => {
       state.sortDesc = state.sortBy === header.value ? !state.sortDesc : false
@@ -208,7 +209,7 @@ export default defineComponent({
       let template: MenuItemConstructorOptions[] = [
         {
           label: 'View',
-          click: () => context.root.$eventBus.$emit('showViewer', item),
+          click: () => context.root.$eventBus.$emit('showPresentation', item),
           accelerator: 'Enter',
         },
       ]

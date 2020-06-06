@@ -22,7 +22,6 @@ export const thumbnailHeights: { [key in ThumbnailHeight]: number } = {
 
 export const thumbnailStyles = ['cover', 'contain']
 
-export type PreviewWidth = 'none' | 'narrow' | 'medium' | 'wide'
 export type ThumbnailStyle = 'cover' | 'contain'
 export type ThumbnailHeight = 'short' | 'medium' | 'tall'
 

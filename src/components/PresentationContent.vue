@@ -58,7 +58,7 @@ export default defineComponent({
     },
     file: {
       type: Object,
-      default: () => ({}),
+      default: undefined,
     },
   },
   setup(props: Props, context: SetupContext) {
@@ -137,20 +137,20 @@ export default defineComponent({
           let offsetX = 0
           if (
             newValue > oldValue &&
-            context.root.$el.clientWidth > state.originalSize.width * oldValue
+            wrapper.value.clientWidth > state.originalSize.width * oldValue
           ) {
             offsetX =
-              (context.root.$el.clientWidth -
+              (wrapper.value.clientWidth -
                 state.originalSize.width * oldValue) /
               2
           }
           let offsetY = 0
           if (
             newValue > oldValue &&
-            context.root.$el.clientHeight > state.originalSize.height * oldValue
+            wrapper.value.clientHeight > state.originalSize.height * oldValue
           ) {
             offsetY =
-              (context.root.$el.clientHeight -
+              (wrapper.value.clientHeight -
                 state.originalSize.height * oldValue) /
               2
           }
@@ -161,10 +161,9 @@ export default defineComponent({
             ((newValue - oldValue) * state.originalSize.height) / 2 - offsetY
 
           state.alignCenter =
-            context.root.$el.clientWidth >= state.originalSize.width * newValue
+            wrapper.value.clientWidth >= state.originalSize.width * newValue
           state.verticalAlignMiddle =
-            context.root.$el.clientHeight >=
-            state.originalSize.height * newValue
+            wrapper.value.clientHeight >= state.originalSize.height * newValue
         })
       }
     )

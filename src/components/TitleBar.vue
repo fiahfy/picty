@@ -15,7 +15,13 @@
 
 <script lang="ts">
 import { remote } from 'electron'
-import { defineComponent } from '@vue/composition-api'
+import {
+  defineComponent,
+  reactive,
+  computed,
+  onMounted,
+  onUnmounted,
+} from '@vue/composition-api'
 
 type Props = {
   app: boolean
@@ -29,6 +35,14 @@ export default defineComponent({
     },
   },
   setup(_props: Props) {
+    const state = reactive({
+      fullScreen: false,
+    })
+
+    const titleBar = computed(() => {
+      return process.platform === 'darwin' && !state.fullScreen
+    })
+
     // @see https://github.com/electron/electron/issues/16385
     const handleDoubleClick = () => {
       const doubleClickAction = remote.systemPreferences.getUserDefault(
@@ -46,9 +60,23 @@ export default defineComponent({
         }
       }
     }
+    const handleFullScreenChange = () => {
+      state.fullScreen = !!document.fullscreenElement
+    }
+
+    onMounted(() => {
+      document.body.addEventListener('fullscreenchange', handleFullScreenChange)
+    })
+
+    onUnmounted(() => {
+      document.body.removeEventListener(
+        'fullscreenchange',
+        handleFullScreenChange
+      )
+    })
 
     return {
-      titleBar: true,
+      titleBar,
       handleDoubleClick,
     }
   },
