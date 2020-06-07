@@ -1,18 +1,25 @@
-// TODO: handle ipc event
-// import { Plugin } from '@nuxt/types'
-// import { ipcRenderer } from 'electron'
-// import { layoutStore } from '~/store'
+import { Plugin } from '@nuxt/types'
+import { ipcRenderer, remote } from 'electron'
 
-// const ipcPlugin: Plugin = (ctx) => {
-//   ipcRenderer.on('enterFullScreen', () => {
-//     layoutStore.setFullScreen({ fullScreen: true })
-//   })
-//   ipcRenderer.on('leaveFullScreen', () => {
-//     layoutStore.setFullScreen({ fullScreen: false })
-//   })
-//   ipcRenderer.on('download', (_e, arg) => {
-//     ctx.app.$eventBus.$emit('download', arg)
-//   })
-// }
+const ipcPlugin: Plugin = (ctx) => {
+  ipcRenderer.on('open', async () => {
+    const { filePaths } = await remote.dialog.showOpenDialog({
+      properties: ['openDirectory'],
+    })
+    const filePath = filePaths[0]
+    if (filePath) {
+      ctx.app.$eventBus.$emit('change-location', filePath)
+    }
+  })
+  ipcRenderer.on('open-location', () => {
+    ctx.app.$eventBus.$emit('focus-location')
+  })
+  ipcRenderer.on('find', () => {
+    ctx.app.$eventBus.$emit('focus-query')
+  })
+  ipcRenderer.on('show-settings', () => {
+    ctx.app.$eventBus.$emit('show-settings')
+  })
+}
 
-// export default ipcPlugin
+export default ipcPlugin

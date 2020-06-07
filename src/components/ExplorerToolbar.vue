@@ -38,6 +38,7 @@
       <v-icon>mdi-home</v-icon>
     </v-btn>
     <v-text-field
+      ref="locationField"
       v-model="state.location"
       class="ml-3"
       name="location"
@@ -62,6 +63,9 @@ import {
   computed,
   reactive,
   watch,
+  ref,
+  onMounted,
+  onUnmounted,
   SetupContext,
 } from '@vue/composition-api'
 import { explorerStore, historyStore } from '~/store'
@@ -73,6 +77,13 @@ export default defineComponent({
     const canBack = computed(() => historyStore.canBack)
     const canForward = computed(() => historyStore.canForward)
 
+    const locationField = ref<Vue>(null)
+
+    const focusLocation = () => {
+      ;(locationField.value?.$el.querySelector(
+        'input'
+      ) as HTMLInputElement).focus()
+    }
     const handleClickBack = () => {
       context.emit('click-back')
     }
@@ -135,10 +146,19 @@ export default defineComponent({
       }
     )
 
+    onMounted(() => {
+      context.root.$eventBus.$on('focus-location', focusLocation)
+    })
+
+    onUnmounted(() => {
+      context.root.$eventBus.$on('focus-location', focusLocation)
+    })
+
     return {
       state,
       canBack,
       canForward,
+      locationField,
       handleClickBack,
       handleClickForward,
       handleClickUpward,

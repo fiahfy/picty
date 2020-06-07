@@ -12,6 +12,7 @@
         disable-pagination
         row
         wrap
+        tabindex="-1"
       >
         <template v-slot:header="props">
           <div class="header">

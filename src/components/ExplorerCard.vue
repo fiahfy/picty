@@ -22,7 +22,7 @@
         <v-icon>mdi-view-module</v-icon>
       </v-btn>
       <v-autocomplete
-        ref="autocomplete"
+        ref="queryField"
         :value="state.queryInput"
         :search-input.sync="state.searchInput"
         class="ml-3"
@@ -68,6 +68,9 @@ import {
   reactive,
   computed,
   watchEffect,
+  onMounted,
+  onUnmounted,
+  ref,
 } from '@vue/composition-api'
 import { explorerStore, queryHistoryStore } from '~/store'
 
@@ -103,6 +106,13 @@ export default defineComponent({
       return queryHistoryStore.histories.slice().reverse()
     })
 
+    const queryField = ref<Vue>(null)
+
+    const focusQuery = () => {
+      ;(queryField.value?.$el.querySelector(
+        'input'
+      ) as HTMLInputElement).focus()
+    }
     const handleClickPresentation = () => {
       context.emit('click-presentation')
     }
@@ -142,11 +152,20 @@ export default defineComponent({
       state.queryInput = props.query
     })
 
+    onMounted(() => {
+      context.root.$eventBus.$on('focus-query', focusQuery)
+    })
+
+    onUnmounted(() => {
+      context.root.$eventBus.$off('focus-query', focusQuery)
+    })
+
     return {
       state,
       listColor,
       thumbnailColor,
       queryHistories,
+      queryField,
       handleClickPresentation,
       handleClickList,
       handleClickThumbnail,

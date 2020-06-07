@@ -7,6 +7,7 @@
     content-class="presentation-dialog-content"
     fullscreen
     hide-overlay
+    eager
   >
     <v-card :class="classes" dark flat tile>
       <v-layout column fill-height>
@@ -317,8 +318,8 @@ export default defineComponent({
     onMounted(() => {
       document.body.addEventListener('keydown', handleKeyDown)
       document.body.addEventListener('fullscreenchange', handleFullScreenChange)
-      context.root.$eventBus.$on('showPresentation', showPresentation)
-      context.root.$eventBus.$on('hidePresentation', hidePresentation)
+      context.root.$eventBus.$on('show-presentation', showPresentation)
+      context.root.$eventBus.$on('hide-resentation', hidePresentation)
     })
 
     onUnmounted(() => {
@@ -327,8 +328,8 @@ export default defineComponent({
         'fullscreenchange',
         handleFullScreenChange
       )
-      context.root.$eventBus.$off('showPresentation', showPresentation)
-      context.root.$eventBus.$off('hidePresentation', hidePresentation)
+      context.root.$eventBus.$off('show-presentation', showPresentation)
+      context.root.$eventBus.$off('hide-presentation', hidePresentation)
     })
 
     return {

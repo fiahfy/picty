@@ -5,6 +5,7 @@
     fullscreen
     hide-overlay
     transition="dialog-bottom-transition"
+    eager
   >
     <v-card flat tile>
       <v-layout column fill-height>

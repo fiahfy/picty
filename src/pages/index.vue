@@ -190,7 +190,7 @@ export default defineComponent({
       load()
     }
     const handleClickPresentation = () => {
-      context.root.$eventBus.$emit('showPresentation', state.selected)
+      context.root.$eventBus.$emit('show-presentation', state.selected)
     }
     const handleClickHeader = (header: { value: string }) => {
       state.sortDesc = state.sortBy === header.value ? !state.sortDesc : false
@@ -207,7 +207,7 @@ export default defineComponent({
       let template: MenuItemConstructorOptions[] = [
         {
           label: 'View',
-          click: () => context.root.$eventBus.$emit('showPresentation', item),
+          click: () => context.root.$eventBus.$emit('show-presentation', item),
           accelerator: 'Enter',
         },
       ]
