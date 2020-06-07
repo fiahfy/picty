@@ -19,8 +19,11 @@
           <v-icon v-if="item.children" color="blue lighten-3">
             {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
           </v-icon>
-          <v-icon v-else color="green lighten-3">
+          <v-icon v-else-if="item.path" color="green lighten-3">
             mdi-file-image
+          </v-icon>
+          <v-icon v-else color="grey">
+            mdi-folder-multiple-image
           </v-icon>
         </template>
         <template v-slot:label="{ item }">
@@ -50,9 +53,11 @@ const Worker = require('~/workers/fetch-files.worker')
 
 const worker = workerPromisify(new Worker())
 
+const maxChildren = 100
+
 type Node = {
   name: string
-  path: string
+  path?: string
   children?: Node[]
 }
 
@@ -74,19 +79,28 @@ export default defineComponent({
     const fetch = async (dirPath: string) => {
       try {
         const { data }: { data: File[] } = await worker.postMessage({ dirPath })
-        return data
-          .filter(
-            (file) =>
-              file.directory ||
-              settingsStore.isFileAvailable({ filePath: file.path })
-          )
-          .map((file) => {
-            return {
-              name: file.name,
-              path: file.path,
-              children: file.directory ? [] : undefined,
-            }
-          })
+        const files = data.filter(
+          (file) =>
+            file.directory ||
+            settingsStore.isFileAvailable({ filePath: file.path })
+        )
+        let others: Node[] = []
+        if (files.length > maxChildren) {
+          const size = files.length - maxChildren
+          others = [
+            {
+              name: `Other ${size} items`,
+            },
+          ]
+        }
+        const items = files.slice(0, maxChildren).map((file) => {
+          return {
+            name: file.name,
+            path: file.path,
+            children: file.directory ? [] : undefined,
+          }
+        })
+        return [...items, ...others]
       } catch (e) {
         return []
       }
@@ -129,7 +143,9 @@ export default defineComponent({
     }
 
     const handleLoadChildren = async (node: Node) => {
-      node.children = await fetch(node.path)
+      if (node.path) {
+        node.children = await fetch(node.path)
+      }
     }
     const handleClickNode = (node: Node) => {
       if (node.children) {
