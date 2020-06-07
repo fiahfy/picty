@@ -39,12 +39,10 @@ export default defineComponent({
     }
     const handleDrop = (e: DragEvent) => {
       const files = Array.from(e.dataTransfer?.files ?? [])
-      if (!files.length) {
-        return
+      const filePath = files[0].path
+      if (filePath) {
+        context.root.$eventBus.$emit('change-location', filePath)
       }
-      // TODO: handle file drop
-      const filePath = files[0].path // eslint-disable-line
-      // layoutStore.open({ filePath })
     }
 
     watchEffect(() => {
