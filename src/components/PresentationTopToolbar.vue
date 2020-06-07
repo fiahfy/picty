@@ -10,11 +10,14 @@
       <v-icon>mdi-close</v-icon>
     </v-btn>
 
-    <span class="px-3 ellipsis">{{ title }}</span>
+    <span class="px-3 text-truncate" style="direction: rtl;">
+      {{ title }}
+    </span>
   </v-toolbar>
 </template>
 
 <script lang="ts">
+import path from 'path'
 import {
   defineComponent,
   computed,
@@ -24,14 +27,14 @@ import {
 import { File } from '~/models'
 
 type Props = {
-  file: File
+  file?: File
 }
 
 export default defineComponent({
   props: {
     file: {
       type: Object,
-      default: () => ({}),
+      default: undefined,
     },
   },
   setup(props: Props, context: SetupContext) {
@@ -39,7 +42,7 @@ export default defineComponent({
       if (!props.file) {
         return ''
       }
-      return props.file.parent + ' - ' + props.file.name
+      return path.basename(props.file.parent) + ' - ' + props.file.name
     })
 
     const toolbar = ref<Vue>(null)

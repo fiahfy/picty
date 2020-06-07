@@ -1,11 +1,11 @@
 <template>
   <v-layout class="virtual-data-iterator" column>
-    <v-container :class="classes" fluid pa-0 overflow-hidden>
+    <v-container :class="classes" fluid pa-0 overflow-hidden fill-height>
       <v-data-iterator
         ref="iterator"
         v-model="model"
         v-bind="$attrs"
-        class="fill-height"
+        class="fill-height flex-grow-1"
         :options.sync="optionsModel"
         :items="renderItems"
         disable-sort

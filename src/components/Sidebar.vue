@@ -89,13 +89,11 @@ export default defineComponent({
 
     const handleMouseMove = (e: MouseEvent) => {
       if (sidebar.value) {
-        const width = e.clientX - sidebar.value.$el.getBoundingClientRect().left
-        if (
-          width < minWidth + offsetWidth ||
-          width > window.innerWidth - minWidth
-        ) {
-          return
-        }
+        let width = e.clientX - sidebar.value.$el.getBoundingClientRect().left
+        width = Math.max(
+          minWidth + offsetWidth,
+          Math.min(width, window.innerWidth - minWidth)
+        )
         ;(sidebar.value?.$el as HTMLElement).style.width = width + 'px'
       }
     }
