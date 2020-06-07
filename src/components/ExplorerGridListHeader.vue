@@ -56,7 +56,6 @@ export default defineComponent({
   props: {
     sortBy: {
       type: String,
-      default: undefined,
     },
     sortDesc: {
       type: Boolean,

@@ -72,7 +72,6 @@ export default defineComponent({
   props: {
     navigator: {
       type: String,
-      default: undefined,
     },
   },
   setup(props: Props, context: SetupContext) {

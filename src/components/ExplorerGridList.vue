@@ -66,7 +66,6 @@ export default defineComponent({
     },
     selected: {
       type: Object,
-      default: undefined,
     },
     loading: {
       type: Boolean,
@@ -74,7 +73,6 @@ export default defineComponent({
     },
     sortBy: {
       type: String,
-      default: undefined,
     },
     sortDesc: {
       type: Boolean,

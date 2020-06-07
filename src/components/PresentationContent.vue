@@ -43,7 +43,7 @@ import { settingsStore } from '~/store'
 type Props = {
   loading: boolean
   scale: number
-  file: File
+  file?: File
 }
 
 export default defineComponent({
@@ -58,7 +58,6 @@ export default defineComponent({
     },
     file: {
       type: Object,
-      default: undefined,
     },
   },
   setup(props: Props, context: SetupContext) {

@@ -34,7 +34,6 @@ export default defineComponent({
   props: {
     file: {
       type: Object,
-      default: undefined,
     },
   },
   setup(props: Props, context: SetupContext) {

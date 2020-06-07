@@ -66,7 +66,7 @@ export default defineComponent({
   props: {
     item: {
       type: Object,
-      default: () => ({}),
+      required: true,
     },
   },
   setup(props: Props, context: SetupContext) {
