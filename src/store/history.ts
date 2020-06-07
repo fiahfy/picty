@@ -17,6 +17,14 @@ export default class HistoryModule extends VuexModule {
     return this.index < this.histories.length - 1
   }
 
+  get backHistories() {
+    return this.histories.slice(0, this.index).reverse()
+  }
+
+  get forwardHistories() {
+    return this.histories.slice(this.index + 1, this.histories.length)
+  }
+
   @Action
   push(history: string) {
     const index = this.index + 1
@@ -26,23 +34,23 @@ export default class HistoryModule extends VuexModule {
   }
 
   @Action
-  back() {
-    if (this.index <= 0) {
+  go(offset: number) {
+    const index = this.index + offset
+    if (index < 0 || index > this.histories.length - 1) {
       return
     }
-    const index = this.index - 1
     this.setIndex({ index })
     return this.histories[this.index]
   }
 
   @Action
+  back() {
+    return this.go(-1)
+  }
+
+  @Action
   forward() {
-    if (this.index >= this.histories.length - 1) {
-      return
-    }
-    const index = this.index + 1
-    this.setIndex({ index })
-    return this.histories[this.index]
+    return this.go(1)
   }
 
   @Mutation

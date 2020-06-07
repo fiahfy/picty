@@ -25,6 +25,7 @@
 </template>
 
 <script>
+// TODO: typescriptize
 export default {
   props: {
     value: {

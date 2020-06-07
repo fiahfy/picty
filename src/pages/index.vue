@@ -8,6 +8,8 @@
         @click-upward="handleClickUpward"
         @click-reload="handleClickReload"
         @click-home="handleClickHome"
+        @change-location="handleChangeLocation"
+        @change-history="handleChangeHistory"
       />
       <explorer-card
         class="flex-grow-0"
@@ -159,26 +161,22 @@ export default defineComponent({
       queryHistoryStore.addHistory({ history: query })
       state.query = query
     }
-
-    const handleClickBack = async () => {
+    const go = async (offset: number) => {
       if (state.loading) {
         return
       }
-      const history = await historyStore.back()
+      const history = await historyStore.go(offset)
       if (history) {
         explorerStore.setLocation({ location: history })
         load()
       }
     }
+
+    const handleClickBack = async () => {
+      await go(-1)
+    }
     const handleClickForward = async () => {
-      if (state.loading) {
-        return
-      }
-      const history = await historyStore.forward()
-      if (history) {
-        explorerStore.setLocation({ location: history })
-        load()
-      }
+      await go(1)
     }
     const handleClickUpward = () => {
       const filePath = path.dirname(explorerStore.location)
@@ -228,22 +226,14 @@ export default defineComponent({
       }
       context.root.$contextMenu.open(template)
     }
-    const handleChangeRating = (item: Item, rating: number) => {
-      ratingStore.setRating({
-        filePath: item.path,
-        rating,
-      })
-      state.items = state.items.map((current) =>
-        current.path === item.path
-          ? {
-              ...current,
-              rating,
-            }
-          : current
-      )
+    const handleChangeLocation = (location: string) => {
+      move(location)
     }
     const handleChangeQuery = (query: string) => {
       search(query)
+    }
+    const handleChangeHistory = (offset: number) => {
+      go(offset)
     }
     const handleChangeSortOption = ({
       by,
@@ -254,6 +244,21 @@ export default defineComponent({
     }) => {
       state.sortBy = by as keyof Item
       state.sortDesc = desc
+    }
+    const handleChangeRating = (item: Item, rating: number) => {
+      ratingStore.setRating({
+        filePath: item.path,
+        rating,
+      })
+      // update item
+      state.items = state.items.map((current) =>
+        current.path === item.path
+          ? {
+              ...current,
+              rating,
+            }
+          : current
+      )
     }
 
     load()
@@ -280,9 +285,11 @@ export default defineComponent({
       handleClickHeader,
       handleDoubleClickItem,
       handleContextMenuItem,
-      handleChangeRating,
+      handleChangeLocation,
       handleChangeQuery,
+      handleChangeHistory,
       handleChangeSortOption,
+      handleChangeRating,
     }
   },
 })

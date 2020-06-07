@@ -37,12 +37,17 @@
             />
           </v-row>
         </template>
+        <template v-slot:loading>
+          <v-progress-linear indeterminate height="2" />
+          <div class="ma-3 body-2 grey--text">Loading items...</div>
+        </template>
       </v-data-iterator>
     </v-container>
   </v-layout>
 </template>
 
 <script>
+// TODO: typescriptize
 import * as viewport from '~/utils/viewport'
 
 export default {

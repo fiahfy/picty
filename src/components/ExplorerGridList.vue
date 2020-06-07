@@ -27,7 +27,7 @@
         :class="[...classes, isSelected(props.item) && 'selected']"
         @click.native="() => handleClickRow(props.item)"
         @dblclick.native="() => handleDoubleClickRow(props.item)"
-        @contextmenu.native="() => handleContextMenuRow(props.item)"
+        @contextmenu.native.stop="() => handleContextMenuRow(props.item)"
         @change-rating="(rating) => handleChangeRating(props.item, rating)"
       />
     </template>

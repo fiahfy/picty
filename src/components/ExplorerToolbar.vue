@@ -49,7 +49,7 @@
       single-line
       hide-details
       @click:prepend-inner="handleClickFolder"
-      @keyup.enter="handleKeyUpEnter"
+      @keydown="handleKeyDown"
       @contextmenu.stop="handleContextMenuLocation"
     />
   </v-toolbar>
@@ -91,10 +91,42 @@ export default defineComponent({
     const handleClickFolder = () => {
       shell.openItem(explorerStore.location)
     }
-    const handleKeyUpEnter = () => {}
-    const handleContextMenuLocation = () => {}
-    const handleContextMenuBack = () => {}
-    const handleContextMenuForward = () => {}
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === 'Enter' &&
+        !e.isComposing &&
+        e.target instanceof HTMLInputElement
+      ) {
+        context.emit('change-location', e.target.value)
+      }
+    }
+    const handleContextMenuLocation = () => {
+      context.root.$contextMenu.open([
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' },
+      ])
+    }
+    const handleContextMenuBack = () => {
+      context.root.$contextMenu.open(
+        historyStore.backHistories.map((history, index) => {
+          return {
+            label: history,
+            click: () => context.emit('change-history', -1 * (index + 1)),
+          }
+        })
+      )
+    }
+    const handleContextMenuForward = () => {
+      context.root.$contextMenu.open(
+        historyStore.forwardHistories.map((history, index) => {
+          return {
+            label: history,
+            click: () => context.emit('change-history', index + 1),
+          }
+        })
+      )
+    }
 
     watch(
       () => explorerStore.location,
@@ -113,7 +145,7 @@ export default defineComponent({
       handleClickReload,
       handleClickHome,
       handleClickFolder,
-      handleKeyUpEnter,
+      handleKeyDown,
       handleContextMenuLocation,
       handleContextMenuBack,
       handleContextMenuForward,
