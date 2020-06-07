@@ -58,9 +58,9 @@ type Menu = {
 const menus: Menu[] = [
   {
     navigator: 'files',
-    icon: 'mdi-compass',
-    title: 'Explorer',
-    accelerator: 'CmdOrCtrl+Shift+E',
+    icon: 'mdi-file-multiple',
+    title: 'Files',
+    accelerator: '',
   },
 ]
 
