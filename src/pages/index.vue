@@ -1,5 +1,5 @@
 <template>
-  <v-container class="explorer" fill-height fluid pa-0>
+  <v-container class="index" fill-height fluid pa-0>
     <v-layout column>
       <explorer-toolbar
         class="flex-grow-0"

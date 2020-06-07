@@ -238,14 +238,14 @@ export default defineComponent({
       state.fullScreen = !!document.fullscreenElement
     }
     const handleKeyDown = (e: KeyboardEvent) => {
-      switch (e.keyCode) {
-        case 27:
+      switch (e.key) {
+        case 'Escape':
           return hidePresentation()
-        case 37:
-        case 38:
+        case 'ArrowLeft':
+        case 'ArrowUp':
           return movePrevious()
-        case 39:
-        case 40:
+        case 'ArrowRight':
+        case 'ArrowDown':
           return movekNext()
       }
     }

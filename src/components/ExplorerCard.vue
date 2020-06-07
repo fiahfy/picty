@@ -37,7 +37,7 @@
         hide-details
         clearable
         @input="handleInput"
-        @keyup.enter="handleKeyUpEnter"
+        @keydown="handleKeyDown"
         @contextmenu.stop="handleContextMenu"
         @click:prepend-inner="handleClickMagnify"
       >
@@ -115,8 +115,12 @@ export default defineComponent({
     const handleInput = (value?: string) => {
       context.emit('change-query', value ?? '')
     }
-    const handleKeyUpEnter = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement) {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === 'Enter' &&
+        !e.isComposing &&
+        e.target instanceof HTMLInputElement
+      ) {
         context.emit('change-query', e.target.value)
       }
     }
@@ -147,7 +151,7 @@ export default defineComponent({
       handleClickList,
       handleClickThumbnail,
       handleInput,
-      handleKeyUpEnter,
+      handleKeyDown,
       handleContextMenu,
       handleClickMagnify,
       handleClickItemDelete,
