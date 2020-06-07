@@ -50,7 +50,7 @@
               small
               icon
               color="primary"
-              @click="() => handleClickItemDelete(item)"
+              @click.stop="() => handleClickItemDelete(item)"
             >
               <v-icon>mdi-delete</v-icon>
             </v-btn>

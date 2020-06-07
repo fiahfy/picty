@@ -8,7 +8,7 @@ const getFile = (filePath: string): File => {
   const stat = fs.lstatSync(filePath)
   return {
     path: filePath,
-    name: path.basename(filePath),
+    name: path.basename(filePath).normalize('NFC'),
     parent: path.dirname(filePath),
     directory: stat.isDirectory(),
     file: stat.isFile(),
