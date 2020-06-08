@@ -1,4 +1,4 @@
-const pkg = require('./package')
+import pkg from './package'
 
 module.exports = {
   /*
@@ -11,29 +11,34 @@ module.exports = {
         config.target = 'electron-renderer'
         config.output.globalObject = 'this'
         config.module.rules.unshift({
-          test: /\.worker\.js$/,
-          loader: 'worker-loader'
+          test: /\.worker\.ts$/,
+          loader: 'worker-loader',
         })
       }
       // Set relative path
       config.output.publicPath = './_nuxt/'
-    }
+    },
   },
+
+  /*
+   ** Build modules
+   */
+  buildModules: ['@nuxt/typescript-build'],
 
   /*
    ** Global CSS
    */
   css: [
-    'material-design-icons-iconfont/dist/material-design-icons.css',
+    '@mdi/font/css/materialdesignicons.css',
     'typeface-roboto/index.css',
-    '~/assets/css/app.css'
+    '~/assets/app.scss',
   ],
 
   /*
    ** Generate configuration
    */
   generate: {
-    dir: 'app'
+    dir: 'app',
   },
 
   /*
@@ -44,7 +49,10 @@ module.exports = {
   /*
    ** Headers of the page
    */
-  head: { title: pkg.productName },
+  head: {
+    title: pkg.productName,
+    meta: [{ hid: 'charset', charset: 'utf-8' }],
+  },
 
   /*
    ** SPA or Universal
@@ -58,32 +66,45 @@ module.exports = {
     [
       '@nuxtjs/vuetify',
       {
-        materialIcons: false,
+        customVariables: ['~/assets/variables.scss'],
+        defaultAssets: false,
         theme: {
-          primary: '#ff4081',
-          accent: '#ff4081'
-        }
-      }
-    ]
+          themes: {
+            light: {
+              primary: '#ff4081',
+              secondary: '#424242',
+              accent: '#ff4081',
+            },
+            dark: {
+              primary: '#ff4081',
+              secondary: '#E0E0E0',
+              accent: '#ff4081',
+            },
+          },
+        },
+      },
+    ],
   ],
 
   /*
    ** Plugins to load before mounting the App
    */
   plugins: [
-    '~/plugins/context-menu',
-    '~/plugins/filter',
-    '~/plugins/ipc-listener',
+    '~/plugins/electron-accelerator-formatter',
+    '~/plugins/electron-context-menu',
+    '~/plugins/event-bus',
+    '~/plugins/ipc',
+    '~/plugins/vue-composition-api',
+    '~/plugins/vue-date-fns',
     '~/plugins/vue-long-press',
-    '~/plugins/vue-moment',
-    '~/plugins/vuetify'
+    '~/plugins/vuex-persistedstate',
   ],
 
   /*
    ** Router configuration
    */
   router: {
-    mode: 'hash'
+    mode: 'hash',
   },
 
   /*
@@ -96,7 +117,7 @@ module.exports = {
    */
   vue: {
     config: {
-      productionTip: false
-    }
-  }
+      productionTip: false,
+    },
+  },
 }

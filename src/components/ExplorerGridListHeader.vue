@@ -2,55 +2,83 @@
   <v-card class="explorer-grid-list-header" flat tile>
     <v-toolbar color="transparent" flat dense>
       <v-spacer />
-      <v-flex xs12 sm6 md4>
-        <v-select
-          v-model="order"
-          :items="orders"
-          single-line
-          append-outer-icon="sort"
-        />
-      </v-flex>
+      <v-select
+        v-model="option"
+        :items="options"
+        dense
+        filled
+        rounded
+        single-line
+        prepend-inner-icon="mdi-sort"
+        hide-details
+        style="max-width: 320px;"
+      />
     </v-toolbar>
   </v-card>
 </template>
 
-<script>
-export default {
-  data() {
+<script lang="ts">
+import { defineComponent, computed, SetupContext } from '@vue/composition-api'
+import { Item } from '~/models'
+
+type Option = {
+  value: { by: keyof Item; desc: boolean }
+  text: string
+}
+
+const options: Option[] = [
+  { value: { by: 'name', desc: false }, text: 'Name ascending' },
+  { value: { by: 'name', desc: true }, text: 'Name descending' },
+  {
+    value: { by: 'rating', desc: false },
+    text: 'Rating ascending',
+  },
+  {
+    value: { by: 'rating', desc: true },
+    text: 'Rating descending',
+  },
+  {
+    value: { by: 'lastModified', desc: false },
+    text: 'Last Modified ascending',
+  },
+  {
+    value: { by: 'lastModified', desc: true },
+    text: 'Last Modified descending',
+  },
+]
+
+type Props = {
+  sortBy?: keyof Item
+  sortDesc: boolean
+}
+
+export default defineComponent({
+  props: {
+    sortBy: {
+      type: String,
+    },
+    sortDesc: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup(props: Props, context: SetupContext) {
+    const option = computed<{
+      by: string
+      desc: boolean
+    }>({
+      get() {
+        return { by: props.sortBy ?? 'name', desc: props.sortDesc }
+      },
+      set(option) {
+        context.emit('change-sort-option', option)
+      },
+    })
+
     return {
-      orders: [
-        { value: { by: 'name', descending: false }, text: 'Name ascending' },
-        { value: { by: 'name', descending: true }, text: 'Name descending' },
-        { value: { by: 'views', descending: true }, text: 'Views ascending' },
-        { value: { by: 'views', descending: false }, text: 'Views descending' },
-        {
-          value: { by: 'rating', descending: true },
-          text: 'Rating ascending'
-        },
-        {
-          value: { by: 'rating', descending: false },
-          text: 'Rating descending'
-        },
-        {
-          value: { by: 'modified_at', descending: true },
-          text: 'Date Modified ascending'
-        },
-        {
-          value: { by: 'modified_at', descending: false },
-          text: 'Date Modified descending'
-        }
-      ]
+      options,
+      option,
     }
   },
-  computed: {
-    order: {
-      get() {
-        return this.$store.getters['local/explorer/order']
-      },
-      set(value) {
-        this.$store.dispatch('local/explorer/changeOrder', { order: value })
-      }
-    }
-  }
-}
+})
 </script>

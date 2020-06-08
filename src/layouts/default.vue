@@ -1,52 +1,58 @@
 <template>
   <v-app
-    :dark="darkTheme"
-    @contextmenu.native="onContextMenu"
-    @drop.native.prevent="onDrop"
+    @contextmenu.native="handleContextMenu"
+    @drop.native.prevent="handleDrop"
     @dragover.native.prevent
   >
     <title-bar />
-    <activity-bar />
-    <v-content class="fill-height"><router-view /></v-content>
-    <notification-bar />
-    <viewer />
+    <sidebar />
+    <v-content class="fill-height">
+      <router-view class="fill-height" />
+    </v-content>
+    <settings-dialog />
+    <presentation-dialog />
   </v-app>
 </template>
 
-<script>
-import { mapActions, mapState } from 'vuex'
-import ActivityBar from '~/components/ActivityBar'
-import NotificationBar from '~/components/NotificationBar'
-import TitleBar from '~/components/TitleBar'
-import Viewer from '~/components/Viewer'
+<script lang="ts">
+import {
+  defineComponent,
+  watchEffect,
+  SetupContext,
+} from '@vue/composition-api'
+import PresentationDialog from '~/components/PresentationDialog.vue'
+import SettingsDialog from '~/components/SettingsDialog.vue'
+import Sidebar from '~/components/Sidebar.vue'
+import TitleBar from '~/components/TitleBar.vue'
+import { settingsStore } from '~/store'
 
-export default {
+export default defineComponent({
   components: {
-    ActivityBar,
-    NotificationBar,
+    PresentationDialog,
+    SettingsDialog,
+    Sidebar,
     TitleBar,
-    Viewer
   },
-  computed: {
-    ...mapState(['viewing']),
-    ...mapState('settings', ['darkTheme'])
-  },
-  created() {
-    this.initialize()
-  },
-  methods: {
-    onContextMenu() {
-      this.$contextMenu.show()
-    },
-    onDrop(e) {
-      const files = Array.from(e.dataTransfer.files)
-      if (!files.length) {
-        return
+  setup(_props: {}, context: SetupContext) {
+    const handleContextMenu = () => {
+      context.root.$contextMenu.open()
+    }
+    const handleDrop = (e: DragEvent) => {
+      const files = Array.from(e.dataTransfer?.files ?? [])
+      const filePath = files[0].path
+      if (filePath) {
+        context.root.$eventBus.$emit('change-location', filePath)
       }
-      const filepath = files[0].path
-      this.open({ filepath })
-    },
-    ...mapActions(['initialize', 'open'])
-  }
-}
+    }
+
+    watchEffect(() => {
+      context.root.$vuetify.theme.dark = settingsStore.darkTheme
+    })
+
+    return {
+      handleContextMenu,
+      handleDrop,
+    }
+  },
+})
 </script>

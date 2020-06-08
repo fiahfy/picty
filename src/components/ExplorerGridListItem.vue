@@ -1,24 +1,17 @@
 <template>
-  <v-flex class="explorer-grid-list-item">
-    <v-card
-      flat
-      tile
-      :active="active"
-      @click.native="onClick"
-      @dblclick="onDblClick"
-      @contextmenu.stop="onContextMenu"
-    >
+  <v-col class="explorer-grid-list-item pa-1">
+    <v-card flat tile>
       <v-img
-        :src="imageUrl"
+        :src="state.imageUrl"
         :contain="contain"
         :height="thumbnailHeightValue"
-        @error="onError"
+        @error="handleError"
       >
         <v-layout slot="placeholder" fill-height align-center justify-center>
-          <v-flex class="text-xs-center caption">{{ message }}</v-flex>
+          <v-flex class="text-center caption">{{ message }}</v-flex>
         </v-layout>
-        <div v-if="images" class="images caption white--text ma-2 px-1">
-          {{ images }} images
+        <div v-if="state.images" class="images caption white--text ma-2 px-1">
+          {{ state.images }} images
         </div>
       </v-img>
       <v-icon :color="iconColor" class="pa-1">{{ icon }}</v-icon>
@@ -27,8 +20,8 @@
         <v-spacer />
         <div class="title">
           <div>
-            <span :title="file.name" class="text-xs-center caption">
-              {{ file.name }}
+            <span :title="item.name" class="text-xs-center caption">
+              {{ item.name }}
             </span>
           </div>
         </div>
@@ -46,186 +39,166 @@
         <v-spacer />
       </v-card-actions>
     </v-card>
-  </v-flex>
+  </v-col>
 </template>
 
-<script>
-import workerPromisify from '@fiahfy/worker-promisify'
+<script lang="ts">
 import fileUrl from 'file-url'
-import { mapActions, mapGetters, mapState } from 'vuex'
-import Worker from '~/workers/fetch.worker.js'
+import {
+  defineComponent,
+  SetupContext,
+  reactive,
+  computed,
+} from '@vue/composition-api'
+import { Item } from '~/models'
+import { settingsStore } from '~/store'
+
+const workerPromisify = require('@fiahfy/worker-promisify').default
+const Worker = require('~/workers/fetch-pathes.worker')
 
 const worker = workerPromisify(new Worker())
 
-export default {
+type Props = {
+  item: Item
+}
+
+export default defineComponent({
   props: {
-    file: {
+    item: {
       type: Object,
-      default: () => ({})
-    }
+      required: true,
+    },
   },
-  data() {
-    return {
+  setup(props: Props, context: SetupContext) {
+    const state = reactive({
       loading: false,
       error: false,
       imageUrl: '',
-      images: ''
-    }
-  },
-  computed: {
-    rating: {
+      images: '',
+    })
+
+    const rating = computed({
       get() {
-        return this.file.rating
+        return props.item.rating
       },
       set(value) {
-        this.$store.dispatch('local/explorer/updateFileRating', {
-          filepath: this.file.path,
-          rating: value
-        })
-      }
-    },
-    active() {
-      return this.isFileSelected({ filepath: this.file.path })
-    },
-    icon() {
-      if (this.file.exists) {
-        return this.file.directory ? 'folder' : 'photo'
-      }
-      return 'broken_image'
-    },
-    iconColor() {
-      if (this.file.exists) {
-        return this.file.directory ? 'blue lighten-3' : 'green lighten-3'
-      }
-      return 'grey'
-    },
-    contain() {
-      return this.thumbnailStyle === 'contain'
-    },
-    message() {
-      if (this.loading) {
+        context.emit('change-rating', Number(value))
+      },
+    })
+    const icon = computed(() => {
+      return props.item.directory ? 'mdi-folder' : 'mdi-file-image'
+    })
+    const iconColor = computed(() => {
+      return props.item.directory ? 'blue lighten-3' : 'green lighten-3'
+    })
+    const message = computed(() => {
+      if (state.loading) {
         return 'Loading...'
       }
-      if (this.error) {
+      if (state.error) {
         return 'Load failed'
       }
-      return this.imageUrl ? '' : 'No images'
-    },
-    ...mapState('settings', ['thumbnailStyle']),
-    ...mapGetters('settings', ['thumbnailHeightValue', 'isFileAvailable']),
-    ...mapGetters('local/explorer', ['isFileSelected'])
-  },
-  async created() {
-    if (!this.file.directory) {
-      this.imageUrl = fileUrl(this.file.path)
-      return
-    }
-    this.loading = true
-    const { data } = await worker.postMessage({
-      key: this.file.path,
-      data: this.file.path
+      return state.imageUrl ? '' : 'No images'
     })
-    const filepathes = data.filter((filepath) =>
-      this.isFileAvailable({ filepath })
-    )
-    if (filepathes.length) {
-      this.imageUrl = fileUrl(filepathes[0])
-    }
-    this.images = filepathes.length
-    this.loading = false
-  },
-  methods: {
-    onClick() {
-      this.selectFile({ filepath: this.file.path })
-    },
-    onDblClick() {
-      this.openFile({ filepath: this.file.path })
-    },
-    onContextMenu() {
-      this.selectFile({ filepath: this.file.path })
-      let template = [
-        {
-          label: 'View',
-          click: () => this.viewFile({ filepath: this.file.path }),
-          accelerator: 'Enter'
+    const contain = computed(() => {
+      return settingsStore.thumbnailStyle === 'contain'
+    })
+    const thumbnailHeightValue = computed(() => {
+      return settingsStore.thumbnailHeightValue
+    })
+
+    const load = async () => {
+      if (!props.item.directory) {
+        state.imageUrl = fileUrl(props.item.path)
+      } else {
+        state.loading = true
+        const { data } = await worker.postMessage({
+          key: props.item.path,
+          path: props.item.path,
+        })
+        const filePathes = data.filter((filePath: string) =>
+          settingsStore.isFileAvailable({ filePath })
+        )
+        if (filePathes.length) {
+          state.imageUrl = fileUrl(filePathes[0])
         }
-      ]
-      const text = getSelection().toString()
-      if (text) {
-        template = [
-          ...template,
-          { type: 'separator' },
-          { role: 'copy' },
-          {
-            label: `Search "${text}"`,
-            click: () => this.searchFiles({ query: text }),
-            accelerator: 'CmdOrCtrl+F'
-          }
-        ]
+        state.images = filePathes.length
+        state.loading = false
       }
-      this.$contextMenu.show(template)
-    },
-    onError() {
-      this.error = true
-    },
-    ...mapActions('local/explorer', [
-      'selectFile',
-      'searchFiles',
-      'openFile',
-      'viewFile'
-    ])
-  }
-}
+    }
+
+    const handleError = () => {
+      state.error = true
+    }
+
+    load()
+
+    return {
+      state,
+      rating,
+      icon,
+      iconColor,
+      message,
+      contain,
+      thumbnailHeightValue,
+      handleError,
+    }
+  },
+})
 </script>
 
-<style scoped lang="scss">
-.explorer-grid-list-item .v-card {
-  cursor: pointer;
-  position: relative;
-  &[active] {
-    background-color: #f5f5f5;
-  }
-  &:hover {
-    background-color: #eeeeee;
-  }
-  .v-image .images {
-    background-color: rgba(0, 0, 0, 0.8);
-    position: absolute;
-    bottom: 0;
-    right: 0;
-  }
-  .v-icon {
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-  .v-card__title .title {
-    display: table;
-    > div {
-      display: table-cell;
-      height: 28px;
-      vertical-align: middle;
-      > span {
-        display: -webkit-box;
-        line-height: 1.2;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        word-break: break-all;
-        /* autoprefixer: ignore next */
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+<style lang="scss" scoped>
+.explorer-grid-list-item {
+  .v-card {
+    cursor: pointer;
+    position: relative;
+    .v-image .images {
+      background-color: rgba(0, 0, 0, 0.8);
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+    .v-icon {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    .v-card__title .title {
+      display: table;
+      > div {
+        display: table-cell;
+        height: 28px;
+        vertical-align: middle;
+        > span {
+          display: -webkit-box;
+          line-height: 1.2;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-all;
+          /* autoprefixer: ignore next */
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+        }
       }
     }
-  }
-  .v-rating {
-    height: 32px;
+    .v-rating {
+      height: 32px;
+    }
   }
 }
-.theme--dark .explorer-grid-list-item .v-card {
-  &[active] {
+.theme--light .explorer-grid-list-item {
+  &.selected .v-card {
+    background-color: #f5f5f5;
+  }
+  &:hover .v-card {
+    background-color: #eeeeee;
+  }
+}
+.theme--dark .explorer-grid-list-item {
+  &.selected .v-card {
     background-color: #505050;
   }
-  &:hover {
+  &:hover .v-card {
     background-color: #616161;
   }
 }

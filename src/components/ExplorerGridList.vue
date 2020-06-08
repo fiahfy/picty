@@ -1,172 +1,124 @@
 <template>
   <virtual-data-iterator
     ref="iterator"
-    :items="filteredFiles"
-    :loading="loading"
-    :no-data-text="noDataText"
-    :estimated-height="estimatedHeight"
-    :sizes="sizes"
     class="explorer-grid-list"
     container-class="grid-list-md"
+    :items="items"
+    :loading="loading"
+    :estimated-height="estimatedHeight"
+    :sizes="sizes"
     item-key="path"
-    hide-actions
+    hide-default-header
+    hide-default-footer
+    sticky-headers
     tabindex="0"
-    @scroll="onScroll"
-    @keydown.native="onKeyDown"
   >
-    <explorer-grid-list-header slot="header" />
-    <explorer-grid-list-item
-      slot="items"
-      :key="props.item.path"
-      slot-scope="props"
-      :file="props.item"
-      :class="classes"
-    />
-    <v-progress-linear slot="progress" indeterminate />
-    <v-card slot="no-data" class="ma-3 pa-3">{{ noDataText }}</v-card>
-    <v-card slot="no-results" class="ma-3 pa-3">{{ noDataText }}</v-card>
+    <template v-slot:header>
+      <explorer-grid-list-header
+        :sort-by="sortBy"
+        :sort-desc="sortDesc"
+        @change-sort-option="handleChangeSortOption"
+      />
+    </template>
+    <template v-slot:item="props">
+      <explorer-grid-list-item
+        :key="props.item.path"
+        :item="props.item"
+        :class="[...classes, isSelected(props.item) && 'selected']"
+        @click.native="() => handleClickRow(props.item)"
+        @dblclick.native="() => handleDoubleClickRow(props.item)"
+        @contextmenu.native.stop="() => handleContextMenuRow(props.item)"
+        @change-rating="(rating) => handleChangeRating(props.item, rating)"
+      />
+    </template>
   </virtual-data-iterator>
 </template>
 
-<script>
-import { mapActions, mapGetters, mapState } from 'vuex'
-import ExplorerGridListHeader from './ExplorerGridListHeader'
-import ExplorerGridListItem from './ExplorerGridListItem'
-import VirtualDataIterator from './VirtualDataIterator'
-import viewport from '~/utils/viewport'
+<script lang="ts">
+import { defineComponent, SetupContext, computed } from '@vue/composition-api'
+import ExplorerGridListHeader from '~/components/ExplorerGridListHeader.vue'
+import ExplorerGridListItem from '~/components/ExplorerGridListItem.vue'
+import VirtualDataIterator from '~/components/VirtualDataIterator.vue'
+import { Item } from '~/models'
+import { settingsStore } from '~/store'
+import * as viewport from '~/utils/viewport'
 
-export default {
+const sizes = [6, 4, 3, 2, 2]
+
+type Props = {
+  items: Item[]
+  selected?: Item
+  loading: boolean
+  sortBy?: string
+  sortDesc: boolean
+}
+
+export default defineComponent({
   components: {
     ExplorerGridListHeader,
     ExplorerGridListItem,
-    VirtualDataIterator
+    VirtualDataIterator,
   },
-  data() {
-    return {
-      sizes: [6, 4, 3, 2, 2]
-    }
-  },
-  computed: {
-    noDataText() {
-      if (this.loading) {
-        return 'Loading...'
-      }
-      return this.query ? 'No matching records found' : 'No data available'
+  props: {
+    items: {
+      type: Array,
+      default: () => [],
     },
-    classes() {
-      return viewport.SIZES.map((s, i) => {
-        return s + this.sizes[i]
+    selected: {
+      type: Object,
+    },
+    loading: {
+      type: Boolean,
+      default: true,
+    },
+    sortBy: {
+      type: String,
+    },
+    sortDesc: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup(props: Props, context: SetupContext) {
+    const classes = computed(() => {
+      return viewport.sizes.map((size, i) => {
+        return `col-${size}-${sizes[i]}`
       })
-    },
-    estimatedHeight() {
-      return this.thumbnailHeightValue + 77
-    },
-    ...mapGetters('settings', ['thumbnailHeightValue']),
-    ...mapState('local/explorer', [
-      'directory',
-      'query',
-      'loading',
-      'selectedFilepath'
-    ]),
-    ...mapGetters('local/explorer', [
-      'filteredFiles',
-      'scrollTop',
-      'selectedFileIndex'
-    ])
-  },
-  watch: {
-    loading() {
-      this.restore()
-    },
-    selectedFileIndex(value) {
-      this.$nextTick(() => {
-        const index = value
-        if (index === -1) {
-          return
-        }
-        const offset = this.getItemOffset()
-        const el = {
-          offsetTop: this.estimatedHeight * Math.floor(index / offset),
-          offsetHeight: this.estimatedHeight
-        }
-        const iterator = {
-          scrollTop: this.$refs.iterator.getScrollTop(),
-          offsetHeight: this.$refs.iterator.getOffsetHeight()
-        }
-        if (iterator.scrollTop > el.offsetTop) {
-          this.$refs.iterator.setScrollTop(el.offsetTop)
-        } else if (
-          iterator.scrollTop <
-          el.offsetTop + el.offsetHeight - iterator.offsetHeight
-        ) {
-          this.$refs.iterator.setScrollTop(
-            el.offsetTop + el.offsetHeight - iterator.offsetHeight
-          )
-        }
-      })
-    }
-  },
-  mounted() {
-    this.restore()
-  },
-  methods: {
-    restore() {
-      const scrollTop = this.scrollTop
-      this.$nextTick(() => {
-        this.$refs.iterator.setScrollTop(scrollTop)
-      })
-    },
-    getItemOffset() {
-      return 12 / this.sizes[viewport.getSizeIndex()]
-    },
-    onScroll(e) {
-      const scrollTop = e.target.scrollTop
-      this.setScrollTop({ scrollTop })
-    },
-    onKeyDown(e) {
-      const offset = this.getItemOffset()
-      switch (e.keyCode) {
-        case 13:
-          this.viewFile({ filepath: this.selectedFilepath })
-          break
-        case 37:
-          this.selectLeftFile({ offset })
-          break
-        case 38:
-          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirstFile()
-          } else {
-            this.selectTopFile({ offset })
-          }
-          break
-        case 39:
-          this.selectRightFile({ offset })
-          break
-        case 40:
-          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLastFile()
-          } else {
-            this.selectBottomFile({ offset })
-          }
-          break
-      }
-    },
-    ...mapActions('local/explorer', [
-      'selectFirstFile',
-      'selectLastFile',
-      'selectLeftFile',
-      'selectTopFile',
-      'selectRightFile',
-      'selectBottomFile',
-      'setScrollTop',
-      'viewFile'
-    ])
-  }
-}
-</script>
+    })
+    const estimatedHeight = computed(() => {
+      return settingsStore.thumbnailHeightValue + 77
+    })
 
-<style scoped lang="scss">
-.explorer-grid-list {
-  outline: none;
-}
-</style>
+    const isSelected = (item: Item) => {
+      return item.path === props.selected?.path
+    }
+    const handleChangeSortOption = (option: { by: string; desc: boolean }) => {
+      context.emit('change-sort-option', option)
+    }
+    const handleClickRow = (item: Item) => {
+      context.emit('click-item', item)
+    }
+    const handleDoubleClickRow = (item: Item) => {
+      context.emit('dblclick-item', item)
+    }
+    const handleContextMenuRow = (item: Item) => {
+      context.emit('contextmenu-item', item)
+    }
+    const handleChangeRating = (item: Item, rating: number) => {
+      context.emit('change-rating', item, rating)
+    }
+
+    return {
+      classes,
+      estimatedHeight,
+      sizes,
+      isSelected,
+      handleChangeSortOption,
+      handleClickRow,
+      handleDoubleClickRow,
+      handleContextMenuRow,
+      handleChangeRating,
+    }
+  },
+})
+</script>

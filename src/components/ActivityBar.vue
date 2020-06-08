@@ -1,59 +1,98 @@
 <template>
-  <v-navigation-drawer class="activity-bar" mini-variant permanent app>
-    <v-list class="pt-0">
-      <v-list-tile
-        v-for="item in items"
-        :key="item.id"
-        :title="item.title | accelerator(item.accelerator)"
-        @click="(e) => onItemClick(e, item)"
-      >
-        <v-list-tile-action>
-          <v-icon :color="getColor(item)">{{ item.icon }}</v-icon>
-        </v-list-tile-action>
-      </v-list-tile>
-    </v-list>
+  <v-navigation-drawer
+    class="activity-bar"
+    permanent
+    mini-variant
+    mini-variant-width="48"
+  >
+    <v-layout column fill-height>
+      <v-list dense class="py-0">
+        <v-list-item-group :value="index" color="primary">
+          <v-list-item
+            v-for="menu in menus"
+            :key="menu.navigator"
+            :title="menu.title | accelerator(menu.accelerator)"
+            class="py-1"
+            @click="() => handleClickItem(menu)"
+          >
+            <v-list-item-icon>
+              <v-icon v-text="menu.icon" />
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title v-text="menu.title" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+      <v-spacer />
+      <v-list dense class="py-0">
+        <v-list-item
+          :title="'Settings' | accelerator('CmdOrCtrl+,')"
+          class="py-1"
+          @click="handleClickSettings"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-cog</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Settings</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-layout>
   </v-navigation-drawer>
 </template>
 
-<script>
-export default {
-  data() {
+<script lang="ts">
+import { defineComponent, computed, SetupContext } from '@vue/composition-api'
+
+type Menu = {
+  navigator: string
+  icon: string
+  title: string
+  accelerator: string
+}
+
+const menus: Menu[] = [
+  {
+    navigator: 'files',
+    icon: 'mdi-file-multiple',
+    title: 'Files',
+    accelerator: '',
+  },
+]
+
+type Props = {
+  navigator?: string
+}
+
+export default defineComponent({
+  props: {
+    navigator: {
+      type: String,
+    },
+  },
+  setup(props: Props, context: SetupContext) {
+    const index = computed(() => {
+      return menus.findIndex((menu) => menu.navigator === props.navigator)
+    })
+
+    const handleClickItem = (menu: Menu) => {
+      context.emit('click-menu', menu)
+    }
+
+    const handleClickSettings = () => {
+      context.root.$eventBus.$emit('show-settings')
+    }
+
     return {
-      items: [
-        {
-          id: 1,
-          icon: 'explore',
-          title: 'Explorer',
-          accelerator: 'CmdOrCtrl+Shift+E',
-          path: '/explorer'
-        },
-        {
-          id: 2,
-          icon: 'star',
-          title: 'Bookmark',
-          accelerator: 'CmdOrCtrl+Shift+B',
-          path: '/bookmark'
-        },
-        {
-          id: 3,
-          icon: 'settings',
-          title: 'Settings',
-          accelerator: 'CmdOrCtrl+,',
-          path: '/settings'
-        }
-      ]
+      menus,
+      index,
+      handleClickItem,
+      handleClickSettings,
     }
   },
-  methods: {
-    getColor(item) {
-      return this.getActive(item) ? 'primary' : null
-    },
-    getActive(item) {
-      return item.path === this.$route.path
-    },
-    onItemClick(e, item) {
-      this.$router.push(item.path)
-    }
-  }
-}
+})
 </script>

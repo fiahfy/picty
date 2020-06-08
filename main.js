@@ -19,9 +19,14 @@ const createTemplate = () => {
         {
           label: 'Open...',
           accelerator: 'CmdOrCtrl+O',
-          click: () => send('openDirectory')
-        }
-      ]
+          click: () => send('open'),
+        },
+        {
+          label: 'Open Location...',
+          accelerator: 'CmdOrCtrl+L',
+          click: () => send('open-location'),
+        },
+      ],
     },
     {
       label: 'Edit',
@@ -37,26 +42,15 @@ const createTemplate = () => {
         { role: 'selectall' },
         { type: 'separator' },
         {
-          label: 'Search...',
+          label: 'Find...',
           accelerator: 'CmdOrCtrl+F',
-          click: () => send('search')
-        }
-      ]
+          click: () => send('find'),
+        },
+      ],
     },
     {
       label: 'View',
       submenu: [
-        {
-          label: 'Explorer',
-          accelerator: 'CmdOrCtrl+Shift+E',
-          click: () => send('showExplorer')
-        },
-        {
-          label: 'Bookmark',
-          accelerator: 'CmdOrCtrl+Shift+B',
-          click: () => send('showBookmark')
-        },
-        { type: 'separator' },
         { role: 'reload' },
         { role: 'forcereload' },
         { role: 'toggledevtools' },
@@ -65,91 +59,34 @@ const createTemplate = () => {
         // { role: 'zoomin' },
         // { role: 'zoomout' },
         // { type: 'separator' },
-        { role: 'togglefullscreen' }
-      ]
-    },
-    {
-      label: 'Explorer',
-      submenu: [
-        {
-          label: 'Open Location...',
-          accelerator: 'CmdOrCtrl+L',
-          click: () => send('openLocation')
-        },
-        { type: 'separator' },
-        {
-          label: 'Back',
-          accelerator: 'CmdOrCtrl+Left',
-          click: () => send('backDirectory')
-        },
-        {
-          label: 'Forward',
-          accelerator: 'CmdOrCtrl+Right',
-          click: () => send('forwardDirectory')
-        },
-        {
-          label: 'Up',
-          accelerator: 'CmdOrCtrl+Shift+P',
-          click: () => send('upDirectory')
-        },
-        {
-          label: 'Home',
-          accelerator: 'CmdOrCtrl+Shift+H',
-          click: () => send('changeHomeDirectory')
-        },
-        {
-          label: 'Bookmark',
-          accelerator: 'CmdOrCtrl+D',
-          click: () => send('bookmarkDirectory')
-        },
-        { label: 'Browse', click: () => send('browseDirectory') }
-      ]
-    },
-    {
-      label: 'Viewer',
-      submenu: [
-        {
-          label: 'Zoom In',
-          accelerator: 'CmdOrCtrl+Plus',
-          click: () => send('zoomIn')
-        },
-        {
-          label: 'Zoom Out',
-          accelerator: 'CmdOrCtrl+-',
-          click: () => send('zoomOut')
-        },
-        {
-          label: 'Reset Zoom',
-          accelerator: 'CmdOrCtrl+0',
-          click: () => send('resetZoom')
-        }
-      ]
+        { role: 'togglefullscreen' },
+      ],
     },
     {
       role: 'window',
-      submenu: [{ role: 'close' }, { role: 'minimize' }]
+      submenu: [{ role: 'close' }, { role: 'minimize' }],
     },
     {
       role: 'help',
       submenu: [
         {
           label: 'Learn More',
-          click: () => shell.openExternal('https://github.com/fiahfy/picty')
-        }
-      ]
-    }
+          click: () => shell.openExternal('https://github.com/fiahfy/picty'),
+        },
+      ],
+    },
   ]
 
   if (process.platform === 'darwin') {
     template.unshift({
-      label: app.getName(),
+      label: app.name,
       submenu: [
         { role: 'about' },
         { type: 'separator' },
         {
           label: 'Preferences...',
           accelerator: 'CmdOrCtrl+,',
-          click: () => send('showSettings')
+          click: () => send('show-settings'),
         },
         { type: 'separator' },
         { role: 'services', submenu: [] },
@@ -158,8 +95,8 @@ const createTemplate = () => {
         { role: 'hideothers' },
         { role: 'unhide' },
         { type: 'separator' },
-        { role: 'quit' }
-      ]
+        { role: 'quit' },
+      ],
     })
 
     template.forEach((menu) => {
@@ -168,7 +105,7 @@ const createTemplate = () => {
           { type: 'separator' },
           {
             label: 'Speech',
-            submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }]
+            submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }],
           }
         )
       } else if (menu.role === 'window') {
@@ -186,44 +123,43 @@ const createTemplate = () => {
 
 const createWindow = async () => {
   const windowState = windowStateKeeper({
-    defaultWidth: 820,
-    defaultHeight: 600
+    defaultWidth: 1024,
+    defaultHeight: 768,
   })
 
   const options = {
     ...windowState,
     titleBarStyle: 'hidden',
     webPreferences: {
-      nodeIntegrationInWorker: true
-    }
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+    },
   }
 
   if (dev) {
     options.webPreferences = {
       ...options.webPreferences,
-      webSecurity: false
+      webSecurity: false,
     }
   }
-
-  const path = '#/explorer'
 
   mainWindow = new BrowserWindow(options)
 
   if (dev) {
     // Disable security warnings
-    process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true
+    process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true
 
     // Install vue dev tool and open chrome dev tools
     const {
       default: installExtension,
-      VUEJS_DEVTOOLS
+      VUEJS_DEVTOOLS,
     } = require('electron-devtools-installer')
 
     const name = await installExtension(VUEJS_DEVTOOLS.id)
     console.log(`Added Extension: ${name}`) // eslint-disable-line no-console
 
     // Wait for nuxt to build
-    const url = `http://localhost:${port}/${path}`
+    const url = `http://localhost:${port}`
     const pollServer = () => {
       http
         .get(url, (res) => {
@@ -238,7 +174,7 @@ const createWindow = async () => {
     }
     pollServer()
   } else {
-    mainWindow.loadURL(`file://${__dirname}/app/index.html${path}`)
+    mainWindow.loadURL(`file://${__dirname}/app/index.html`)
   }
 
   windowState.manage(mainWindow)
@@ -248,12 +184,8 @@ const createWindow = async () => {
   Menu.setApplicationMenu(menu)
 
   mainWindow.on('closed', () => (mainWindow = null))
-  mainWindow.on('enter-full-screen', () => send('enterFullScreen'))
-  mainWindow.on('leave-full-screen', () => send('leaveFullScreen'))
-  mainWindow.on('app-command', (e, cmd) => {
-    e.preventDefault()
-    send('appCommand', cmd)
-  })
+  mainWindow.on('enter-full-screen', () => send('enter-full-screen'))
+  mainWindow.on('leave-full-screen', () => send('leave-full-screen'))
 }
 
 app.on('ready', createWindow)

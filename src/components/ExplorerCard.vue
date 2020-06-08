@@ -2,136 +2,181 @@
   <v-card class="explorer-card" flat tile>
     <v-toolbar color="transparent" flat dense>
       <v-btn
-        :title="'View' | accelerator('Enter')"
-        :disabled="!canViewFile"
-        flat
+        :title="'Presentation' | accelerator('Enter')"
+        :disabled="!canPresentation"
         icon
-        @click="onViewClick"
+        @click="handleClickPresentation"
       >
-        <v-icon>photo</v-icon>
+        <v-icon>mdi-presentation</v-icon>
       </v-btn>
       <v-spacer />
-      <v-btn :color="listColor" title="List" flat icon @click="onListClick">
-        <v-icon>view_headline</v-icon>
+      <v-btn :color="listColor" title="List" icon @click="handleClickList">
+        <v-icon>mdi-view-headline</v-icon>
       </v-btn>
       <v-btn
         :color="thumbnailColor"
         title="Thumbnail"
-        flat
         icon
-        @click="onThumbnailClick"
+        @click="handleClickThumbnail"
       >
-        <v-icon>view_module</v-icon>
+        <v-icon>mdi-view-module</v-icon>
       </v-btn>
       <v-autocomplete
-        ref="autocomplete"
-        v-model="queryInput"
-        :search-input.sync="searchInput"
-        class="ml-3 pt-0"
-        :items="queryHistories.slice().reverse()"
+        ref="queryField"
+        :value="state.queryInput"
+        :search-input.sync="state.searchInput"
+        class="ml-3"
+        :items="queryHistories"
         name="query"
         label="Search"
-        append-outer-icon="search"
+        prepend-inner-icon="mdi-magnify"
+        dense
+        filled
+        rounded
         single-line
         hide-details
         clearable
-        @input="onTextInput"
-        @keyup="onTextKeyUp"
-        @contextmenu.stop="onTextContextMenu"
-        @click:append-outer="onTextAppendIconClick"
+        @input="handleInput"
+        @keydown="handleKeyDown"
+        @contextmenu.stop="handleContextMenu"
+        @click:prepend-inner="handleClickMagnify"
       >
-        <template slot="item" slot-scope="{ item }">
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item" />
-          </v-list-tile-content>
-          <v-list-tile-action>
+        <template v-slot:item="{ item }">
+          <v-list-item-content>
+            <v-list-item-title v-text="item" />
+          </v-list-item-content>
+          <v-list-item-action class="my-0">
             <v-btn
-              flat
               small
+              icon
               color="primary"
-              @click.stop="(e) => onItemClick(e, item)"
+              @click.stop="() => handleClickItemDelete(item)"
             >
-              delete
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
-          </v-list-tile-action>
+          </v-list-item-action>
         </template>
       </v-autocomplete>
     </v-toolbar>
   </v-card>
 </template>
 
-<script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+<script lang="ts">
+import {
+  defineComponent,
+  SetupContext,
+  reactive,
+  computed,
+  watchEffect,
+  onMounted,
+  onUnmounted,
+  ref,
+} from '@vue/composition-api'
+import { explorerStore, queryHistoryStore } from '~/store'
 
-export default {
-  data() {
-    return {
-      searchInput: ''
+type Props = {
+  canPresentation: boolean
+  query: string
+}
+
+export default defineComponent({
+  props: {
+    canPresentation: {
+      type: Boolean,
+      default: false,
+    },
+    query: {
+      type: String,
+      default: '',
+    },
+  },
+  setup(props: Props, context: SetupContext) {
+    const state = reactive({
+      queryInput: '',
+      searchInput: '',
+    })
+
+    const listColor = computed(() => {
+      return explorerStore.listStyle === 'list' ? 'primary' : null
+    })
+    const thumbnailColor = computed(() => {
+      return explorerStore.listStyle === 'thumbnail' ? 'primary' : null
+    })
+    const queryHistories = computed(() => {
+      return queryHistoryStore.histories.slice().reverse()
+    })
+
+    const queryField = ref<Vue>(null)
+
+    const focusQuery = () => {
+      ;(queryField.value?.$el.querySelector(
+        'input'
+      ) as HTMLInputElement).focus()
     }
-  },
-  computed: {
-    queryInput: {
-      get() {
-        return this.$store.state.local.explorer.queryInput
-      },
-      set(value) {
-        this.$store.commit('local/explorer/setQueryInput', {
-          queryInput: value
-        })
+    const handleClickPresentation = () => {
+      context.emit('click-presentation')
+    }
+    const handleClickList = () => {
+      explorerStore.setListStyle({ listStyle: 'list' })
+    }
+    const handleClickThumbnail = () => {
+      explorerStore.setListStyle({ listStyle: 'thumbnail' })
+    }
+    const handleInput = (value?: string) => {
+      context.emit('change-query', value ?? '')
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === 'Enter' &&
+        !e.isComposing &&
+        e.target instanceof HTMLInputElement
+      ) {
+        context.emit('change-query', e.target.value)
       }
-    },
-    listColor() {
-      return this.display === 'list' ? 'primary' : null
-    },
-    thumbnailColor() {
-      return this.display === 'thumbnail' ? 'primary' : null
-    },
-    ...mapState('local/explorer', [
-      'selectedFilepath',
-      'display',
-      'queryHistories'
-    ]),
-    ...mapGetters('local/explorer', ['canViewFile'])
-  },
-  methods: {
-    onViewClick() {
-      this.viewFile({ filepath: this.selectedFilepath })
-    },
-    onListClick() {
-      this.setDisplay({ display: 'list' })
-    },
-    onThumbnailClick() {
-      this.setDisplay({ display: 'thumbnail' })
-    },
-    onTextInput(value) {
-      this.searchFiles({ query: value })
-    },
-    onTextKeyUp(e) {
-      if (e.keyCode === 13) {
-        this.searchFiles({ query: e.target.value })
-      }
-    },
-    onTextContextMenu() {
-      this.$contextMenu.show([
+    }
+    const handleContextMenu = () => {
+      context.root.$contextMenu.open([
         { role: 'cut' },
         { role: 'copy' },
-        { role: 'paste' }
+        { role: 'paste' },
       ])
-    },
-    onTextAppendIconClick() {
-      this.searchFiles({ query: this.searchInput })
-    },
-    onItemClick(e, item) {
-      this.removeQueryHistory({ queryHistory: item })
-    },
-    ...mapActions('local/explorer', [
-      'searchFiles',
-      'viewFile',
-      'setDisplay',
-      'removeQueryHistory'
-    ])
-  }
-}
+    }
+    const handleClickMagnify = () => {
+      context.emit('change-query', state.searchInput)
+    }
+    const handleClickItemDelete = (item: string) => {
+      queryHistoryStore.removeHistory({ history: item })
+    }
+
+    watchEffect(() => {
+      state.queryInput = props.query
+    })
+
+    onMounted(() => {
+      context.root.$eventBus.$on('focus-query', focusQuery)
+    })
+
+    onUnmounted(() => {
+      context.root.$eventBus.$off('focus-query', focusQuery)
+    })
+
+    return {
+      state,
+      listColor,
+      thumbnailColor,
+      queryHistories,
+      queryField,
+      handleClickPresentation,
+      handleClickList,
+      handleClickThumbnail,
+      handleInput,
+      handleKeyDown,
+      handleContextMenu,
+      handleClickMagnify,
+      handleClickItemDelete,
+    }
+  },
+})
 </script>
 
 <style scope lang="scss">

@@ -1,166 +1,175 @@
 <template>
   <v-toolbar class="explorer-toolbar" flat dense>
     <v-btn
-      v-long-press="onBackContextMenu"
+      v-long-press="handleContextMenuBack"
       :title="'Back' | accelerator('CmdOrCtrl+Left')"
-      :disabled="backDisabled"
-      flat
+      :disabled="!canBack"
       icon
-      @click="onBackClick"
-      @contextmenu.stop="onBackContextMenu"
+      @click="handleClickBack"
+      @contextmenu.stop="handleContextMenuBack"
     >
-      <v-icon>arrow_back</v-icon>
+      <v-icon>mdi-arrow-left</v-icon>
     </v-btn>
     <v-btn
-      v-long-press="onForwardContextMenu"
+      v-long-press="handleContextMenuForward"
       :title="'Forward' | accelerator('CmdOrCtrl+Right')"
-      :disabled="forwardDisabled"
-      flat
+      :disabled="!canForward"
       icon
-      @click="onForwardClick"
-      @contextmenu.stop="onForwardContextMenu"
+      @click="handleClickForward"
+      @contextmenu.stop="handleContextMenuForward"
     >
-      <v-icon>arrow_forward</v-icon>
+      <v-icon>mdi-arrow-right</v-icon>
     </v-btn>
     <v-btn
       :title="'Up' | accelerator('CmdOrCtrl+Shift+P')"
-      flat
       icon
-      @click="onUpwardClick"
+      @click="handleClickUpward"
     >
-      <v-icon>arrow_upward</v-icon>
+      <v-icon>mdi-arrow-up</v-icon>
     </v-btn>
-    <v-btn title="Reload" flat icon @click="onRefreshClick">
-      <v-icon>refresh</v-icon>
+    <v-btn title="Reload" icon @click="handleClickReload">
+      <v-icon>mdi-refresh</v-icon>
     </v-btn>
     <v-btn
       :title="'Home' | accelerator('CmdOrCtrl+Shift+H')"
-      flat
       icon
-      @click="onHomeClick"
+      @click="handleClickHome"
     >
-      <v-icon>home</v-icon>
-    </v-btn>
-    <v-btn
-      :title="'Bookmark' | accelerator('CmdOrCtrl+D')"
-      :color="bookmarkColor"
-      flat
-      icon
-      @click="onBookmarkClick"
-    >
-      <v-icon>star</v-icon>
+      <v-icon>mdi-home</v-icon>
     </v-btn>
     <v-text-field
-      v-model="directoryInput"
-      class="ml-3 pt-0"
-      name="directory"
+      ref="locationField"
+      v-model="state.location"
+      class="ml-3"
+      name="location"
       label="Path"
-      prepend-icon="folder"
+      prepend-inner-icon="mdi-folder"
+      dense
+      filled
+      rounded
       single-line
       hide-details
-      @click:prepend="onPrependClick"
-      @keyup="onTextKeyUp"
-      @contextmenu.stop="onTextContextMenu"
+      @click:prepend-inner="handleClickFolder"
+      @keydown="handleKeyDown"
+      @contextmenu.stop="handleContextMenuLocation"
     />
   </v-toolbar>
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex'
+<script lang="ts">
+import { shell } from 'electron'
+import {
+  defineComponent,
+  computed,
+  reactive,
+  watch,
+  ref,
+  onMounted,
+  onUnmounted,
+  SetupContext,
+} from '@vue/composition-api'
+import { explorerStore, historyStore } from '~/store'
 
-export default {
-  computed: {
-    directoryInput: {
-      get() {
-        return this.$store.state.local.explorer.directoryInput
-      },
-      set(value) {
-        this.$store.commit('local/explorer/setDirectoryInput', {
-          directoryInput: value
-        })
+export default defineComponent({
+  setup(_props: {}, context: SetupContext) {
+    const state = reactive({ location: explorerStore.location })
+
+    const canBack = computed(() => historyStore.canBack)
+    const canForward = computed(() => historyStore.canForward)
+
+    const locationField = ref<Vue>(null)
+
+    const focusLocation = () => {
+      ;(locationField.value?.$el.querySelector(
+        'input'
+      ) as HTMLInputElement).focus()
+    }
+    const handleClickBack = () => {
+      context.emit('click-back')
+    }
+    const handleClickForward = () => {
+      context.emit('click-forward')
+    }
+    const handleClickUpward = () => {
+      context.emit('click-upward')
+    }
+    const handleClickReload = () => {
+      context.emit('click-reload')
+    }
+    const handleClickHome = () => {
+      context.emit('click-home')
+    }
+    const handleClickFolder = () => {
+      shell.openItem(explorerStore.location)
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === 'Enter' &&
+        !e.isComposing &&
+        e.target instanceof HTMLInputElement
+      ) {
+        context.emit('change-location', e.target.value)
       }
-    },
-    backDisabled() {
-      return !this.canBackDirectory
-    },
-    forwardDisabled() {
-      return !this.canForwardDirectory
-    },
-    bookmarkColor() {
-      return this.directoryBookmarked ? 'primary' : null
-    },
-    ...mapGetters('local/explorer', [
-      'backDirectories',
-      'forwardDirectories',
-      'canBackDirectory',
-      'canForwardDirectory',
-      'directoryBookmarked'
-    ])
-  },
-  methods: {
-    onBackClick() {
-      this.backDirectory()
-    },
-    onBackContextMenu() {
-      this.$contextMenu.show(
-        this.backDirectories.map((directory, index) => {
-          return {
-            label: directory,
-            click: () => this.backDirectory({ offset: index })
-          }
-        })
-      )
-    },
-    onForwardClick() {
-      this.forwardDirectory()
-    },
-    onForwardContextMenu() {
-      this.$contextMenu.show(
-        this.forwardDirectories.map((directory, index) => {
-          return {
-            label: directory,
-            click: () => this.forwardDirectory({ offset: index })
-          }
-        })
-      )
-    },
-    onUpwardClick() {
-      this.upDirectory()
-    },
-    onRefreshClick() {
-      this.reloadDirectory()
-    },
-    onHomeClick() {
-      this.changeHomeDirectory()
-    },
-    onBookmarkClick() {
-      this.toggleDirectoryBookmarked()
-    },
-    onTextContextMenu() {
-      this.$contextMenu.show([
+    }
+    const handleContextMenuLocation = () => {
+      context.root.$contextMenu.open([
         { role: 'cut' },
         { role: 'copy' },
-        { role: 'paste' }
+        { role: 'paste' },
       ])
-    },
-    onTextKeyUp(e) {
-      if (e.keyCode === 13) {
-        this.changeDirectory({ dirpath: e.target.value })
+    }
+    const handleContextMenuBack = () => {
+      context.root.$contextMenu.open(
+        historyStore.backHistories.map((history, index) => {
+          return {
+            label: history,
+            click: () => context.emit('change-history', -1 * (index + 1)),
+          }
+        })
+      )
+    }
+    const handleContextMenuForward = () => {
+      context.root.$contextMenu.open(
+        historyStore.forwardHistories.map((history, index) => {
+          return {
+            label: history,
+            click: () => context.emit('change-history', index + 1),
+          }
+        })
+      )
+    }
+
+    watch(
+      () => explorerStore.location,
+      (location) => {
+        state.location = location
       }
-    },
-    onPrependClick() {
-      this.browseDirectory()
-    },
-    ...mapActions('local/explorer', [
-      'upDirectory',
-      'changeHomeDirectory',
-      'changeDirectory',
-      'backDirectory',
-      'forwardDirectory',
-      'reloadDirectory',
-      'browseDirectory',
-      'toggleDirectoryBookmarked'
-    ])
-  }
-}
+    )
+
+    onMounted(() => {
+      context.root.$eventBus.$on('focus-location', focusLocation)
+    })
+
+    onUnmounted(() => {
+      context.root.$eventBus.$on('focus-location', focusLocation)
+    })
+
+    return {
+      state,
+      canBack,
+      canForward,
+      locationField,
+      handleClickBack,
+      handleClickForward,
+      handleClickUpward,
+      handleClickReload,
+      handleClickHome,
+      handleClickFolder,
+      handleKeyDown,
+      handleContextMenuLocation,
+      handleContextMenuBack,
+      handleContextMenuForward,
+    }
+  },
+})
 </script>

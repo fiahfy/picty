@@ -1,0 +1,59 @@
+// reset
+html,
+body,
+#__nuxt,
+#__layout,
+#app {
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+html {
+  overflow-y: hidden !important;
+}
+// custom classes
+.user-select-none {
+  user-select: none;
+}
+.pointer-events-none {
+  pointer-events: none;
+}
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+.scrollbar {
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+}
+// theme
+.theme--light {
+  .scrollbar {
+    &::-webkit-scrollbar-thumb {
+      background-color: #e0e0e0;
+      &:hover {
+        background-color: #d2d2d2;
+      }
+      &:active {
+        background-color: #bdbdbd;
+      }
+    }
+  }
+}
+.theme--dark {
+  .scrollbar {
+    &::-webkit-scrollbar-thumb {
+      background-color: #424242;
+      &:hover {
+        background-color: #505050;
+      }
+      &:active {
+        background-color: #616161;
+      }
+    }
+  }
+}

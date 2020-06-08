@@ -3,172 +3,129 @@
     ref="table"
     class="explorer-table"
     :headers="headers"
-    :items="filteredFiles"
-    item-key="path"
+    :items="items"
     :loading="loading"
-    :no-data-text="noDataText"
-    hide-actions
+    item-key="path"
+    hide-default-header
+    hide-default-footer
     sticky-headers
     tabindex="0"
-    @scroll="onScroll"
-    @keydown.native="onKeyDown"
   >
-    <explorer-table-header-row
-      slot="headers"
-      slot-scope="props"
-      :headers="props.headers"
-    />
-    <explorer-table-row
-      slot="items"
-      :key="props.item.path"
-      slot-scope="props"
-      :file="props.item"
-    />
-    <v-progress-linear slot="progress" indeterminate />
+    <template v-slot:header="props">
+      <explorer-table-header
+        :headers="props.props.headers"
+        :sort-by="sortBy"
+        :sort-desc="sortDesc"
+        @click="handleClickHeader"
+      />
+    </template>
+    <template v-slot:item="props">
+      <explorer-table-row
+        :key="props.item.path"
+        :item="props.item"
+        :class="{ 'v-data-table__selected': isSelected(props.item) }"
+        @click.native="() => handleClickRow(props.item)"
+        @dblclick.native="() => handleDoubleClickRow(props.item)"
+        @contextmenu.native.stop="() => handleContextMenuRow(props.item)"
+        @change-rating="(rating) => handleChangeRating(props.item, rating)"
+      />
+    </template>
   </virtual-data-table>
 </template>
 
-<script>
-import { mapActions, mapGetters, mapState } from 'vuex'
-import ExplorerTableHeaderRow from './ExplorerTableHeaderRow'
-import ExplorerTableRow from './ExplorerTableRow'
-import VirtualDataTable from './VirtualDataTable'
+<script lang="ts">
+import { defineComponent, SetupContext } from '@vue/composition-api'
+import ExplorerTableHeader from '~/components/ExplorerTableHeader.vue'
+import ExplorerTableRow from '~/components/ExplorerTableRow.vue'
+import VirtualDataTable from '~/components/VirtualDataTable.vue'
+import { Item } from '~/models'
 
-export default {
+type Header = {
+  text: string
+  value: keyof Item
+  width?: number
+}
+
+const headers: Header[] = [
+  {
+    text: 'Name',
+    value: 'name',
+  },
+  {
+    text: 'Rating',
+    value: 'rating',
+    width: 238,
+  },
+  {
+    text: 'Last Modified',
+    value: 'lastModified',
+    width: 150,
+  },
+]
+
+type Props = {
+  items: Item[]
+  selected?: Item
+  loading: boolean
+  sortBy?: string
+  sortDesc: boolean
+}
+
+export default defineComponent({
   components: {
-    ExplorerTableHeaderRow,
+    ExplorerTableHeader,
     ExplorerTableRow,
-    VirtualDataTable
+    VirtualDataTable,
   },
-  data() {
-    return {
-      headerHeight: 58,
-      rowHeight: 48,
-      headers: [
-        {
-          text: 'Name',
-          value: 'name'
-        },
-        {
-          text: 'Views',
-          value: 'views',
-          width: 96
-        },
-        {
-          text: 'Rating',
-          value: 'rating',
-          width: 238
-        },
-        {
-          text: 'Date Modified',
-          value: 'modified_at',
-          width: 150
-        }
-      ]
+  props: {
+    items: {
+      type: Array,
+      default: () => [],
+    },
+    selected: {
+      type: Object,
+    },
+    loading: {
+      type: Boolean,
+      default: true,
+    },
+    sortBy: {
+      type: String,
+    },
+    sortDesc: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup(props: Props, context: SetupContext) {
+    const isSelected = (item: Item) => {
+      return item.path === props.selected?.path
     }
-  },
-  computed: {
-    noDataText() {
-      if (this.loading) {
-        return 'Loading...'
-      }
-      return this.query ? 'No matching records found.' : 'No data available.'
-    },
-    ...mapState('local/explorer', [
-      'directory',
-      'query',
-      'loading',
-      'selectedFilepath'
-    ]),
-    ...mapGetters('local/explorer', [
-      'filteredFiles',
-      'scrollTop',
-      'selectedFileIndex'
-    ])
-  },
-  watch: {
-    loading() {
-      this.restore()
-    },
-    selectedFileIndex(value) {
-      this.$nextTick(() => {
-        const index = value
-        if (index === -1) {
-          return
-        }
-        const el = {
-          offsetTop: this.rowHeight * index,
-          offsetHeight: this.rowHeight
-        }
-        const table = {
-          scrollTop: this.$refs.table.getScrollTop(),
-          offsetHeight: this.$refs.table.getOffsetHeight() - this.headerHeight
-        }
-        if (table.scrollTop > el.offsetTop) {
-          this.$refs.table.setScrollTop(el.offsetTop)
-        } else if (
-          table.scrollTop <
-          el.offsetTop + el.offsetHeight - table.offsetHeight
-        ) {
-          this.$refs.table.setScrollTop(
-            el.offsetTop + el.offsetHeight - table.offsetHeight
-          )
-        }
-      })
+    const handleClickHeader = (header: File) => {
+      context.emit('click-header', header)
     }
-  },
-  mounted() {
-    this.restore()
-  },
-  methods: {
-    restore() {
-      const scrollTop = this.scrollTop
-      this.$nextTick(() => {
-        this.$refs.table.setScrollTop(scrollTop)
-      })
-    },
-    onScroll(e) {
-      const scrollTop = e.target.scrollTop
-      this.setScrollTop({ scrollTop })
-    },
-    onKeyDown(e) {
-      switch (e.keyCode) {
-        case 13:
-          this.viewFile({ filepath: this.selectedFilepath })
-          break
-        case 38:
-          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectFirstFile()
-          } else {
-            this.selectPreviousFile()
-          }
-          break
-        case 40:
-          if ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) {
-            this.selectLastFile()
-          } else {
-            this.selectNextFile()
-          }
-          break
-      }
-    },
-    ...mapActions('local/explorer', [
-      'selectFirstFile',
-      'selectLastFile',
-      'selectPreviousFile',
-      'selectNextFile',
-      'setScrollTop',
-      'viewFile'
-    ])
-  }
-}
-</script>
+    const handleClickRow = (item: Item) => {
+      context.emit('click-item', item)
+    }
+    const handleDoubleClickRow = (item: Item) => {
+      context.emit('dblclick-item', item)
+    }
+    const handleContextMenuRow = (item: Item) => {
+      context.emit('contextmenu-item', item)
+    }
+    const handleChangeRating = (item: Item, rating: number) => {
+      context.emit('change-rating', item, rating)
+    }
 
-<style scoped lang="scss">
-.explorer-table {
-  outline: none;
-  /deep/ .v-datatable {
-    min-width: 768px;
-  }
-}
-</style>
+    return {
+      headers,
+      isSelected,
+      handleClickHeader,
+      handleClickRow,
+      handleDoubleClickRow,
+      handleContextMenuRow,
+      handleChangeRating,
+    }
+  },
+})
+</script>
