@@ -12,7 +12,7 @@
       <v-btn
         :title="'Favorite' | accelerator('')"
         :color="favorite ? 'primary' : ''"
-        :disabled="!selected"
+        :disabled="!selected || !selected.directory"
         icon
         @click="handleClickFavorite"
       >
@@ -129,7 +129,7 @@ export default defineComponent({
       context.root.$eventBus.$emit('show-presentation', props.selected)
     }
     const handleClickFavorite = () => {
-      props.selected && favoriteStore.toggleFavorite(props.selected.path)
+      props.selected && favoriteStore.toggle(props.selected.path)
     }
     const handleClickList = () => {
       explorerStore.setListStyle('list')

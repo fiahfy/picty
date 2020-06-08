@@ -32,11 +32,13 @@ import {
 } from '@vue/composition-api'
 import ActivityBar from '~/components/ActivityBar.vue'
 import FavoritesNavigator from '~/components/FavoritesNavigator.vue'
-import FilesNavigator from '~/components/FilesNavigator.vue'
+import FoldersNavigator from '~/components/FoldersNavigator.vue'
 import { settingsStore } from '~/store'
 
 const offsetWidth = 48
 const minWidth = 256
+
+export type Navigator = 'folders' | 'favorites'
 
 export default defineComponent({
   components: {
@@ -45,10 +47,10 @@ export default defineComponent({
   setup(_props: {}) {
     const state = reactive<{
       resizing: boolean
-      navigator?: string
+      navigator?: Navigator
     }>({
       resizing: false,
-      navigator: 'files',
+      navigator: 'folders',
     })
 
     const width = computed({
@@ -66,8 +68,8 @@ export default defineComponent({
     })
     const component = computed(() => {
       switch (state.navigator) {
-        case 'files':
-          return FilesNavigator
+        case 'folders':
+          return FoldersNavigator
         case 'favorites':
           return FavoritesNavigator
       }
@@ -76,7 +78,7 @@ export default defineComponent({
     const sidebar = ref<Vue>(null)
     const resizer = ref<HTMLDivElement>(null)
 
-    const handleClickMenu = (menu: { navigator: string }) => {
+    const handleClickMenu = (menu: { navigator: Navigator }) => {
       state.navigator =
         state.navigator === menu.navigator ? undefined : menu.navigator
     }

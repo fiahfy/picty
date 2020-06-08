@@ -61,6 +61,7 @@ import {
   queryHistoryStore,
   ratingStore,
   settingsStore,
+  favoriteStore,
 } from '~/store'
 
 const workerPromisify = require('@fiahfy/worker-promisify').default
@@ -169,6 +170,9 @@ export default defineComponent({
         load()
       }
     }
+    const present = (item: Item) => {
+      context.root.$eventBus.$emit('show-presentation', item)
+    }
 
     const handleClickBack = async () => {
       await go(-1)
@@ -195,17 +199,33 @@ export default defineComponent({
       state.selected = item
     }
     const handleDoubleClickItem = (item: Item) => {
-      move(item.path)
+      if (item.directory) {
+        move(item.path)
+      } else {
+        present(item)
+      }
     }
     const handleContextMenuItem = (item: Item) => {
       state.selected = item
       let template: MenuItemConstructorOptions[] = [
         {
           label: 'View',
-          click: () => context.root.$eventBus.$emit('show-presentation', item),
+          click: () => present(item),
           accelerator: 'Enter',
         },
       ]
+      if (item.directory) {
+        template = [
+          ...template,
+          { type: 'separator' },
+          {
+            label: favoriteStore.isFavorite(item.path)
+              ? 'Remove from Favorites'
+              : 'Add to Favorites',
+            click: () => favoriteStore.toggle(item.path),
+          },
+        ]
+      }
       const text = window.getSelection()?.toString()
       if (text) {
         template = [
@@ -255,10 +275,7 @@ export default defineComponent({
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
         case 'Enter':
-          return context.root.$eventBus.$emit(
-            'show-presentation',
-            state.selected
-          )
+          return state.selected && present(state.selected)
       }
     }
 

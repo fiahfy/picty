@@ -47,9 +47,10 @@
 
 <script lang="ts">
 import { defineComponent, computed, SetupContext } from '@vue/composition-api'
+import { Navigator } from '~/components/Sidebar.vue'
 
 type Menu = {
-  navigator: string
+  navigator: Navigator
   icon: string
   title: string
   accelerator: string
@@ -57,9 +58,9 @@ type Menu = {
 
 const menus: Menu[] = [
   {
-    navigator: 'files',
-    icon: 'mdi-file-multiple',
-    title: 'Files',
+    navigator: 'folders',
+    icon: 'mdi-folder',
+    title: 'Folders',
     accelerator: '',
   },
   {
@@ -71,7 +72,7 @@ const menus: Menu[] = [
 ]
 
 type Props = {
-  navigator?: string
+  navigator?: Navigator
 }
 
 export default defineComponent({

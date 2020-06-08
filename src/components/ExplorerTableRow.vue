@@ -14,7 +14,12 @@
       </v-layout>
     </td>
     <td @click.stop @dblclick.stop>
-      <v-rating v-model="rating" half-increments clearable />
+      <v-rating
+        v-model="rating"
+        half-increments
+        clearable
+        background-color="primary lighten-3"
+      />
     </td>
     <td class="no-wrap">
       {{ item.lastModified | date('YYYY-MM-DD HH:mm') }}

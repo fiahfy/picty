@@ -31,10 +31,11 @@
         <v-spacer />
         <v-rating
           v-model="rating"
-          class="ellipsis"
+          class="overflow-hidden"
           half-increments
           clearable
           small
+          background-color="primary lighten-3"
         />
         <v-spacer />
       </v-card-actions>

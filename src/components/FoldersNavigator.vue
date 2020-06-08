@@ -1,8 +1,8 @@
 <template>
-  <v-layout column class="files-navigator">
+  <v-layout column class="folders-navigator">
     <v-toolbar flat dense class="flex-grow-0">
       <span class="subtitle-2 text-uppercase user-select-none flex-grow-0">
-        Files
+        Folders
       </span>
     </v-toolbar>
     <v-row no-gutters class="overflow-auto scrollbar">
@@ -13,6 +13,7 @@
         :load-children="handleLoadChildren"
         item-key="path"
         dense
+        hoverable
         class="user-select-none"
       >
         <template v-slot:prepend="{ item, open }">
@@ -44,7 +45,6 @@ import {
   watch,
   SetupContext,
 } from '@vue/composition-api'
-import ActivityBar from '~/components/ActivityBar.vue'
 import { File } from '~/models'
 import { explorerStore, settingsStore } from '~/store'
 
@@ -62,9 +62,6 @@ type Node = {
 }
 
 export default defineComponent({
-  components: {
-    ActivityBar,
-  },
   setup(_props: {}, context: SetupContext) {
     const state = reactive<{
       active: string[]
@@ -177,7 +174,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.files-navigator ::v-deep .node {
+.folders-navigator ::v-deep .node {
   cursor: pointer;
   height: 40px;
   line-height: 40px;

@@ -1,3 +1,4 @@
+import path from 'path'
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 
 @Module({
@@ -13,24 +14,29 @@ export default class BookmarkModule extends VuexModule {
   }
 
   get favoritesAll() {
-    return Object.keys(this.favorites).map((filePath: string) => {
-      return {
-        path: filePath,
-      }
-    })
+    return Object.keys(this.favorites)
+      .map((filePath: string) => {
+        return {
+          path: filePath,
+          name: path.basename(filePath),
+        }
+      })
+      .sort((a, b) => {
+        return a.name < b.name ? -1 : 1
+      })
   }
 
   @Action
-  toggleFavorite(filePath: string) {
+  toggle(filePath: string) {
     if (this.isFavorite(filePath)) {
-      this.dislike(filePath)
+      this.delete(filePath)
     } else {
-      this.like(filePath)
+      this.add(filePath)
     }
   }
 
   @Mutation
-  like(filePath: string) {
+  add(filePath: string) {
     this.favorites = {
       ...this.favorites,
       [filePath]: {
@@ -40,7 +46,7 @@ export default class BookmarkModule extends VuexModule {
   }
 
   @Mutation
-  dislike(filePath: string) {
+  delete(filePath: string) {
     const bookmarks = { ...this.favorites }
     delete bookmarks[filePath]
     this.favorites = bookmarks
