@@ -4,12 +4,12 @@ body,
 #__nuxt,
 #__layout,
 #app {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 html {
-  overflow-y: hidden;
+  overflow-y: hidden !important;
 }
 // custom classes
 .user-select-none {

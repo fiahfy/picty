@@ -28,7 +28,11 @@ module.exports = {
   /*
    ** Global CSS
    */
-  css: ['@mdi/font/css/materialdesignicons.css', 'typeface-roboto/index.css'],
+  css: [
+    '@mdi/font/css/materialdesignicons.css',
+    'typeface-roboto/index.css',
+    '~/assets/app.scss',
+  ],
 
   /*
    ** Generate configuration

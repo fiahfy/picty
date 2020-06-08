@@ -11,7 +11,7 @@
         single-line
         prepend-inner-icon="mdi-sort"
         hide-details
-        style="max-width: 256px;"
+        style="max-width: 320px;"
       />
     </v-toolbar>
   </v-card>
