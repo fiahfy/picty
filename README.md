@@ -8,7 +8,7 @@
 
 - Paging/Zooming controller on viewer
 - Rating images
-- Bookmark directories
+- ~~Bookmark directories~~
 - Change theme (Light/Dark)
 - Cross platform support
 
