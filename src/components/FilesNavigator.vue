@@ -80,9 +80,7 @@ export default defineComponent({
       try {
         const { data }: { data: File[] } = await worker.postMessage({ dirPath })
         const files = data.filter(
-          (file) =>
-            file.directory ||
-            settingsStore.isFileAvailable({ filePath: file.path })
+          (file) => file.directory || settingsStore.isFileAvailable(file.path)
         )
         let others: Node[] = []
         if (files.length > maxChildren) {

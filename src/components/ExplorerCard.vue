@@ -117,10 +117,10 @@ export default defineComponent({
       context.emit('click-presentation')
     }
     const handleClickList = () => {
-      explorerStore.setListStyle({ listStyle: 'list' })
+      explorerStore.setListStyle('list')
     }
     const handleClickThumbnail = () => {
-      explorerStore.setListStyle({ listStyle: 'thumbnail' })
+      explorerStore.setListStyle('thumbnail')
     }
     const handleInput = (value?: string) => {
       context.emit('change-query', value ?? '')
@@ -145,7 +145,7 @@ export default defineComponent({
       context.emit('change-query', state.searchInput)
     }
     const handleClickItemDelete = (item: string) => {
-      queryHistoryStore.removeHistory({ history: item })
+      queryHistoryStore.removeHistory(item)
     }
 
     watchEffect(() => {

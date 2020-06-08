@@ -80,7 +80,7 @@ export default defineComponent({
         path: props.item.path,
       })
       const filePathes = data.filter((filePath: string) =>
-        settingsStore.isFileAvailable({ filePath })
+        settingsStore.isFileAvailable(filePath)
       )
       state.images = filePathes.length
       state.loading = false

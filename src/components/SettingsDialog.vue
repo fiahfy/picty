@@ -153,7 +153,7 @@ export default defineComponent({
         return settingsStore.darkTheme
       },
       set: (value) => {
-        settingsStore.setDarkTheme({ darkTheme: value })
+        settingsStore.setDarkTheme(value)
       },
     })
     const fullScreen = computed({
@@ -161,7 +161,7 @@ export default defineComponent({
         return settingsStore.fullScreen
       },
       set: (value) => {
-        settingsStore.setFullScreen({ fullScreen: value })
+        settingsStore.setFullScreen(value)
       },
     })
     const recursive = computed({
@@ -169,7 +169,7 @@ export default defineComponent({
         return settingsStore.recursive
       },
       set: (value) => {
-        settingsStore.setRecursive({ recursive: value })
+        settingsStore.setRecursive(value)
       },
     })
     const imageStretched = computed({
@@ -177,7 +177,7 @@ export default defineComponent({
         return settingsStore.imageStretched
       },
       set: (value) => {
-        settingsStore.setImageStretched({ imageStretched: value })
+        settingsStore.setImageStretched(value)
       },
     })
     const queryHistorySize = computed({
@@ -185,7 +185,7 @@ export default defineComponent({
         return settingsStore.queryHistorySize
       },
       set: (value) => {
-        settingsStore.setQueryHistorySize({ queryHistorySize: value })
+        settingsStore.setQueryHistorySize(value)
       },
     })
     const thumbnailStyle = computed({
@@ -193,7 +193,7 @@ export default defineComponent({
         return settingsStore.thumbnailStyle
       },
       set: (value) => {
-        settingsStore.setThumbnailStyle({ thumbnailStyle: value })
+        settingsStore.setThumbnailStyle(value)
       },
     })
     const thumbnailHeight = computed({
@@ -201,7 +201,7 @@ export default defineComponent({
         return settingsStore.thumbnailHeight
       },
       set: (value) => {
-        settingsStore.setThumbnailHeight({ thumbnailHeight: value })
+        settingsStore.setThumbnailHeight(value)
       },
     })
     const extensions = computed({
@@ -209,7 +209,7 @@ export default defineComponent({
         return settingsStore.extensions
       },
       set: (value) => {
-        settingsStore.setExtensions({ extensions: value })
+        settingsStore.setExtensions(value)
       },
     })
 

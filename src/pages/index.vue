@@ -33,6 +33,7 @@
           @contextmenu-item="handleContextMenuItem"
           @change-rating="handleChangeRating"
           @change-sort-option="handleChangeSortOption"
+          @keydown.native="handleKeyDown"
         />
       </v-container>
     </v-layout>
@@ -134,14 +135,12 @@ export default defineComponent({
         })
         state.items = data
           .filter(
-            (file) =>
-              file.directory ||
-              settingsStore.isFileAvailable({ filePath: file.path })
+            (file) => file.directory || settingsStore.isFileAvailable(file.path)
           )
           .map((file) => {
             return {
               ...file,
-              rating: ratingStore.getRating({ filePath: file.path }),
+              rating: ratingStore.getRating(file.path),
             }
           })
       } catch (e) {
@@ -154,11 +153,11 @@ export default defineComponent({
         return
       }
       historyStore.push(location)
-      explorerStore.setLocation({ location })
+      explorerStore.setLocation(location)
       load()
     }
     const search = (query: string) => {
-      queryHistoryStore.addHistory({ history: query })
+      queryHistoryStore.addHistory(query)
       state.query = query
     }
     const go = async (offset: number) => {
@@ -167,7 +166,7 @@ export default defineComponent({
       }
       const history = await historyStore.go(offset)
       if (history) {
-        explorerStore.setLocation({ location: history })
+        explorerStore.setLocation(history)
         load()
       }
     }
@@ -246,10 +245,7 @@ export default defineComponent({
       state.sortDesc = desc
     }
     const handleChangeRating = (item: Item, rating: number) => {
-      ratingStore.setRating({
-        filePath: item.path,
-        rating,
-      })
+      ratingStore.setRating(rating, item.path)
       // update item
       state.items = state.items.map((current) =>
         current.path === item.path
@@ -259,6 +255,15 @@ export default defineComponent({
             }
           : current
       )
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'Enter':
+          return context.root.$eventBus.$emit(
+            'show-presentation',
+            state.selected
+          )
+      }
     }
 
     load()
@@ -290,6 +295,7 @@ export default defineComponent({
       handleChangeHistory,
       handleChangeSortOption,
       handleChangeRating,
+      handleKeyDown,
     }
   },
 })

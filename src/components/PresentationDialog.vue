@@ -210,7 +210,7 @@ export default defineComponent({
           state.current = state.target
         }
         state.files = files.filter((file) =>
-          settingsStore.isFileAvailable({ filePath: file.path })
+          settingsStore.isFileAvailable(file.path)
         )
         if (!state.current) {
           state.current = state.files[0]

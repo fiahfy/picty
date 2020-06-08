@@ -117,7 +117,7 @@ export default defineComponent({
           path: props.item.path,
         })
         const filePathes = data.filter((filePath: string) =>
-          settingsStore.isFileAvailable({ filePath })
+          settingsStore.isFileAvailable(filePath)
         )
         if (filePathes.length) {
           state.imageUrl = fileUrl(filePathes[0])

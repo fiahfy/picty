@@ -101,6 +101,7 @@ export default defineComponent({
     const isSelected = (item: Item) => {
       return item.path === props.selected?.path
     }
+
     const handleClickHeader = (header: File) => {
       context.emit('click-header', header)
     }

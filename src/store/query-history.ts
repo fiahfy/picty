@@ -10,7 +10,7 @@ export default class QueryHistoryModule extends VuexModule {
   histories: string[] = []
 
   @Mutation
-  addHistory({ history }: { history: string }) {
+  addHistory(history: string) {
     const exists = this.histories.includes(history)
     if (!history || exists) {
       return
@@ -21,7 +21,7 @@ export default class QueryHistoryModule extends VuexModule {
   }
 
   @Mutation
-  removeHistory({ history }: { history: string }) {
+  removeHistory(history: string) {
     this.histories = this.histories
       .filter((item) => item !== history)
       .slice(-settingsStore.queryHistorySize)

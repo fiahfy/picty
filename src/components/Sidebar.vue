@@ -56,7 +56,7 @@ export default defineComponent({
           : offsetWidth
       },
       set(value: number) {
-        settingsStore.setSidebarWidth({ sidebarWidth: value - offsetWidth })
+        settingsStore.setSidebarWidth(value - offsetWidth)
       },
     })
     const classes = computed(() => {

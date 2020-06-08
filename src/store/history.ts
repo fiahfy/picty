@@ -29,8 +29,8 @@ export default class HistoryModule extends VuexModule {
   push(history: string) {
     const index = this.index + 1
     const histories = [...this.histories.slice(0, index), history]
-    this.setIndex({ index })
-    this.setHistories({ histories })
+    this.setIndex(index)
+    this.setHistories(histories)
   }
 
   @Action
@@ -39,7 +39,7 @@ export default class HistoryModule extends VuexModule {
     if (index < 0 || index > this.histories.length - 1) {
       return
     }
-    this.setIndex({ index })
+    this.setIndex(index)
     return this.histories[this.index]
   }
 
@@ -54,12 +54,12 @@ export default class HistoryModule extends VuexModule {
   }
 
   @Mutation
-  setHistories({ histories }: { histories: string[] }) {
+  setHistories(histories: string[]) {
     this.histories = histories
   }
 
   @Mutation
-  setIndex({ index }: { index: number }) {
+  setIndex(index: number) {
     this.index = index
   }
 }

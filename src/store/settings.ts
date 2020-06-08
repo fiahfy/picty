@@ -46,7 +46,7 @@ export default class SettingsModule extends VuexModule {
   }
 
   get isFileAvailable() {
-    return ({ filePath }: { filePath: string }) => {
+    return (filePath: string) => {
       if (!filePath) {
         return false
       }
@@ -59,51 +59,47 @@ export default class SettingsModule extends VuexModule {
   }
 
   @Mutation
-  setDarkTheme({ darkTheme }: { darkTheme: boolean }) {
+  setDarkTheme(darkTheme: boolean) {
     this.darkTheme = darkTheme
   }
 
   @Mutation
-  setFullScreen({ fullScreen }: { fullScreen: boolean }) {
+  setFullScreen(fullScreen: boolean) {
     this.fullScreen = fullScreen
   }
 
   @Mutation
-  setRecursive({ recursive }: { recursive: boolean }) {
+  setRecursive(recursive: boolean) {
     this.recursive = recursive
   }
 
   @Mutation
-  setImageStretched({ imageStretched }: { imageStretched: boolean }) {
+  setImageStretched(imageStretched: boolean) {
     this.imageStretched = imageStretched
   }
 
   @Mutation
-  setQueryHistorySize({ queryHistorySize }: { queryHistorySize: number }) {
+  setQueryHistorySize(queryHistorySize: number) {
     this.queryHistorySize = queryHistorySize
   }
 
   @Mutation
-  setThumbnailStyle({ thumbnailStyle }: { thumbnailStyle: ThumbnailStyle }) {
+  setThumbnailStyle(thumbnailStyle: ThumbnailStyle) {
     this.thumbnailStyle = thumbnailStyle
   }
 
   @Mutation
-  setThumbnailHeight({
-    thumbnailHeight,
-  }: {
-    thumbnailHeight: ThumbnailHeight
-  }) {
+  setThumbnailHeight(thumbnailHeight: ThumbnailHeight) {
     this.thumbnailHeight = thumbnailHeight
   }
 
   @Mutation
-  setExtensions({ extensions }: { extensions: string[] }) {
+  setExtensions(extensions: string[]) {
     this.extensions = extensions
   }
 
   @Mutation
-  setSidebarWidth({ sidebarWidth }: { sidebarWidth: number }) {
+  setSidebarWidth(sidebarWidth: number) {
     this.sidebarWidth = sidebarWidth
   }
 }
