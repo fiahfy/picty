@@ -8,7 +8,7 @@
     item-key="path"
     hide-default-header
     hide-default-footer
-    sticky-headers
+    disable-sort
     tabindex="0"
   >
     <template v-slot:header="props">

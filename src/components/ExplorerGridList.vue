@@ -2,7 +2,6 @@
   <virtual-data-iterator
     ref="iterator"
     class="explorer-grid-list"
-    container-class="grid-list-md"
     :items="items"
     :loading="loading"
     :estimated-height="estimatedHeight"
@@ -10,7 +9,7 @@
     item-key="path"
     hide-default-header
     hide-default-footer
-    sticky-headers
+    disable-sort
     tabindex="0"
   >
     <template v-slot:header>
@@ -82,7 +81,8 @@ export default defineComponent({
   setup(props: Props, context: SetupContext) {
     const classes = computed(() => {
       return viewport.sizes.map((size, i) => {
-        return `col-${size}-${sizes[i]}`
+        const s = size === 'xs' ? '' : `-${size}`
+        return `col${s}-${sizes[i]}`
       })
     })
     const estimatedHeight = computed(() => {

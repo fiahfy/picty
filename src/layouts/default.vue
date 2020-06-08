@@ -15,11 +15,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  watchEffect,
-  SetupContext,
-} from '@vue/composition-api'
+import { defineComponent, watch, SetupContext } from '@vue/composition-api'
 import PresentationDialog from '~/components/PresentationDialog.vue'
 import SettingsDialog from '~/components/SettingsDialog.vue'
 import Sidebar from '~/components/Sidebar.vue'
@@ -45,9 +41,12 @@ export default defineComponent({
       }
     }
 
-    watchEffect(() => {
-      context.root.$vuetify.theme.dark = settingsStore.darkTheme
-    })
+    watch(
+      () => settingsStore.darkTheme,
+      (darkTheme) => {
+        context.root.$vuetify.theme.dark = darkTheme
+      }
+    )
 
     return {
       handleContextMenu,

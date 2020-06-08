@@ -1,14 +1,11 @@
 <template>
   <v-layout class="virtual-data-iterator" column>
-    <v-container :class="classes" fluid pa-0 overflow-hidden fill-height>
+    <v-container fluid pa-0 overflow-hidden fill-height>
       <v-data-iterator
         ref="iterator"
-        v-model="model"
         v-bind="$attrs"
         class="fill-height flex-grow-1"
-        :options.sync="optionsModel"
-        :items="renderItems"
-        disable-sort
+        :items="state.renderItems"
         disable-pagination
         row
         wrap
@@ -22,7 +19,7 @@
         <template v-slot:default="props">
           <v-row class="ma-0">
             <v-col
-              :style="{ height: `${padding.top}px` }"
+              :style="{ height: `${state.padding.top}px` }"
               class="pa-0"
               xs="12"
               style="min-width: 100%;"
@@ -31,7 +28,7 @@
               <slot v-bind="{ item }" name="item" />
             </template>
             <v-col
-              :style="{ height: `${padding.bottom}px` }"
+              :style="{ height: `${state.padding.bottom}px` }"
               class="pa-0"
               xs="12"
               style="min-width: 100%;"
@@ -40,27 +37,40 @@
         </template>
         <template v-slot:loading>
           <v-progress-linear indeterminate height="2" />
-          <div class="ma-3 body-2 grey--text">Loading items...</div>
+          <div class="ma-3 body-2 grey--text text-center">Loading items...</div>
+        </template>
+        <template v-slot:no-data>
+          <div class="ma-3 body-2 grey--text text-center">
+            No data available
+          </div>
         </template>
       </v-data-iterator>
     </v-container>
   </v-layout>
 </template>
 
-<script>
-// TODO: typescriptize
+<script lang="ts">
+import {
+  defineComponent,
+  computed,
+  reactive,
+  ref,
+  onMounted,
+  onUnmounted,
+  watch,
+  SetupContext,
+} from '@vue/composition-api'
 import * as viewport from '~/utils/viewport'
 
-export default {
+type Props = {
+  items: any[]
+  estimatedHeight: number
+  threshold: number
+  sizes: number | number[]
+}
+
+export default defineComponent({
   props: {
-    value: {
-      type: Array,
-      default: () => [],
-    },
-    pagination: {
-      type: Object,
-      default: () => ({}),
-    },
     items: {
       type: Array,
       default: () => [],
@@ -73,140 +83,122 @@ export default {
       type: Number,
       default: 0,
     },
-    itemKey: {
-      type: String,
-      default: 'id',
-    },
     sizes: {
       type: [Number, Array],
       default: 6,
     },
-    containerClass: {
-      type: [String],
-      default: '',
-    },
-    stickyHeaders: {
-      type: Boolean,
-      default: false,
-    },
   },
-  data() {
-    return {
-      scrolling: false,
+  setup(props: Props, context: SetupContext) {
+    const state = reactive<{
+      padding: { top: number; bottom: number }
+      renderItems: any[]
+      observer?: ResizeObserver
+    }>({
       padding: {
         top: 0,
         bottom: 0,
       },
       renderItems: [],
+      observer: undefined,
+    })
+
+    const calculatedSizes = computed(() => {
+      return Array.isArray(props.sizes)
+        ? props.sizes
+        : Array(5).fill(props.sizes)
+    })
+
+    const iterator = ref<Vue>(null)
+    const container = ref<HTMLDivElement>(null)
+
+    const getScrollTop = () => {
+      return container.value?.scrollTop ?? 0
     }
-  },
-  computed: {
-    optionsModel: {
-      get() {
-        return this.pagination
-      },
-      set(value) {
-        this.$emit('update:pagination', value)
-      },
-    },
-    model: {
-      get() {
-        return this.value
-      },
-      set(value) {
-        this.$emit('input', value)
-      },
-    },
-    classes() {
-      return {
-        [this.containerClass]: true,
-        'sticky-headers': this.stickyHeaders,
-        scrolling: this.scrolling,
-      }
-    },
-    calculatedSizes() {
-      return Array.isArray(this.sizes) ? this.sizes : Array(5).fill(this.sizes)
-    },
-  },
-  watch: {
-    items() {
-      this.adjustItems()
-    },
-  },
-  mounted() {
-    this.container = this.$el.querySelector('.v-data-iterator')
-    this.container.classList.add('scrollbar')
-    this.container.addEventListener('scroll', this.onScroll)
-    this.observer = new ResizeObserver(this.onResize)
-    this.observer.observe(this.container)
-    this.adjustItems()
-  },
-  beforeDestroy() {
-    this.container.removeEventListener('scroll', this.onScroll)
-    this.observer.disconnect()
-  },
-  methods: {
-    getScrollTop() {
-      return this.container.scrollTop
-    },
-    setScrollTop(value) {
-      this.$nextTick(() => {
-        this.container.scrollTop = value
+    const setScrollTop = (value: number) => {
+      context.root.$nextTick(() => {
+        container.value && (container.value.scrollTop = value)
       })
-    },
-    getOffsetHeight() {
-      return this.container.offsetHeight
-    },
-    adjustItems() {
-      if (!this.container) {
+    }
+    const adjustItems = () => {
+      if (!container.value) {
         return
       }
-      const size = 12 / this.calculatedSizes[viewport.getSizeIndex()]
 
-      const { scrollTop, offsetHeight } = this.container
-      const index = Math.floor(scrollTop / this.estimatedHeight)
-      const offset = Math.ceil(offsetHeight / this.estimatedHeight) + 1
+      const size = 12 / calculatedSizes.value[viewport.getSizeIndex()]
 
-      let firstIndex = Math.max(0, index - this.threshold)
-      let lastIndex = firstIndex + offset + this.threshold
-      if (lastIndex > Math.ceil(this.items.length / size)) {
-        lastIndex = Math.ceil(this.items.length / size)
-        firstIndex = Math.max(0, lastIndex - offset - this.threshold * 2)
+      const { scrollTop, offsetHeight } = container.value
+      const index = Math.floor(scrollTop / props.estimatedHeight)
+      const offset = Math.ceil(offsetHeight / props.estimatedHeight) + 1
+
+      let firstIndex = Math.max(0, index - props.threshold)
+      let lastIndex = firstIndex + offset + props.threshold
+      if (lastIndex > Math.ceil(props.items.length / size)) {
+        lastIndex = Math.ceil(props.items.length / size)
+        firstIndex = Math.max(0, lastIndex - offset - props.threshold * 2)
       }
 
-      this.scrolling = scrollTop > 0
-      this.padding = {
-        top: firstIndex * this.estimatedHeight,
+      state.padding = {
+        top: firstIndex * props.estimatedHeight,
         bottom:
-          (Math.ceil(this.items.length / size) - lastIndex) *
-          this.estimatedHeight,
+          (Math.ceil(props.items.length / size) - lastIndex) *
+          props.estimatedHeight,
       }
-      this.renderItems = this.items.slice(firstIndex * size, lastIndex * size)
+      state.renderItems = props.items.slice(firstIndex * size, lastIndex * size)
 
-      this.setScrollTop(scrollTop)
-    },
-    onResize() {
-      this.adjustItems()
-    },
-    onScroll(e) {
-      this.adjustItems()
-      this.$emit('scroll', e)
-    },
+      setScrollTop(scrollTop)
+    }
+    const handleResize = () => {
+      adjustItems()
+    }
+    const handleScroll = (e: Event) => {
+      adjustItems()
+      context.emit('scroll', e)
+    }
+
+    watch(
+      () => props.items,
+      () => {
+        adjustItems()
+      }
+    )
+
+    onMounted(() => {
+      container.value = iterator.value?.$el
+      if (container.value) {
+        container.value.classList.add('scrollbar')
+        container.value.addEventListener('scroll', handleScroll)
+        state.observer = new ResizeObserver(handleResize)
+        state.observer.observe(container.value)
+        adjustItems()
+      }
+    })
+
+    onUnmounted(() => {
+      if (container.value) {
+        container.value.removeEventListener('scroll', handleScroll)
+      }
+      state.observer && state.observer.disconnect()
+    })
+
+    return {
+      state,
+      iterator,
+      getScrollTop,
+      setScrollTop,
+    }
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
-.virtual-data-iterator > .container {
-  position: relative;
+.virtual-data-iterator {
   .v-data-iterator {
     overflow-y: scroll;
-    text-align: center;
-  }
-  ::v-deep .header {
-    position: sticky;
-    top: 0;
-    z-index: 1;
+    ::v-deep .header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
   }
 }
 </style>

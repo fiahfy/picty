@@ -67,7 +67,7 @@ import {
   SetupContext,
   reactive,
   computed,
-  watchEffect,
+  watch,
   onMounted,
   onUnmounted,
   ref,
@@ -148,9 +148,12 @@ export default defineComponent({
       queryHistoryStore.removeHistory(item)
     }
 
-    watchEffect(() => {
-      state.queryInput = props.query
-    })
+    watch(
+      () => props.query,
+      (query) => {
+        state.queryInput = query
+      }
+    )
 
     onMounted(() => {
       context.root.$eventBus.$on('focus-query', focusQuery)
