@@ -3,11 +3,20 @@
     <v-toolbar color="transparent" flat dense>
       <v-btn
         :title="'Presentation' | accelerator('Enter')"
-        :disabled="!canPresentation"
+        :disabled="!selected"
         icon
         @click="handleClickPresentation"
       >
         <v-icon>mdi-presentation</v-icon>
+      </v-btn>
+      <v-btn
+        :title="'Favorite' | accelerator('')"
+        :color="favorite ? 'primary' : ''"
+        :disabled="!selected"
+        icon
+        @click="handleClickFavorite"
+      >
+        <v-icon v-text="favorite ? 'mdi-heart' : 'mdi-heart-outline'" />
       </v-btn>
       <v-spacer />
       <v-btn :color="listColor" title="List" icon @click="handleClickList">
@@ -72,18 +81,18 @@ import {
   onUnmounted,
   ref,
 } from '@vue/composition-api'
-import { explorerStore, queryHistoryStore } from '~/store'
+import { Item } from '~/models'
+import { explorerStore, favoriteStore, queryHistoryStore } from '~/store'
 
 type Props = {
-  canPresentation: boolean
+  selected: Item
   query: string
 }
 
 export default defineComponent({
   props: {
-    canPresentation: {
-      type: Boolean,
-      default: false,
+    selected: {
+      type: Object,
     },
     query: {
       type: String,
@@ -105,6 +114,9 @@ export default defineComponent({
     const queryHistories = computed(() => {
       return queryHistoryStore.histories.slice().reverse()
     })
+    const favorite = computed(() => {
+      return props.selected && favoriteStore.isFavorite(props.selected.path)
+    })
 
     const queryField = ref<Vue>(null)
 
@@ -114,7 +126,10 @@ export default defineComponent({
       ) as HTMLInputElement).focus()
     }
     const handleClickPresentation = () => {
-      context.emit('click-presentation')
+      context.root.$eventBus.$emit('show-presentation', props.selected)
+    }
+    const handleClickFavorite = () => {
+      props.selected && favoriteStore.toggleFavorite(props.selected.path)
     }
     const handleClickList = () => {
       explorerStore.setListStyle('list')
@@ -168,8 +183,10 @@ export default defineComponent({
       listColor,
       thumbnailColor,
       queryHistories,
+      favorite,
       queryField,
       handleClickPresentation,
+      handleClickFavorite,
       handleClickList,
       handleClickThumbnail,
       handleInput,

@@ -62,6 +62,12 @@ const menus: Menu[] = [
     title: 'Files',
     accelerator: '',
   },
+  {
+    navigator: 'favorites',
+    icon: 'mdi-heart',
+    title: 'Favorites',
+    accelerator: '',
+  },
 ]
 
 type Props = {

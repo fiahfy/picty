@@ -163,7 +163,7 @@ export default defineComponent({
     )
 
     onMounted(() => {
-      container.value = iterator.value?.$el
+      container.value = (iterator.value?.$el as HTMLDivElement) ?? null
       if (container.value) {
         container.value.classList.add('scrollbar')
         container.value.addEventListener('scroll', handleScroll)

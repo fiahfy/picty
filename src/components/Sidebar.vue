@@ -13,7 +13,9 @@
         :navigator="state.navigator"
         @click-menu="handleClickMenu"
       />
-      <FilesNavigator />
+      <keep-alive>
+        <component :is="component" />
+      </keep-alive>
       <div v-show="state.navigator" ref="resizer" class="resizer" />
     </v-row>
   </v-navigation-drawer>
@@ -29,6 +31,7 @@ import {
   onUnmounted,
 } from '@vue/composition-api'
 import ActivityBar from '~/components/ActivityBar.vue'
+import FavoritesNavigator from '~/components/FavoritesNavigator.vue'
 import FilesNavigator from '~/components/FilesNavigator.vue'
 import { settingsStore } from '~/store'
 
@@ -38,7 +41,6 @@ const minWidth = 256
 export default defineComponent({
   components: {
     ActivityBar,
-    FilesNavigator,
   },
   setup(_props: {}) {
     const state = reactive<{
@@ -61,6 +63,14 @@ export default defineComponent({
     })
     const classes = computed(() => {
       return { resizing: state.resizing }
+    })
+    const component = computed(() => {
+      switch (state.navigator) {
+        case 'files':
+          return FilesNavigator
+        case 'favorites':
+          return FavoritesNavigator
+      }
     })
 
     const sidebar = ref<Vue>(null)
@@ -116,6 +126,7 @@ export default defineComponent({
       state,
       width,
       classes,
+      component,
       sidebar,
       resizer,
       handleClickMenu,

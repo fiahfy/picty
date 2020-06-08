@@ -13,9 +13,8 @@
       />
       <explorer-card
         class="flex-grow-0"
-        :can-presentation="!!state.selected"
+        :selected="state.selected"
         :query="state.query"
-        @click-presentation="handleClickPresentation"
         @change-query="handleChangeQuery"
       />
       <v-container fluid pa-0 overflow-hidden flex-grow-1>
@@ -58,10 +57,10 @@ import ExplorerGridList from '~/components/ExplorerGridList.vue'
 import { File, Item } from '~/models'
 import {
   explorerStore,
-  settingsStore,
-  ratingStore,
   historyStore,
   queryHistoryStore,
+  ratingStore,
+  settingsStore,
 } from '~/store'
 
 const workerPromisify = require('@fiahfy/worker-promisify').default
@@ -188,9 +187,6 @@ export default defineComponent({
     const handleClickReload = () => {
       load()
     }
-    const handleClickPresentation = () => {
-      context.root.$eventBus.$emit('show-presentation', state.selected)
-    }
     const handleClickHeader = (header: { value: string }) => {
       state.sortDesc = state.sortBy === header.value ? !state.sortDesc : false
       state.sortBy = header.value as keyof Item
@@ -285,9 +281,8 @@ export default defineComponent({
       handleClickUpward,
       handleClickHome,
       handleClickReload,
-      handleClickPresentation,
-      handleClickItem,
       handleClickHeader,
+      handleClickItem,
       handleDoubleClickItem,
       handleContextMenuItem,
       handleChangeLocation,
