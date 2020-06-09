@@ -50,6 +50,7 @@
 </template>
 
 <script lang="ts">
+import { debounce } from 'throttle-debounce'
 import {
   defineComponent,
   computed,
@@ -65,7 +66,7 @@ import * as viewport from '~/utils/viewport'
 type Props = {
   items: any[]
   estimatedHeight: number
-  threshold: number
+  threshold: number | string
   sizes: number | number[]
 }
 
@@ -80,7 +81,7 @@ export default defineComponent({
       default: 48,
     },
     threshold: {
-      type: Number,
+      type: [Number, String],
       default: 0,
     },
     sizes: {
@@ -110,6 +111,7 @@ export default defineComponent({
 
     const iterator = ref<Vue>(null)
     const container = ref<HTMLDivElement>(null)
+    const debounced = ref<debounce<() => void>>(null)
 
     const getScrollTop = () => {
       return container.value?.scrollTop ?? 0
@@ -130,11 +132,14 @@ export default defineComponent({
       const index = Math.floor(scrollTop / props.estimatedHeight)
       const offset = Math.ceil(offsetHeight / props.estimatedHeight) + 1
 
-      let firstIndex = Math.max(0, index - props.threshold)
-      let lastIndex = firstIndex + offset + props.threshold
+      let firstIndex = Math.max(0, index - Number(props.threshold))
+      let lastIndex = firstIndex + offset + Number(props.threshold)
       if (lastIndex > Math.ceil(props.items.length / size)) {
         lastIndex = Math.ceil(props.items.length / size)
-        firstIndex = Math.max(0, lastIndex - offset - props.threshold * 2)
+        firstIndex = Math.max(
+          0,
+          lastIndex - offset - Number(props.threshold) * 2
+        )
       }
 
       state.padding = {
@@ -148,10 +153,10 @@ export default defineComponent({
       setScrollTop(scrollTop)
     }
     const handleResize = () => {
-      adjustItems()
+      debounced.value && debounced.value()
     }
     const handleScroll = (e: Event) => {
-      adjustItems()
+      debounced.value && debounced.value()
       context.emit('scroll', e)
     }
 
@@ -171,6 +176,7 @@ export default defineComponent({
         state.observer.observe(container.value)
         adjustItems()
       }
+      debounced.value = debounce(500, () => adjustItems())
     })
 
     onUnmounted(() => {

@@ -59,6 +59,44 @@ const Worker = require('~/workers/fetch-pathes.worker')
 
 const worker = workerPromisify(new Worker())
 
+const getDataUrlFromImg = (img: HTMLImageElement, size: number) => {
+  let w = img.width
+  let h = img.height
+  if (w > h) {
+    h = (h * size) / w
+    w = size
+  } else {
+    w = (w * size) / h
+    h = size
+  }
+
+  const canvas = document.createElement('canvas')
+  canvas.width = w
+  canvas.height = h
+
+  const ctx = canvas.getContext('2d')
+  if (!ctx) {
+    return undefined
+  }
+  ctx.drawImage(img, 0, 0, w, h)
+
+  return canvas.toDataURL('image/jpeg')
+}
+
+const getDataUrl = (url: string, size: number): Promise<string | undefined> => {
+  return new Promise((resolve) => {
+    if (!url) {
+      return resolve(url)
+    }
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.src = url
+    img.onload = () => {
+      resolve(getDataUrlFromImg(img, size))
+    }
+  })
+}
+
 type Props = {
   item: Item
 }
@@ -110,7 +148,7 @@ export default defineComponent({
 
     const load = async () => {
       if (!props.item.directory) {
-        state.imageUrl = fileUrl(props.item.path)
+        state.imageUrl = (await getDataUrl(fileUrl(props.item.path), 256)) ?? ''
       } else {
         state.loading = true
         const { data } = await worker.postMessage({
@@ -121,7 +159,7 @@ export default defineComponent({
           settingsStore.isFileAvailable(filePath)
         )
         if (filePathes.length) {
-          state.imageUrl = fileUrl(filePathes[0])
+          state.imageUrl = (await getDataUrl(fileUrl(filePathes[0]), 256)) ?? ''
         }
         state.images = filePathes.length
         state.loading = false
