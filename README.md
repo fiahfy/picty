@@ -6,10 +6,10 @@
 
 ## Features
 
-- Paging/Zooming controller on viewer
-- Rating images
-- ~~Bookmark directories~~
-- Change theme (Light/Dark)
+- Favorite folders
+- Rating folders and images
+- Presentation
+- Dark mode
 - Cross platform support
 
 ## Screenshots
