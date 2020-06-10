@@ -4,6 +4,13 @@
       <span class="subtitle-2 text-uppercase user-select-none flex-grow-0">
         Folders
       </span>
+      <v-spacer />
+      <v-btn icon title="Refresh" @click="handleClickRefresh">
+        <v-icon>mdi-refresh</v-icon>
+      </v-btn>
+      <v-btn icon title="Collapse Folders" @click="handleClickCollapse">
+        <v-icon>mdi-collapse-all</v-icon>
+      </v-btn>
     </v-toolbar>
     <v-row no-gutters class="overflow-auto scrollbar">
       <v-treeview
@@ -136,11 +143,34 @@ export default defineComponent({
         }
       }
     }
+    const loadLocation = async () => {
+      const dirPathes = explorerStore.location
+        .split(path.sep)
+        .reduce((carry, dirname) => {
+          const dirPath = carry.length
+            ? carry[carry.length - 1] + path.sep + dirname
+            : dirname
+          return [...carry, dirPath]
+        }, [] as string[])
+      for (const dirPath of dirPathes.slice(0, -1)) {
+        await loadDirectory(dirPath)
+      }
+      state.active = [explorerStore.location]
+    }
 
     const handleLoadChildren = async (node: Node) => {
       if (node.path) {
         node.children = await fetch(node.path)
       }
+    }
+    const handleClickRefresh = async () => {
+      state.open = []
+      state.nodes = []
+      await loadLocation()
+    }
+    const handleClickCollapse = () => {
+      const path = state.nodes[0].path
+      state.open = path ? [path] : []
     }
     const handleClickNode = (node: Node) => {
       if (node.children) {
@@ -150,23 +180,16 @@ export default defineComponent({
 
     watch(
       () => explorerStore.location,
-      async (location) => {
-        const dirPathes = location.split(path.sep).reduce((carry, dirname) => {
-          const dirPath = carry.length
-            ? carry[carry.length - 1] + path.sep + dirname
-            : dirname
-          return [...carry, dirPath]
-        }, [] as string[])
-        for (const dirPath of dirPathes.slice(0, -1)) {
-          await loadDirectory(dirPath)
-        }
-        state.active = [location]
+      async () => {
+        await loadLocation()
       }
     )
 
     return {
       state,
       handleLoadChildren,
+      handleClickRefresh,
+      handleClickCollapse,
       handleClickNode,
     }
   },
