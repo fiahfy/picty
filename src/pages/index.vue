@@ -20,6 +20,7 @@
       <v-container fluid pa-0 overflow-hidden flex-grow-1>
         <component
           :is="component"
+          :ref="componentRef"
           :items="items"
           :loading="state.loading"
           :selected="state.selected"
@@ -46,9 +47,11 @@ import {
   defineComponent,
   computed,
   reactive,
-  SetupContext,
   onMounted,
   onUnmounted,
+  watch,
+  ref,
+  SetupContext,
 } from '@vue/composition-api'
 import ExplorerToolbar from '~/components/ExplorerToolbar.vue'
 import ExplorerCard from '~/components/ExplorerCard.vue'
@@ -96,6 +99,9 @@ export default defineComponent({
     const component = computed(() =>
       explorerStore.listStyle === 'list' ? ExplorerTable : ExplorerGridList
     )
+    const componentRef = computed(() =>
+      explorerStore.listStyle === 'list' ? 'table' : 'gridList'
+    )
     const items = computed(() => {
       return state.items
         .concat()
@@ -121,6 +127,9 @@ export default defineComponent({
           )
         })
     })
+
+    const table = ref<InstanceType<typeof ExplorerTable>>(null)
+    const gridList = ref<InstanceType<typeof ExplorerGridList>>(null)
 
     const load = async () => {
       if (state.loading) {
@@ -281,6 +290,11 @@ export default defineComponent({
 
     load()
 
+    watch([() => state.sortBy, () => state.sortDesc], () => {
+      table.value && table.value.setScrollTop(0)
+      gridList.value && gridList.value.setScrollTop(0)
+    })
+
     onMounted(() => {
       context.root.$eventBus.$on('change-location', move)
     })
@@ -293,6 +307,9 @@ export default defineComponent({
       state,
       component,
       items,
+      componentRef,
+      table,
+      gridList,
       handleClickBack,
       handleClickForward,
       handleClickUpward,

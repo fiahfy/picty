@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext } from '@vue/composition-api'
+import { defineComponent, SetupContext, ref } from '@vue/composition-api'
 import ExplorerTableHeader from '~/components/ExplorerTableHeader.vue'
 import ExplorerTableRow from '~/components/ExplorerTableRow.vue'
 import VirtualDataTable from '~/components/VirtualDataTable.vue'
@@ -102,6 +102,11 @@ export default defineComponent({
       return item.path === props.selected?.path
     }
 
+    const table = ref<InstanceType<typeof VirtualDataTable>>(null)
+
+    const setScrollTop = (scrollTop: number) => {
+      table.value && table.value.setScrollTop(scrollTop)
+    }
     const handleClickHeader = (header: File) => {
       context.emit('click-header', header)
     }
@@ -121,6 +126,8 @@ export default defineComponent({
     return {
       headers,
       isSelected,
+      table,
+      setScrollTop,
       handleClickHeader,
       handleClickRow,
       handleDoubleClickRow,

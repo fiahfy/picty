@@ -34,7 +34,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext, computed } from '@vue/composition-api'
+import {
+  defineComponent,
+  SetupContext,
+  computed,
+  ref,
+} from '@vue/composition-api'
 import ExplorerGridListHeader from '~/components/ExplorerGridListHeader.vue'
 import ExplorerGridListItem from '~/components/ExplorerGridListItem.vue'
 import VirtualDataIterator from '~/components/VirtualDataIterator.vue'
@@ -89,6 +94,11 @@ export default defineComponent({
       return settingsStore.thumbnailHeightValue + 77
     })
 
+    const iterator = ref<InstanceType<typeof VirtualDataIterator>>(null)
+
+    const setScrollTop = (scrollTop: number) => {
+      iterator.value && iterator.value.setScrollTop(scrollTop)
+    }
     const isSelected = (item: Item) => {
       return item.path === props.selected?.path
     }
@@ -113,6 +123,8 @@ export default defineComponent({
       estimatedHeight,
       sizes,
       isSelected,
+      iterator,
+      setScrollTop,
       handleChangeSortOption,
       handleClickRow,
       handleDoubleClickRow,
