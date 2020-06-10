@@ -80,7 +80,7 @@ const getDataUrlFromImg = (img: HTMLImageElement, size: number) => {
   }
   ctx.drawImage(img, 0, 0, w, h)
 
-  return canvas.toDataURL('image/jpeg')
+  return canvas.toDataURL('image/jpeg', 0.9)
 }
 
 const getDataUrl = (url: string, size: number): Promise<string | undefined> => {

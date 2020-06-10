@@ -37,7 +37,7 @@ import {
 type Props = {
   items: any[]
   estimatedHeight: number
-  threshold: number
+  threshold: number | string
 }
 
 export default defineComponent({
@@ -51,7 +51,7 @@ export default defineComponent({
       default: 48,
     },
     threshold: {
-      type: Number,
+      type: [Number, String],
       default: 0,
     },
     stickyHeader: {
@@ -91,13 +91,13 @@ export default defineComponent({
 
       const { scrollTop, offsetHeight } = container.value
       const index = Math.floor(scrollTop / props.estimatedHeight)
-      const offset = Math.ceil(offsetHeight / props.estimatedHeight) + 1
+      const offset = Math.ceil(offsetHeight / props.estimatedHeight)
 
-      let firstIndex = Math.max(0, index - props.threshold)
-      let lastIndex = firstIndex + offset + props.threshold
+      let firstIndex = Math.max(0, index - Number(props.threshold))
+      let lastIndex = firstIndex + offset + 2 * Number(props.threshold)
       if (lastIndex > props.items.length) {
         lastIndex = props.items.length
-        firstIndex = Math.max(0, lastIndex - offset - props.threshold * 2)
+        firstIndex = Math.max(0, lastIndex - offset - Number(props.threshold))
       }
 
       state.padding = {

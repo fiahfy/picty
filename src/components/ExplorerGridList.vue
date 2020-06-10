@@ -6,7 +6,6 @@
     :loading="loading"
     :estimated-height="estimatedHeight"
     :sizes="sizes"
-    threshold="100"
     item-key="path"
     hide-default-header
     hide-default-footer

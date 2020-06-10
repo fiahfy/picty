@@ -130,16 +130,13 @@ export default defineComponent({
 
       const { scrollTop, offsetHeight } = container.value
       const index = Math.floor(scrollTop / props.estimatedHeight)
-      const offset = Math.ceil(offsetHeight / props.estimatedHeight) + 1
+      const offset = Math.ceil(offsetHeight / props.estimatedHeight)
 
       let firstIndex = Math.max(0, index - Number(props.threshold))
-      let lastIndex = firstIndex + offset + Number(props.threshold)
+      let lastIndex = firstIndex + offset + 2 * Number(props.threshold)
       if (lastIndex > Math.ceil(props.items.length / size)) {
         lastIndex = Math.ceil(props.items.length / size)
-        firstIndex = Math.max(
-          0,
-          lastIndex - offset - Number(props.threshold) * 2
-        )
+        firstIndex = Math.max(0, lastIndex - offset - Number(props.threshold))
       }
 
       state.padding = {
@@ -176,7 +173,7 @@ export default defineComponent({
         state.observer.observe(container.value)
         adjustItems()
       }
-      debounced.value = debounce(500, () => adjustItems())
+      debounced.value = debounce(100, () => adjustItems())
     })
 
     onUnmounted(() => {
