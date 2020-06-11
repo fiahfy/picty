@@ -53,6 +53,7 @@ import {
   ref,
   SetupContext,
 } from '@vue/composition-api'
+import { promisify } from '@fiahfy/worker-promisify'
 import ExplorerToolbar from '~/components/ExplorerToolbar.vue'
 import ExplorerCard from '~/components/ExplorerCard.vue'
 import ExplorerTable from '~/components/ExplorerTable.vue'
@@ -67,10 +68,9 @@ import {
   favoriteStore,
 } from '~/store'
 
-const workerPromisify = require('@fiahfy/worker-promisify').default
 const Worker = require('~/workers/fetch-files.worker')
 
-const worker = workerPromisify(new Worker())
+const worker = promisify(new Worker())
 
 export default defineComponent({
   components: {

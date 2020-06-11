@@ -67,6 +67,7 @@ import {
   SetupContext,
   onUnmounted,
 } from '@vue/composition-api'
+import { promisify } from '@fiahfy/worker-promisify'
 import TitleBar from '~/components/TitleBar.vue'
 import PresentationBottomToolbar from '~/components/PresentationBottomToolbar.vue'
 import PresentationContent from '~/components/PresentationContent.vue'
@@ -74,10 +75,9 @@ import PresentationTopToolbar from '~/components/PresentationTopToolbar.vue'
 import { File } from '~/models'
 import { settingsStore } from '~/store'
 
-const workerPromisify = require('@fiahfy/worker-promisify').default
 const Worker = require('~/workers/fetch-files.worker')
 
-const worker = workerPromisify(new Worker())
+const worker = promisify(new Worker())
 
 const scales = [
   0.25,

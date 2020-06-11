@@ -3,7 +3,7 @@ import path from 'path'
 
 const ctx: Worker = self as any
 
-ctx.addEventListener('message', ({ data: { key, path: dirPath } }) => {
+ctx.addEventListener('message', ({ data: { key, data: dirPath } }) => {
   const filePathes = fs.readdirSync(dirPath).reduce((carry, filename) => {
     if (filename.match(/^\./)) {
       return carry

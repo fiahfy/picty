@@ -51,13 +51,13 @@ import {
   reactive,
   computed,
 } from '@vue/composition-api'
+import { promisify } from '@fiahfy/worker-promisify'
 import { Item } from '~/models'
 import { settingsStore } from '~/store'
 
-const workerPromisify = require('@fiahfy/worker-promisify').default
 const Worker = require('~/workers/fetch-pathes.worker')
 
-const worker = workerPromisify(new Worker())
+const worker = promisify(new Worker())
 
 const getDataUrlFromImg = (img: HTMLImageElement, size: number) => {
   let w = img.width
@@ -151,10 +151,10 @@ export default defineComponent({
         state.imageUrl = (await getDataUrl(fileUrl(props.item.path), 256)) ?? ''
       } else {
         state.loading = true
-        const { data } = await worker.postMessage({
-          key: props.item.path,
-          path: props.item.path,
-        })
+        const { data } = await worker.parallelPostMessage(
+          props.item.path,
+          props.item.path
+        )
         const filePathes = data.filter((filePath: string) =>
           settingsStore.isFileAvailable(filePath)
         )

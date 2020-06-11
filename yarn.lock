@@ -904,10 +904,10 @@
   resolved "https://registry.yarnpkg.com/@fiahfy/packbits/-/packbits-0.0.5.tgz#6244ad80c728d79e78a6e7ed8130a5b2c994f0db"
   integrity sha512-wusKxQnGWo+T/UpJD7oSag5zYhQQmOk9ekEV7EwLb8sYcXTcFFOsLN/nqx5VNnMGUfO6/JAqnY9vbmExxSBtkw==
 
-"@fiahfy/worker-promisify@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@fiahfy/worker-promisify/-/worker-promisify-0.0.4.tgz#cdafc247538df6aa9a759d06dc777ba8d9859f06"
-  integrity sha512-CL1G4zfWuXODsjMPgEwuMOrM/RA6B8Qbq49eWMGP5ZhEwbgqCx1NZsto7Y2QiwWjST7KaypGglfsDjpyzgqsWw==
+"@fiahfy/worker-promisify@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@fiahfy/worker-promisify/-/worker-promisify-0.0.5.tgz#1cb318102334bcf87120ae5de55a61c58fee29df"
+  integrity sha512-9z2hZYjfMdJjms9R1JbL7a/Y6Nv0bk0JHFkPbc4XrlstF9dCt1K8J1NDiSAPd2jCmFCAu4IEpBraNG+k8Q8OOw==
 
 "@mdi/font@^5.3.45":
   version "5.3.45"

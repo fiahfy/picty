@@ -10,7 +10,7 @@
   "dependencies": {
     "@fiahfy/electron-accelerator-formatter": "^0.0.4",
     "@fiahfy/electron-context-menu": "^0.0.5",
-    "@fiahfy/worker-promisify": "^0.0.4",
+    "@fiahfy/worker-promisify": "^0.0.5",
     "@mdi/font": "^5.3.45",
     "@nuxtjs/vuetify": "^1.11.2",
     "@vue/composition-api": "^0.5.0",
