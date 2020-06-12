@@ -311,6 +311,7 @@ export default defineComponent({
           state.toolbar = undefined
           clearTimer()
           document.body.removeEventListener('mousemove', handleMouseMove)
+          context.root.$eventBus.$emit('focus-explorer')
         }
       }
     )

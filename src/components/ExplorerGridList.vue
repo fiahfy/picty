@@ -10,6 +10,7 @@
     hide-default-header
     hide-default-footer
     disable-sort
+    threshold="3"
     tabindex="0"
   >
     <template v-slot:header>
@@ -46,8 +47,6 @@ import VirtualDataIterator from '~/components/VirtualDataIterator.vue'
 import { Item } from '~/models'
 import { settingsStore } from '~/store'
 import * as viewport from '~/utils/viewport'
-
-const sizes = [6, 4, 3, 2, 2]
 
 type Props = {
   items: Item[]
@@ -87,7 +86,7 @@ export default defineComponent({
     const classes = computed(() => {
       return viewport.sizes.map((size, i) => {
         const s = size === 'xs' ? '' : `-${size}`
-        return `col${s}-${sizes[i]}`
+        return `col${s}-${viewport.colSizes[i]}`
       })
     })
     const estimatedHeight = computed(() => {
@@ -98,6 +97,31 @@ export default defineComponent({
 
     const setScrollTop = (scrollTop: number) => {
       iterator.value && iterator.value.setScrollTop(scrollTop)
+    }
+    const scrollInView = () => {
+      context.root.$nextTick(() => {
+        const el = iterator.value?.$el.querySelector(
+          '.explorer-grid-list-item.selected'
+        ) as HTMLElement | null
+        const container = iterator.value
+        if (!el || !container) {
+          return
+        }
+        const headerHeight = 48
+        if (container.getScrollTop() > el.offsetTop - headerHeight) {
+          setScrollTop(el.offsetTop - headerHeight)
+        } else if (
+          container.getScrollTop() <
+          el.offsetTop + el.offsetHeight - container.getOffsetHeight()
+        ) {
+          setScrollTop(
+            el.offsetTop + el.offsetHeight - container.getOffsetHeight()
+          )
+        }
+      })
+    }
+    const focus = () => {
+      ;(iterator.value?.$el as HTMLElement).focus()
     }
     const isSelected = (item: Item) => {
       return item.path === props.selected?.path
@@ -121,10 +145,12 @@ export default defineComponent({
     return {
       classes,
       estimatedHeight,
-      sizes,
+      sizes: viewport.colSizes,
       isSelected,
       iterator,
       setScrollTop,
+      scrollInView,
+      focus,
       handleChangeSortOption,
       handleClickRow,
       handleDoubleClickRow,

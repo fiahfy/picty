@@ -76,6 +76,9 @@ export default defineComponent({
     const table = ref<Vue>(null)
     const container = ref<HTMLDivElement>(null)
 
+    const getOffsetHeight = () => {
+      return container.value?.offsetHeight ?? 0
+    }
     const getScrollTop = () => {
       return container.value?.scrollTop ?? 0
     }
@@ -145,6 +148,7 @@ export default defineComponent({
     return {
       state,
       table,
+      getOffsetHeight,
       getScrollTop,
       setScrollTop,
     }
@@ -158,6 +162,7 @@ export default defineComponent({
     height: 100%;
     overflow-y: scroll;
     background: inherit;
+    position: relative;
     table {
       table-layout: fixed;
       background: inherit;

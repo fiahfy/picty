@@ -67,6 +67,7 @@ import {
   settingsStore,
   favoriteStore,
 } from '~/store'
+import * as viewport from '~/utils/viewport'
 
 const Worker = require('~/workers/fetch-files.worker')
 
@@ -182,6 +183,14 @@ export default defineComponent({
     const present = (item: Item) => {
       context.root.$eventBus.$emit('show-presentation', item)
     }
+    const scrollInView = () => {
+      table.value && table.value.scrollInView()
+      gridList.value && gridList.value.scrollInView()
+    }
+    const focus = () => {
+      table.value && table.value.focus()
+      gridList.value && gridList.value.focus()
+    }
 
     const handleClickBack = async () => {
       await go(-1)
@@ -285,6 +294,49 @@ export default defineComponent({
       switch (e.key) {
         case 'Enter':
           return state.selected && present(state.selected)
+        case 'ArrowUp':
+        case 'ArrowDown':
+        case 'ArrowRight':
+        case 'ArrowLeft': {
+          e.preventDefault()
+          let index = state.items.findIndex(
+            (item) => item.path === state.selected?.path
+          )
+          if (explorerStore.listStyle === 'list') {
+            switch (e.key) {
+              case 'ArrowUp':
+                index -= 1
+                break
+              case 'ArrowDown':
+                index += 1
+                break
+            }
+          } else {
+            const offset = viewport.getOffset()
+            switch (e.key) {
+              case 'ArrowUp':
+                index -= offset
+                break
+              case 'ArrowDown':
+                index += offset
+                break
+              case 'ArrowLeft':
+                if (index % offset > 0) {
+                  index -= 1
+                }
+                break
+              case 'ArrowRight':
+                if (index % offset < offset - 1) {
+                  index += 1
+                }
+                break
+            }
+          }
+          index = Math.min(Math.max(index, 0), state.items.length - 1)
+          state.selected = state.items[index]
+          scrollInView()
+          break
+        }
       }
     }
 
@@ -297,10 +349,12 @@ export default defineComponent({
 
     onMounted(() => {
       context.root.$eventBus.$on('change-location', move)
+      context.root.$eventBus.$on('focus-explorer', focus)
     })
 
     onUnmounted(() => {
       context.root.$eventBus.$off('change-location', move)
+      context.root.$eventBus.$off('focus-explorer', focus)
     })
 
     return {

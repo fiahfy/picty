@@ -9,6 +9,7 @@
     hide-default-header
     hide-default-footer
     disable-sort
+    threshold="1"
     tabindex="0"
   >
     <template v-slot:header="props">
@@ -107,6 +108,31 @@ export default defineComponent({
     const setScrollTop = (scrollTop: number) => {
       table.value && table.value.setScrollTop(scrollTop)
     }
+    const scrollInView = () => {
+      context.root.$nextTick(() => {
+        const el = table.value?.$el.querySelector(
+          '.explorer-table-row.v-data-table__selected'
+        ) as HTMLElement | null
+        const container = table.value
+        if (!el || !container) {
+          return
+        }
+        const headerHeight = 48
+        if (container.getScrollTop() > el.offsetTop - headerHeight) {
+          setScrollTop(el.offsetTop - headerHeight)
+        } else if (
+          container.getScrollTop() <
+          el.offsetTop + el.offsetHeight - container.getOffsetHeight()
+        ) {
+          setScrollTop(
+            el.offsetTop + el.offsetHeight - container.getOffsetHeight()
+          )
+        }
+      })
+    }
+    const focus = () => {
+      ;(table.value?.$el as HTMLElement).focus()
+    }
     const handleClickHeader = (header: File) => {
       context.emit('click-header', header)
     }
@@ -128,6 +154,8 @@ export default defineComponent({
       isSelected,
       table,
       setScrollTop,
+      scrollInView,
+      focus,
       handleClickHeader,
       handleClickRow,
       handleDoubleClickRow,

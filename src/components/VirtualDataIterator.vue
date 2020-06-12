@@ -50,7 +50,6 @@
 </template>
 
 <script lang="ts">
-import { debounce } from 'throttle-debounce'
 import {
   defineComponent,
   computed,
@@ -111,8 +110,10 @@ export default defineComponent({
 
     const iterator = ref<Vue>(null)
     const container = ref<HTMLDivElement>(null)
-    const debounced = ref<debounce<() => void>>(null)
 
+    const getOffsetHeight = () => {
+      return container.value?.offsetHeight ?? 0
+    }
     const getScrollTop = () => {
       return container.value?.scrollTop ?? 0
     }
@@ -150,10 +151,10 @@ export default defineComponent({
       setScrollTop(scrollTop)
     }
     const handleResize = () => {
-      debounced.value && debounced.value()
+      adjustItems()
     }
     const handleScroll = (e: Event) => {
-      debounced.value && debounced.value()
+      adjustItems()
       context.emit('scroll', e)
     }
 
@@ -173,7 +174,6 @@ export default defineComponent({
         state.observer.observe(container.value)
         adjustItems()
       }
-      debounced.value = debounce(100, () => adjustItems())
     })
 
     onUnmounted(() => {
@@ -186,6 +186,7 @@ export default defineComponent({
     return {
       state,
       iterator,
+      getOffsetHeight,
       getScrollTop,
       setScrollTop,
     }
@@ -197,6 +198,7 @@ export default defineComponent({
 .virtual-data-iterator {
   .v-data-iterator {
     overflow-y: scroll;
+    position: relative;
     ::v-deep .header {
       position: sticky;
       top: 0;
