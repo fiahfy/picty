@@ -99,7 +99,7 @@ export default defineComponent({
       const start = Math.max(0, index - Number(props.threshold))
       const end = Math.min(
         props.items.length,
-        start + offset + Number(props.threshold)
+        index + offset + Number(props.threshold)
       )
 
       state.padding = {

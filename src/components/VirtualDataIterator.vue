@@ -135,7 +135,7 @@ export default defineComponent({
 
       const last = Math.ceil(props.items.length / size)
       const start = Math.max(0, index - Number(props.threshold))
-      const end = Math.min(last, start + offset + Number(props.threshold))
+      const end = Math.min(last, index + offset + Number(props.threshold))
 
       state.padding = {
         top: start * props.estimatedHeight,
