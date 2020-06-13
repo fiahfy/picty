@@ -14,7 +14,6 @@
       <explorer-card
         class="flex-grow-0"
         :selected="state.selected"
-        :query="state.query"
         @change-query="handleChangeQuery"
       />
       <v-container fluid pa-0 overflow-hidden flex-grow-1>
@@ -166,19 +165,20 @@ export default defineComponent({
       explorerStore.setLocation(location)
       load()
     }
-    const search = (query: string) => {
-      queryHistoryStore.addHistory(query)
-      state.query = query
-    }
     const go = async (offset: number) => {
       if (state.loading) {
         return
       }
       const history = await historyStore.go(offset)
-      if (history) {
-        explorerStore.setLocation(history)
-        load()
+      if (!history) {
+        return
       }
+      explorerStore.setLocation(history)
+      load()
+    }
+    const search = (query: string) => {
+      queryHistoryStore.addHistory(query)
+      state.query = query
     }
     const present = (item: Item) => {
       context.root.$eventBus.$emit('show-presentation', item)
@@ -299,7 +299,7 @@ export default defineComponent({
         case 'ArrowRight':
         case 'ArrowLeft': {
           e.preventDefault()
-          let index = state.items.findIndex(
+          let index = items.value.findIndex(
             (item) => item.path === state.selected?.path
           )
           if (explorerStore.listStyle === 'list') {
@@ -332,8 +332,8 @@ export default defineComponent({
                 break
             }
           }
-          index = Math.min(Math.max(index, 0), state.items.length - 1)
-          state.selected = state.items[index]
+          index = Math.min(Math.max(index, 0), items.value.length - 1)
+          state.selected = items.value[index]
           scrollInView()
           break
         }
@@ -342,7 +342,16 @@ export default defineComponent({
 
     load()
 
-    watch([() => state.sortBy, () => state.sortDesc], () => {
+    watch(
+      () => explorerStore.location,
+      () => {
+        table.value && table.value.setScrollTop(0)
+        gridList.value && gridList.value.setScrollTop(0)
+        state.query = ''
+      }
+    )
+
+    watch([() => state.sortBy, () => state.sortDesc, () => state.query], () => {
       table.value && table.value.setScrollTop(0)
       gridList.value && gridList.value.setScrollTop(0)
     })

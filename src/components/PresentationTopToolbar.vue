@@ -10,9 +10,15 @@
       <v-icon>mdi-close</v-icon>
     </v-btn>
 
-    <span class="px-3 text-truncate" style="direction: rtl;">
-      {{ title }}
-    </span>
+    <div
+      v-if="file"
+      class="px-3 d-flex flex-grow-1 text-no-wrap"
+      style="min-width: 0;"
+    >
+      <span class="text-truncate" v-text="dirname" />
+      <span class="px-3"> - </span>
+      <span v-text="file.name" />
+    </div>
   </v-toolbar>
 </template>
 
@@ -37,11 +43,11 @@ export default defineComponent({
     },
   },
   setup(props: Props, context: SetupContext) {
-    const title = computed(() => {
+    const dirname = computed(() => {
       if (!props.file) {
         return ''
       }
-      return path.basename(props.file.parent) + ' - ' + props.file.name
+      return path.basename(props.file.parent)
     })
 
     const toolbar = ref<Vue>(null)
@@ -55,7 +61,7 @@ export default defineComponent({
     }
 
     return {
-      title,
+      dirname,
       toolbar,
       isHover,
       handleClickClose,

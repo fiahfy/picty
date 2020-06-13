@@ -222,14 +222,14 @@ export default defineComponent({
     }
     const movePrevious = () => {
       let newPage = page.value - 1
-      if (newPage <= 0) {
+      if (newPage < 1) {
         newPage = maxPage.value
       }
       state.current = state.files[newPage - 1]
     }
     const movekNext = () => {
       let newPage = page.value + 1
-      if (newPage >= maxPage.value) {
+      if (newPage > maxPage.value) {
         newPage = 1
       }
       state.current = state.files[newPage - 1]

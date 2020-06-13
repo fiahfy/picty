@@ -133,20 +133,15 @@ export default defineComponent({
       const index = Math.floor(scrollTop / props.estimatedHeight)
       const offset = Math.ceil(offsetHeight / props.estimatedHeight)
 
-      let firstIndex = Math.max(0, index - Number(props.threshold))
-      let lastIndex = firstIndex + offset + 2 * Number(props.threshold)
-      if (lastIndex > Math.ceil(props.items.length / size)) {
-        lastIndex = Math.ceil(props.items.length / size)
-        firstIndex = Math.max(0, lastIndex - offset - Number(props.threshold))
-      }
+      const last = Math.ceil(props.items.length / size)
+      const start = Math.max(0, index - Number(props.threshold))
+      const end = Math.min(last, start + offset + Number(props.threshold))
 
       state.padding = {
-        top: firstIndex * props.estimatedHeight,
-        bottom:
-          (Math.ceil(props.items.length / size) - lastIndex) *
-          props.estimatedHeight,
+        top: start * props.estimatedHeight,
+        bottom: (last - end) * props.estimatedHeight,
       }
-      state.renderItems = props.items.slice(firstIndex * size, lastIndex * size)
+      state.renderItems = props.items.slice(start * size, end * size)
 
       setScrollTop(scrollTop)
     }

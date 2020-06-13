@@ -30,9 +30,8 @@
       >
         <v-icon>mdi-view-module</v-icon>
       </v-btn>
-      <v-autocomplete
+      <v-combobox
         ref="queryField"
-        :value="state.queryInput"
         :search-input.sync="state.searchInput"
         class="ml-3"
         :items="queryHistories"
@@ -65,7 +64,7 @@
             </v-btn>
           </v-list-item-action>
         </template>
-      </v-autocomplete>
+      </v-combobox>
     </v-toolbar>
   </v-card>
 </template>
@@ -73,20 +72,18 @@
 <script lang="ts">
 import {
   defineComponent,
-  SetupContext,
   reactive,
   computed,
-  watch,
   onMounted,
   onUnmounted,
   ref,
+  SetupContext,
 } from '@vue/composition-api'
 import { Item } from '~/models'
 import { explorerStore, favoriteStore, queryHistoryStore } from '~/store'
 
 type Props = {
   selected: Item
-  query: string
 }
 
 export default defineComponent({
@@ -94,14 +91,9 @@ export default defineComponent({
     selected: {
       type: Object,
     },
-    query: {
-      type: String,
-      default: '',
-    },
   },
   setup(props: Props, context: SetupContext) {
     const state = reactive({
-      queryInput: '',
       searchInput: '',
     })
 
@@ -162,13 +154,6 @@ export default defineComponent({
     const handleClickItemDelete = (item: string) => {
       queryHistoryStore.removeHistory(item)
     }
-
-    watch(
-      () => props.query,
-      (query) => {
-        state.queryInput = query
-      }
-    )
 
     onMounted(() => {
       context.root.$eventBus.$on('focus-query', focusQuery)
