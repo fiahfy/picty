@@ -295,6 +295,23 @@ export default defineComponent({
       state.originalScale = scale
     }
 
+    onMounted(() => {
+      document.body.addEventListener('keydown', handleKeyDown)
+      document.body.addEventListener('fullscreenchange', handleFullScreenChange)
+      context.root.$eventBus.$on('show-presentation', showPresentation)
+      context.root.$eventBus.$on('hide-resentation', hidePresentation)
+    })
+
+    onUnmounted(() => {
+      document.body.removeEventListener('keydown', handleKeyDown)
+      document.body.removeEventListener(
+        'fullscreenchange',
+        handleFullScreenChange
+      )
+      context.root.$eventBus.$off('show-presentation', showPresentation)
+      context.root.$eventBus.$off('hide-presentation', hidePresentation)
+    })
+
     watch(
       () => state.active,
       (active) => {
@@ -317,23 +334,6 @@ export default defineComponent({
         }
       }
     )
-
-    onMounted(() => {
-      document.body.addEventListener('keydown', handleKeyDown)
-      document.body.addEventListener('fullscreenchange', handleFullScreenChange)
-      context.root.$eventBus.$on('show-presentation', showPresentation)
-      context.root.$eventBus.$on('hide-resentation', hidePresentation)
-    })
-
-    onUnmounted(() => {
-      document.body.removeEventListener('keydown', handleKeyDown)
-      document.body.removeEventListener(
-        'fullscreenchange',
-        handleFullScreenChange
-      )
-      context.root.$eventBus.$off('show-presentation', showPresentation)
-      context.root.$eventBus.$off('hide-presentation', hidePresentation)
-    })
 
     return {
       state,

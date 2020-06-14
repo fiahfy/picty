@@ -116,6 +116,50 @@ export default defineComponent({
 
     const wrapper = ref<HTMLDivElement | null>(null)
 
+    const handleMouseDown = () => {
+      state.dragging = true
+    }
+    const handleMouseUp = () => {
+      state.dragging = false
+      state.scrollPosition = undefined
+    }
+    const handleMouseMove = (e: MouseEvent) => {
+      if (message.value || !wrapper.value) {
+        return
+      }
+      if (state.dragging) {
+        const position = { x: e.clientX, y: e.clientY }
+        if (state.scrollPosition) {
+          wrapper.value.scrollLeft += state.scrollPosition.x - position.x
+          wrapper.value.scrollTop += state.scrollPosition.y - position.y
+        }
+        state.scrollPosition = position
+      }
+    }
+    const handleLoad = (e: Event) => {
+      if (!(e.target instanceof HTMLImageElement)) {
+        return
+      }
+      const maxWidth = wrapper.value?.offsetWidth ?? 0
+      const maxHeight = wrapper.value?.offsetHeight ?? 0
+      const imageWidth = e.target.naturalWidth
+      const imageHeight = e.target.naturalHeight
+      const scaleX = maxWidth / imageWidth
+      const scaleY = maxHeight / imageHeight
+      let scale = scaleX < scaleY ? scaleX : scaleY
+      if (scale >= 1 && !settingsStore.imageStretched) {
+        scale = 1
+      }
+      state.originalSize = {
+        width: imageWidth,
+        height: imageHeight,
+      }
+      context.emit('change-zoom', scale)
+    }
+    const handleError = () => {
+      state.error = true
+    }
+
     watch(
       () => props.file,
       () => {
@@ -166,50 +210,6 @@ export default defineComponent({
         })
       }
     )
-
-    const handleMouseDown = () => {
-      state.dragging = true
-    }
-    const handleMouseUp = () => {
-      state.dragging = false
-      state.scrollPosition = undefined
-    }
-    const handleMouseMove = (e: MouseEvent) => {
-      if (message.value || !wrapper.value) {
-        return
-      }
-      if (state.dragging) {
-        const position = { x: e.clientX, y: e.clientY }
-        if (state.scrollPosition) {
-          wrapper.value.scrollLeft += state.scrollPosition.x - position.x
-          wrapper.value.scrollTop += state.scrollPosition.y - position.y
-        }
-        state.scrollPosition = position
-      }
-    }
-    const handleLoad = (e: Event) => {
-      if (!(e.target instanceof HTMLImageElement)) {
-        return
-      }
-      const maxWidth = wrapper.value?.offsetWidth ?? 0
-      const maxHeight = wrapper.value?.offsetHeight ?? 0
-      const imageWidth = e.target.naturalWidth
-      const imageHeight = e.target.naturalHeight
-      const scaleX = maxWidth / imageWidth
-      const scaleY = maxHeight / imageHeight
-      let scale = scaleX < scaleY ? scaleX : scaleY
-      if (scale >= 1 && !settingsStore.imageStretched) {
-        scale = 1
-      }
-      state.originalSize = {
-        width: imageWidth,
-        height: imageHeight,
-      }
-      context.emit('change-zoom', scale)
-    }
-    const handleError = () => {
-      state.error = true
-    }
 
     return {
       state,

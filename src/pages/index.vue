@@ -340,8 +340,6 @@ export default defineComponent({
       }
     }
 
-    load()
-
     watch(
       () => explorerStore.location,
       () => {
@@ -365,6 +363,12 @@ export default defineComponent({
       context.root.$eventBus.$off('change-location', move)
       context.root.$eventBus.$off('focus-explorer', focus)
     })
+
+    if (explorerStore.location) {
+      load()
+    } else {
+      move(remote.app.getPath('home'))
+    }
 
     return {
       state,

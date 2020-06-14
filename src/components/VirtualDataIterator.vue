@@ -153,13 +153,6 @@ export default defineComponent({
       context.emit('scroll', e)
     }
 
-    watch(
-      () => props.items,
-      () => {
-        adjustItems()
-      }
-    )
-
     onMounted(() => {
       container.value = (iterator.value?.$el as HTMLDivElement) ?? null
       if (container.value) {
@@ -177,6 +170,13 @@ export default defineComponent({
       }
       state.observer && state.observer.disconnect()
     })
+
+    watch(
+      () => props.items,
+      () => {
+        adjustItems()
+      }
+    )
 
     return {
       state,

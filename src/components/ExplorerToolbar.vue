@@ -139,13 +139,6 @@ export default defineComponent({
       )
     }
 
-    watch(
-      () => explorerStore.location,
-      (location) => {
-        state.location = location
-      }
-    )
-
     onMounted(() => {
       context.root.$eventBus.$on('focus-location', focusLocation)
     })
@@ -153,6 +146,13 @@ export default defineComponent({
     onUnmounted(() => {
       context.root.$eventBus.$on('focus-location', focusLocation)
     })
+
+    watch(
+      () => explorerStore.location,
+      (location) => {
+        state.location = location
+      }
+    )
 
     return {
       state,

@@ -118,13 +118,6 @@ export default defineComponent({
       context.emit('scroll', e)
     }
 
-    watch(
-      () => props.items,
-      () => {
-        adjustItems()
-      }
-    )
-
     onMounted(() => {
       container.value =
         table.value?.$el.querySelector('.v-data-table__wrapper') ?? null
@@ -143,6 +136,13 @@ export default defineComponent({
       }
       state.observer && state.observer.disconnect()
     })
+
+    watch(
+      () => props.items,
+      () => {
+        adjustItems()
+      }
+    )
 
     return {
       state,

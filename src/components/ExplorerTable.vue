@@ -133,6 +133,7 @@ export default defineComponent({
     const focus = () => {
       ;(table.value?.$el as HTMLElement).focus()
     }
+
     const handleClickHeader = (header: File) => {
       context.emit('click-header', header)
     }

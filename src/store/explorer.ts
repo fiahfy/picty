@@ -1,4 +1,3 @@
-import { remote } from 'electron'
 import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
 
 type ListStyle = 'list' | 'thumbnail'
@@ -9,7 +8,7 @@ type ListStyle = 'list' | 'thumbnail'
   namespaced: true,
 })
 export default class ExplorerModule extends VuexModule {
-  location = remote.app.getPath('home')
+  location = ''
   listStyle: ListStyle = 'list'
 
   @Mutation
