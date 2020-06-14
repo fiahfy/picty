@@ -100,7 +100,7 @@ export default defineComponent({
       context.emit('click-home')
     }
     const handleClickFolder = () => {
-      shell.openPath(explorerStore.location)
+      shell.openItem(explorerStore.location)
     }
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
