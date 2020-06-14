@@ -50,7 +50,7 @@ export default defineComponent({
       return path.basename(props.file.parent)
     })
 
-    const toolbar = ref<Vue>(null)
+    const toolbar = ref<Vue | null>(null)
 
     const isHover = () => {
       return !!toolbar.value?.$el.querySelector(':hover')

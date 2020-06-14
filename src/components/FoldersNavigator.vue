@@ -80,7 +80,7 @@ export default defineComponent({
       nodes: [],
     })
 
-    const fetch = async (dirPath: string) => {
+    const fetchChildren = async (dirPath: string) => {
       try {
         const { data }: { data: File[] } = await worker.postMessage({ dirPath })
         const files = data.filter(
@@ -136,14 +136,14 @@ export default defineComponent({
       )
       if (node) {
         if (node.children && !node.children.length) {
-          node.children = await fetch(dirPath)
+          node.children = await fetchChildren(dirPath)
         }
         if (!state.open.includes(dirPath)) {
           state.open = [...state.open, dirPath]
         }
       }
     }
-    const loadLocation = async () => {
+    const load = async () => {
       const dirPathes = explorerStore.location
         .split(path.sep)
         .reduce((carry, dirname) => {
@@ -160,13 +160,13 @@ export default defineComponent({
 
     const handleLoadChildren = async (node: Node) => {
       if (node.path) {
-        node.children = await fetch(node.path)
+        node.children = await fetchChildren(node.path)
       }
     }
     const handleClickRefresh = async () => {
       state.open = []
       state.nodes = []
-      await loadLocation()
+      await load()
     }
     const handleClickCollapse = () => {
       const path = state.nodes[0].path
@@ -181,9 +181,11 @@ export default defineComponent({
     watch(
       () => explorerStore.location,
       async () => {
-        await loadLocation()
+        await load()
       }
     )
+
+    load()
 
     return {
       state,

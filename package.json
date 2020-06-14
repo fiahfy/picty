@@ -9,11 +9,11 @@
   },
   "dependencies": {
     "@fiahfy/electron-accelerator-formatter": "^0.0.4",
-    "@fiahfy/electron-context-menu": "^0.0.5",
+    "@fiahfy/electron-context-menu": "^0.0.6",
     "@fiahfy/worker-promisify": "^0.0.5",
     "@mdi/font": "^5.3.45",
     "@nuxtjs/vuetify": "^1.11.2",
-    "@vue/composition-api": "^0.5.0",
+    "@vue/composition-api": "^0.6.3",
     "electron-devtools-installer": "^3.0.0",
     "electron-window-state": "^5.0.3",
     "file-url": "^3.0.0",
@@ -27,12 +27,12 @@
   "devDependencies": {
     "@fiahfy/icns-convert": "^0.0.8",
     "@fiahfy/ico-convert": "^0.0.7",
-    "@nuxt/typescript-build": "^0.6.6",
+    "@nuxt/typescript-build": "^1.0.3",
     "@nuxtjs/eslint-config-typescript": "^2.0.0",
     "@types/file-url": "^3.0.2",
     "@types/node": "12.12.44",
     "cross-env": "^7.0.2",
-    "electron": "^8.3.1",
+    "electron": "^9.0.4",
     "electron-builder": "^22.7.0",
     "eslint": "^7.2.0",
     "eslint-config-prettier": "^6.11.0",
@@ -42,7 +42,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
     "sass-loader": "^8.0.2",
-    "vuetify-loader": "^1.4.4",
+    "vuetify-loader": "^1.5.0",
     "worker-loader": "^2.0.0"
   },
   "keywords": [

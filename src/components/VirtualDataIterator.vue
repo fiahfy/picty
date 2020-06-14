@@ -108,8 +108,8 @@ export default defineComponent({
         : Array(5).fill(props.sizes)
     })
 
-    const iterator = ref<Vue>(null)
-    const container = ref<HTMLDivElement>(null)
+    const iterator = ref<Vue | null>(null)
+    const container = ref<HTMLDivElement | null>(null)
 
     const getOffsetHeight = () => {
       return container.value?.offsetHeight ?? 0

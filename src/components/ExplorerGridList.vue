@@ -93,7 +93,7 @@ export default defineComponent({
       return settingsStore.thumbnailHeightValue + 77
     })
 
-    const iterator = ref<InstanceType<typeof VirtualDataIterator>>(null)
+    const iterator = ref<InstanceType<typeof VirtualDataIterator> | null>(null)
 
     const setScrollTop = (scrollTop: number) => {
       iterator.value && iterator.value.setScrollTop(scrollTop)

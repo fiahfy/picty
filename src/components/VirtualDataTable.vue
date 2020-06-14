@@ -73,8 +73,8 @@ export default defineComponent({
       observer: undefined,
     })
 
-    const table = ref<Vue>(null)
-    const container = ref<HTMLDivElement>(null)
+    const table = ref<Vue | null>(null)
+    const container = ref<HTMLDivElement | null>(null)
 
     const getOffsetHeight = () => {
       return container.value?.offsetHeight ?? 0

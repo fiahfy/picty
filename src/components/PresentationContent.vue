@@ -114,7 +114,7 @@ export default defineComponent({
     })
     const src = computed(() => (props.file ? fileUrl(props.file.path) : ''))
 
-    const wrapper = ref<HTMLDivElement>(null)
+    const wrapper = ref<HTMLDivElement | null>(null)
 
     watch(
       () => props.file,

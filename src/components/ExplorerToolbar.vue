@@ -77,7 +77,7 @@ export default defineComponent({
     const canBack = computed(() => historyStore.canBack)
     const canForward = computed(() => historyStore.canForward)
 
-    const locationField = ref<Vue>(null)
+    const locationField = ref<Vue | null>(null)
 
     const focusLocation = () => {
       ;(locationField.value?.$el.querySelector(
@@ -100,7 +100,7 @@ export default defineComponent({
       context.emit('click-home')
     }
     const handleClickFolder = () => {
-      shell.openItem(explorerStore.location)
+      shell.openPath(explorerStore.location)
     }
     const handleKeyDown = (e: KeyboardEvent) => {
       if (

@@ -136,8 +136,8 @@ export default defineComponent({
       return (props.scale * 100).toFixed(2)
     })
 
-    const toolbar = ref<Vue>(null)
-    const menubar = ref<Vue>(null)
+    const toolbar = ref<Vue | null>(null)
+    const menubar = ref<Vue | null>(null)
 
     const isHover = () => {
       return !!(

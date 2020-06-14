@@ -110,7 +110,7 @@ export default defineComponent({
       return props.selected && favoriteStore.isFavorite(props.selected.path)
     })
 
-    const queryField = ref<Vue>(null)
+    const queryField = ref<Vue | null>(null)
 
     const focusQuery = () => {
       ;(queryField.value?.$el.querySelector(
