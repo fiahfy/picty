@@ -59,28 +59,45 @@ const Worker = require('~/workers/fetch-pathes.worker')
 
 const worker = promisify(new Worker())
 
+// Resize image with antialiasing
+// @see https://stackoverflow.com/questions/17861447/html5-canvas-drawimage-how-to-apply-antialiasing
 const getDataUrlFromImg = (img: HTMLImageElement, size: number) => {
+  const s = size * window.devicePixelRatio
+  let steps = 0
   let w = img.width
   let h = img.height
-  if (w > h) {
-    h = (h * size) / w
-    w = size
+  if (w < h) {
+    steps = w / s / 2
+    h = (h * s) / w
+    w = s
   } else {
-    w = (w * size) / h
-    h = size
+    steps = h / s / 2
+    w = (w * s) / h
+    h = s
   }
 
-  const canvas = document.createElement('canvas')
-  canvas.width = w
-  canvas.height = h
+  const tc = document.createElement('canvas')
+  tc.width = img.width
+  tc.height = img.height
 
-  const ctx = canvas.getContext('2d')
+  const tctx = tc.getContext('2d')
+  if (!tctx) {
+    return undefined
+  }
+  tctx.filter = `blur(${steps}px)`
+  tctx.drawImage(img, 0, 0)
+
+  const c = document.createElement('canvas')
+  c.width = w
+  c.height = h
+
+  const ctx = c.getContext('2d')
   if (!ctx) {
     return undefined
   }
-  ctx.drawImage(img, 0, 0, w, h)
+  ctx.drawImage(tc, 0, 0, w, h)
 
-  return canvas.toDataURL('image/png', 0.8)
+  return c.toDataURL('image/png')
 }
 
 const getDataUrl = (url: string, size: number): Promise<string | undefined> => {
@@ -147,10 +164,10 @@ export default defineComponent({
     })
 
     const load = async () => {
+      state.loading = true
       if (!props.item.directory) {
         state.imageUrl = (await getDataUrl(fileUrl(props.item.path), 256)) ?? ''
       } else {
-        state.loading = true
         const { data } = await worker.parallelPostMessage(
           props.item.path,
           props.item.path
@@ -162,8 +179,8 @@ export default defineComponent({
           state.imageUrl = (await getDataUrl(fileUrl(filePathes[0]), 256)) ?? ''
         }
         state.images = filePathes.length
-        state.loading = false
       }
+      state.loading = false
     }
 
     const handleError = () => {
