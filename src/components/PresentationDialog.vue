@@ -12,7 +12,7 @@
     <v-card :class="classes" dark flat tile>
       <v-layout column fill-height>
         <title-bar :app="false" />
-        <v-content class="fill-height px-0">
+        <v-main class="fill-height px-0">
           <v-container fill-height fluid pa-0>
             <v-layout column>
               <v-container fluid pa-0 overflow-hidden fill-height>
@@ -50,7 +50,7 @@
             />
           </v-layout>
           <v-progress-linear :active="state.loading" :indeterminate="true" />
-        </v-content>
+        </v-main>
       </v-layout>
     </v-card>
   </v-dialog>

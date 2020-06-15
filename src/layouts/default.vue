@@ -6,9 +6,9 @@
   >
     <title-bar />
     <sidebar />
-    <v-content class="fill-height">
+    <v-main class="fill-height">
       <router-view class="fill-height" />
-    </v-content>
+    </v-main>
     <settings-dialog />
     <presentation-dialog />
   </v-app>

@@ -10,7 +10,7 @@
     <v-card flat tile>
       <v-layout column fill-height>
         <title-bar :app="false" />
-        <v-content class="fill-height px-0">
+        <v-main class="fill-height px-0">
           <v-layout column fill-height>
             <v-toolbar flat dense>
               <v-btn title="Close" icon @click="handleClickClose">
@@ -106,7 +106,7 @@
               </div>
             </v-container>
           </v-layout>
-        </v-content>
+        </v-main>
       </v-layout>
     </v-card>
   </v-dialog>
