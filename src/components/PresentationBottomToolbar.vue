@@ -125,10 +125,10 @@ export default defineComponent({
     const state = reactive({ active: false })
 
     const pageModel = computed({
-      get() {
+      get: () => {
         return props.page
       },
-      set(value) {
+      set: (value) => {
         context.emit('change-page', value)
       },
     })

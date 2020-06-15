@@ -54,12 +54,12 @@ export default defineComponent({
     })
 
     const width = computed({
-      get() {
+      get: () => {
         return state.navigator
           ? settingsStore.sidebarWidth + offsetWidth
           : offsetWidth
       },
-      set(value: number) {
+      set: (value) => {
         settingsStore.setSidebarWidth(value - offsetWidth)
       },
     })

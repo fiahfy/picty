@@ -61,11 +61,11 @@ export default defineComponent({
     })
 
     const rating = computed({
-      get() {
+      get: () => {
         return props.item.rating
       },
-      set(value) {
-        context.emit('change-rating', Number(value))
+      set: (value) => {
+        context.emit('change-rating', value)
       },
     })
     const icon = computed(() => {
