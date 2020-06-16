@@ -11,6 +11,11 @@ body,
 html {
   overflow-y: hidden !important;
 }
+// override
+.v-toolbar {
+  // Prevent background color transition if dark theme is toggled
+  transition: none !important;
+}
 // custom classes
 .user-select-none {
   user-select: none;

@@ -48,6 +48,8 @@ export default defineComponent({
       }
     )
 
+    context.root.$vuetify.theme.dark = settingsStore.darkTheme
+
     return {
       handleContextMenu,
       handleDrop,
