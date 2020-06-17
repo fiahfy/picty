@@ -316,10 +316,14 @@ export default defineComponent({
             const offset = viewport.getOffset()
             switch (e.key) {
               case 'ArrowUp':
-                index -= offset
+                if (index - offset > -1) {
+                  index -= offset
+                }
                 break
               case 'ArrowDown':
-                index += offset
+                if (index + offset < items.value.length) {
+                  index += offset
+                }
                 break
               case 'ArrowLeft':
                 if (index % offset > 0) {
