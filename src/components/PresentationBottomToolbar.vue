@@ -38,6 +38,7 @@
 
     <v-menu
       v-model="state.active"
+      :close-on-click="false"
       :close-on-content-click="false"
       top
       offset-y
