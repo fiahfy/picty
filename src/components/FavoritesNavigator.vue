@@ -6,7 +6,7 @@
       </span>
     </v-toolbar>
     <v-row no-gutters class="overflow-y-auto scrollbar">
-      <v-list dense class="py-0" style="width: 100%;">
+      <v-list v-if="favorites.length" dense class="py-0" style="width: 100%;">
         <v-list-item
           v-for="favorite of favorites"
           :key="favorite.path"
@@ -22,6 +22,9 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <div v-else class="d-flex flex-grow-1 justify-center caption py-5">
+        <div>No favorites</div>
+      </div>
     </v-row>
   </v-layout>
 </template>

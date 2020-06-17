@@ -14,6 +14,7 @@
       <explorer-card
         class="flex-grow-0"
         :selected="state.selected"
+        :query="state.query"
         @change-query="handleChangeQuery"
       />
       <v-container fluid pa-0 overflow-hidden flex-grow-1>

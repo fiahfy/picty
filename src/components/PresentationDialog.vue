@@ -164,6 +164,7 @@ export default defineComponent({
     }
     const hidePresentation = async () => {
       document.fullscreenElement && (await document.exitFullscreen())
+      state.current = undefined
       state.active = false
     }
     const clearTimer = () => {
@@ -243,12 +244,15 @@ export default defineComponent({
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
         case 'Escape':
+          e.preventDefault()
           return hidePresentation()
         case 'ArrowLeft':
         case 'ArrowUp':
+          e.preventDefault()
           return movePrevious()
         case 'ArrowRight':
         case 'ArrowDown':
+          e.preventDefault()
           return movekNext()
       }
     }

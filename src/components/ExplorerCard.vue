@@ -78,18 +78,23 @@ import {
   onUnmounted,
   ref,
   SetupContext,
+  watch,
 } from '@vue/composition-api'
 import { Item } from '~/models'
 import { explorerStore, favoriteStore, queryHistoryStore } from '~/store'
 
 type Props = {
   selected: Item
+  query: string
 }
 
 export default defineComponent({
   props: {
     selected: {
       type: Object,
+    },
+    query: {
+      type: String,
     },
   },
   setup(props: Props, context: SetupContext) {
@@ -162,6 +167,14 @@ export default defineComponent({
     onUnmounted(() => {
       context.root.$eventBus.$off('focus-query', focusQuery)
     })
+
+    watch(
+      () => props.query,
+      (query) => {
+        console.log(1)
+        state.searchInput = query
+      }
+    )
 
     return {
       state,
