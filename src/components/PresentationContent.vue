@@ -1,13 +1,13 @@
 <template>
   <v-container :class="classes" class="presentation-content" fluid pa-0>
     <v-layout fill-height>
-      <v-flex v-if="message">
-        <v-layout fill-height align-center justify-center>
-          <v-flex text-center body-1>{{ message }}</v-flex>
-        </v-layout>
-      </v-flex>
+      <v-sheet
+        v-if="message"
+        class="overlay d-flex flex-grow-1 fill-height align-center justify-center"
+      >
+        <div class="body-1 user-select-none">{{ message }}</div>
+      </v-sheet>
       <v-flex
-        v-else
         ref="wrapper"
         class="wrapper"
         @mousemove="handleMouseMove"
@@ -62,6 +62,7 @@ export default defineComponent({
   },
   setup(props: Props, context: SetupContext) {
     const state = reactive<{
+      loading: boolean
       error: boolean
       dragging: boolean
       alignCenter: boolean
@@ -75,6 +76,7 @@ export default defineComponent({
         y: number
       }
     }>({
+      loading: false,
       error: false,
       dragging: false,
       alignCenter: true,
@@ -83,10 +85,7 @@ export default defineComponent({
         width: 0,
         height: 0,
       },
-      scrollPosition: {
-        x: 0,
-        y: 0,
-      },
+      scrollPosition: undefined,
     })
 
     const classes = computed(() => ({
@@ -104,7 +103,7 @@ export default defineComponent({
       }
     })
     const message = computed(() => {
-      if (props.loading) {
+      if (props.loading || state.loading) {
         return 'Loading...'
       }
       if (state.error) {
@@ -155,6 +154,7 @@ export default defineComponent({
         height: imageHeight,
       }
       context.emit('change-zoom', scale)
+      state.loading = false
     }
     const handleError = () => {
       state.error = true
@@ -163,6 +163,7 @@ export default defineComponent({
     watch(
       () => props.file,
       () => {
+        state.loading = true
         state.error = false
       }
     )
@@ -234,6 +235,10 @@ export default defineComponent({
   cursor: -webkit-grab;
   &.dragging {
     cursor: -webkit-grabbing;
+  }
+  .overlay {
+    position: absolute;
+    width: 100%;
   }
   .wrapper {
     overflow: auto;
