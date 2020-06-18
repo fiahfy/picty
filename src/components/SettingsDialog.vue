@@ -58,14 +58,16 @@
                   dense
                   class="pt-3"
                 >
-                  <v-btn
-                    slot="append-outer"
-                    color="primary"
-                    text
-                    @click="handleClearHistories"
-                  >
-                    Clear All Histories
-                  </v-btn>
+                  <template v-slot:append-outer>
+                    <v-btn
+                      slot="append-outer"
+                      color="primary"
+                      text
+                      @click="handleClearHistories"
+                    >
+                      Clear All Histories
+                    </v-btn>
+                  </template>
                 </v-text-field>
                 <v-select
                   v-model="thumbnailStyle"

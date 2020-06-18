@@ -45,7 +45,7 @@
       nudge-top="12"
     >
       <template v-slot:activator="{ on }">
-        <v-btn slot="activator" title="Zoom" icon v-on="on">
+        <v-btn title="Zoom" icon v-on="on">
           <v-icon>mdi-magnify-plus-outline</v-icon>
         </v-btn>
       </template>
