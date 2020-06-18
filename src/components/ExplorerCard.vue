@@ -171,7 +171,6 @@ export default defineComponent({
     watch(
       () => props.query,
       (query) => {
-        console.log(1)
         state.searchInput = query
       }
     )
