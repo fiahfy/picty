@@ -1,52 +1,50 @@
 <template>
-  <v-layout class="virtual-data-iterator" column>
-    <v-container fluid pa-0 overflow-hidden fill-height>
-      <v-data-iterator
-        ref="iterator"
-        v-bind="$attrs"
-        class="fill-height flex-grow-1"
-        :items="state.renderItems"
-        disable-pagination
-        row
-        wrap
-        tabindex="-1"
-      >
-        <template v-slot:header="props">
-          <div class="header">
-            <slot v-bind="props" name="header" />
-          </div>
-        </template>
-        <template v-slot:default="props">
-          <v-row class="ma-0">
-            <v-col
-              :style="{ height: `${state.padding.top}px` }"
-              class="pa-0"
-              xs="12"
-              style="min-width: 100%;"
-            />
-            <template v-for="item in props.items">
-              <slot v-bind="{ item }" name="item" />
-            </template>
-            <v-col
-              :style="{ height: `${state.padding.bottom}px` }"
-              class="pa-0"
-              xs="12"
-              style="min-width: 100%;"
-            />
-          </v-row>
-        </template>
-        <template v-slot:loading>
-          <v-progress-linear indeterminate height="2" />
-          <div class="ma-3 body-2 grey--text text-center">Loading items...</div>
-        </template>
-        <template v-slot:no-data>
-          <div class="ma-3 body-2 grey--text text-center">
-            No data available
-          </div>
-        </template>
-      </v-data-iterator>
-    </v-container>
-  </v-layout>
+  <div class="virtual-data-iterator d-flex">
+    <v-data-iterator
+      ref="iterator"
+      v-bind="$attrs"
+      class="overflow-y-scroll scrollbar"
+      :items="state.renderItems"
+      disable-pagination
+      row
+      wrap
+      tabindex="-1"
+    >
+      <template v-slot:header="props">
+        <div class="header">
+          <slot v-bind="props" name="header" />
+        </div>
+      </template>
+      <template v-slot:default="props">
+        <v-row class="ma-0">
+          <v-col
+            :style="{ height: `${state.padding.top}px` }"
+            class="pa-0"
+            xs="12"
+            style="min-width: 100%;"
+          />
+          <template v-for="item in props.items">
+            <slot v-bind="{ item }" name="item" />
+          </template>
+          <v-col
+            :style="{ height: `${state.padding.bottom}px` }"
+            class="pa-0"
+            xs="12"
+            style="min-width: 100%;"
+          />
+        </v-row>
+      </template>
+      <template v-slot:loading>
+        <v-progress-linear indeterminate height="2" />
+        <div class="ma-3 body-2 grey--text text-center">Loading items...</div>
+      </template>
+      <template v-slot:no-data>
+        <div class="ma-3 body-2 grey--text text-center">
+          No data available
+        </div>
+      </template>
+    </v-data-iterator>
+  </div>
 </template>
 
 <script lang="ts">
@@ -156,7 +154,6 @@ export default defineComponent({
     onMounted(() => {
       container.value = (iterator.value?.$el as HTMLDivElement) ?? null
       if (container.value) {
-        container.value.classList.add('scrollbar')
         container.value.addEventListener('scroll', handleScroll)
         state.observer = new ResizeObserver(handleResize)
         state.observer.observe(container.value)
@@ -192,7 +189,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .virtual-data-iterator {
   .v-data-iterator {
-    overflow-y: scroll;
     position: relative;
     ::v-deep .header {
       position: sticky;

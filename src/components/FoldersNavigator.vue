@@ -1,5 +1,5 @@
 <template>
-  <v-layout column class="folders-navigator">
+  <div class="folders-navigator d-flex flex-column">
     <v-toolbar flat dense class="flex-grow-0">
       <span class="subtitle-2 text-uppercase user-select-none flex-grow-0">
         Folders
@@ -12,7 +12,7 @@
         <v-icon>mdi-collapse-all</v-icon>
       </v-btn>
     </v-toolbar>
-    <v-row no-gutters class="overflow-auto scrollbar">
+    <div class="d-flex overflow-auto scrollbar">
       <v-treeview
         :active.sync="state.active"
         :open.sync="state.open"
@@ -40,8 +40,8 @@
           </div>
         </template>
       </v-treeview>
-    </v-row>
-  </v-layout>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

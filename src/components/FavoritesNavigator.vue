@@ -1,11 +1,11 @@
 <template>
-  <v-layout column class="favorites-navigator">
+  <div class="favorites-navigator d-flex flex-column">
     <v-toolbar flat dense class="flex-grow-0">
       <span class="subtitle-2 text-uppercase user-select-none flex-grow-0">
         Favorites
       </span>
     </v-toolbar>
-    <v-row no-gutters class="overflow-y-auto scrollbar">
+    <div class="d-flex overflow-y-auto scrollbar">
       <v-list v-if="favorites.length" dense class="py-0" style="width: 100%;">
         <v-list-item
           v-for="favorite of favorites"
@@ -25,8 +25,8 @@
       <div v-else class="d-flex flex-grow-1 justify-center caption py-5">
         <div>No favorites</div>
       </div>
-    </v-row>
-  </v-layout>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

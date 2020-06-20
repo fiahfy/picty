@@ -1,6 +1,6 @@
 <template>
-  <v-container class="index" fill-height fluid pa-0>
-    <v-layout column>
+  <v-container class="index" fluid pa-0>
+    <div class="d-flex flex-column fill-height">
       <explorer-toolbar
         class="flex-grow-0"
         @click-back="handleClickBack"
@@ -17,26 +17,24 @@
         :query="state.query"
         @change-query="handleChangeQuery"
       />
-      <v-container fluid pa-0 overflow-hidden flex-grow-1>
-        <component
-          :is="component"
-          :ref="componentRef"
-          :items="items"
-          :loading="state.loading"
-          :selected="state.selected"
-          :sort-by="state.sortBy"
-          :sort-desc="state.sortDesc"
-          class="fill-height"
-          @click-header="handleClickHeader"
-          @click-item="handleClickItem"
-          @dblclick-item="handleDoubleClickItem"
-          @contextmenu-item="handleContextMenuItem"
-          @change-rating="handleChangeRating"
-          @change-sort-option="handleChangeSortOption"
-          @keydown.native="handleKeyDown"
-        />
-      </v-container>
-    </v-layout>
+      <component
+        :is="component"
+        :ref="componentRef"
+        :items="items"
+        :loading="state.loading"
+        :selected="state.selected"
+        :sort-by="state.sortBy"
+        :sort-desc="state.sortDesc"
+        class="flex-grow-1 overflow-hidden"
+        @click-header="handleClickHeader"
+        @click-item="handleClickItem"
+        @dblclick-item="handleDoubleClickItem"
+        @contextmenu-item="handleContextMenuItem"
+        @change-rating="handleChangeRating"
+        @change-sort-option="handleChangeSortOption"
+        @keydown.native="handleKeyDown"
+      />
+    </div>
   </v-container>
 </template>
 

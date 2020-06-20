@@ -7,17 +7,17 @@
     :width="width"
     :class="classes"
   >
-    <v-row class="fill-height flex-nowrap" no-gutters>
+    <div class="d-flex fill-height">
       <activity-bar
         class="flex-shrink-0"
         :navigator="state.navigator"
         @click-menu="handleClickMenu"
       />
       <keep-alive>
-        <component :is="component" />
+        <component :is="component" class="flex-grow-1" style="min-width: 0;" />
       </keep-alive>
       <div v-show="state.navigator" ref="resizer" class="resizer" />
-    </v-row>
+    </div>
   </v-navigation-drawer>
 </template>
 

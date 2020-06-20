@@ -10,30 +10,28 @@
     eager
   >
     <v-card :class="classes" dark flat tile>
-      <v-layout column fill-height>
+      <div class="d-flex flex-column fill-height">
         <title-bar :app="false" />
         <v-main class="fill-height px-0">
           <v-container fill-height fluid pa-0>
-            <v-layout column>
-              <v-container fluid pa-0 overflow-hidden fill-height>
-                <presentation-content
-                  class="fill-height"
-                  :loading="state.loading"
-                  :scale="state.scale"
-                  :file="state.current"
-                  @change-zoom="handleChangeZoom"
-                />
-              </v-container>
-            </v-layout>
+            <div class="d-flex fill-height flex-grow-1">
+              <presentation-content
+                class="flex-grow-1 overflow-hidden"
+                :loading="state.loading"
+                :scale="state.scale"
+                :file="state.current"
+                @change-zoom="handleChangeZoom"
+              />
+            </div>
           </v-container>
-          <v-layout class="top-overlay pb-5">
+          <div class="top-overlay d-flex pb-5">
             <presentation-top-toolbar
               ref="topToolbar"
               :file="state.current"
               @click-close="handleClickClose"
             />
-          </v-layout>
-          <v-layout class="bottom-overlay pt-5">
+          </div>
+          <div class="bottom-overlay d-flex pt-5">
             <presentation-bottom-toolbar
               ref="bottomToolbar"
               :page="page"
@@ -48,10 +46,10 @@
               @click-toggle-full-screen="handleClickToggleFullScreen"
               @change-page="handleChangePage"
             />
-          </v-layout>
+          </div>
           <v-progress-linear :active="state.loading" :indeterminate="true" />
         </v-main>
-      </v-layout>
+      </div>
     </v-card>
   </v-dialog>
 </template>

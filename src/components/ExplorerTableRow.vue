@@ -1,17 +1,15 @@
 <template>
   <tr class="explorer-table-row">
-    <td>
-      <v-layout class="align-center">
-        <v-icon :color="iconColor" class="pa-1">
-          {{ icon }}
-        </v-icon>
-        <span :title="item.name" class="text-truncate spacer">
-          {{ item.name }}
-        </span>
-        <span v-if="state.images" class="images text-xs-right caption ml-3">
-          {{ state.images }} images
-        </span>
-      </v-layout>
+    <td class="d-flex align-center">
+      <v-icon :color="iconColor" class="pr-1">
+        {{ icon }}
+      </v-icon>
+      <span :title="item.name" class="text-truncate spacer">
+        {{ item.name }}
+      </span>
+      <span v-if="state.images" class="images text-xs-right caption ml-3">
+        {{ state.images }} images
+      </span>
     </td>
     <td @click.stop @dblclick.stop>
       <v-rating

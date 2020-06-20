@@ -1,30 +1,28 @@
 <template>
-  <v-container :class="classes" class="presentation-content" fluid pa-0>
-    <v-layout fill-height>
-      <v-sheet
-        v-if="message"
-        class="overlay d-flex flex-grow-1 fill-height align-center justify-center"
-      >
-        <div class="body-1 user-select-none">{{ message }}</div>
-      </v-sheet>
-      <v-flex
-        ref="wrapper"
-        class="wrapper"
-        @mousemove="handleMouseMove"
-        @mousedown="handleMouseDown"
-        @mouseup="handleMouseUp"
-      >
-        <img
-          :src="src"
-          :class="imageClasses"
-          :style="imageStyles"
-          draggable="false"
-          @load="handleLoad"
-          @error="handleError"
-        />
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <div :class="classes" class="presentation-content d-flex">
+    <v-sheet
+      v-if="message"
+      class="overlay d-flex flex-grow-1 fill-height align-center justify-center"
+    >
+      <div class="body-1 user-select-none">{{ message }}</div>
+    </v-sheet>
+    <div
+      ref="wrapper"
+      class="wrapper flex-grow-1"
+      @mousemove="handleMouseMove"
+      @mousedown="handleMouseDown"
+      @mouseup="handleMouseUp"
+    >
+      <img
+        :src="src"
+        :class="imageClasses"
+        :style="imageStyles"
+        draggable="false"
+        @load="handleLoad"
+        @error="handleError"
+      />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

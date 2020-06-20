@@ -8,10 +8,10 @@
     eager
   >
     <v-card flat tile>
-      <v-layout column fill-height>
+      <div class="d-flex flex-column fill-height">
         <title-bar :app="false" />
         <v-main class="fill-height px-0">
-          <v-layout column fill-height>
+          <div class="d-flex flex-column fill-height">
             <v-toolbar flat dense>
               <v-btn title="Close" icon @click="handleClickClose">
                 <v-icon>mdi-close</v-icon>
@@ -107,9 +107,9 @@
                 />
               </div>
             </v-container>
-          </v-layout>
+          </div>
         </v-main>
-      </v-layout>
+      </div>
     </v-card>
   </v-dialog>
 </template>

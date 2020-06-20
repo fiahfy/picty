@@ -5,7 +5,7 @@
     mini-variant
     mini-variant-width="48"
   >
-    <v-layout column fill-height>
+    <div class="d-flex flex-column fill-height">
       <v-list dense class="py-0">
         <v-list-item-group :value="index" color="primary">
           <v-list-item
@@ -41,7 +41,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </v-layout>
+    </div>
   </v-navigation-drawer>
 </template>
 

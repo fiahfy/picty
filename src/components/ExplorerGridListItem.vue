@@ -8,9 +8,9 @@
         @error="handleError"
       >
         <template v-slot:placeholder>
-          <v-layout fill-height align-center justify-center>
-            <v-flex class="text-center caption">{{ message }}</v-flex>
-          </v-layout>
+          <div class="d-flex fill-height align-center justify-center">
+            <div class="caption">{{ message }}</div>
+          </div>
         </template>
         <div v-if="state.images" class="images caption white--text ma-2 px-1">
           {{ state.images }} images
