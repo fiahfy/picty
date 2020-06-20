@@ -126,13 +126,13 @@ export default defineComponent({
       context.root.$eventBus.$emit('show-presentation', props.selected)
     }
     const handleClickFavorite = () => {
-      props.selected && favoriteStore.toggle(props.selected.path)
+      props.selected && favoriteStore.toggle({ filePath: props.selected.path })
     }
     const handleClickList = () => {
-      explorerStore.setListStyle('list')
+      explorerStore.setListStyle({ listStyle: 'list' })
     }
     const handleClickThumbnail = () => {
-      explorerStore.setListStyle('thumbnail')
+      explorerStore.setListStyle({ listStyle: 'thumbnail' })
     }
     const handleInput = (value?: string) => {
       context.emit('change-query', value ?? '')
@@ -157,7 +157,7 @@ export default defineComponent({
       context.emit('change-query', state.searchInput)
     }
     const handleClickItemDelete = (item: string) => {
-      queryHistoryStore.removeHistory(item)
+      queryHistoryStore.removeHistory({ history: item })
     }
 
     onMounted(() => {

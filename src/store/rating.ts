@@ -13,7 +13,7 @@ export default class RatingModule extends VuexModule {
   }
 
   @Mutation
-  setRating(rating: number, filePath: string) {
+  setRating({ rating, filePath }: { rating: number; filePath: string }) {
     if (rating) {
       this.ratings = {
         ...this.ratings,

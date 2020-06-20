@@ -27,16 +27,16 @@ export default class BookmarkModule extends VuexModule {
   }
 
   @Action
-  toggle(filePath: string) {
+  toggle({ filePath }: { filePath: string }) {
     if (this.isFavorite(filePath)) {
-      this.delete(filePath)
+      this.delete({ filePath })
     } else {
-      this.add(filePath)
+      this.add({ filePath })
     }
   }
 
   @Mutation
-  add(filePath: string) {
+  add({ filePath }: { filePath: string }) {
     this.favorites = {
       ...this.favorites,
       [filePath]: {
@@ -46,7 +46,7 @@ export default class BookmarkModule extends VuexModule {
   }
 
   @Mutation
-  delete(filePath: string) {
+  delete({ filePath }: { filePath: string }) {
     const bookmarks = { ...this.favorites }
     delete bookmarks[filePath]
     this.favorites = bookmarks

@@ -3,7 +3,7 @@
     <v-data-iterator
       ref="iterator"
       v-bind="$attrs"
-      class="overflow-y-scroll scrollbar"
+      class="overflow-y-scroll flex-grow-1 scrollbar"
       :items="state.renderItems"
       disable-pagination
       row

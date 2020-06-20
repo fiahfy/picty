@@ -1,6 +1,6 @@
 <template>
   <v-container class="index" fluid pa-0>
-    <div class="d-flex flex-column fill-height">
+    <div class="d-flex flex-column fill-height flex-grow-1 overflow-hidden">
       <explorer-toolbar
         class="flex-grow-0"
         @click-back="handleClickBack"
@@ -160,23 +160,23 @@ export default defineComponent({
       if (state.loading) {
         return
       }
-      historyStore.push(location)
-      explorerStore.setLocation(location)
+      historyStore.push({ history: location })
+      explorerStore.setLocation({ location })
       load()
     }
     const go = async (offset: number) => {
       if (state.loading) {
         return
       }
-      const history = await historyStore.go(offset)
+      const history = await historyStore.go({ offset })
       if (!history) {
         return
       }
-      explorerStore.setLocation(history)
+      explorerStore.setLocation({ location: history })
       load()
     }
     const search = (query: string) => {
-      queryHistoryStore.addHistory(query)
+      queryHistoryStore.addHistory({ history: query })
       state.query = query
     }
     const present = (item: Item) => {
@@ -239,7 +239,7 @@ export default defineComponent({
             label: favoriteStore.isFavorite(item.path)
               ? 'Remove from Favorites'
               : 'Add to Favorites',
-            click: () => favoriteStore.toggle(item.path),
+            click: () => favoriteStore.toggle({ filePath: item.path }),
           },
         ]
       }
@@ -278,7 +278,7 @@ export default defineComponent({
       state.sortDesc = desc
     }
     const handleChangeRating = (item: Item, rating: number) => {
-      ratingStore.setRating(rating, item.path)
+      ratingStore.setRating({ rating, filePath: item.path })
       // update item
       state.items = state.items.map((current) =>
         current.path === item.path

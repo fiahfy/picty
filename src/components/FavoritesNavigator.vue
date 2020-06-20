@@ -47,7 +47,7 @@ export default defineComponent({
       context.root.$contextMenu.open([
         {
           label: 'Delete',
-          click: () => favoriteStore.delete(favorite.path),
+          click: () => favoriteStore.delete({ filePath: favorite.path }),
         },
         { type: 'separator' },
         {

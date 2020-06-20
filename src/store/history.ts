@@ -26,40 +26,40 @@ export default class HistoryModule extends VuexModule {
   }
 
   @Action
-  push(history: string) {
+  push({ history }: { history: string }) {
     const index = this.index + 1
     const histories = [...this.histories.slice(0, index), history]
-    this.setIndex(index)
-    this.setHistories(histories)
+    this.setIndex({ index })
+    this.setHistories({ histories })
   }
 
   @Action
-  go(offset: number) {
+  go({ offset }: { offset: number }) {
     const index = this.index + offset
     if (index < 0 || index > this.histories.length - 1) {
       return
     }
-    this.setIndex(index)
+    this.setIndex({ index })
     return this.histories[this.index]
   }
 
   @Action
   back() {
-    return this.go(-1)
+    return this.go({ offset: -1 })
   }
 
   @Action
   forward() {
-    return this.go(1)
+    return this.go({ offset: 1 })
   }
 
   @Mutation
-  setHistories(histories: string[]) {
+  setHistories({ histories }: { histories: string[] }) {
     this.histories = histories
   }
 
   @Mutation
-  setIndex(index: number) {
+  setIndex({ index }: { index: number }) {
     this.index = index
   }
 }
