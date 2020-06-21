@@ -184,8 +184,6 @@ const createWindow = async () => {
   Menu.setApplicationMenu(menu)
 
   mainWindow.on('closed', () => (mainWindow = null))
-  mainWindow.on('enter-full-screen', () => send('enter-full-screen'))
-  mainWindow.on('leave-full-screen', () => send('leave-full-screen'))
 }
 
 app.on('ready', createWindow)
