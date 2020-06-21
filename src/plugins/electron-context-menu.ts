@@ -1,7 +1,12 @@
 import { Plugin } from '@nuxt/types'
 import { open } from '@fiahfy/electron-context-menu'
 
-const contextMenu = { open }
+const contextMenu = {
+  open,
+  openEditMenu: () => {
+    open([{ role: 'cut' }, { role: 'copy' }, { role: 'paste' }])
+  },
+}
 
 declare module 'vue/types/vue' {
   interface Vue {

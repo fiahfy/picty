@@ -112,11 +112,7 @@ export default defineComponent({
       }
     }
     const handleContextMenuLocation = () => {
-      context.root.$contextMenu.open([
-        { role: 'cut' },
-        { role: 'copy' },
-        { role: 'paste' },
-      ])
+      context.root.$contextMenu.openEditMenu()
     }
     const handleContextMenuBack = () => {
       context.root.$contextMenu.open(
