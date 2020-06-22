@@ -123,8 +123,8 @@ const createTemplate = () => {
 
 const createWindow = async () => {
   const windowState = windowStateKeeper({
-    defaultWidth: 1024,
-    defaultHeight: 768,
+    defaultWidth: 820,
+    defaultHeight: 600,
   })
 
   const options = {
