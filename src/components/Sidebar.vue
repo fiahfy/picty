@@ -75,8 +75,8 @@ export default defineComponent({
       }
     })
 
-    const sidebar = ref<Vue | null>(null)
-    const resizer = ref<HTMLDivElement | null>(null)
+    const sidebar = ref<Vue>()
+    const resizer = ref<HTMLDivElement>()
 
     const handleClickMenu = (menu: { navigator: Navigator }) => {
       state.navigator =

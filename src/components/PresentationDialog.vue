@@ -144,13 +144,9 @@ export default defineComponent({
     )
     const maxPage = computed(() => state.files.length)
 
-    const dialog = ref<Vue | null>(null)
-    const topToolbar = ref<InstanceType<typeof PresentationTopToolbar> | null>(
-      null
-    )
-    const bottomToolbar = ref<InstanceType<
-      typeof PresentationBottomToolbar
-    > | null>(null)
+    const dialog = ref<Vue>()
+    const topToolbar = ref<InstanceType<typeof PresentationTopToolbar>>()
+    const bottomToolbar = ref<InstanceType<typeof PresentationBottomToolbar>>()
 
     const showPresentation = async (file: File) => {
       state.active = true

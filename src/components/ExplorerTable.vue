@@ -103,7 +103,7 @@ export default defineComponent({
       return item.path === props.selected?.path
     }
 
-    const table = ref<InstanceType<typeof VirtualDataTable> | null>(null)
+    const table = ref<InstanceType<typeof VirtualDataTable>>()
 
     const setScrollTop = (scrollTop: number) => {
       table.value && table.value.setScrollTop(scrollTop)

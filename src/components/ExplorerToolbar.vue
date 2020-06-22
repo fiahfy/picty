@@ -77,7 +77,7 @@ export default defineComponent({
     const canBack = computed(() => historyStore.canBack)
     const canForward = computed(() => historyStore.canForward)
 
-    const locationField = ref<Vue | null>(null)
+    const locationField = ref<Vue>()
 
     const focusLocation = () => {
       ;(locationField.value?.$el.querySelector(

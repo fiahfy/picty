@@ -73,8 +73,8 @@ export default defineComponent({
       observer: undefined,
     })
 
-    const table = ref<Vue | null>(null)
-    const container = ref<HTMLDivElement | null>(null)
+    const table = ref<Vue>()
+    const container = ref<HTMLDivElement>()
 
     const getOffsetHeight = () => {
       return container.value?.offsetHeight ?? 0
@@ -120,7 +120,7 @@ export default defineComponent({
 
     onMounted(() => {
       container.value =
-        table.value?.$el.querySelector('.v-data-table__wrapper') ?? null
+        table.value?.$el.querySelector('.v-data-table__wrapper') ?? undefined
       if (container.value) {
         container.value.classList.add('scrollbar')
         container.value.addEventListener('scroll', handleScroll)

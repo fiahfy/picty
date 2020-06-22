@@ -111,7 +111,7 @@ export default defineComponent({
     })
     const src = computed(() => (props.file ? fileUrl(props.file.path) : ''))
 
-    const wrapper = ref<HTMLDivElement | null>(null)
+    const wrapper = ref<HTMLDivElement>()
 
     const handleMouseDown = () => {
       state.dragging = true

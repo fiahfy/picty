@@ -127,8 +127,8 @@ export default defineComponent({
         })
     })
 
-    const table = ref<InstanceType<typeof ExplorerTable> | null>(null)
-    const gridList = ref<InstanceType<typeof ExplorerGridList> | null>(null)
+    const table = ref<InstanceType<typeof ExplorerTable>>()
+    const gridList = ref<InstanceType<typeof ExplorerGridList>>()
 
     const load = async () => {
       if (state.loading) {
