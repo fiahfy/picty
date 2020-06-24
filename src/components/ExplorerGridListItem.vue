@@ -140,7 +140,7 @@ export default defineComponent({
         return props.item.rating
       },
       set: (value) => {
-        context.emit('change-rating', value)
+        context.emit('change:rating', value)
       },
     })
     const icon = computed(() => {

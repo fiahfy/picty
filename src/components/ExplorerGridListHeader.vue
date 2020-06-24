@@ -71,7 +71,7 @@ export default defineComponent({
         return { by: props.sortBy ?? 'name', desc: props.sortDesc }
       },
       set(option) {
-        context.emit('change-sort-option', option)
+        context.emit('change:sort-option', option)
       },
     })
 

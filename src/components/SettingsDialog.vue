@@ -41,7 +41,7 @@
                       :input-value="data.selected"
                       close
                       class="my-1"
-                      @click:close="handleCloseChip(data.item)"
+                      @click:close="() => handleCloseChip(data.item)"
                     >
                       {{ data.item }}
                     </v-chip>

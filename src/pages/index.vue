@@ -3,19 +3,19 @@
     <div class="d-flex flex-column fill-height flex-grow-1 overflow-hidden">
       <explorer-toolbar
         class="flex-grow-0"
-        @click-back="handleClickBack"
-        @click-forward="handleClickForward"
-        @click-upward="handleClickUpward"
-        @click-reload="handleClickReload"
-        @click-home="handleClickHome"
-        @change-location="handleChangeLocation"
-        @change-history="handleChangeHistory"
+        @click:back="handleClickBack"
+        @click:forward="handleClickForward"
+        @click:upward="handleClickUpward"
+        @click:reload="handleClickReload"
+        @click:home="handleClickHome"
+        @change:location="handleChangeLocation"
+        @change:history="handleChangeHistory"
       />
       <explorer-card
         class="flex-grow-0"
         :selected="state.selected"
         :query="state.query"
-        @change-query="handleChangeQuery"
+        @change:query="handleChangeQuery"
       />
       <component
         :is="component"
@@ -26,13 +26,13 @@
         :sort-by="state.sortBy"
         :sort-desc="state.sortDesc"
         class="flex-grow-1 overflow-hidden"
-        @click-header="handleClickHeader"
-        @click-item="handleClickItem"
-        @dblclick-item="handleDoubleClickItem"
-        @contextmenu-item="handleContextMenuItem"
-        @change-rating="handleChangeRating"
-        @change-sort-option="handleChangeSortOption"
         @keydown.native="handleKeyDown"
+        @click:header="handleClickHeader"
+        @click:item="handleClickItem"
+        @dblclick:item="handleDoubleClickItem"
+        @contextmenu:item="handleContextMenuItem"
+        @change:rating="handleChangeRating"
+        @change:sort-option="handleChangeSortOption"
       />
     </div>
   </v-container>

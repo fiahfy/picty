@@ -135,7 +135,7 @@ export default defineComponent({
       explorerStore.setListStyle({ listStyle: 'thumbnail' })
     }
     const handleInput = (value?: string) => {
-      context.emit('change-query', value ?? '')
+      context.emit('change:query', value ?? '')
     }
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
@@ -143,14 +143,14 @@ export default defineComponent({
         !e.isComposing &&
         e.target instanceof HTMLInputElement
       ) {
-        context.emit('change-query', e.target.value)
+        context.emit('change:query', e.target.value)
       }
     }
     const handleContextMenu = () => {
       context.root.$contextMenu.openEditMenu()
     }
     const handleClickMagnify = () => {
-      context.emit('change-query', state.searchInput)
+      context.emit('change:query', state.searchInput)
     }
     const handleClickItemDelete = (item: string) => {
       queryHistoryStore.removeHistory({ history: item })

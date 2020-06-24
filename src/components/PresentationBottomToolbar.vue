@@ -130,7 +130,7 @@ export default defineComponent({
         return props.page
       },
       set: (value) => {
-        context.emit('change-page', value)
+        context.emit('change:page', value)
       },
     })
     const displayScale = computed(() => {
@@ -151,22 +151,22 @@ export default defineComponent({
     }
 
     const handleClickPrevious = () => {
-      context.emit('click-previous')
+      context.emit('click:previous')
     }
     const handleClickNext = () => {
-      context.emit('click-next')
+      context.emit('click:next')
     }
     const handleClickZoomIn = () => {
-      context.emit('click-zoom-in')
+      context.emit('click:zoom-in')
     }
     const handleClickZoomOut = () => {
-      context.emit('click-zoom-out')
+      context.emit('click:zoom-out')
     }
     const handleClickZoomReset = () => {
-      context.emit('click-zoom-reset')
+      context.emit('click:zoom-reset')
     }
     const handleClickToggleFullScreen = () => {
-      context.emit('click-toggle-full-screen')
+      context.emit('click:toggle-full-screen')
     }
 
     return {

@@ -85,19 +85,19 @@ export default defineComponent({
       ) as HTMLInputElement).focus()
     }
     const handleClickBack = () => {
-      context.emit('click-back')
+      context.emit('click:back')
     }
     const handleClickForward = () => {
-      context.emit('click-forward')
+      context.emit('click:forward')
     }
     const handleClickUpward = () => {
-      context.emit('click-upward')
+      context.emit('click:upward')
     }
     const handleClickReload = () => {
-      context.emit('click-reload')
+      context.emit('click:reload')
     }
     const handleClickHome = () => {
-      context.emit('click-home')
+      context.emit('click:home')
     }
     const handleClickFolder = () => {
       shell.openItem(explorerStore.location)
@@ -108,7 +108,7 @@ export default defineComponent({
         !e.isComposing &&
         e.target instanceof HTMLInputElement
       ) {
-        context.emit('change-location', e.target.value)
+        context.emit('change:location', e.target.value)
       }
     }
     const handleContextMenuLocation = () => {
@@ -119,7 +119,7 @@ export default defineComponent({
         historyStore.backHistories.map((history, index) => {
           return {
             label: history,
-            click: () => context.emit('change-history', -1 * (index + 1)),
+            click: () => context.emit('change:history', -1 * (index + 1)),
           }
         })
       )
@@ -129,7 +129,7 @@ export default defineComponent({
         historyStore.forwardHistories.map((history, index) => {
           return {
             label: history,
-            click: () => context.emit('change-history', index + 1),
+            click: () => context.emit('change:history', index + 1),
           }
         })
       )

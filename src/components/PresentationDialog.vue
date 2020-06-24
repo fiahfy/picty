@@ -20,7 +20,7 @@
                 :loading="state.loading"
                 :scale="state.scale"
                 :file="state.current"
-                @change-zoom="handleChangeZoom"
+                @change:zoom="handleChangeZoom"
               />
             </div>
           </v-container>
@@ -28,7 +28,7 @@
             <presentation-top-toolbar
               ref="topToolbar"
               :file="state.current"
-              @click-close="handleClickClose"
+              @click:close="handleClickClose"
             />
           </div>
           <div class="bottom-overlay d-flex pt-5">
@@ -38,13 +38,13 @@
               :max-page="maxPage"
               :scale="state.scale"
               :full-screen="state.fullScreen"
-              @click-previous="handleClickPrevious"
-              @click-next="handleClickNext"
-              @click-zoom-in="handleClickZoomIn"
-              @click-zoom-out="handleClickZoomOut"
-              @click-zoom-reset="handleClickZoomReset"
-              @click-toggle-full-screen="handleClickToggleFullScreen"
-              @change-page="handleChangePage"
+              @click:previous="handleClickPrevious"
+              @click:next="handleClickNext"
+              @click:zoom-in="handleClickZoomIn"
+              @click:zoom-out="handleClickZoomOut"
+              @click:zoom-reset="handleClickZoomReset"
+              @click:toggle-full-screen="handleClickToggleFullScreen"
+              @change:page="handleChangePage"
             />
           </div>
           <v-progress-linear :active="state.loading" :indeterminate="true" />

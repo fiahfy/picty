@@ -11,7 +11,7 @@
       <activity-bar
         class="flex-shrink-0"
         :navigator="state.navigator"
-        @click-menu="handleClickMenu"
+        @click:menu="handleClickMenu"
       />
       <keep-alive>
         <component :is="component" class="flex-grow-1" style="min-width: 0;" />

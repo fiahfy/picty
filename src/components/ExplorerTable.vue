@@ -28,7 +28,7 @@
         @click.native="() => handleClickRow(props.item)"
         @dblclick.native="() => handleDoubleClickRow(props.item)"
         @contextmenu.native.stop="() => handleContextMenuRow(props.item)"
-        @change-rating="(rating) => handleChangeRating(props.item, rating)"
+        @change:rating="(rating) => handleChangeRating(props.item, rating)"
       />
     </template>
   </virtual-data-table>
@@ -135,19 +135,19 @@ export default defineComponent({
     }
 
     const handleClickHeader = (header: File) => {
-      context.emit('click-header', header)
+      context.emit('click:header', header)
     }
     const handleClickRow = (item: Item) => {
-      context.emit('click-item', item)
+      context.emit('click:item', item)
     }
     const handleDoubleClickRow = (item: Item) => {
-      context.emit('dblclick-item', item)
+      context.emit('dblclick:item', item)
     }
     const handleContextMenuRow = (item: Item) => {
-      context.emit('contextmenu-item', item)
+      context.emit('contextmenu:item', item)
     }
     const handleChangeRating = (item: Item, rating: number) => {
-      context.emit('change-rating', item, rating)
+      context.emit('change:rating', item, rating)
     }
 
     return {

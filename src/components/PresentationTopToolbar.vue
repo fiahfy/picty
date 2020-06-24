@@ -57,7 +57,7 @@ export default defineComponent({
     }
 
     const handleClickClose = () => {
-      context.emit('click-close')
+      context.emit('click:close')
     }
 
     return {

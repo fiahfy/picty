@@ -87,7 +87,7 @@ export default defineComponent({
     })
 
     const handleClickItem = (menu: Menu) => {
-      context.emit('click-menu', menu)
+      context.emit('click:menu', menu)
     }
 
     const handleClickSettings = () => {

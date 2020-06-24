@@ -17,7 +17,7 @@
       <explorer-grid-list-header
         :sort-by="sortBy"
         :sort-desc="sortDesc"
-        @change-sort-option="handleChangeSortOption"
+        @change:sort-option="handleChangeSortOption"
       />
     </template>
     <template v-slot:item="props">
@@ -28,7 +28,7 @@
         @click.native="() => handleClickRow(props.item)"
         @dblclick.native="() => handleDoubleClickRow(props.item)"
         @contextmenu.native.stop="() => handleContextMenuRow(props.item)"
-        @change-rating="(rating) => handleChangeRating(props.item, rating)"
+        @change:rating="(rating) => handleChangeRating(props.item, rating)"
       />
     </template>
   </virtual-data-iterator>
@@ -127,19 +127,19 @@ export default defineComponent({
       return item.path === props.selected?.path
     }
     const handleChangeSortOption = (option: { by: string; desc: boolean }) => {
-      context.emit('change-sort-option', option)
+      context.emit('change:sort-option', option)
     }
     const handleClickRow = (item: Item) => {
-      context.emit('click-item', item)
+      context.emit('click:item', item)
     }
     const handleDoubleClickRow = (item: Item) => {
-      context.emit('dblclick-item', item)
+      context.emit('dblclick:item', item)
     }
     const handleContextMenuRow = (item: Item) => {
-      context.emit('contextmenu-item', item)
+      context.emit('contextmenu:item', item)
     }
     const handleChangeRating = (item: Item, rating: number) => {
-      context.emit('change-rating', item, rating)
+      context.emit('change:rating', item, rating)
     }
 
     return {

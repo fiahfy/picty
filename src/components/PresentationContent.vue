@@ -151,7 +151,7 @@ export default defineComponent({
         width: imageWidth,
         height: imageHeight,
       }
-      context.emit('change-zoom', scale)
+      context.emit('change:zoom', scale)
       state.loading = false
     }
     const handleError = () => {
