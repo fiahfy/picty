@@ -35,7 +35,7 @@
         </v-row>
       </template>
       <template v-slot:loading>
-        <v-progress-linear indeterminate height="2" />
+        <v-progress-linear indeterminate height="4" />
         <div class="ma-3 body-2 grey--text text-center">Loading items...</div>
       </template>
       <template v-slot:no-data>
