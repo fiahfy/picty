@@ -132,7 +132,7 @@ export default defineComponent({
       loading: false,
       error: false,
       imageUrl: '',
-      images: '',
+      images: 0,
     })
 
     const rating = computed({
