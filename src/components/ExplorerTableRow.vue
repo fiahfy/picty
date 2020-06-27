@@ -20,7 +20,7 @@
       />
     </td>
     <td class="no-wrap">
-      {{ item.lastModified | date('YYYY-MM-DD HH:mm') }}
+      {{ item.lastModified | date('yyyy-MM-dd HH:mm') }}
     </td>
   </tr>
 </template>
