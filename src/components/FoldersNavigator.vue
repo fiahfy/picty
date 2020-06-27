@@ -21,7 +21,7 @@
         item-key="path"
         dense
         hoverable
-        class="user-select-none"
+        class="user-select-none flex-grow-1"
       >
         <template v-slot:prepend="{ item, open }">
           <v-icon v-if="item.children" color="blue lighten-3">
