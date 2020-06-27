@@ -88,7 +88,7 @@ export default defineComponent({
     },
     loading: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     sortBy: {
       type: String,

@@ -84,7 +84,7 @@ import { Item } from '~/models'
 import { explorerStore, favoriteStore, queryHistoryStore } from '~/store'
 
 type Props = {
-  selected: Item
+  selected?: Item
   query: string
 }
 
@@ -95,6 +95,7 @@ export default defineComponent({
     },
     query: {
       type: String,
+      default: '',
     },
   },
   setup(props: Props, context: SetupContext) {

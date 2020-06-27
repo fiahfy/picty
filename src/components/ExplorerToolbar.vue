@@ -3,7 +3,7 @@
     <v-btn
       v-long-press="handleContextMenuBack"
       :title="'Back' | accelerator('CmdOrCtrl+Left')"
-      :disabled="!canBack"
+      :disabled="loading || !canBack"
       icon
       @click="handleClickBack"
       @contextmenu.stop="handleContextMenuBack"
@@ -13,7 +13,7 @@
     <v-btn
       v-long-press="handleContextMenuForward"
       :title="'Forward' | accelerator('CmdOrCtrl+Right')"
-      :disabled="!canForward"
+      :disabled="loading || !canForward"
       icon
       @click="handleClickForward"
       @contextmenu.stop="handleContextMenuForward"
@@ -22,16 +22,18 @@
     </v-btn>
     <v-btn
       :title="'Up' | accelerator('CmdOrCtrl+Shift+P')"
+      :disabled="loading"
       icon
       @click="handleClickUpward"
     >
       <v-icon>mdi-arrow-up</v-icon>
     </v-btn>
-    <v-btn title="Reload" icon @click="handleClickReload">
+    <v-btn :disabled="loading" title="Reload" icon @click="handleClickReload">
       <v-icon>mdi-refresh</v-icon>
     </v-btn>
     <v-btn
       :title="'Home' | accelerator('CmdOrCtrl+Shift+H')"
+      :disabled="loading"
       icon
       @click="handleClickHome"
     >
@@ -70,8 +72,18 @@ import {
 } from '@vue/composition-api'
 import { explorerStore, historyStore } from '~/store'
 
+type Props = {
+  loading: boolean
+}
+
 export default defineComponent({
-  setup(_props: {}, context: SetupContext) {
+  props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup(_props: Props, context: SetupContext) {
     const state = reactive({ location: explorerStore.location })
 
     const canBack = computed(() => historyStore.canBack)

@@ -3,6 +3,7 @@
     <div class="d-flex flex-column fill-height flex-grow-1 overflow-hidden">
       <explorer-toolbar
         class="flex-grow-0"
+        :loading="state.loading"
         @click:back="handleClickBack"
         @click:forward="handleClickForward"
         @click:upward="handleClickUpward"
