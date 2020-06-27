@@ -6,33 +6,35 @@
     flat
     dense
   >
-    <v-btn
-      :title="'View previous image' | accelerator('Left')"
-      icon
-      @click="handleClickPrevious"
-    >
-      <v-icon>mdi-chevron-left</v-icon>
-    </v-btn>
+    <template v-if="paging">
+      <v-btn
+        :title="'View previous image' | accelerator('Left')"
+        icon
+        @click="handleClickPrevious"
+      >
+        <v-icon>mdi-chevron-left</v-icon>
+      </v-btn>
 
-    <v-btn
-      :title="'View next image' | accelerator('Right')"
-      icon
-      @click="handleClickNext"
-    >
-      <v-icon>mdi-chevron-right</v-icon>
-    </v-btn>
+      <v-btn
+        :title="'View next image' | accelerator('Right')"
+        icon
+        @click="handleClickNext"
+      >
+        <v-icon>mdi-chevron-right</v-icon>
+      </v-btn>
 
-    <span class="px-3 ellipsis">{{ page }} / {{ maxPage }}</span>
+      <span class="px-3 ellipsis">{{ page }} / {{ maxPage }}</span>
 
-    <v-slider
-      ref="slider"
-      v-model="pageModel"
-      class="px-3"
-      :min="1"
-      :max="maxPage"
-      dense
-      hide-details
-    />
+      <v-slider
+        ref="slider"
+        v-model="pageModel"
+        class="px-3"
+        :min="1"
+        :max="maxPage"
+        dense
+        hide-details
+      />
+    </template>
 
     <v-spacer />
 
@@ -136,6 +138,7 @@ export default defineComponent({
     const displayScale = computed(() => {
       return (props.scale * 100).toFixed(2)
     })
+    const paging = computed(() => props.maxPage > 1)
 
     const toolbar = ref<Vue>()
     const menubar = ref<Vue>()
@@ -173,6 +176,7 @@ export default defineComponent({
       state,
       pageModel,
       displayScale,
+      paging,
       toolbar,
       menubar,
       isHover,
