@@ -154,7 +154,7 @@ export default defineComponent({
       context.emit('change:query', state.searchInput)
     }
     const handleClickItemDelete = (item: string) => {
-      queryHistoryStore.removeHistory({ history: item })
+      queryHistoryStore.delete({ history: item })
     }
 
     onMounted(() => {

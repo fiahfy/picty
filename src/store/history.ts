@@ -1,5 +1,7 @@
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
 
+const historySize = 1000
+
 @Module({
   name: 'history',
   stateFactory: true,
@@ -28,7 +30,9 @@ export default class HistoryModule extends VuexModule {
   @Action
   push({ history }: { history: string }) {
     const index = this.index + 1
-    const histories = [...this.histories.slice(0, index), history]
+    const histories = [...this.histories.slice(0, index), history].slice(
+      -1 * historySize
+    )
     this.setIndex({ index })
     this.setHistories({ histories })
   }

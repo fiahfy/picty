@@ -51,24 +51,6 @@
                 <v-subheader class="pl-0 text-uppercase">
                   Explorer
                 </v-subheader>
-                <v-text-field
-                  v-model="queryHistorySize"
-                  label="Search History Size"
-                  type="number"
-                  dense
-                  class="pt-3"
-                >
-                  <template v-slot:append-outer>
-                    <v-btn
-                      slot="append-outer"
-                      color="primary"
-                      text
-                      @click="handleClearHistories"
-                    >
-                      Clear All Histories
-                    </v-btn>
-                  </template>
-                </v-text-field>
                 <v-select
                   v-model="thumbnailStyle"
                   :items="thumbnailStyleOptions"
@@ -124,7 +106,7 @@ import {
   SetupContext,
 } from '@vue/composition-api'
 import TitleBar from '~/components/TitleBar.vue'
-import { settingsStore, queryHistoryStore } from '~/store'
+import { settingsStore } from '~/store'
 import {
   defaultExtensions,
   thumbnailStyles,
@@ -182,14 +164,6 @@ export default defineComponent({
         settingsStore.setImageStretched({ imageStretched: value })
       },
     })
-    const queryHistorySize = computed({
-      get: () => {
-        return settingsStore.queryHistorySize
-      },
-      set: (value) => {
-        settingsStore.setQueryHistorySize({ queryHistorySize: value })
-      },
-    })
     const thumbnailStyle = computed({
       get: () => {
         return settingsStore.thumbnailStyle
@@ -227,9 +201,6 @@ export default defineComponent({
         (extension) => extension !== item
       )
     }
-    const handleClearHistories = () => {
-      queryHistoryStore.clearHistory()
-    }
 
     onMounted(() => {
       context.root.$eventBus.$on('show-settings', show)
@@ -248,13 +219,11 @@ export default defineComponent({
       fullScreen,
       recursive,
       imageStretched,
-      queryHistorySize,
       thumbnailStyle,
       thumbnailHeight,
       extensions,
       handleClickClose,
       handleCloseChip,
-      handleClearHistories,
     }
   },
 })

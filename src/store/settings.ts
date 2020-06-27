@@ -35,7 +35,6 @@ export default class SettingsModule extends VuexModule {
   fullScreen = false
   recursive = false
   imageStretched = false
-  queryHistorySize = 1000
   thumbnailStyle: ThumbnailStyle = 'cover'
   thumbnailHeight: ThumbnailHeight = 'medium'
   extensions = [...defaultExtensions]
@@ -76,11 +75,6 @@ export default class SettingsModule extends VuexModule {
   @Mutation
   setImageStretched({ imageStretched }: { imageStretched: boolean }) {
     this.imageStretched = imageStretched
-  }
-
-  @Mutation
-  setQueryHistorySize({ queryHistorySize }: { queryHistorySize: number }) {
-    this.queryHistorySize = queryHistorySize
   }
 
   @Mutation

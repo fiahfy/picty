@@ -157,11 +157,11 @@ export default defineComponent({
       }
       state.loading = false
     }
-    const move = (location: string) => {
+    const move = async (location: string) => {
       if (state.loading) {
         return
       }
-      historyStore.push({ history: location })
+      await historyStore.push({ history: location })
       explorerStore.setLocation({ location })
       load()
     }
@@ -177,7 +177,7 @@ export default defineComponent({
       load()
     }
     const search = (query: string) => {
-      queryHistoryStore.addHistory({ history: query })
+      queryHistoryStore.add({ history: query })
       state.query = query
     }
     const present = (item: Item) => {
