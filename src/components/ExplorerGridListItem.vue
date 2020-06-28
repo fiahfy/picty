@@ -9,7 +9,12 @@
       >
         <template v-slot:placeholder>
           <div class="d-flex fill-height align-center justify-center">
-            <div class="caption">{{ message }}</div>
+            <v-progress-circular
+              v-if="state.loading"
+              indeterminate
+              color="primary"
+            />
+            <div v-else class="caption">{{ message }}</div>
           </div>
         </template>
         <div v-if="state.images" class="images caption white--text ma-2 px-1">
@@ -52,6 +57,8 @@ import {
   SetupContext,
   reactive,
   computed,
+  onMounted,
+  onUnmounted,
 } from '@vue/composition-api'
 import { promisify } from '@fiahfy/worker-promisify'
 import { Item } from '~/models'
@@ -128,11 +135,18 @@ export default defineComponent({
     },
   },
   setup(props: Props, context: SetupContext) {
-    const state = reactive({
+    const state = reactive<{
+      loading: boolean
+      error: boolean
+      imageUrl: string
+      images: number
+      timer?: number
+    }>({
       loading: false,
       error: false,
       imageUrl: '',
       images: 0,
+      timer: undefined,
     })
 
     const rating = computed({
@@ -166,7 +180,6 @@ export default defineComponent({
     })
 
     const load = async () => {
-      state.loading = true
       if (!props.item.directory) {
         state.imageUrl = (await getDataUrl(fileUrl(props.item.path), 256)) ?? ''
       } else {
@@ -189,7 +202,14 @@ export default defineComponent({
       state.error = true
     }
 
-    load()
+    onMounted(() => {
+      state.loading = true
+      state.timer = window.setTimeout(() => load(), 100)
+    })
+
+    onUnmounted(() => {
+      clearTimeout(state.timer)
+    })
 
     return {
       state,
