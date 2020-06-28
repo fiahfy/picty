@@ -1,5 +1,5 @@
 <template>
-  <virtual-data-iterator
+  <virtual-data-grid
     ref="iterator"
     class="explorer-grid-list"
     :items="items"
@@ -31,7 +31,7 @@
         @change:rating="(rating) => handleChangeRating(props.item, rating)"
       />
     </template>
-  </virtual-data-iterator>
+  </virtual-data-grid>
 </template>
 
 <script lang="ts">
@@ -43,7 +43,7 @@ import {
 } from '@vue/composition-api'
 import ExplorerGridListHeader from '~/components/ExplorerGridListHeader.vue'
 import ExplorerGridListItem from '~/components/ExplorerGridListItem.vue'
-import VirtualDataIterator from '~/components/VirtualDataIterator.vue'
+import VirtualDataGrid from '~/components/VirtualDataGrid.vue'
 import { Item } from '~/models'
 import { settingsStore } from '~/store'
 import * as viewport from '~/utils/viewport'
@@ -60,7 +60,7 @@ export default defineComponent({
   components: {
     ExplorerGridListHeader,
     ExplorerGridListItem,
-    VirtualDataIterator,
+    VirtualDataGrid,
   },
   props: {
     items: {
@@ -93,7 +93,7 @@ export default defineComponent({
       return settingsStore.thumbnailHeightValue + 77
     })
 
-    const iterator = ref<InstanceType<typeof VirtualDataIterator>>()
+    const iterator = ref<InstanceType<typeof VirtualDataGrid>>()
 
     const setScrollTop = (scrollTop: number) => {
       iterator.value && iterator.value.setScrollTop(scrollTop)

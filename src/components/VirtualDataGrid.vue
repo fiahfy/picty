@@ -1,5 +1,5 @@
 <template>
-  <div class="virtual-data-iterator d-flex">
+  <div class="virtual-data-grid d-flex">
     <v-data-iterator
       ref="iterator"
       v-bind="$attrs"
@@ -187,7 +187,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.virtual-data-iterator {
+.virtual-data-grid {
   .v-data-iterator {
     position: relative;
     ::v-deep .header {
