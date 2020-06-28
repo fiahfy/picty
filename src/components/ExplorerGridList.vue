@@ -5,7 +5,7 @@
     :items="items"
     :loading="loading"
     :estimated-height="estimatedHeight"
-    :sizes="sizes"
+    :cols="cols"
     item-key="path"
     hide-default-header
     hide-default-footer
@@ -46,7 +46,8 @@ import ExplorerGridListItem from '~/components/ExplorerGridListItem.vue'
 import VirtualDataGrid from '~/components/VirtualDataGrid.vue'
 import { Item } from '~/models'
 import { settingsStore } from '~/store'
-import * as viewport from '~/utils/viewport'
+
+const cols = [6, 4, 3, 2, 2]
 
 type Props = {
   items: Item[]
@@ -84,9 +85,11 @@ export default defineComponent({
   },
   setup(props: Props, context: SetupContext) {
     const classes = computed(() => {
-      return viewport.sizes.map((size, i) => {
-        const s = size === 'xs' ? '' : `-${size}`
-        return `col${s}-${viewport.colSizes[i]}`
+      return ['xs', 'sm', 'md', 'lg', 'xl'].map((size, i) => {
+        if (i === 0) {
+          return `col-${cols[i]}`
+        }
+        return `col-${size}-${cols[i]}`
       })
     })
     const estimatedHeight = computed(() => {
@@ -95,6 +98,9 @@ export default defineComponent({
 
     const iterator = ref<InstanceType<typeof VirtualDataGrid>>()
 
+    const getColsInRow = () => {
+      return iterator.value ? iterator.value.getColsInRow() : 0
+    }
     const setScrollTop = (scrollTop: number) => {
       iterator.value && iterator.value.setScrollTop(scrollTop)
     }
@@ -143,11 +149,12 @@ export default defineComponent({
     }
 
     return {
+      cols,
       classes,
       estimatedHeight,
-      sizes: viewport.colSizes,
       isSelected,
       iterator,
+      getColsInRow,
       setScrollTop,
       scrollInView,
       focus,

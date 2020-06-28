@@ -4,6 +4,7 @@
       ref="iterator"
       v-bind="$attrs"
       class="overflow-y-scroll flex-grow-1 scrollbar"
+      :class="state.classes"
       :items="state.renderItems"
       disable-pagination
       row
@@ -58,13 +59,14 @@ import {
   watch,
   SetupContext,
 } from '@vue/composition-api'
-import * as viewport from '~/utils/viewport'
+
+const breakpoints = { sm: 600, md: 960, lg: 1264, xl: 1904 }
 
 type Props = {
   items: any[]
   estimatedHeight: number
   threshold: number | string
-  sizes: number | number[]
+  cols: number | number[]
 }
 
 export default defineComponent({
@@ -81,7 +83,7 @@ export default defineComponent({
       type: [Number, String],
       default: 0,
     },
-    sizes: {
+    cols: {
       type: [Number, Array],
       default: 6,
     },
@@ -91,6 +93,7 @@ export default defineComponent({
       padding: { top: number; bottom: number }
       renderItems: any[]
       observer?: ResizeObserver
+      classes: string[]
     }>({
       padding: {
         top: 0,
@@ -98,17 +101,21 @@ export default defineComponent({
       },
       renderItems: [],
       observer: undefined,
+      classes: [],
     })
 
-    const calculatedSizes = computed(() => {
-      return Array.isArray(props.sizes)
-        ? props.sizes
-        : Array(5).fill(props.sizes)
+    const cols = computed(() => {
+      return Array.isArray(props.cols)
+        ? props.cols
+        : (Array(5).fill(props.cols) as number[])
     })
 
     const iterator = ref<Vue>()
     const container = ref<HTMLDivElement>()
 
+    const getColsInRow = () => {
+      return 12 / cols.value[state.classes.length]
+    }
     const getOffsetHeight = () => {
       return container.value?.offsetHeight ?? 0
     }
@@ -120,18 +127,26 @@ export default defineComponent({
         container.value && (container.value.scrollTop = value)
       })
     }
-    const adjustItems = () => {
+    const adjust = () => {
       if (!container.value) {
         return
       }
 
-      const size = 12 / calculatedSizes.value[viewport.getSizeIndex()]
+      const innerWidth = container.value.offsetWidth
+      state.classes = Object.keys(breakpoints).reduce((carry, key) => {
+        if (innerWidth >= breakpoints[key as keyof typeof breakpoints]) {
+          return [...carry, key]
+        }
+        return carry
+      }, [] as string[])
+
+      const colsInRow = getColsInRow()
 
       const { scrollTop, offsetHeight } = container.value
       const index = Math.floor(scrollTop / props.estimatedHeight)
       const offset = Math.ceil(offsetHeight / props.estimatedHeight)
 
-      const last = Math.ceil(props.items.length / size)
+      const last = Math.ceil(props.items.length / colsInRow)
       const start = Math.max(0, index - Number(props.threshold))
       const end = Math.min(last, index + offset + Number(props.threshold))
 
@@ -139,15 +154,15 @@ export default defineComponent({
         top: start * props.estimatedHeight,
         bottom: (last - end) * props.estimatedHeight,
       }
-      state.renderItems = props.items.slice(start * size, end * size)
+      state.renderItems = props.items.slice(start * colsInRow, end * colsInRow)
 
       setScrollTop(scrollTop)
     }
     const handleResize = () => {
-      adjustItems()
+      adjust()
     }
     const handleScroll = (e: Event) => {
-      adjustItems()
+      adjust()
       context.emit('scroll', e)
     }
 
@@ -157,27 +172,27 @@ export default defineComponent({
         container.value.addEventListener('scroll', handleScroll)
         state.observer = new ResizeObserver(handleResize)
         state.observer.observe(container.value)
-        adjustItems()
       }
+      adjust()
     })
 
     onUnmounted(() => {
-      if (container.value) {
+      container.value &&
         container.value.removeEventListener('scroll', handleScroll)
-      }
       state.observer && state.observer.disconnect()
     })
 
     watch(
       () => props.items,
       () => {
-        adjustItems()
+        adjust()
       }
     )
 
     return {
       state,
       iterator,
+      getColsInRow,
       getOffsetHeight,
       getScrollTop,
       setScrollTop,
@@ -187,13 +202,28 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.virtual-data-grid {
-  .v-data-iterator {
-    position: relative;
-    ::v-deep .header {
-      position: sticky;
-      top: 0;
-      z-index: 1;
+$sizes: sm, md, lg, xl;
+$cols: 12, 6, 4, 3, 2, 1;
+
+.virtual-data-grid > .v-data-iterator {
+  position: relative;
+  ::v-deep .header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  @each $col in $cols {
+    ::v-deep .col-#{$col} {
+      flex: 0 0 calc(100% / 12 * #{$col}) !important;
+      max-width: calc(100% / 12 * #{$col}) !important;
+    }
+  }
+  @each $size in $sizes {
+    @each $col in $cols {
+      &.#{$size} ::v-deep .col-#{$size}-#{$col} {
+        flex: 0 0 calc(100% / 12 * #{$col}) !important;
+        max-width: calc(100% / 12 * #{$col}) !important;
+      }
     }
   }
 }

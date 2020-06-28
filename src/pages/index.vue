@@ -66,7 +66,6 @@ import {
   settingsStore,
   favoriteStore,
 } from '~/store'
-import * as viewport from '~/utils/viewport'
 
 const Worker = require('~/workers/fetch-files.worker')
 
@@ -312,25 +311,25 @@ export default defineComponent({
                 break
             }
           } else {
-            const offset = viewport.getOffset()
+            const cols = gridList.value ? gridList.value.getColsInRow() : 0
             switch (e.key) {
               case 'ArrowUp':
-                if (index - offset > -1) {
-                  index -= offset
+                if (index - cols > -1) {
+                  index -= cols
                 }
                 break
               case 'ArrowDown':
-                if (index + offset < items.value.length) {
-                  index += offset
+                if (index + cols < items.value.length) {
+                  index += cols
                 }
                 break
               case 'ArrowLeft':
-                if (index % offset > 0) {
+                if (index % cols > 0) {
                   index -= 1
                 }
                 break
               case 'ArrowRight':
-                if (index % offset < offset - 1) {
+                if (index % cols < cols - 1) {
                   index += 1
                 }
                 break
