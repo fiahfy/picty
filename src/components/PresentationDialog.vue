@@ -47,7 +47,6 @@
               @change:page="handleChangePage"
             />
           </div>
-          <v-progress-linear :active="state.loading" :indeterminate="true" />
         </v-main>
       </div>
     </v-card>

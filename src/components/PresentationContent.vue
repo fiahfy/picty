@@ -1,14 +1,20 @@
 <template>
   <div :class="classes" class="presentation-content d-flex">
     <v-sheet
-      v-if="message"
+      v-if="status !== 'loaded'"
       class="overlay d-flex flex-grow-1 fill-height align-center justify-center"
     >
-      <div class="body-1 user-select-none">{{ message }}</div>
+      <v-progress-circular
+        v-if="status === 'loading'"
+        indeterminate
+        color="primary"
+      />
+      <v-icon v-else color="grey">mdi-image-broken-variant</v-icon>
     </v-sheet>
     <div
       ref="wrapper"
       class="wrapper flex-grow-1"
+      :style="{ visibility: status === 'failed' ? 'hidden' : 'visible' }"
       @mousemove="handleMouseMove"
       @mousedown="handleMouseDown"
       @mouseup="handleMouseUp"
@@ -74,7 +80,7 @@ export default defineComponent({
         y: number
       }
     }>({
-      loading: false,
+      loading: true,
       error: false,
       dragging: false,
       alignCenter: true,
@@ -100,14 +106,14 @@ export default defineComponent({
         height: state.originalSize.height * props.scale + 'px',
       }
     })
-    const message = computed(() => {
+    const status = computed(() => {
       if (props.loading || state.loading) {
-        return 'Loading...'
+        return 'loading'
       }
       if (state.error) {
-        return 'Invalid image'
+        return 'failed'
       }
-      return ''
+      return 'loaded'
     })
     const src = computed(() => (props.file ? fileUrl(props.file.path) : ''))
 
@@ -121,7 +127,7 @@ export default defineComponent({
       state.scrollPosition = undefined
     }
     const handleMouseMove = (e: MouseEvent) => {
-      if (message.value || !wrapper.value) {
+      if (status.value !== 'loaded' || !wrapper.value) {
         return
       }
       if (state.dragging) {
@@ -156,6 +162,7 @@ export default defineComponent({
     }
     const handleError = () => {
       state.error = true
+      state.loading = false
     }
 
     watch(
@@ -168,7 +175,7 @@ export default defineComponent({
     watch(
       () => props.scale,
       (newValue, oldValue) => {
-        if (message.value) {
+        if (status.value !== 'loaded') {
           return
         }
         context.root.$nextTick(() => {
@@ -215,7 +222,7 @@ export default defineComponent({
       classes,
       imageClasses,
       imageStyles,
-      message,
+      status,
       src,
       wrapper,
       handleMouseDown,
