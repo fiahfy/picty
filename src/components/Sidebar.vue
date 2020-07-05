@@ -44,7 +44,7 @@ export default defineComponent({
   components: {
     ActivityBar,
   },
-  setup(_props: {}) {
+  setup() {
     const state = reactive<{
       resizing: boolean
       navigator?: Navigator
