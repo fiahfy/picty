@@ -21,7 +21,7 @@
       <component
         :is="component"
         :ref="componentRef"
-        :items="items"
+        :items="state.items"
         :loading="state.loading"
         :selected="state.selected"
         :sort-by="state.sortBy"
@@ -79,7 +79,8 @@ export default defineComponent({
   setup(_props: {}, context: SetupContext) {
     const state = reactive<{
       loading: boolean
-      error?: Error
+      error: boolean
+      data: Item[]
       items: Item[]
       selected?: Item
       sortBy: keyof Item
@@ -87,7 +88,8 @@ export default defineComponent({
       query: string
     }>({
       loading: false,
-      error: undefined,
+      error: false,
+      data: [],
       items: [],
       selected: undefined,
       sortBy: 'name',
@@ -101,31 +103,6 @@ export default defineComponent({
     const componentRef = computed(() =>
       explorerStore.listStyle === 'list' ? 'table' : 'gridList'
     )
-    const items = computed(() => {
-      return state.items
-        .concat()
-        .sort((a, b) => {
-          let result = 0
-          const aValue = a[state.sortBy]
-          const bValue = b[state.sortBy]
-          if (aValue !== undefined && bValue !== undefined) {
-            if (aValue > bValue) {
-              result = 1
-            } else if (aValue < bValue) {
-              result = -1
-            }
-          } else {
-            result = 0
-          }
-          return state.sortDesc ? -1 * result : result
-        })
-        .filter((item) => {
-          return (
-            !state.query ||
-            item.name.toLowerCase().includes(state.query.toLowerCase())
-          )
-        })
-    })
 
     const table = ref<InstanceType<typeof ExplorerTable>>()
     const gridList = ref<InstanceType<typeof ExplorerGridList>>()
@@ -136,23 +113,19 @@ export default defineComponent({
       }
       state.selected = undefined
       state.loading = true
-      state.items = []
+      state.data = []
       try {
         const { data }: { data: File[] } = await worker.postMessage({
           dirPath: explorerStore.location,
         })
-        state.items = data
-          .filter(
-            (file) => file.directory || settingsStore.isFileAvailable(file.path)
-          )
-          .map((file) => {
-            return {
-              ...file,
-              rating: ratingStore.getRating(file.path),
-            }
-          })
+        state.data = data.map((file) => {
+          return {
+            ...file,
+            rating: ratingStore.getRating(file.path),
+          }
+        })
       } catch (e) {
-        state.error = e
+        state.error = true
       }
       state.loading = false
     }
@@ -298,7 +271,7 @@ export default defineComponent({
         case 'ArrowRight':
         case 'ArrowLeft': {
           e.preventDefault()
-          let index = items.value.findIndex(
+          let index = state.items.findIndex(
             (item) => item.path === state.selected?.path
           )
           if (explorerStore.listStyle === 'list') {
@@ -320,7 +293,7 @@ export default defineComponent({
                 }
                 break
               case 'ArrowDown':
-                if (index + cols < items.value.length) {
+                if (index + cols < state.items.length) {
                   newIndex = index + cols
                 }
                 break
@@ -339,8 +312,8 @@ export default defineComponent({
               index = newIndex
             }
           }
-          index = Math.min(Math.max(index, 0), items.value.length - 1)
-          state.selected = items.value[index]
+          index = Math.min(Math.max(index, 0), state.items.length - 1)
+          state.selected = state.items[index]
           scrollInView()
           break
         }
@@ -350,16 +323,49 @@ export default defineComponent({
     watch(
       () => explorerStore.location,
       () => {
-        table.value && table.value.setScrollTop(0)
-        gridList.value && gridList.value.setScrollTop(0)
         state.query = ''
       }
     )
 
-    watch([() => state.sortBy, () => state.sortDesc, () => state.query], () => {
-      table.value && table.value.setScrollTop(0)
-      gridList.value && gridList.value.setScrollTop(0)
-    })
+    watch(
+      [
+        () => state.data,
+        () => state.sortBy,
+        () => state.sortDesc,
+        () => state.query,
+        () => settingsStore.extensions,
+      ],
+      () => {
+        table.value && table.value.setScrollTop(0)
+        gridList.value && gridList.value.setScrollTop(0)
+        state.items = state.data
+          .concat()
+          .filter(
+            (file) => file.directory || settingsStore.isFileAvailable(file.path)
+          )
+          .sort((a, b) => {
+            let result = 0
+            const aValue = a[state.sortBy]
+            const bValue = b[state.sortBy]
+            if (aValue !== undefined && bValue !== undefined) {
+              if (aValue > bValue) {
+                result = 1
+              } else if (aValue < bValue) {
+                result = -1
+              }
+            } else {
+              result = 0
+            }
+            return state.sortDesc ? -1 * result : result
+          })
+          .filter((item) => {
+            return (
+              !state.query ||
+              item.name.toLowerCase().includes(state.query.toLowerCase())
+            )
+          })
+      }
+    )
 
     onMounted(() => {
       context.root.$eventBus.$on('change-location', move)
@@ -380,7 +386,6 @@ export default defineComponent({
     return {
       state,
       component,
-      items,
       componentRef,
       table,
       gridList,
