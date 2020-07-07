@@ -61,15 +61,15 @@ export default defineComponent({
   },
   setup(props: Props, context: SetupContext) {
     const state = reactive<{
-      padding: { top: number; bottom: number }
       renderItems: any[]
+      padding: { top: number; bottom: number }
       observer?: ResizeObserver
     }>({
+      renderItems: [],
       padding: {
         top: 0,
         bottom: 0,
       },
-      renderItems: [],
       observer: undefined,
     })
 
@@ -107,8 +107,6 @@ export default defineComponent({
         bottom: (props.items.length - end) * props.estimatedHeight,
       }
       state.renderItems = props.items.slice(start, end)
-
-      setScrollTop(scrollTop)
     }
     const handleResize = () => {
       adjustItems()

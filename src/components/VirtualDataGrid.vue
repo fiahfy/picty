@@ -59,6 +59,7 @@ import {
   watch,
   SetupContext,
 } from '@vue/composition-api'
+import { throttle } from 'throttle-debounce'
 
 const breakpoints = { sm: 600, md: 960, lg: 1264, xl: 1904 }
 
@@ -90,18 +91,22 @@ export default defineComponent({
   },
   setup(props: Props, context: SetupContext) {
     const state = reactive<{
-      padding: { top: number; bottom: number }
       renderItems: any[]
-      observer?: ResizeObserver
+      startIndex: number
+      endIndex: number
+      padding: { top: number; bottom: number }
       classes: string[]
+      observer?: ResizeObserver
     }>({
+      renderItems: [],
+      startIndex: 0,
+      endIndex: 0,
       padding: {
         top: 0,
         bottom: 0,
       },
-      renderItems: [],
-      observer: undefined,
       classes: [],
+      observer: undefined,
     })
 
     const cols = computed(() => {
@@ -127,6 +132,10 @@ export default defineComponent({
         container.value && (container.value.scrollTop = value)
       })
     }
+    const isRendered = (index: number) => {
+      return index >= state.startIndex && index < state.endIndex
+    }
+
     const adjust = () => {
       if (!container.value) {
         return
@@ -154,15 +163,17 @@ export default defineComponent({
         top: start * props.estimatedHeight,
         bottom: (last - end) * props.estimatedHeight,
       }
-      state.renderItems = props.items.slice(start * colsInRow, end * colsInRow)
-
-      setScrollTop(scrollTop)
+      state.startIndex = start * colsInRow
+      state.endIndex = end * colsInRow
+      state.renderItems = props.items.slice(state.startIndex, state.endIndex)
     }
+    const throttled = throttle(300, adjust)
+
     const handleResize = () => {
-      adjust()
+      throttled()
     }
     const handleScroll = (e: Event) => {
-      adjust()
+      throttled()
       context.emit('scroll', e)
     }
 
@@ -196,6 +207,7 @@ export default defineComponent({
       getOffsetHeight,
       getScrollTop,
       setScrollTop,
+      isRendered,
     }
   },
 })

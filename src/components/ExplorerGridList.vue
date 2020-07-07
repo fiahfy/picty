@@ -10,7 +10,7 @@
     hide-default-header
     hide-default-footer
     disable-sort
-    threshold="3"
+    threshold="1"
     tabindex="0"
   >
     <template v-slot:header>
@@ -129,9 +129,14 @@ export default defineComponent({
     const focus = () => {
       ;(iterator.value?.$el as HTMLElement).focus()
     }
+    const isRendered = (index: number) => {
+      return iterator.value ? iterator.value.isRendered(index) : false
+    }
+
     const isSelected = (item: Item) => {
       return item.path === props.selected?.path
     }
+
     const handleChangeSortOption = (option: { by: string; desc: boolean }) => {
       context.emit('change:sort-option', option)
     }
@@ -152,12 +157,13 @@ export default defineComponent({
       cols,
       classes,
       estimatedHeight,
-      isSelected,
       iterator,
       getColsInRow,
       setScrollTop,
       scrollInView,
       focus,
+      isRendered,
+      isSelected,
       handleChangeSortOption,
       handleClickRow,
       handleDoubleClickRow,

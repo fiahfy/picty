@@ -1,23 +1,19 @@
 <template>
-  <v-col class="explorer-grid-list-item pa-1">
-    <v-card flat tile>
+  <v-col ref="root" class="explorer-grid-list-item pa-1">
+    <v-card flat tile style="box-shadow: none !important;">
       <v-img
         :src="state.imageUrl"
         :contain="contain"
         :height="thumbnailHeightValue"
+        :transition="false"
         @error="handleError"
       >
         <template v-slot:placeholder>
           <div class="d-flex fill-height align-center justify-center">
-            <v-progress-circular
-              v-if="state.loading"
-              indeterminate
-              color="primary"
-            />
-            <div v-else class="caption">{{ message }}</div>
+            <div class="caption">{{ message }}</div>
           </div>
         </template>
-        <div v-if="state.images" class="images caption white--text ma-2 px-1">
+        <div v-show="state.images" class="images caption white--text ma-2 px-1">
           {{ state.images }} images
         </div>
       </v-img>
@@ -37,6 +33,7 @@
       <v-card-actions class="pa-0" @click.stop @dblclick.stop>
         <v-spacer />
         <v-rating
+          v-if="!state.loading"
           v-model="rating"
           class="overflow-hidden"
           half-increments
@@ -44,6 +41,7 @@
           small
           background-color="primary lighten-3"
         />
+        <div v-else style="height: 32px;" />
         <v-spacer />
       </v-card-actions>
     </v-card>
@@ -54,11 +52,12 @@
 import fileUrl from 'file-url'
 import {
   defineComponent,
-  SetupContext,
   reactive,
   computed,
   onMounted,
   onUnmounted,
+  ref,
+  SetupContext,
 } from '@vue/composition-api'
 import { promisify } from '@fiahfy/worker-promisify'
 import { Item } from '~/models'
@@ -67,61 +66,6 @@ import { settingsStore } from '~/store'
 const Worker = require('~/workers/fetch-pathes.worker')
 
 const worker = promisify(new Worker())
-
-// Resize image with antialiasing
-// @see https://stackoverflow.com/questions/17861447/html5-canvas-drawimage-how-to-apply-antialiasing
-const getDataUrlFromImg = (img: HTMLImageElement, size: number) => {
-  const s = size * window.devicePixelRatio
-  let steps = 0
-  let w = img.width
-  let h = img.height
-  if (w < h) {
-    steps = w / s / 2
-    h = (h * s) / w
-    w = s
-  } else {
-    steps = h / s / 2
-    w = (w * s) / h
-    h = s
-  }
-
-  const tc = document.createElement('canvas')
-  tc.width = img.width
-  tc.height = img.height
-
-  const tctx = tc.getContext('2d')
-  if (!tctx) {
-    return undefined
-  }
-  tctx.filter = `blur(${steps}px)`
-  tctx.drawImage(img, 0, 0)
-
-  const c = document.createElement('canvas')
-  c.width = w
-  c.height = h
-
-  const ctx = c.getContext('2d')
-  if (!ctx) {
-    return undefined
-  }
-  ctx.drawImage(tc, 0, 0, w, h)
-
-  return c.toDataURL('image/png')
-}
-
-const getDataUrl = (url: string, size: number): Promise<string | undefined> => {
-  return new Promise((resolve) => {
-    if (!url) {
-      return resolve(url)
-    }
-    const img = new Image()
-    img.crossOrigin = 'anonymous'
-    img.src = url
-    img.onload = () => {
-      resolve(getDataUrlFromImg(img, size))
-    }
-  })
-}
 
 type Props = {
   item: Item
@@ -142,7 +86,7 @@ export default defineComponent({
       images: number
       timer?: number
     }>({
-      loading: false,
+      loading: true,
       error: false,
       imageUrl: '',
       images: 0,
@@ -179,9 +123,11 @@ export default defineComponent({
       return settingsStore.thumbnailHeightValue
     })
 
+    const root = ref<HTMLDivElement>()
+
     const load = async () => {
-      if (!props.item.directory) {
-        state.imageUrl = (await getDataUrl(fileUrl(props.item.path), 256)) ?? ''
+      if (props.item.file) {
+        state.imageUrl = fileUrl(props.item.path)
       } else {
         const { data } = await worker.parallelPostMessage(
           props.item.path,
@@ -191,7 +137,7 @@ export default defineComponent({
           settingsStore.isFileAvailable(filePath)
         )
         if (filePathes.length) {
-          state.imageUrl = (await getDataUrl(fileUrl(filePathes[0]), 256)) ?? ''
+          state.imageUrl = fileUrl(filePathes[0])
         }
         state.images = filePathes.length
       }
@@ -203,8 +149,24 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      state.loading = true
-      state.timer = window.setTimeout(() => load(), 100)
+      let prevTop = 0
+      let time = Date.now() + 100
+      state.timer = window.setInterval(() => {
+        if (!root.value) {
+          return
+        }
+        const top = root.value.getBoundingClientRect().top
+        if (prevTop !== top) {
+          prevTop = top
+          time = Date.now() + 100
+          return
+        }
+        if (Date.now() < time) {
+          return
+        }
+        clearTimeout(state.timer)
+        load()
+      }, 10)
     })
 
     onUnmounted(() => {
@@ -219,6 +181,7 @@ export default defineComponent({
       message,
       contain,
       thumbnailHeightValue,
+      root,
       handleError,
     }
   },

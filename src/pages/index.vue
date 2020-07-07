@@ -310,29 +310,33 @@ export default defineComponent({
                 index += 1
                 break
             }
-          } else {
-            const cols = gridList.value ? gridList.value.getColsInRow() : 0
+          } else if (gridList.value) {
+            const cols = gridList.value.getColsInRow()
+            let newIndex = -1
             switch (e.key) {
               case 'ArrowUp':
                 if (index - cols > -1) {
-                  index -= cols
+                  newIndex = index - cols
                 }
                 break
               case 'ArrowDown':
                 if (index + cols < items.value.length) {
-                  index += cols
+                  newIndex = index + cols
                 }
                 break
               case 'ArrowLeft':
                 if (index % cols > 0) {
-                  index -= 1
+                  newIndex = index - 1
                 }
                 break
               case 'ArrowRight':
                 if (index % cols < cols - 1) {
-                  index += 1
+                  newIndex = index + 1
                 }
                 break
+            }
+            if (gridList.value.isRendered(newIndex)) {
+              index = newIndex
             }
           }
           index = Math.min(Math.max(index, 0), items.value.length - 1)

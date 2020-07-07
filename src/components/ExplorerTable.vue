@@ -99,10 +99,6 @@ export default defineComponent({
     },
   },
   setup(props: Props, context: SetupContext) {
-    const isSelected = (item: Item) => {
-      return item.path === props.selected?.path
-    }
-
     const table = ref<InstanceType<typeof VirtualDataTable>>()
 
     const setScrollTop = (scrollTop: number) => {
@@ -134,6 +130,10 @@ export default defineComponent({
       ;(table.value?.$el as HTMLElement).focus()
     }
 
+    const isSelected = (item: Item) => {
+      return item.path === props.selected?.path
+    }
+
     const handleClickHeader = (header: File) => {
       context.emit('click:header', header)
     }
@@ -152,11 +152,11 @@ export default defineComponent({
 
     return {
       headers,
-      isSelected,
       table,
       setScrollTop,
       scrollInView,
       focus,
+      isSelected,
       handleClickHeader,
       handleClickRow,
       handleDoubleClickRow,
