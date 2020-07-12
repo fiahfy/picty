@@ -12,11 +12,13 @@ export default class QueryHistoryModule extends VuexModule {
 
   @Mutation
   add({ history }: { history: string }) {
-    const exists = this.histories.includes(history)
-    if (!history || exists) {
+    if (!history) {
       return
     }
-    this.histories = [...this.histories, history].slice(-1 * historySize)
+    this.histories = [
+      ...this.histories.filter((item) => item !== history),
+      history,
+    ].slice(-1 * historySize)
   }
 
   @Mutation
