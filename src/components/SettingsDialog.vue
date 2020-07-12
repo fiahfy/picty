@@ -7,90 +7,86 @@
     transition="dialog-bottom-transition"
     eager
   >
-    <v-card flat tile>
-      <div class="d-flex flex-column fill-height">
-        <title-bar :app="false" />
-        <v-main class="fill-height px-0">
-          <div class="d-flex flex-column fill-height">
-            <v-toolbar flat dense>
-              <v-btn title="Close" icon @click="handleClickClose">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-              <v-toolbar-title>Settings</v-toolbar-title>
-            </v-toolbar>
-            <v-container fill-height align-start overflow-y-auto>
-              <div class="d-flex flex-column">
-                <v-subheader class="pl-0 text-uppercase">General</v-subheader>
-                <v-checkbox
-                  v-model="darkTheme"
-                  class="mt-0"
-                  label="Dark Theme"
-                  dense
-                />
-                <v-combobox
-                  v-model="extensions"
-                  :items="defaultExtensions"
-                  label="Image File Extensions"
-                  chips
-                  multiple
-                  dense
-                  class="pt-3"
+    <v-card flat tile class="d-flex flex-column fill-height">
+      <title-bar :app="false" />
+      <v-toolbar flat dense>
+        <v-btn title="Close" icon @click="handleClickClose">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+        <v-toolbar-title>Settings</v-toolbar-title>
+      </v-toolbar>
+      <div class="fill-height overflow-y-auto">
+        <v-container>
+          <div class="d-flex flex-column">
+            <v-subheader class="pl-0 text-uppercase">General</v-subheader>
+            <v-checkbox
+              v-model="darkTheme"
+              class="mt-0"
+              label="Dark Theme"
+              dense
+            />
+            <v-combobox
+              v-model="extensions"
+              :items="defaultExtensions"
+              label="Image File Extensions"
+              chips
+              multiple
+              dense
+              class="pt-3"
+            >
+              <template v-slot:selection="data">
+                <v-chip
+                  :input-value="data.selected"
+                  close
+                  class="my-1"
+                  @click:close="() => handleCloseChip(data.item)"
                 >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      :input-value="data.selected"
-                      close
-                      class="my-1"
-                      @click:close="() => handleCloseChip(data.item)"
-                    >
-                      {{ data.item }}
-                    </v-chip>
-                  </template>
-                </v-combobox>
+                  {{ data.item }}
+                </v-chip>
+              </template>
+            </v-combobox>
 
-                <v-subheader class="pl-0 text-uppercase">
-                  Explorer
-                </v-subheader>
-                <v-select
-                  v-model="thumbnailStyle"
-                  :items="thumbnailStyleOptions"
-                  label="Thumbnail Style"
-                  dense
-                  class="pt-3"
-                />
-                <v-select
-                  v-model="thumbnailHeight"
-                  :items="thumbnailHeightOptions"
-                  label="Thumbnail Height"
-                  dense
-                  class="pt-3"
-                />
+            <v-subheader class="pl-0 text-uppercase">
+              Explorer
+            </v-subheader>
+            <v-select
+              v-model="thumbnailStyle"
+              :items="thumbnailStyleOptions"
+              label="Thumbnail Style"
+              dense
+              class="pt-3"
+            />
+            <v-select
+              v-model="thumbnailHeight"
+              :items="thumbnailHeightOptions"
+              label="Thumbnail Height"
+              dense
+              class="pt-3"
+            />
 
-                <v-subheader class="pl-0 text-uppercase">
-                  Presentation
-                </v-subheader>
-                <v-checkbox
-                  v-model="fullScreen"
-                  class="mt-0"
-                  label="Enter Full Screen"
-                  dense
-                />
-                <v-checkbox
-                  v-model="recursive"
-                  class="mt-0"
-                  label="View Images Recursively"
-                  dense
-                />
-                <v-checkbox
-                  v-model="imageStretched"
-                  class="mt-0"
-                  label="Stretch Small Images"
-                  dense
-                />
-              </div>
-            </v-container>
+            <v-subheader class="pl-0 text-uppercase">
+              Presentation
+            </v-subheader>
+            <v-checkbox
+              v-model="fullScreen"
+              class="mt-0"
+              label="Enter Full Screen"
+              dense
+            />
+            <v-checkbox
+              v-model="recursive"
+              class="mt-0"
+              label="View Images Recursively"
+              dense
+            />
+            <v-checkbox
+              v-model="imageStretched"
+              class="mt-0"
+              label="Stretch Small Images"
+              dense
+            />
           </div>
-        </v-main>
+        </v-container>
       </div>
     </v-card>
   </v-dialog>
@@ -228,9 +224,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.v-card {
-  height: 100% !important;
-}
-</style>
