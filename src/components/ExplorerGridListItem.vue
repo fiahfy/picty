@@ -2,6 +2,7 @@
   <v-col ref="root" class="explorer-grid-list-item pa-1">
     <v-card flat tile style="box-shadow: none !important;">
       <v-img
+        position="top center"
         :src="state.imageUrl"
         :contain="contain"
         :height="thumbnailHeightValue"
