@@ -4,8 +4,8 @@
     class="settings-dialog"
     fullscreen
     hide-overlay
-    transition="dialog-bottom-transition"
     eager
+    :transition="false"
   >
     <v-card flat tile class="d-flex flex-column fill-height">
       <title-bar :app="false" />
