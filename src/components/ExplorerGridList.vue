@@ -173,3 +173,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.explorer-grid-list-item {
+  cursor: pointer;
+}
+</style>

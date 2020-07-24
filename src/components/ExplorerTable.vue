@@ -166,3 +166,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.explorer-table-row {
+  cursor: pointer;
+}
+</style>

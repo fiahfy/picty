@@ -191,21 +191,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .explorer-grid-list-item {
-  .v-card {
-    cursor: pointer;
+  > .v-card {
     position: relative;
-    .v-image .images {
+    > .v-image .images {
       background-color: rgba(0, 0, 0, 0.8);
       position: absolute;
       bottom: 0;
       right: 0;
     }
-    .v-icon {
+    > .v-icon {
       position: absolute;
       left: 0;
       top: 0;
     }
-    .v-card__title .title {
+    > .v-card__title .title {
       display: table;
       > div {
         display: table-cell;

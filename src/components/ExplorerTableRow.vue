@@ -103,8 +103,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .explorer-table-row {
-  cursor: pointer;
-  td {
+  > td {
     .v-icon {
       user-select: none;
     }
