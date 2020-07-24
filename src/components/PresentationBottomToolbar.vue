@@ -51,7 +51,7 @@
           <v-icon>mdi-magnify-plus-outline</v-icon>
         </v-btn>
       </template>
-      <v-toolbar ref="menubar" flat dense dark>
+      <v-toolbar ref="menubar" flat dense dark color="transparent">
         <v-btn
           :title="'Zoom in' | accelerator('CmdOrCtrl+Plus')"
           icon
@@ -193,6 +193,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.v-menu__content {
+  box-shadow: none;
+  background: rgba(0, 0, 0, 0.8);
+}
+
 .presentation-bottom-toolbar ::v-deep .v-input__slider {
   left: 0;
   position: absolute;

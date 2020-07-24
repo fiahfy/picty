@@ -2,52 +2,52 @@
   <v-dialog
     ref="dialog"
     v-model="state.active"
-    :transition="false"
     class="presentation-dialog"
     content-class="presentation-dialog-content"
     fullscreen
     hide-overlay
     eager
+    :transition="false"
   >
-    <v-card :class="classes" dark flat tile>
-      <div class="d-flex flex-column fill-height">
-        <title-bar :app="false" />
-        <v-main class="fill-height px-0">
-          <v-container fill-height fluid pa-0>
-            <div class="d-flex fill-height flex-grow-1">
-              <presentation-content
-                class="flex-grow-1 overflow-hidden"
-                :loading="state.loading"
-                :scale="state.scale"
-                :file="state.current"
-                @change:zoom="handleChangeZoom"
-              />
-            </div>
-          </v-container>
-          <div class="top-overlay d-flex pb-5">
-            <presentation-top-toolbar
-              ref="topToolbar"
-              :file="state.current"
-              @click:close="handleClickClose"
-            />
-          </div>
-          <div class="bottom-overlay d-flex pt-5">
-            <presentation-bottom-toolbar
-              ref="bottomToolbar"
-              :page="page"
-              :max-page="maxPage"
-              :scale="state.scale"
-              :full-screen="state.fullScreen"
-              @click:previous="handleClickPrevious"
-              @click:next="handleClickNext"
-              @click:zoom-in="handleClickZoomIn"
-              @click:zoom-out="handleClickZoomOut"
-              @click:zoom-reset="handleClickZoomReset"
-              @click:toggle-full-screen="handleClickToggleFullScreen"
-              @change:page="handleChangePage"
-            />
-          </div>
-        </v-main>
+    <v-card
+      :class="classes"
+      dark
+      flat
+      tile
+      class="d-flex flex-column fill-height"
+    >
+      <title-bar :app="false" />
+      <div class="wrapper fill-height">
+        <presentation-content
+          class="fill-height"
+          :loading="state.loading"
+          :scale="state.scale"
+          :file="state.current"
+          @change:zoom="handleChangeZoom"
+        />
+        <div class="top-overlay d-flex pb-15">
+          <presentation-top-toolbar
+            ref="topToolbar"
+            :file="state.current"
+            @click:close="handleClickClose"
+          />
+        </div>
+        <div class="bottom-overlay d-flex pt-15">
+          <presentation-bottom-toolbar
+            ref="bottomToolbar"
+            :page="page"
+            :max-page="maxPage"
+            :scale="state.scale"
+            :full-screen="state.fullScreen"
+            @click:previous="handleClickPrevious"
+            @click:next="handleClickNext"
+            @click:zoom-in="handleClickZoomIn"
+            @click:zoom-out="handleClickZoomOut"
+            @click:zoom-reset="handleClickZoomReset"
+            @click:toggle-full-screen="handleClickToggleFullScreen"
+            @change:page="handleChangePage"
+          />
+        </div>
       </div>
     </v-card>
   </v-dialog>
@@ -373,7 +373,6 @@ export default defineComponent({
 }
 
 .v-card {
-  height: 100% !important;
   &.toolbar-hidden {
     .presentation-content {
       cursor: none;
@@ -391,26 +390,22 @@ export default defineComponent({
       animation: fade-out 0.3s forwards;
     }
   }
-  .top-overlay {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-  .bottom-overlay {
-    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5));
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    right: 0;
-  }
-  .v-progress-linear {
-    left: 0;
-    margin: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
+  > .wrapper {
+    position: relative;
+    > .top-overlay {
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    > .bottom-overlay {
+      background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5));
+      bottom: 0;
+      left: 0;
+      position: absolute;
+      right: 0;
+    }
   }
 }
 </style>
