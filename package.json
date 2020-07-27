@@ -5,7 +5,7 @@
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
-    "url": "http://fiahfy.blogspot.com/"
+    "url": "https://fiahfy.github.io/"
   },
   "dependencies": {
     "@fiahfy/electron-accelerator-formatter": "^0.0.4",
@@ -65,7 +65,7 @@
     "build": "nuxt generate",
     "dev": "cross-env NODE_ENV=development run-p serve electron",
     "electron": "electron main.js",
-    "lint": "eslint -f codeframe --ext .ts,.js,.vue --ignore-path .gitignore .",
+    "lint": "eslint -f codeframe --ext .js,.ts,.vue --ignore-path .gitignore .",
     "release": "electron-builder",
     "resources": "run-p resources:*",
     "resources:icns": "icns-convert build/icon.png",
