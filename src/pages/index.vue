@@ -51,10 +51,8 @@ import {
   watch,
   ref,
   SetupContext,
-} from '@vue/composition-api'
+} from 'nuxt-composition-api'
 import { promisify } from '@fiahfy/worker-promisify'
-import ExplorerToolbar from '~/components/ExplorerToolbar.vue'
-import ExplorerCard from '~/components/ExplorerCard.vue'
 import ExplorerTable from '~/components/ExplorerTable.vue'
 import ExplorerGridList from '~/components/ExplorerGridList.vue'
 import { File, Item } from '~/models'
@@ -67,16 +65,13 @@ import {
   favoriteStore,
 } from '~/store'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Worker = require('~/workers/fetch-files.worker')
 
 const worker = promisify(new Worker())
 
 export default defineComponent({
-  components: {
-    ExplorerToolbar,
-    ExplorerCard,
-  },
-  setup(_props: {}, context: SetupContext) {
+  setup(_props: unknown, context: SetupContext) {
     const state = reactive<{
       loading: boolean
       error: boolean

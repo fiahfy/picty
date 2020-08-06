@@ -63,15 +63,14 @@ import {
   onMounted,
   SetupContext,
   onUnmounted,
-} from '@vue/composition-api'
+} from 'nuxt-composition-api'
 import { promisify } from '@fiahfy/worker-promisify'
-import TitleBar from '~/components/TitleBar.vue'
 import PresentationBottomToolbar from '~/components/PresentationBottomToolbar.vue'
-import PresentationContent from '~/components/PresentationContent.vue'
 import PresentationTopToolbar from '~/components/PresentationTopToolbar.vue'
 import { File } from '~/models'
 import { settingsStore } from '~/store'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Worker = require('~/workers/fetch-files.worker')
 
 const worker = promisify(new Worker())
@@ -97,13 +96,7 @@ const scales = [
 ]
 
 export default defineComponent({
-  components: {
-    TitleBar,
-    PresentationContent,
-    PresentationBottomToolbar,
-    PresentationTopToolbar,
-  },
-  setup(_props: {}, context: SetupContext) {
+  setup(_props: unknown, context: SetupContext) {
     const state = reactive<{
       active: boolean
       loading: boolean

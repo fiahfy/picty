@@ -11,24 +11,24 @@ export default class HistoryModule extends VuexModule {
   histories: string[] = []
   index = -1
 
-  get canBack() {
+  get canBack(): boolean {
     return this.index > 0
   }
 
-  get canForward() {
+  get canForward(): boolean {
     return this.index < this.histories.length - 1
   }
 
-  get backHistories() {
+  get backHistories(): string[] {
     return this.histories.slice(0, this.index).reverse()
   }
 
-  get forwardHistories() {
+  get forwardHistories(): string[] {
     return this.histories.slice(this.index + 1, this.histories.length)
   }
 
   @Action
-  push({ history }: { history: string }) {
+  push({ history }: { history: string }): void {
     const index = this.index + 1
     const histories = [...this.histories.slice(0, index), history].slice(
       -1 * historySize
@@ -38,7 +38,7 @@ export default class HistoryModule extends VuexModule {
   }
 
   @Action
-  go({ offset }: { offset: number }) {
+  go({ offset }: { offset: number }): string | undefined {
     const index = this.index + offset
     if (index < 0 || index > this.histories.length - 1) {
       return
@@ -48,22 +48,22 @@ export default class HistoryModule extends VuexModule {
   }
 
   @Action
-  back() {
+  back(): string | undefined {
     return this.go({ offset: -1 })
   }
 
   @Action
-  forward() {
+  forward(): string | undefined {
     return this.go({ offset: 1 })
   }
 
   @Mutation
-  setHistories({ histories }: { histories: string[] }) {
+  setHistories({ histories }: { histories: string[] }): void {
     this.histories = histories
   }
 
   @Mutation
-  setIndex({ index }: { index: number }) {
+  setIndex({ index }: { index: number }): void {
     this.index = index
   }
 }

@@ -96,7 +96,7 @@ import {
   computed,
   reactive,
   ref,
-} from '@vue/composition-api'
+} from 'nuxt-composition-api'
 
 type Props = {
   page: number

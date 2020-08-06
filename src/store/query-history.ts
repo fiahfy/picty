@@ -11,7 +11,7 @@ export default class QueryHistoryModule extends VuexModule {
   histories: string[] = []
 
   @Mutation
-  add({ history }: { history: string }) {
+  add({ history }: { history: string }): void {
     if (!history) {
       return
     }
@@ -22,7 +22,7 @@ export default class QueryHistoryModule extends VuexModule {
   }
 
   @Mutation
-  delete({ history }: { history: string }) {
+  delete({ history }: { history: string }): void {
     this.histories = this.histories.filter((item) => item !== history)
   }
 }

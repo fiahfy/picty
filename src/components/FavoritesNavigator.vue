@@ -31,12 +31,12 @@
 
 <script lang="ts">
 import { clipboard } from 'electron'
-import { defineComponent, computed, SetupContext } from '@vue/composition-api'
+import { defineComponent, computed, SetupContext } from 'nuxt-composition-api'
 import { Favorite } from '~/models'
 import { favoriteStore } from '~/store'
 
 export default defineComponent({
-  setup(_props: {}, context: SetupContext) {
+  setup(_props: unknown, context: SetupContext) {
     const favorites = computed(() => favoriteStore.favoritesAll)
 
     const handleClickItem = (favorite: Favorite) => {

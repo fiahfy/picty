@@ -100,8 +100,7 @@ import {
   onMounted,
   onUnmounted,
   SetupContext,
-} from '@vue/composition-api'
-import TitleBar from '~/components/TitleBar.vue'
+} from 'nuxt-composition-api'
 import { settingsStore } from '~/store'
 import {
   defaultExtensions,
@@ -120,10 +119,7 @@ const thumbnailHeightOptions = Object.keys(thumbnailHeights).map((height) => ({
 }))
 
 export default defineComponent({
-  components: {
-    TitleBar,
-  },
-  setup(_props: {}, context: SetupContext) {
+  setup(_props: unknown, context: SetupContext) {
     const state = reactive({
       active: false,
     })

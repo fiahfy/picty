@@ -7,15 +7,14 @@ import queryHistory from '~/store/query-history'
 import rating from '~/store/rating'
 import settings from '~/store/settings'
 
-/* eslint-disable import/no-mutable-exports */
 let explorerStore: explorer
 let favoriteStore: favorite
 let historyStore: history
 let queryHistoryStore: queryHistory
 let ratingStore: rating
 let settingsStore: settings
-/* eslint-enable import/no-mutable-exports */
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function initializeStores(store: Store<any>): void {
   explorerStore = getModule(explorer, store)
   favoriteStore = getModule(favorite, store)

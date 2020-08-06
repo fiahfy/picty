@@ -10,10 +10,10 @@ export default class BookmarkModule extends VuexModule {
   favorites: { [filePath: string]: { createdAt: number } } = {}
 
   get isFavorite() {
-    return (filePath: string) => !!this.favorites[filePath]
+    return (filePath: string): boolean => !!this.favorites[filePath]
   }
 
-  get favoritesAll() {
+  get favoritesAll(): { path: string; name: string }[] {
     return Object.keys(this.favorites)
       .map((filePath: string) => {
         return {
@@ -27,7 +27,7 @@ export default class BookmarkModule extends VuexModule {
   }
 
   @Action
-  toggle({ filePath }: { filePath: string }) {
+  toggle({ filePath }: { filePath: string }): void {
     if (this.isFavorite(filePath)) {
       this.delete({ filePath })
     } else {
@@ -36,7 +36,7 @@ export default class BookmarkModule extends VuexModule {
   }
 
   @Mutation
-  add({ filePath }: { filePath: string }) {
+  add({ filePath }: { filePath: string }): void {
     this.favorites = {
       ...this.favorites,
       [filePath]: {
@@ -46,7 +46,7 @@ export default class BookmarkModule extends VuexModule {
   }
 
   @Mutation
-  delete({ filePath }: { filePath: string }) {
+  delete({ filePath }: { filePath: string }): void {
     const bookmarks = { ...this.favorites }
     delete bookmarks[filePath]
     this.favorites = bookmarks

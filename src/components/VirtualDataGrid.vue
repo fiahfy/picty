@@ -58,13 +58,13 @@ import {
   onUnmounted,
   watch,
   SetupContext,
-} from '@vue/composition-api'
+} from 'nuxt-composition-api'
 import { throttle } from 'throttle-debounce'
 
 const breakpoints = { sm: 600, md: 960, lg: 1264, xl: 1904 }
 
 type Props = {
-  items: any[]
+  items: unknown[]
   estimatedHeight: number
   threshold: number | string
   cols: number | number[]
@@ -91,7 +91,7 @@ export default defineComponent({
   },
   setup(props: Props, context: SetupContext) {
     const state = reactive<{
-      renderItems: any[]
+      renderItems: unknown[]
       startIndex: number
       endIndex: number
       padding: { top: number; bottom: number }

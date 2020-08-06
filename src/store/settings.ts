@@ -40,12 +40,12 @@ export default class SettingsModule extends VuexModule {
   extensions = [...defaultExtensions]
   sidebarWidth = 256
 
-  get thumbnailHeightValue() {
+  get thumbnailHeightValue(): number {
     return thumbnailHeights[this.thumbnailHeight]
   }
 
   get isFileAvailable() {
-    return (filePath: string) => {
+    return (filePath: string): boolean => {
       if (!filePath) {
         return false
       }
@@ -58,27 +58,31 @@ export default class SettingsModule extends VuexModule {
   }
 
   @Mutation
-  setDarkTheme({ darkTheme }: { darkTheme: boolean }) {
+  setDarkTheme({ darkTheme }: { darkTheme: boolean }): void {
     this.darkTheme = darkTheme
   }
 
   @Mutation
-  setFullScreen({ fullScreen }: { fullScreen: boolean }) {
+  setFullScreen({ fullScreen }: { fullScreen: boolean }): void {
     this.fullScreen = fullScreen
   }
 
   @Mutation
-  setRecursive({ recursive }: { recursive: boolean }) {
+  setRecursive({ recursive }: { recursive: boolean }): void {
     this.recursive = recursive
   }
 
   @Mutation
-  setImageStretched({ imageStretched }: { imageStretched: boolean }) {
+  setImageStretched({ imageStretched }: { imageStretched: boolean }): void {
     this.imageStretched = imageStretched
   }
 
   @Mutation
-  setThumbnailStyle({ thumbnailStyle }: { thumbnailStyle: ThumbnailStyle }) {
+  setThumbnailStyle({
+    thumbnailStyle,
+  }: {
+    thumbnailStyle: ThumbnailStyle
+  }): void {
     this.thumbnailStyle = thumbnailStyle
   }
 
@@ -87,17 +91,17 @@ export default class SettingsModule extends VuexModule {
     thumbnailHeight,
   }: {
     thumbnailHeight: ThumbnailHeight
-  }) {
+  }): void {
     this.thumbnailHeight = thumbnailHeight
   }
 
   @Mutation
-  setExtensions({ extensions }: { extensions: string[] }) {
+  setExtensions({ extensions }: { extensions: string[] }): void {
     this.extensions = extensions
   }
 
   @Mutation
-  setSidebarWidth({ sidebarWidth }: { sidebarWidth: number }) {
+  setSidebarWidth({ sidebarWidth }: { sidebarWidth: number }): void {
     this.sidebarWidth = sidebarWidth
   }
 }

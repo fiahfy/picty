@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext } from '@vue/composition-api'
+import { defineComponent, SetupContext } from 'nuxt-composition-api'
 
 type Header = {
   text: string

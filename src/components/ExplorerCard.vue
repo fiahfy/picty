@@ -79,7 +79,7 @@ import {
   ref,
   SetupContext,
   watch,
-} from '@vue/composition-api'
+} from 'nuxt-composition-api'
 import { Item } from '~/models'
 import { explorerStore, favoriteStore, queryHistoryStore } from '~/store'
 

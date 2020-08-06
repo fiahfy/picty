@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { File } from '~/models'
 
-const ctx: Worker = self as any
+const ctx: Worker = self as any // eslint-disable-line @typescript-eslint/no-explicit-any
 
 const getFile = (filePath: string): File => {
   const stat = fs.lstatSync(filePath)

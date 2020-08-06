@@ -59,11 +59,12 @@ import {
   onUnmounted,
   ref,
   SetupContext,
-} from '@vue/composition-api'
+} from 'nuxt-composition-api'
 import { promisify } from '@fiahfy/worker-promisify'
 import { Item } from '~/models'
 import { settingsStore } from '~/store'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Worker = require('~/workers/fetch-pathes.worker')
 
 const worker = promisify(new Worker())

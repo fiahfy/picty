@@ -32,10 +32,10 @@ import {
   onUnmounted,
   watch,
   SetupContext,
-} from '@vue/composition-api'
+} from 'nuxt-composition-api'
 
 type Props = {
-  items: any[]
+  items: unknown[]
   estimatedHeight: number
   threshold: number | string
 }
@@ -61,7 +61,7 @@ export default defineComponent({
   },
   setup(props: Props, context: SetupContext) {
     const state = reactive<{
-      renderItems: any[]
+      renderItems: unknown[]
       padding: { top: number; bottom: number }
       observer?: ResizeObserver
     }>({

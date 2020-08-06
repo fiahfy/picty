@@ -40,7 +40,7 @@ import {
   ref,
   watch,
   SetupContext,
-} from '@vue/composition-api'
+} from 'nuxt-composition-api'
 import { File } from '~/models'
 import { settingsStore } from '~/store'
 

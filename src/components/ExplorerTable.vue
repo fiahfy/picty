@@ -35,9 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext, ref } from '@vue/composition-api'
-import ExplorerTableHeader from '~/components/ExplorerTableHeader.vue'
-import ExplorerTableRow from '~/components/ExplorerTableRow.vue'
+import { defineComponent, SetupContext, ref } from 'nuxt-composition-api'
 import VirtualDataTable from '~/components/VirtualDataTable.vue'
 import { Item } from '~/models'
 
@@ -73,11 +71,6 @@ type Props = {
 }
 
 export default defineComponent({
-  components: {
-    ExplorerTableHeader,
-    ExplorerTableRow,
-    VirtualDataTable,
-  },
   props: {
     items: {
       type: Array,

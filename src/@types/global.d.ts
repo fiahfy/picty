@@ -26,6 +26,6 @@ declare global {
 // @see https://github.com/championswimmer/vuex-module-decorators/issues/254
 declare module 'vuex-module-decorators/dist/types' {
   interface VuexModule {
-    store: Store<any>
+    store: Store<any> // eslint-disable-line @typescript-eslint/no-explicit-any
   }
 }

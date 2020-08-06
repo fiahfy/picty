@@ -40,9 +40,7 @@ import {
   SetupContext,
   computed,
   ref,
-} from '@vue/composition-api'
-import ExplorerGridListHeader from '~/components/ExplorerGridListHeader.vue'
-import ExplorerGridListItem from '~/components/ExplorerGridListItem.vue'
+} from 'nuxt-composition-api'
 import VirtualDataGrid from '~/components/VirtualDataGrid.vue'
 import { Item } from '~/models'
 import { settingsStore } from '~/store'
@@ -58,11 +56,6 @@ type Props = {
 }
 
 export default defineComponent({
-  components: {
-    ExplorerGridListHeader,
-    ExplorerGridListItem,
-    VirtualDataGrid,
-  },
   props: {
     items: {
       type: Array,

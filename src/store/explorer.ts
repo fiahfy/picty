@@ -12,12 +12,12 @@ export default class ExplorerModule extends VuexModule {
   listStyle: ListStyle = 'list'
 
   @Mutation
-  setLocation({ location }: { location: string }) {
+  setLocation({ location }: { location: string }): void {
     this.location = location
   }
 
   @Mutation
-  setListStyle({ listStyle }: { listStyle: ListStyle }) {
+  setListStyle({ listStyle }: { listStyle: ListStyle }): void {
     this.listStyle = listStyle
   }
 }

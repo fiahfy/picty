@@ -20,7 +20,7 @@ import {
   computed,
   onMounted,
   onUnmounted,
-} from '@vue/composition-api'
+} from 'nuxt-composition-api'
 
 type Props = {
   app: boolean
@@ -33,7 +33,7 @@ export default defineComponent({
       default: true,
     },
   },
-  setup(_props: Props) {
+  setup() {
     const state = reactive({
       fullScreen: false,
     })

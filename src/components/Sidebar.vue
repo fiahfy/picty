@@ -29,8 +29,7 @@ import {
   ref,
   onMounted,
   onUnmounted,
-} from '@vue/composition-api'
-import ActivityBar from '~/components/ActivityBar.vue'
+} from 'nuxt-composition-api'
 import FavoritesNavigator from '~/components/FavoritesNavigator.vue'
 import FoldersNavigator from '~/components/FoldersNavigator.vue'
 import { settingsStore } from '~/store'
@@ -41,9 +40,6 @@ const minWidth = 256
 export type Navigator = 'folders' | 'favorites'
 
 export default defineComponent({
-  components: {
-    ActivityBar,
-  },
   setup() {
     const state = reactive<{
       resizing: boolean

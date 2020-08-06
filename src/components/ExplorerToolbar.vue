@@ -69,7 +69,7 @@ import {
   onMounted,
   onUnmounted,
   SetupContext,
-} from '@vue/composition-api'
+} from 'nuxt-composition-api'
 import { explorerStore, historyStore } from '~/store'
 
 type Props = {

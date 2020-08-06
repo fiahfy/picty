@@ -9,11 +9,11 @@ export default class RatingModule extends VuexModule {
   ratings: { [filePath: string]: number } = {}
 
   get getRating() {
-    return (filePath: string) => this.ratings[filePath] || 0
+    return (filePath: string): number => this.ratings[filePath] || 0
   }
 
   @Mutation
-  setRating({ rating, filePath }: { rating: number; filePath: string }) {
+  setRating({ rating, filePath }: { rating: number; filePath: string }): void {
     if (rating) {
       this.ratings = {
         ...this.ratings,

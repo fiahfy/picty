@@ -29,7 +29,7 @@ import {
   computed,
   ref,
   SetupContext,
-} from '@vue/composition-api'
+} from 'nuxt-composition-api'
 import { File } from '~/models'
 
 type Props = {
