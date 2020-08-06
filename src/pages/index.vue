@@ -66,7 +66,7 @@ import {
 } from '~/store'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const Worker = require('~/workers/fetch-files.worker')
+const Worker = require('~/workers/fetch-files.worker').default
 
 const worker = promisify(new Worker())
 

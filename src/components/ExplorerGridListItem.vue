@@ -65,7 +65,7 @@ import { Item } from '~/models'
 import { settingsStore } from '~/store'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const Worker = require('~/workers/fetch-pathes.worker')
+const Worker = require('~/workers/fetch-pathes.worker').default
 
 const worker = promisify(new Worker())
 
