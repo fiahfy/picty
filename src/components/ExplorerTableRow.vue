@@ -31,7 +31,7 @@ import {
   reactive,
   computed,
   SetupContext,
-} from 'nuxt-composition-api'
+} from '@nuxtjs/composition-api'
 import { promisify } from '@fiahfy/worker-promisify'
 import { Item } from '~/models'
 import { settingsStore } from '~/store'

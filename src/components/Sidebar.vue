@@ -29,7 +29,7 @@ import {
   ref,
   onMounted,
   onUnmounted,
-} from 'nuxt-composition-api'
+} from '@nuxtjs/composition-api'
 import FavoritesNavigator from '~/components/FavoritesNavigator.vue'
 import FoldersNavigator from '~/components/FoldersNavigator.vue'
 import { settingsStore } from '~/store'

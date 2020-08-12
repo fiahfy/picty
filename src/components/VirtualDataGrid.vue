@@ -58,7 +58,7 @@ import {
   onUnmounted,
   watch,
   SetupContext,
-} from 'nuxt-composition-api'
+} from '@nuxtjs/composition-api'
 import { throttle } from 'throttle-debounce'
 
 const breakpoints = { sm: 600, md: 960, lg: 1264, xl: 1904 }

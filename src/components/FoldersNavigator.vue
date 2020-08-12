@@ -51,7 +51,7 @@ import {
   reactive,
   watch,
   SetupContext,
-} from 'nuxt-composition-api'
+} from '@nuxtjs/composition-api'
 import { promisify } from '@fiahfy/worker-promisify'
 import { File } from '~/models'
 import { explorerStore, settingsStore } from '~/store'

@@ -20,7 +20,7 @@ import {
   computed,
   onMounted,
   onUnmounted,
-} from 'nuxt-composition-api'
+} from '@nuxtjs/composition-api'
 
 type Props = {
   app: boolean

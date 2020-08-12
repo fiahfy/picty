@@ -18,7 +18,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, SetupContext } from 'nuxt-composition-api'
+import {
+  defineComponent,
+  computed,
+  SetupContext,
+} from '@nuxtjs/composition-api'
 import { Item } from '~/models'
 
 type Option = {

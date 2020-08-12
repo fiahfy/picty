@@ -21,7 +21,7 @@ export default {
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ['@nuxt/typescript-build', 'nuxt-composition-api'],
+  buildModules: ['@nuxt/typescript-build', '@nuxtjs/composition-api'],
 
   /*
    ** Auto import components

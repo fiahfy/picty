@@ -63,7 +63,7 @@ import {
   onMounted,
   SetupContext,
   onUnmounted,
-} from 'nuxt-composition-api'
+} from '@nuxtjs/composition-api'
 import { promisify } from '@fiahfy/worker-promisify'
 import PresentationBottomToolbar from '~/components/PresentationBottomToolbar.vue'
 import PresentationTopToolbar from '~/components/PresentationTopToolbar.vue'

@@ -51,7 +51,7 @@ import {
   watch,
   ref,
   SetupContext,
-} from 'nuxt-composition-api'
+} from '@nuxtjs/composition-api'
 import { promisify } from '@fiahfy/worker-promisify'
 import ExplorerTable from '~/components/ExplorerTable.vue'
 import ExplorerGridList from '~/components/ExplorerGridList.vue'

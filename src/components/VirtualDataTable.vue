@@ -32,7 +32,7 @@ import {
   onUnmounted,
   watch,
   SetupContext,
-} from 'nuxt-composition-api'
+} from '@nuxtjs/composition-api'
 
 type Props = {
   items: unknown[]

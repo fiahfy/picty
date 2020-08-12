@@ -31,7 +31,11 @@
 
 <script lang="ts">
 import { clipboard } from 'electron'
-import { defineComponent, computed, SetupContext } from 'nuxt-composition-api'
+import {
+  defineComponent,
+  computed,
+  SetupContext,
+} from '@nuxtjs/composition-api'
 import { Favorite } from '~/models'
 import { favoriteStore } from '~/store'
 

@@ -40,7 +40,7 @@ import {
   SetupContext,
   computed,
   ref,
-} from 'nuxt-composition-api'
+} from '@nuxtjs/composition-api'
 import VirtualDataGrid from '~/components/VirtualDataGrid.vue'
 import { Item } from '~/models'
 import { settingsStore } from '~/store'

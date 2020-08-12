@@ -46,7 +46,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, SetupContext } from 'nuxt-composition-api'
+import {
+  defineComponent,
+  computed,
+  SetupContext,
+} from '@nuxtjs/composition-api'
 import { Navigator } from '~/components/Sidebar.vue'
 
 type Menu = {

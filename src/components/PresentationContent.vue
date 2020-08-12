@@ -40,7 +40,7 @@ import {
   ref,
   watch,
   SetupContext,
-} from 'nuxt-composition-api'
+} from '@nuxtjs/composition-api'
 import { File } from '~/models'
 import { settingsStore } from '~/store'
 

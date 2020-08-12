@@ -69,7 +69,7 @@ import {
   onMounted,
   onUnmounted,
   SetupContext,
-} from 'nuxt-composition-api'
+} from '@nuxtjs/composition-api'
 import { explorerStore, historyStore } from '~/store'
 
 type Props = {
