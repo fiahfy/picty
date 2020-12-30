@@ -65,6 +65,7 @@ import {
   onUnmounted,
 } from '@nuxtjs/composition-api'
 import { promisify } from '@fiahfy/worker-promisify'
+import { VDialog } from 'vuetify/lib'
 import PresentationBottomToolbar from '~/components/PresentationBottomToolbar.vue'
 import PresentationTopToolbar from '~/components/PresentationTopToolbar.vue'
 import { File } from '~/models'
@@ -136,7 +137,7 @@ export default defineComponent({
     )
     const maxPage = computed(() => state.files.length)
 
-    const dialog = ref<Vue>()
+    const dialog = ref<InstanceType<typeof VDialog>>()
     const topToolbar = ref<InstanceType<typeof PresentationTopToolbar>>()
     const bottomToolbar = ref<InstanceType<typeof PresentationBottomToolbar>>()
 

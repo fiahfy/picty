@@ -23,18 +23,16 @@
         hoverable
         class="user-select-none flex-grow-1"
       >
-        <template v-slot:prepend="{ item, open }">
+        <template #prepend="{ item, open }">
           <v-icon v-if="item.children" color="blue lighten-3">
             {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
           </v-icon>
           <v-icon v-else-if="item.path" color="green lighten-3">
             mdi-file-image
           </v-icon>
-          <v-icon v-else color="grey">
-            mdi-folder-multiple-image
-          </v-icon>
+          <v-icon v-else color="grey"> mdi-folder-multiple-image </v-icon>
         </template>
-        <template v-slot:label="{ item }">
+        <template #label="{ item }">
           <div class="node text-truncate" @click="() => handleClickNode(item)">
             {{ item.name }}
           </div>

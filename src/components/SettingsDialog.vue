@@ -34,7 +34,7 @@
               dense
               class="pt-3"
             >
-              <template v-slot:selection="data">
+              <template #selection="data">
                 <v-chip
                   :input-value="data.selected"
                   close
@@ -46,9 +46,7 @@
               </template>
             </v-combobox>
 
-            <v-subheader class="pl-0 text-uppercase">
-              Explorer
-            </v-subheader>
+            <v-subheader class="pl-0 text-uppercase"> Explorer </v-subheader>
             <v-select
               v-model="thumbnailStyle"
               :items="thumbnailStyleOptions"

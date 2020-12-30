@@ -14,7 +14,7 @@
         @click:menu="handleClickMenu"
       />
       <keep-alive>
-        <component :is="component" class="flex-grow-1" style="min-width: 0;" />
+        <component :is="component" class="flex-grow-1" style="min-width: 0" />
       </keep-alive>
       <div v-show="state.navigator" ref="resizer" class="resizer" />
     </div>
@@ -30,6 +30,7 @@ import {
   onMounted,
   onUnmounted,
 } from '@nuxtjs/composition-api'
+import { VNavigationDrawer } from 'vuetify/lib'
 import FavoritesNavigator from '~/components/FavoritesNavigator.vue'
 import FoldersNavigator from '~/components/FoldersNavigator.vue'
 import { settingsStore } from '~/store'
@@ -71,7 +72,7 @@ export default defineComponent({
       }
     })
 
-    const sidebar = ref<Vue>()
+    const sidebar = ref<InstanceType<typeof VNavigationDrawer>>()
     const resizer = ref<HTMLDivElement>()
 
     const handleClickMenu = (menu: { navigator: Navigator }) => {
@@ -104,7 +105,7 @@ export default defineComponent({
         minWidth + offsetWidth,
         Math.min(w, window.innerWidth - minWidth)
       )
-      ;(sidebar.value?.$el as HTMLElement).style.width = w + 'px'
+      ;(sidebar.value.$el as HTMLElement).style.width = w + 'px'
     }
 
     onMounted(() => {

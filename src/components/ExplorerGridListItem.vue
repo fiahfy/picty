@@ -1,6 +1,6 @@
 <template>
   <v-col ref="root" class="explorer-grid-list-item pa-1">
-    <v-card flat tile style="box-shadow: none !important;">
+    <v-card flat tile style="box-shadow: none !important">
       <v-img
         position="top center"
         :src="state.imageUrl"
@@ -9,7 +9,7 @@
         :transition="false"
         @error="handleError"
       >
-        <template v-slot:placeholder>
+        <template #placeholder>
           <div class="d-flex fill-height align-center justify-center">
             <div class="caption">{{ message }}</div>
           </div>
@@ -42,7 +42,7 @@
           small
           background-color="primary lighten-3"
         />
-        <div v-else style="height: 32px;" />
+        <div v-else style="height: 32px" />
         <v-spacer />
       </v-card-actions>
     </v-card>

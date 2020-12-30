@@ -49,7 +49,7 @@
         @contextmenu.stop="handleContextMenu"
         @click:prepend-inner="handleClickMagnify"
       >
-        <template v-slot:item="{ item }">
+        <template #item="{ item }">
           <v-list-item-content>
             <v-list-item-title v-text="item" />
           </v-list-item-content>
@@ -80,6 +80,7 @@ import {
   SetupContext,
   watch,
 } from '@nuxtjs/composition-api'
+import { VCombobox } from 'vuetify/lib'
 import { Item } from '~/models'
 import { explorerStore, favoriteStore, queryHistoryStore } from '~/store'
 
@@ -92,6 +93,7 @@ export default defineComponent({
   props: {
     selected: {
       type: Object,
+      default: undefined,
     },
     query: {
       type: String,
@@ -116,7 +118,7 @@ export default defineComponent({
       return props.selected && favoriteStore.isFavorite(props.selected.path)
     })
 
-    const queryField = ref<Vue>()
+    const queryField = ref<InstanceType<typeof VCombobox>>()
 
     const focusQuery = () => {
       ;(queryField.value?.$el.querySelector(

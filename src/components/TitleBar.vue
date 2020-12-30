@@ -22,10 +22,6 @@ import {
   onUnmounted,
 } from '@nuxtjs/composition-api'
 
-type Props = {
-  app: boolean
-}
-
 export default defineComponent({
   props: {
     app: {

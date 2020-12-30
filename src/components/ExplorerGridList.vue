@@ -13,14 +13,14 @@
     threshold="1"
     tabindex="0"
   >
-    <template v-slot:header>
+    <template #header>
       <explorer-grid-list-header
         :sort-by="sortBy"
         :sort-desc="sortDesc"
         @change:sort-option="handleChangeSortOption"
       />
     </template>
-    <template v-slot:item="props">
+    <template #item="props">
       <explorer-grid-list-item
         :key="props.item.path"
         :item="props.item"
@@ -63,6 +63,7 @@ export default defineComponent({
     },
     selected: {
       type: Object,
+      default: undefined,
     },
     loading: {
       type: Boolean,
@@ -70,6 +71,7 @@ export default defineComponent({
     },
     sortBy: {
       type: String,
+      default: undefined,
     },
     sortDesc: {
       type: Boolean,

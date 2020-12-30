@@ -1,5 +1,5 @@
 const http = require('http')
-const { app, shell, BrowserWindow, Menu } = require('electron')
+const { BrowserWindow, Menu, app, protocol, shell } = require('electron')
 const windowStateKeeper = require('electron-window-state')
 
 const dev = process.env.NODE_ENV === 'development'
@@ -131,6 +131,7 @@ const createWindow = async () => {
     ...windowState,
     titleBarStyle: 'hidden',
     webPreferences: {
+      enableRemoteModule: true,
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
     },
@@ -189,3 +190,9 @@ const createWindow = async () => {
 app.on('ready', createWindow)
 app.on('activate', () => mainWindow === null && createWindow())
 app.on('window-all-closed', () => process.platform !== 'darwin' && app.quit())
+app.whenReady().then(() => {
+  protocol.registerFileProtocol('file', (request, callback) => {
+    const pathname = decodeURIComponent(request.url.replace('file:///', ''))
+    callback(pathname)
+  })
+})

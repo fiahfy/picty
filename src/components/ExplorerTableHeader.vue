@@ -38,6 +38,7 @@ export default defineComponent({
     },
     sortBy: {
       type: String,
+      default: undefined,
     },
     sortDesc: {
       type: Boolean,

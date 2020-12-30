@@ -70,6 +70,7 @@ import {
   onUnmounted,
   SetupContext,
 } from '@nuxtjs/composition-api'
+import { VTextField } from 'vuetify/lib'
 import { explorerStore, historyStore } from '~/store'
 
 type Props = {
@@ -89,7 +90,7 @@ export default defineComponent({
     const canBack = computed(() => historyStore.canBack)
     const canForward = computed(() => historyStore.canForward)
 
-    const locationField = ref<Vue>()
+    const locationField = ref<InstanceType<typeof VTextField>>()
 
     const focusLocation = () => {
       ;(locationField.value?.$el.querySelector(
@@ -112,7 +113,7 @@ export default defineComponent({
       context.emit('click:home')
     }
     const handleClickFolder = () => {
-      shell.openItem(explorerStore.location)
+      shell.openPath(explorerStore.location)
     }
     const handleKeyDown = (e: KeyboardEvent) => {
       if (

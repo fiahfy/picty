@@ -6,7 +6,7 @@
       </span>
     </v-toolbar>
     <div class="d-flex overflow-y-auto scrollbar">
-      <v-list v-if="favorites.length" dense class="py-0" style="width: 100%;">
+      <v-list v-if="favorites.length" dense class="py-0" style="width: 100%">
         <v-list-item
           v-for="favorite of favorites"
           :key="favorite.path"

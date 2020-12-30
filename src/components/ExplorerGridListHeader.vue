@@ -11,7 +11,7 @@
         single-line
         prepend-inner-icon="mdi-sort"
         hide-details
-        style="max-width: 320px;"
+        style="max-width: 320px"
       />
     </v-toolbar>
   </v-card>
@@ -60,6 +60,7 @@ export default defineComponent({
   props: {
     sortBy: {
       type: String,
+      default: undefined,
     },
     sortDesc: {
       type: Boolean,

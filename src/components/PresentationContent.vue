@@ -62,6 +62,7 @@ export default defineComponent({
     },
     file: {
       type: Object,
+      default: undefined,
     },
   },
   setup(props: Props, context: SetupContext) {

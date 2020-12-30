@@ -46,7 +46,7 @@
       offset-y
       nudge-top="12"
     >
-      <template v-slot:activator="{ on }">
+      <template #activator="{ on }">
         <v-btn title="Zoom" icon v-on="on">
           <v-icon>mdi-magnify-plus-outline</v-icon>
         </v-btn>
@@ -97,6 +97,7 @@ import {
   reactive,
   ref,
 } from '@nuxtjs/composition-api'
+import { VToolbar } from 'vuetify/lib'
 
 type Props = {
   page: number
@@ -140,8 +141,8 @@ export default defineComponent({
     })
     const paging = computed(() => props.maxPage > 1)
 
-    const toolbar = ref<Vue>()
-    const menubar = ref<Vue>()
+    const toolbar = ref<InstanceType<typeof VToolbar>>()
+    const menubar = ref<InstanceType<typeof VToolbar>>()
 
     const isHover = () => {
       return !!(

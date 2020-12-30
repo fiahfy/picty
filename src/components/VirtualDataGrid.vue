@@ -11,18 +11,18 @@
       wrap
       tabindex="-1"
     >
-      <template v-slot:header="props">
+      <template #header="props">
         <div class="header">
           <slot v-bind="props" name="header" />
         </div>
       </template>
-      <template v-slot:default="props">
+      <template #default="props">
         <v-row class="ma-0">
           <v-col
             :style="{ height: `${state.padding.top}px` }"
             class="pa-0"
             xs="12"
-            style="min-width: 100%;"
+            style="min-width: 100%"
           />
           <template v-for="item in props.items">
             <slot v-bind="{ item }" name="item" />
@@ -31,18 +31,16 @@
             :style="{ height: `${state.padding.bottom}px` }"
             class="pa-0"
             xs="12"
-            style="min-width: 100%;"
+            style="min-width: 100%"
           />
         </v-row>
       </template>
-      <template v-slot:loading>
+      <template #loading>
         <v-progress-linear indeterminate height="4" />
         <div class="ma-3 body-2 grey--text text-center">Loading items...</div>
       </template>
-      <template v-slot:no-data>
-        <div class="ma-3 body-2 grey--text text-center">
-          No data available
-        </div>
+      <template #no-data>
+        <div class="ma-3 body-2 grey--text text-center">No data available</div>
       </template>
     </v-data-iterator>
   </div>
@@ -60,6 +58,7 @@ import {
   SetupContext,
 } from '@nuxtjs/composition-api'
 import { throttle } from 'throttle-debounce'
+import { VDataIterator } from 'vuetify/lib'
 
 const breakpoints = { sm: 600, md: 960, lg: 1264, xl: 1904 }
 
@@ -115,7 +114,7 @@ export default defineComponent({
         : (Array(5).fill(props.cols) as number[])
     })
 
-    const iterator = ref<Vue>()
+    const iterator = ref<InstanceType<typeof VDataIterator>>()
     const container = ref<HTMLDivElement>()
 
     const getColsInRow = () => {

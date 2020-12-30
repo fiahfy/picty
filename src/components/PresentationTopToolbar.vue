@@ -13,7 +13,7 @@
     <div
       v-if="file"
       class="px-3 d-flex flex-grow-1 text-no-wrap"
-      style="min-width: 0;"
+      style="min-width: 0"
     >
       <span class="text-truncate" v-text="dirname" />
       <span class="px-3"> - </span>
@@ -30,6 +30,7 @@ import {
   ref,
   SetupContext,
 } from '@nuxtjs/composition-api'
+import { VToolbar } from 'vuetify/lib'
 import { File } from '~/models'
 
 type Props = {
@@ -40,6 +41,7 @@ export default defineComponent({
   props: {
     file: {
       type: Object,
+      default: undefined,
     },
   },
   setup(props: Props, context: SetupContext) {
@@ -50,7 +52,7 @@ export default defineComponent({
       return path.basename(props.file.parent)
     })
 
-    const toolbar = ref<Vue>()
+    const toolbar = ref<InstanceType<typeof VToolbar>>()
 
     const isHover = () => {
       return !!toolbar.value?.$el.querySelector(':hover')

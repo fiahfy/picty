@@ -12,7 +12,7 @@
     threshold="1"
     tabindex="0"
   >
-    <template v-slot:header="props">
+    <template #header="props">
       <explorer-table-header
         :headers="props.props.headers"
         :sort-by="sortBy"
@@ -20,7 +20,7 @@
         @click="handleClickHeader"
       />
     </template>
-    <template v-slot:item="props">
+    <template #item="props">
       <explorer-table-row
         :key="props.item.path"
         :item="props.item"
@@ -78,6 +78,7 @@ export default defineComponent({
     },
     selected: {
       type: Object,
+      default: undefined,
     },
     loading: {
       type: Boolean,
@@ -85,6 +86,7 @@ export default defineComponent({
     },
     sortBy: {
       type: String,
+      default: undefined,
     },
     sortDesc: {
       type: Boolean,

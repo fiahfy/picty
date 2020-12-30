@@ -6,10 +6,10 @@
     :items="state.renderItems"
     disable-pagination
   >
-    <template v-slot:header="props">
+    <template #header="props">
       <slot v-bind="props" name="header" />
     </template>
-    <template v-slot:item="props">
+    <template #item="props">
       <tr
         v-if="props.index === 0"
         :style="{ height: `${state.padding.top}px` }"
@@ -33,6 +33,7 @@ import {
   watch,
   SetupContext,
 } from '@nuxtjs/composition-api'
+import { VDataTable } from 'vuetify/lib'
 
 type Props = {
   items: unknown[]
@@ -73,7 +74,7 @@ export default defineComponent({
       observer: undefined,
     })
 
-    const table = ref<Vue>()
+    const table = ref<InstanceType<typeof VDataTable>>()
     const container = ref<HTMLDivElement>()
 
     const getOffsetHeight = () => {
