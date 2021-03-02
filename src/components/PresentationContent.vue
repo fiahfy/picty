@@ -301,7 +301,7 @@ export default defineComponent({
         width: 100%;
       }
       &.blurred {
-        filter: blur(4px);
+        filter: blur(10px);
       }
     }
   }
