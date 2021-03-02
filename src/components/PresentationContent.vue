@@ -45,6 +45,8 @@ import { File } from '~/models'
 import { settingsStore } from '~/store'
 import * as nsfw from 'nsfwjs'
 
+const model = nsfw.load()
+
 type Props = {
   loading: boolean
   scale: number
@@ -150,7 +152,7 @@ export default defineComponent({
       }
 
       let image = e.target
-      nsfw.load()
+      model
         .then(function (model) {
           return model.classify(image)
         })
@@ -169,7 +171,6 @@ export default defineComponent({
             }
           })
           state.imageIsNsfw = scoreNsfw>scoreNonNsfw
-          console.log(state.imageIsNsfw)
         })
 
       const maxWidth = wrapper.value?.offsetWidth ?? 0
