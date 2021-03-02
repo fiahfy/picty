@@ -269,7 +269,6 @@ export default defineComponent({
 }
 .blurred {
   filter: blur(10px);
-  z-index:100;
 }
 .theme--light .explorer-grid-list-item {
   &.selected .v-card {
