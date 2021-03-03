@@ -150,6 +150,7 @@ export default defineComponent({
       if (!(e.target instanceof HTMLImageElement)) {
         return
       }
+      state.imageIsNsfw = true
 
       let image = e.target
       model

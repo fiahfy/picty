@@ -73,6 +73,7 @@
     "resources:icns": "icns-convert build/icon.png",
     "resources:ico": "ico-convert build/icon.png",
     "serve": "nuxt",
-    "test": "run-s lint"
+    "test": "run-s lint",
+    "release:push:never": "electron-builder -p never"
   }
 }
