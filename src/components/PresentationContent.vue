@@ -27,17 +27,13 @@
         @load="handleLoad"
         @error="handleError"
       />
-      <v-overlay
-        absolute
+      <v-btn
         class="nsfw-overlay"
-        :style="imageStyles"
-        :value="state.imageIsNsfw">
-        <v-btn
-          color="error"
-          @click="showNsfw">
-          Show NSFW
-        </v-btn>
-      </v-overlay>
+        v-if="state.imageIsNsfw"
+        color="error"
+        @click="showNsfw">
+        Show NSFW
+      </v-btn>
     </div>
   </div>
 </template>
