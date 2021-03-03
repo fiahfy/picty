@@ -27,6 +27,14 @@
         @load="handleLoad"
         @error="handleError"
       />
+      <v-overlay
+        :value="state.imageIsNsfw">
+        <v-btn
+          color="danger"
+          @click="showNsfw">
+          Show NSFW
+        </v-btn>
+      </v-overlay>
     </div>
   </div>
 </template>
@@ -197,6 +205,9 @@ export default defineComponent({
       state.error = true
       state.loading = false
     }
+    const showNsfw = () => {
+      state.imageIsNsfw = false
+    }
 
     watch(
       () => props.file,
@@ -263,6 +274,7 @@ export default defineComponent({
       handleMouseMove,
       handleLoad,
       handleError,
+      showNsfw,
     }
   },
 })
