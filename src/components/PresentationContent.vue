@@ -95,7 +95,7 @@ export default defineComponent({
         height: 0,
       },
       scrollPosition: undefined,
-      imageIsNsfw:true
+      imageIsNsfw:settingsStore.nsfwSupportEnabled
     })
 
     const classes = computed(() => ({
@@ -150,29 +150,31 @@ export default defineComponent({
       if (!(e.target instanceof HTMLImageElement)) {
         return
       }
-      state.imageIsNsfw = true
+      if(settingsStore.nsfwSupportEnabled){
+        state.imageIsNsfw = true
 
-      let image = e.target
-      model
-        .then(function (model) {
-          return model.classify(image)
-        })
-        .then(function (predictions) {
-          let scoreNsfw = 0;
-          let scoreNonNsfw = 0;
-
-          predictions.map((prediction)=>{
-            if(prediction.className==='Neutral'
-              || prediction.className==='Drawing'){
-              scoreNonNsfw+=prediction.probability
-            }else if(prediction.className==='Porn'
-              || prediction.className==='Sexy'
-              || prediction.className==='Hentai'){
-              scoreNsfw+=prediction.probability
-            }
+        let image = e.target
+        model
+          .then(function (model) {
+            return model.classify(image)
           })
-          state.imageIsNsfw = scoreNsfw>scoreNonNsfw
-        })
+          .then(function (predictions) {
+            let scoreNsfw = 0;
+            let scoreNonNsfw = 0;
+
+            predictions.map((prediction)=>{
+              if(prediction.className==='Neutral'
+                || prediction.className==='Drawing'){
+                scoreNonNsfw+=prediction.probability
+              }else if(prediction.className==='Porn'
+                || prediction.className==='Sexy'
+                || prediction.className==='Hentai'){
+                scoreNsfw+=prediction.probability
+              }
+            })
+            state.imageIsNsfw = scoreNsfw>scoreNonNsfw
+          })
+      }
 
       const maxWidth = wrapper.value?.offsetWidth ?? 0
       const maxHeight = wrapper.value?.offsetHeight ?? 0

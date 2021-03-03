@@ -99,7 +99,7 @@ export default defineComponent({
       imageUrl: '',
       images: 0,
       timer: undefined,
-      imageIsNsfw: true,
+      imageIsNsfw: settingsStore.nsfwSupportEnabled,
     })
 
     const vImageClasses = computed(() => ({
@@ -157,7 +157,9 @@ export default defineComponent({
     }
 
     const handleLoad = (e: string) => {
-
+      if(!settingsStore.nsfwSupportEnabled){
+        return
+      }
       let image = new Image()
       image.src = e
       model
