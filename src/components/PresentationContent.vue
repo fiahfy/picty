@@ -28,9 +28,12 @@
         @error="handleError"
       />
       <v-overlay
+        absolute
+        class="nsfw-overlay"
+        :style="imageStyles"
         :value="state.imageIsNsfw">
         <v-btn
-          color="danger"
+          color="error"
           @click="showNsfw">
           Show NSFW
         </v-btn>
@@ -289,6 +292,13 @@ export default defineComponent({
   .overlay {
     position: absolute;
     width: 100%;
+  }
+  .nsfw-overlay{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
   }
   .wrapper {
     overflow: auto;
