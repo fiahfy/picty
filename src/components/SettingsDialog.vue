@@ -83,6 +83,12 @@
               label="Stretch Small Images"
               dense
             />
+            <v-checkbox
+              v-model="nsfwSupportEnabled"
+              class="mt-0"
+              label="Enable NSFW support"
+              dense
+            />
           </div>
         </v-container>
       </div>
@@ -154,6 +160,14 @@ export default defineComponent({
         settingsStore.setImageStretched({ imageStretched: value })
       },
     })
+    const nsfwSupportEnabled = computed({
+      get: () => {
+        return settingsStore.nsfwSupportEnabled
+      },
+      set: (value) => {
+        settingsStore.setNsfwSupportEnabled({ nsfwSupportEnabled: value })
+      },
+    })
     const thumbnailStyle = computed({
       get: () => {
         return settingsStore.thumbnailStyle
@@ -209,6 +223,7 @@ export default defineComponent({
       fullScreen,
       recursive,
       imageStretched,
+      nsfwSupportEnabled,
       thumbnailStyle,
       thumbnailHeight,
       extensions,
