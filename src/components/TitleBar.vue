@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { remote } from 'electron'
+import remote from '@electron/remote'
 import {
   defineComponent,
   reactive,

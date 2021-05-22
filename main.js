@@ -131,6 +131,7 @@ const createWindow = async () => {
     ...windowState,
     titleBarStyle: 'hidden',
     webPreferences: {
+      contextIsolation: false,
       enableRemoteModule: true,
       nodeIntegration: true,
       nodeIntegrationInWorker: true,

@@ -40,8 +40,9 @@
 </template>
 
 <script lang="ts">
+import remote from '@electron/remote'
 import path from 'path'
-import { remote, MenuItemConstructorOptions } from 'electron'
+import { MenuItemConstructorOptions } from 'electron'
 import {
   defineComponent,
   computed,

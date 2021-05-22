@@ -1,5 +1,6 @@
+import remote from '@electron/remote'
 import { Plugin } from '@nuxt/types'
-import { ipcRenderer, remote } from 'electron'
+import { ipcRenderer } from 'electron'
 
 const ipcPlugin: Plugin = (ctx) => {
   ipcRenderer.on('open', async () => {
