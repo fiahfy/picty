@@ -217,6 +217,7 @@ $sizes: sm, md, lg, xl;
 $cols: 12, 6, 4, 3, 2, 1;
 
 .virtual-data-grid > .v-data-iterator {
+  outline: none;
   position: relative;
   ::v-deep .header {
     position: sticky;
