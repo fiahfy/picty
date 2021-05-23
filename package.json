@@ -56,6 +56,9 @@
     "type": "git",
     "url": "https://github.com/fiahfy/picty"
   },
+  "resolutions": {
+    "sass": "1.32.13"
+  },
   "scripts": {
     "build": "nuxt generate",
     "dev": "cross-env NODE_ENV=development run-p serve electron",

@@ -1,8 +1,8 @@
 export default {
   build: {
-    extend(config, ctx) {
+    extend(config, { isClient }) {
       // Extend only webpack config for client-bundle
-      if (ctx.isClient) {
+      if (isClient) {
         config.target = 'electron-renderer'
         config.output.globalObject = 'this'
         config.module.rules.unshift({
@@ -10,7 +10,12 @@ export default {
           loader: 'worker-loader',
         })
       }
+      // @see https://github.com/nuxt/nuxt.js/issues/8863
+      if (process.env.NODE_ENV === 'production') {
+        config.output.publicPath = './_nuxt/'
+      }
     },
+    publicPath: process.env.NODE_ENV === 'production' ? './_nuxt/' : '/_nuxt/',
   },
 
   buildModules: [

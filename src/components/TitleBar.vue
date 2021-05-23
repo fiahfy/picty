@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import remote from '@electron/remote'
+import { getCurrentWindow, systemPreferences } from '@electron/remote'
 import {
   defineComponent,
   reactive,
@@ -40,11 +40,11 @@ export default defineComponent({
 
     // @see https://github.com/electron/electron/issues/16385
     const handleDoubleClick = () => {
-      const doubleClickAction = remote.systemPreferences.getUserDefault(
+      const doubleClickAction = systemPreferences.getUserDefault(
         'AppleActionOnDoubleClick',
         'string'
       )
-      const win = remote.getCurrentWindow()
+      const win = getCurrentWindow()
       if (doubleClickAction === 'Minimize') {
         win.minimize()
       } else if (doubleClickAction === 'Maximize') {
