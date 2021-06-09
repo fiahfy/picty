@@ -216,25 +216,27 @@ export default defineComponent({
 $sizes: sm, md, lg, xl;
 $cols: 12, 6, 4, 3, 2, 1;
 
-.virtual-data-grid > .v-data-iterator {
+.virtual-data-grid {
   outline: none;
-  position: relative;
-  ::v-deep .header {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-  @each $col in $cols {
-    ::v-deep .col-#{$col} {
-      flex: 0 0 calc(100% / 12 * #{$col}) !important;
-      max-width: calc(100% / 12 * #{$col}) !important;
+  > .v-data-iterator {
+    position: relative;
+    ::v-deep .header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
     }
-  }
-  @each $size in $sizes {
     @each $col in $cols {
-      &.#{$size} ::v-deep .col-#{$size}-#{$col} {
+      ::v-deep .col-#{$col} {
         flex: 0 0 calc(100% / 12 * #{$col}) !important;
         max-width: calc(100% / 12 * #{$col}) !important;
+      }
+    }
+    @each $size in $sizes {
+      @each $col in $cols {
+        &.#{$size} ::v-deep .col-#{$size}-#{$col} {
+          flex: 0 0 calc(100% / 12 * #{$col}) !important;
+          max-width: calc(100% / 12 * #{$col}) !important;
+        }
       }
     }
   }

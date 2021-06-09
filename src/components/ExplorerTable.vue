@@ -122,7 +122,9 @@ export default defineComponent({
       })
     }
     const focus = () => {
-      ;(table.value?.$el as HTMLElement).focus()
+      context.root.$nextTick(() => {
+        ;(table.value?.$el as HTMLElement).focus()
+      })
     }
 
     const isSelected = (item: Item) => {

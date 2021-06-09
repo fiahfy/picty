@@ -122,7 +122,9 @@ export default defineComponent({
       })
     }
     const focus = () => {
-      ;(iterator.value?.$el as HTMLElement).focus()
+      context.root.$nextTick(() => {
+        ;(iterator.value?.$el as HTMLElement).focus()
+      })
     }
     const isRendered = (index: number) => {
       return iterator.value ? iterator.value.isRendered(index) : false
