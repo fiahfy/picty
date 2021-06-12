@@ -1,5 +1,5 @@
 module.exports = {
-  appId: 'net.maifeeulasad.picty',
+  appId: 'net.fiahfy.picty',
   files: ['app', 'main.js'],
   mac: {
     publish: {
