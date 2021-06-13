@@ -93,9 +93,9 @@ export default defineComponent({
     const locationField = ref<InstanceType<typeof VTextField>>()
 
     const focusLocation = () => {
-      ;(locationField.value?.$el.querySelector(
-        'input'
-      ) as HTMLInputElement).focus()
+      ;(
+        locationField.value?.$el.querySelector('input') as HTMLInputElement
+      ).focus()
     }
     const handleClickBack = () => {
       context.emit('click:back')
