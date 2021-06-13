@@ -1,11 +1,8 @@
 export default {
-  /*
-   ** Build configuration
-   */
   build: {
-    extend(config, ctx) {
+    extend(config, { isClient }) {
       // Extend only webpack config for client-bundle
-      if (ctx.isClient) {
+      if (isClient) {
         config.target = 'electron-renderer'
         config.output.globalObject = 'this'
         config.module.rules.unshift({
@@ -13,59 +10,17 @@ export default {
           loader: 'worker-loader',
         })
       }
-      // Set relative path
-      config.output.publicPath = './_nuxt/'
+      // @see https://github.com/nuxt/nuxt.js/issues/8863
+      if (process.env.NODE_ENV === 'production') {
+        config.output.publicPath = './_nuxt/'
+      }
     },
+    publicPath: process.env.NODE_ENV === 'production' ? './_nuxt/' : '/_nuxt/',
   },
 
-  /*
-   ** Nuxt.js dev-modules
-   */
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/composition-api'],
-
-  /*
-   ** Auto import components
-   */
-  components: true,
-
-  /*
-   ** Global CSS
-   */
-  css: [
-    '@mdi/font/css/materialdesignicons.css',
-    'typeface-roboto/index.css',
-    '~/assets/app.scss',
-  ],
-
-  /*
-   ** Generate configuration
-   */
-  generate: {
-    dir: 'app',
-  },
-
-  /*
-   ** Customize the progress-bar color
-   */
-  loading: false,
-
-  /*
-   ** Headers of the page
-   */
-  head: {
-    title: process.env.npm_package_productName,
-    meta: [{ hid: 'charset', charset: 'utf-8' }],
-  },
-
-  /*
-   ** Nuxt rendering mode
-   */
-  mode: 'spa',
-
-  /*
-   ** Nuxt.js modules
-   */
-  modules: [
+  buildModules: [
+    '@nuxt/typescript-build',
+    '@nuxtjs/composition-api/module',
     [
       '@nuxtjs/vuetify',
       {
@@ -89,9 +44,30 @@ export default {
     ],
   ],
 
-  /*
-   ** Plugins to load before mounting the App
-   */
+  components: true,
+
+  css: [
+    '@mdi/font/css/materialdesignicons.css',
+    'typeface-roboto/index.css',
+    '~/assets/app.scss',
+  ],
+
+  generate: {
+    dir: 'app',
+  },
+
+  loading: false,
+
+  head: {
+    title: process.env.npm_package_productName,
+    htmlAttrs: {
+      lang: 'en',
+    },
+    meta: [{ charset: 'utf-8' }],
+  },
+
+  modules: [],
+
   plugins: [
     '~/plugins/electron-accelerator-formatter',
     '~/plugins/electron-context-menu',
@@ -102,21 +78,16 @@ export default {
     '~/plugins/vuex-persistedstate',
   ],
 
-  /*
-   ** Router configuration
-   */
   router: {
     mode: 'hash',
   },
 
-  /*
-   ** Source directory
-   */
   srcDir: 'src',
 
-  /*
-   ** Vue configuration
-   */
+  ssr: false,
+
+  target: 'static',
+
   vue: {
     config: {
       productionTip: false,

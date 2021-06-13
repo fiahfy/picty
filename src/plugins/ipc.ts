@@ -1,9 +1,10 @@
+import { dialog } from '@electron/remote'
 import { Plugin } from '@nuxt/types'
-import { ipcRenderer, remote } from 'electron'
+import { ipcRenderer } from 'electron'
 
 const ipcPlugin: Plugin = (ctx) => {
   ipcRenderer.on('open', async () => {
-    const { filePaths } = await remote.dialog.showOpenDialog({
+    const { filePaths } = await dialog.showOpenDialog({
       properties: ['openDirectory'],
     })
     const filePath = filePaths[0]

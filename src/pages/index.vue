@@ -40,8 +40,9 @@
 </template>
 
 <script lang="ts">
+import { app } from '@electron/remote'
 import path from 'path'
-import { remote, MenuItemConstructorOptions } from 'electron'
+import { MenuItemConstructorOptions } from 'electron'
 import {
   defineComponent,
   computed,
@@ -170,7 +171,7 @@ export default defineComponent({
       move(filePath)
     }
     const handleClickHome = () => {
-      const filePath = remote.app.getPath('home')
+      const filePath = app.getPath('home')
       move(filePath)
     }
     const handleClickReload = () => {
@@ -375,7 +376,7 @@ export default defineComponent({
     if (explorerStore.location) {
       load()
     } else {
-      move(remote.app.getPath('home'))
+      move(app.getPath('home'))
     }
 
     return {

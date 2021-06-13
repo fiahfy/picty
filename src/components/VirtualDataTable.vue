@@ -156,6 +156,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .virtual-data-table {
+  outline: none;
   ::v-deep .v-data-table__wrapper {
     height: 100%;
     overflow-y: scroll;

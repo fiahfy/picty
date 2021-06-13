@@ -1,6 +1,9 @@
+const main = require('@electron/remote/main')
 const http = require('http')
 const { BrowserWindow, Menu, app, protocol, shell } = require('electron')
 const windowStateKeeper = require('electron-window-state')
+
+main.initialize()
 
 const dev = process.env.NODE_ENV === 'development'
 const port = process.env.PORT || 3000
@@ -131,6 +134,7 @@ const createWindow = async () => {
     ...windowState,
     titleBarStyle: 'hidden',
     webPreferences: {
+      contextIsolation: false,
       enableRemoteModule: true,
       nodeIntegration: true,
       nodeIntegrationInWorker: true,

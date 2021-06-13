@@ -121,9 +121,9 @@ export default defineComponent({
     const queryField = ref<InstanceType<typeof VCombobox>>()
 
     const focusQuery = () => {
-      ;(queryField.value?.$el.querySelector(
-        'input'
-      ) as HTMLInputElement).focus()
+      ;(
+        queryField.value?.$el.querySelector('input') as HTMLInputElement
+      ).focus()
     }
     const handleClickPresentation = () => {
       context.root.$eventBus.$emit('show-presentation', props.selected)
