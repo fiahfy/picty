@@ -7,6 +7,8 @@
         :contain="contain"
         :height="thumbnailHeightValue"
         :transition="false"
+        :class="vImageClasses"
+        @load="handleLoad"
         @error="handleError"
       >
         <template #placeholder>
@@ -63,6 +65,9 @@ import {
 import { promisify } from '@fiahfy/worker-promisify'
 import { Item } from '~/models'
 import { settingsStore } from '~/store'
+import * as nsfw from 'nsfwjs'
+
+const model = nsfw.load()
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Worker = require('~/workers/fetch-pathes.worker').default
@@ -87,14 +92,19 @@ export default defineComponent({
       imageUrl: string
       images: number
       timer?: number
+      imageIsNsfw: boolean
     }>({
       loading: true,
       error: false,
       imageUrl: '',
       images: 0,
       timer: undefined,
+      imageIsNsfw: settingsStore.nsfwSupportEnabled,
     })
 
+    const vImageClasses = computed(() => ({
+      blurred: state.imageIsNsfw,
+    }))
     const rating = computed({
       get: () => {
         return props.item.rating
@@ -146,6 +156,35 @@ export default defineComponent({
       state.loading = false
     }
 
+    const handleLoad = (e: string) => {
+      if(!settingsStore.nsfwSupportEnabled){
+        return
+      }
+      let image = new Image()
+      image.src = e
+      model
+        .then(function (model) {
+          return model.classify(image)
+        })
+        .then(function (predictions) {
+          let scoreNsfw = 0;
+          let scoreNonNsfw = 0;
+
+          predictions.map((prediction)=>{
+            if(prediction.className==='Neutral'
+              || prediction.className==='Drawing'){
+              scoreNonNsfw+=prediction.probability
+            }else if(prediction.className==='Porn'
+              || prediction.className==='Sexy'
+              || prediction.className==='Hentai'){
+              scoreNsfw+=prediction.probability
+            }
+          })
+          state.imageIsNsfw = scoreNsfw>scoreNonNsfw
+        })
+
+    }
+
     const handleError = () => {
       state.error = true
     }
@@ -177,6 +216,7 @@ export default defineComponent({
 
     return {
       state,
+      vImageClasses,
       rating,
       icon,
       iconColor,
@@ -184,6 +224,7 @@ export default defineComponent({
       contain,
       thumbnailHeightValue,
       root,
+      handleLoad,
       handleError,
     }
   },
@@ -227,6 +268,9 @@ export default defineComponent({
       height: 32px;
     }
   }
+}
+.blurred {
+  filter: blur(10px);
 }
 .theme--light .explorer-grid-list-item {
   &.selected .v-card {

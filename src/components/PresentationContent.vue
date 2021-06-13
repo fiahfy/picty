@@ -27,6 +27,13 @@
         @load="handleLoad"
         @error="handleError"
       />
+      <v-btn
+        class="nsfw-overlay"
+        v-if="state.imageIsNsfw"
+        color="error"
+        @click="showNsfw">
+        Show NSFW
+      </v-btn>
     </div>
   </div>
 </template>
@@ -43,6 +50,9 @@ import {
 } from '@nuxtjs/composition-api'
 import { File } from '~/models'
 import { settingsStore } from '~/store'
+import * as nsfw from 'nsfwjs'
+
+const model = nsfw.load()
 
 type Props = {
   loading: boolean
@@ -80,6 +90,7 @@ export default defineComponent({
         x: number
         y: number
       }
+      imageIsNsfw:boolean
     }>({
       loading: true,
       error: false,
@@ -91,6 +102,7 @@ export default defineComponent({
         height: 0,
       },
       scrollPosition: undefined,
+      imageIsNsfw:settingsStore.nsfwSupportEnabled
     })
 
     const classes = computed(() => ({
@@ -100,6 +112,7 @@ export default defineComponent({
       'horizontal-center': state.alignCenter,
       'vertical-center': state.verticalAlignMiddle,
       stretched: settingsStore.imageStretched,
+      blurred: state.imageIsNsfw,
     }))
     const imageStyles = computed(() => {
       return {
@@ -144,6 +157,32 @@ export default defineComponent({
       if (!(e.target instanceof HTMLImageElement)) {
         return
       }
+      if(settingsStore.nsfwSupportEnabled){
+        state.imageIsNsfw = true
+
+        let image = e.target
+        model
+          .then(function (model) {
+            return model.classify(image)
+          })
+          .then(function (predictions) {
+            let scoreNsfw = 0;
+            let scoreNonNsfw = 0;
+
+            predictions.map((prediction)=>{
+              if(prediction.className==='Neutral'
+                || prediction.className==='Drawing'){
+                scoreNonNsfw+=prediction.probability
+              }else if(prediction.className==='Porn'
+                || prediction.className==='Sexy'
+                || prediction.className==='Hentai'){
+                scoreNsfw+=prediction.probability
+              }
+            })
+            state.imageIsNsfw = scoreNsfw>scoreNonNsfw
+          })
+      }
+
       const maxWidth = wrapper.value?.offsetWidth ?? 0
       const maxHeight = wrapper.value?.offsetHeight ?? 0
       const imageWidth = e.target.naturalWidth
@@ -164,6 +203,9 @@ export default defineComponent({
     const handleError = () => {
       state.error = true
       state.loading = false
+    }
+    const showNsfw = () => {
+      state.imageIsNsfw = false
     }
 
     watch(
@@ -231,6 +273,7 @@ export default defineComponent({
       handleMouseMove,
       handleLoad,
       handleError,
+      showNsfw,
     }
   },
 })
@@ -245,6 +288,13 @@ export default defineComponent({
   .overlay {
     position: absolute;
     width: 100%;
+  }
+  .nsfw-overlay{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
   }
   .wrapper {
     overflow: auto;
@@ -270,6 +320,9 @@ export default defineComponent({
         height: 100%;
         object-fit: contain;
         width: 100%;
+      }
+      &.blurred {
+        filter: blur(10px);
       }
     }
   }

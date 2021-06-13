@@ -1,7 +1,7 @@
 {
   "name": "picty",
   "description": "Simple Image Viewer based on Electron",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "author": {
     "name": "fiahfy",
     "email": "d.fiahfy@gmail.com",
@@ -22,7 +22,9 @@
     "vue-date-fns": "^2.0.1",
     "vue-long-press-directive": "^1.0.2",
     "vuex-module-decorators": "^1.0.1",
-    "vuex-persistedstate": "^3.2.0"
+    "vuex-persistedstate": "^3.2.0",
+    "@tensorflow/tfjs": "^3.2.0",
+    "nsfwjs": "^2.3.0"
   },
   "devDependencies": {
     "@fiahfy/eslint-config-nuxt": "^0.0.14",
@@ -72,6 +74,7 @@
     "resources:icns": "icns-convert build/icon.png",
     "resources:ico": "ico-convert build/icon.png",
     "serve": "nuxt",
-    "test": "npm run lint"
+    "test": "npm run lint",
+    "release:push:never": "electron-builder -p never"
   }
 }

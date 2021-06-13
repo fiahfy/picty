@@ -35,6 +35,7 @@ export default class SettingsModule extends VuexModule {
   fullScreen = false
   recursive = false
   imageStretched = false
+  nsfwSupportEnabled = true
   thumbnailStyle: ThumbnailStyle = 'cover'
   thumbnailHeight: ThumbnailHeight = 'medium'
   extensions = [...defaultExtensions]
@@ -75,6 +76,11 @@ export default class SettingsModule extends VuexModule {
   @Mutation
   setImageStretched({ imageStretched }: { imageStretched: boolean }): void {
     this.imageStretched = imageStretched
+  }
+
+  @Mutation
+  setNsfwSupportEnabled({ nsfwSupportEnabled }: { nsfwSupportEnabled: boolean }): void {
+    this.nsfwSupportEnabled = nsfwSupportEnabled
   }
 
   @Mutation
