@@ -1,38 +1,51 @@
 {
-  "private": true,
-  "main": "main/index.js",
-  "productName": "ElectronTypescriptNext",
-  "scripts": {
-    "clean": "rimraf dist main renderer/out renderer/.next",
-    "dev": "npm run build-electron && electron .",
-    "build-renderer": "next build renderer && next export renderer",
-    "build-electron": "tsc -p electron-src",
-    "build": "npm run build-renderer && npm run build-electron",
-    "pack-app": "npm run build && electron-builder --dir",
-    "dist": "npm run build && electron-builder",
-    "type-check": "tsc"
-  },
-  "dependencies": {
-    "electron-is-dev": "^1.1.0",
-    "electron-next": "^3.1.5",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
-  },
-  "devDependencies": {
-    "@types/node": "^14.14.6",
-    "@types/react": "^16.9.9",
-    "@types/react-dom": "^16.9.9",
-    "electron": "^13",
-    "electron-builder": "^22.9.1",
-    "next": "latest",
-    "rimraf": "^3.0.0",
-    "typescript": "^4.0.5"
-  },
+  "name": "next-explorer",
+  "description": "WIP",
+  "version": "0.0.0",
   "build": {
     "asar": true,
     "files": [
       "main",
       "renderer/out"
     ]
+  },
+  "dependencies": {
+    "@emotion/cache": "latest",
+    "@emotion/react": "latest",
+    "@emotion/server": "latest",
+    "@emotion/styled": "latest",
+    "@mui/icons-material": "latest",
+    "@mui/material": "latest",
+    "electron-is-dev": "^2.0.0",
+    "electron-next": "^3.1.5",
+    "next": "latest",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@fiahfy/eslint-config-next": "^0.0.15",
+    "@types/node": "^17.0.21",
+    "@types/react": "^17.0.39",
+    "@types/react-dom": "^17.0.13",
+    "electron": "^17",
+    "electron-builder": "^22.14.13",
+    "eslint": "^8.10.0",
+    "prettier": "^2.5.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.6.2"
+  },
+  "main": "main/index.js",
+  "private": true,
+  "productName": "ElectronTypescriptNext",
+  "scripts": {
+    "build": "npm run build-renderer && npm run build-electron",
+    "build-electron": "tsc -p electron-src",
+    "build-renderer": "next build renderer && next export renderer",
+    "clean": "rimraf dist main renderer/out renderer/.next",
+    "dev": "npm run build-electron && electron .",
+    "dist": "npm run build && electron-builder",
+    "lint": "next lint renderer",
+    "pack-app": "npm run build && electron-builder --dir",
+    "type-check": "tsc"
   }
 }
