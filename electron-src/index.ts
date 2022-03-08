@@ -3,7 +3,7 @@ import { join } from 'path'
 import { format } from 'url'
 
 // Packages
-import { BrowserWindow, app, ipcMain, IpcMainEvent } from 'electron'
+import { BrowserWindow, app, ipcMain, IpcMainInvokeEvent } from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
 
@@ -16,7 +16,7 @@ app.on('ready', async () => {
     height: 600,
     webPreferences: {
       nodeIntegration: false,
-      contextIsolation: false,
+      contextIsolation: true,
       preload: join(__dirname, 'preload.js'),
     },
   })
@@ -36,7 +36,7 @@ app.on('ready', async () => {
 app.on('window-all-closed', app.quit)
 
 // listen the channel `message` and resend the received message to the renderer process
-ipcMain.on('message', (event: IpcMainEvent, message: any) => {
+ipcMain.handle('message', (_event: IpcMainInvokeEvent, message: any) => {
   console.log(message)
-  setTimeout(() => event.sender.send('message', 'hi from electron'), 500)
+  return 'hi from electron'
 })

@@ -1,17 +1,11 @@
-import { useEffect } from 'react'
 import Link from 'next/link'
 import Layout from '../components/Layout'
 
 const IndexPage = () => {
-  useEffect(() => {
-    // add a listener to 'message' channel
-    window.ipcRenderer.addListener('message', (_event, args) => {
-      alert(args)
-    })
-  }, [])
-
   const onSayHiClick = () => {
-    window.ipcRenderer.send('message', 'hi from next')
+    window.electronAPI.sendMessage('hi from next').then((result) => {
+      alert(result)
+    })
   }
 
   return (

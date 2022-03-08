@@ -4,11 +4,14 @@
 //
 // import User from 'path/to/interfaces';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { IpcRenderer } from 'electron'
+
+export interface IElectronAPI {
+  sendMessage: (message: string) => Promise<string>
+}
 
 declare global {
   interface Window {
-    ipcRenderer: IpcRenderer
+    electronAPI: IElectronAPI
   }
 }
 

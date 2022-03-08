@@ -1,14 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { ipcRenderer, IpcRenderer } from 'electron'
+import { ipcRenderer, contextBridge } from 'electron'
 
-declare global {
-  interface Window {
-    ipcRenderer: IpcRenderer
-  }
-}
-
-// Since we disabled nodeIntegration we can reintroduce
-// needed node functionality here
-process.once('loaded', () => {
-  window.ipcRenderer = ipcRenderer
+contextBridge.exposeInMainWorld('electronAPI', {
+  sendMessage: (message: string) => ipcRenderer.invoke('message', message),
 })
