@@ -12,7 +12,7 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
     <Head>
       <title>{title}</title>
       <meta charSet="utf-8" />
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      <meta content="initial-scale=1.0, width=device-width" name="viewport" />
     </Head>
     <header>
       <nav>
@@ -27,12 +27,16 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
         <Link href="/initial-props">
           <a>With Initial Props</a>
         </Link>
+        |{' '}
+        <Link href="/mui">
+          <a>MUI Sample</a>
+        </Link>
       </nav>
     </header>
     {children}
     <footer>
       <hr />
-      <span>I'm here to stay (Footer)</span>
+      <span>{"I'm here to stay (Footer)"}</span>
     </footer>
   </div>
 )
