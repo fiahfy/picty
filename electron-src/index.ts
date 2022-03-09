@@ -6,14 +6,20 @@ import { format } from 'url'
 import { BrowserWindow, app, ipcMain, IpcMainInvokeEvent } from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
+import windowStateKeeper from 'electron-window-state'
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
   await prepareNext('./renderer')
 
+  const windowState = windowStateKeeper({
+    defaultWidth: 800,
+    defaultHeight: 600,
+  })
+
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    ...windowState,
+    titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -21,15 +27,19 @@ app.on('ready', async () => {
     },
   })
 
-  const url = isDev
-    ? 'http://localhost:8000/'
-    : format({
-        pathname: join(__dirname, '../renderer/out/index.html'),
-        protocol: 'file:',
-        slashes: true,
-      })
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:8000/')
+    mainWindow.webContents.openDevTools()
+  } else {
+    const url = format({
+      pathname: join(__dirname, '../renderer/out/index.html'),
+      protocol: 'file:',
+      slashes: true,
+    })
+    mainWindow.loadURL(url)
+  }
 
-  mainWindow.loadURL(url)
+  windowState.manage(mainWindow)
 })
 
 // Quit the app once all windows are closed
