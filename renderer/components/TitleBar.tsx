@@ -1,8 +1,13 @@
 import { AppBar, Toolbar, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 const TitleBar = () => {
   const [fullScreen, setFullScreen] = useState(false)
+
+  const isVisible = useMemo(async () => {
+    const isDarwin = await window.electronAPI.isDarwin()
+    return isDarwin && !fullScreen
+  }, [fullScreen])
 
   const handleFullScreenChange = () => {
     setFullScreen(!!document.fullscreenElement)
@@ -18,26 +23,12 @@ const TitleBar = () => {
     }
   }, [])
 
-  // @see https://github.com/electron/electron/issues/16385
-  const handleDoubleClick = () => {
-    // const doubleClickAction = systemPreferences.getUserDefault(
-    //   'AppleActionOnDoubleClick',
-    //   'string'
-    // )
-    // const win = getCurrentWindow()
-    // if (doubleClickAction === 'Minimize') {
-    //   win.minimize()
-    // } else if (doubleClickAction === 'Maximize') {
-    //   if (win.isMaximized()) {
-    //     win.unmaximize()
-    //   } else {
-    //     win.maximize()
-    //   }
-    // }
+  const handleDoubleClick = async () => {
+    await window.electronAPI.doubleClickTitleBar()
   }
 
   return (
-    !fullScreen && (
+    isVisible && (
       <AppBar
         elevation={0}
         onDoubleClick={handleDoubleClick}

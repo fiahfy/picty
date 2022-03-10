@@ -3,10 +3,21 @@ import { join } from 'path'
 import { format } from 'url'
 
 // Packages
-import { BrowserWindow, app, ipcMain, IpcMainInvokeEvent } from 'electron'
+import {
+  BrowserWindow,
+  IpcMainInvokeEvent,
+  app,
+  ipcMain,
+  systemPreferences,
+} from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
 import windowStateKeeper from 'electron-window-state'
+import contextMenu from 'electron-context-menu'
+
+contextMenu()
+
+let mainWindow: BrowserWindow
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
@@ -17,7 +28,7 @@ app.on('ready', async () => {
     defaultHeight: 600,
   })
 
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     ...windowState,
     titleBarStyle: 'hidden',
     webPreferences: {
@@ -49,4 +60,23 @@ app.on('window-all-closed', app.quit)
 ipcMain.handle('message', (_event: IpcMainInvokeEvent, message: any) => {
   console.log(message)
   return 'hi from electron'
+})
+ipcMain.handle('isDarwin', () => {
+  return process.platform === 'darwin'
+})
+// @see https://github.com/electron/electron/issues/16385
+ipcMain.handle('doubleClickTitleBar', () => {
+  const doubleClickAction = systemPreferences.getUserDefault(
+    'AppleActionOnDoubleClick',
+    'string'
+  )
+  if (doubleClickAction === 'Minimize') {
+    mainWindow.minimize()
+  } else if (doubleClickAction === 'Maximize') {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize()
+    } else {
+      mainWindow.maximize()
+    }
+  }
 })

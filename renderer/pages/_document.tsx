@@ -9,6 +9,7 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           {/* Inject MUI styles first to match with the prepend: true configuration. */}
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {(this.props as any).emotionStyleTags}
         </Head>
         <body>
@@ -54,6 +55,7 @@ MyDocument.getInitialProps = async (ctx) => {
 
   ctx.renderPage = () =>
     originalRenderPage({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       enhanceApp: (App: any) =>
         function EnhanceApp(props) {
           return <App emotionCache={cache} {...props} />
@@ -68,7 +70,6 @@ MyDocument.getInitialProps = async (ctx) => {
     <style
       dangerouslySetInnerHTML={{ __html: style.css }}
       data-emotion={`${style.key} ${style.ids.join(' ')}`}
-      // eslint-disable-next-line react/no-danger
       key={style.key}
     />
   ))

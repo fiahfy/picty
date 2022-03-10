@@ -7,6 +7,8 @@
 
 export interface IElectronAPI {
   sendMessage: (message: string) => Promise<string>
+  isDarwin: () => Promise<boolean>
+  doubleClickTitleBar: () => Promise<void>
 }
 
 declare global {
