@@ -1,44 +1,39 @@
-import React, { ReactNode } from 'react'
-import Link from 'next/link'
-import Head from 'next/head'
+import { ReactNode } from 'react'
+import { Box, Toolbar } from '@mui/material'
+import TitleBar from 'components/TitleBar'
+import SideBar from 'components/SideBar'
 
 type Props = {
   children: ReactNode
-  title?: string
 }
 
-const Layout = ({ children, title = 'This is the default title' }: Props) => (
-  <div>
-    <Head>
-      <title>{title}</title>
-      <meta charSet="utf-8" />
-      <meta content="initial-scale=1.0, width=device-width" name="viewport" />
-    </Head>
-    <header>
-      <nav>
-        <Link href="/">
-          <a>Home</a>
-        </Link>{' '}
-        |{' '}
-        <Link href="/about">
-          <a>About</a>
-        </Link>{' '}
-        |{' '}
-        <Link href="/initial-props">
-          <a>With Initial Props</a>
-        </Link>
-        |{' '}
-        <Link href="/mui">
-          <a>MUI Sample</a>
-        </Link>
-      </nav>
-    </header>
-    {children}
-    <footer>
-      <hr />
-      <span>{"I'm here to stay (Footer)"}</span>
-    </footer>
-  </div>
-)
+const Layout = (props: Props) => {
+  const { children } = props
+
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <style global jsx>{`
+        html,
+        body,
+        body > div:first-child,
+        div#__next,
+        div#__next > div {
+          height: 100%;
+        }
+      `}</style>
+      <TitleBar />
+      <SideBar />
+      <Box
+        component="main"
+        sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
+      >
+        <Toolbar sx={{ flexShrink: 0 }} />
+        <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'auto' }}>
+          {children}
+        </Box>
+      </Box>
+    </Box>
+  )
+}
 
 export default Layout

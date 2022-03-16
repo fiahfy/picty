@@ -1,20 +1,25 @@
-import { AppBar, Toolbar, Typography } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
+import { AppBar, Toolbar, Typography } from '@mui/material'
 
 const TitleBar = () => {
   const [fullScreen, setFullScreen] = useState(false)
+  const [isDarwin, setIsDarwin] = useState(false)
 
-  const isVisible = useMemo(async () => {
-    const isDarwin = await window.electronAPI.isDarwin()
-    return isDarwin && !fullScreen
-  }, [fullScreen])
+  const isVisible = useMemo(
+    () => isDarwin && !fullScreen,
+    [fullScreen, isDarwin]
+  )
 
   const handleFullScreenChange = () => {
     setFullScreen(!!document.fullscreenElement)
   }
 
   useEffect(() => {
-    document.body.addEventListener('fullscreenchange', handleFullScreenChange)
+    ;(async () => {
+      const isDarwin = await window.electronAPI.isDarwin()
+      setIsDarwin(isDarwin)
+      document.body.addEventListener('fullscreenchange', handleFullScreenChange)
+    })()
     return () => {
       document.body.removeEventListener(
         'fullscreenchange',
