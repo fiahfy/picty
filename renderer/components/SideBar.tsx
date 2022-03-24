@@ -6,14 +6,19 @@ import {
   ListItemButton,
   ListItemIcon,
   Toolbar,
+  styled,
+  Theme,
 } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import { Inbox as InboxIcon, Mail as MailIcon } from '@mui/icons-material'
+import {
+  Explore as ExploreIcon,
+  Favorite as FavoriteIcon,
+  Settings as SettingsIcon,
+} from '@mui/icons-material'
 
 const drawerWidth = 320
-const drawerMinWidth = 64
+const drawerMinWidth = 56
 
-const openedMixin = (theme) =>
+const openedMixin = (theme: Theme) =>
   ({
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
@@ -23,7 +28,7 @@ const openedMixin = (theme) =>
     width: drawerWidth,
   } as const)
 
-const closedMixin = (theme) =>
+const closedMixin = (theme: Theme) =>
   ({
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
@@ -52,32 +57,47 @@ const Drawer = styled(MuiDrawer, {
 
 const open = true
 
+const items = [
+  { icon: <ExploreIcon />, key: 'explorer' },
+  { icon: <FavoriteIcon />, key: 'favorite' },
+  { key: 'spacer', type: 'spacer' },
+  { icon: <SettingsIcon />, key: 'settings' },
+]
+
 const SideBar = () => {
   return (
     <Drawer anchor="left" open={open} variant="permanent">
       <Toolbar sx={{ flexShrink: 0 }} />
       <Box sx={{ display: 'flex', flexGrow: 1 }}>
-        <Box sx={{ display: 'flex', width: drawerMinWidth }}>
-          <List>
-            {['Inbox', 'Starred', 'Send email'].map((text, index) => (
-              <ListItemButton
-                key={text}
-                sx={{
-                  minHeight: 48,
-                  justifyContent: 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+        <Box sx={{ display: 'flex', width: drawerMinWidth + 1 }}>
+          <List
+            disablePadding
+            sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
+          >
+            {items.map((item) =>
+              item.type === 'spacer' ? (
+                <Box key={item.key} sx={{ flexGrow: 1 }} />
+              ) : (
+                <ListItemButton
+                  key={item.key}
+                  selected
                   sx={{
-                    minWidth: 0,
+                    flexGrow: 0,
+                    height: 48,
                     justifyContent: 'center',
+                    p: 0,
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-              </ListItemButton>
-            ))}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                </ListItemButton>
+              )
+            )}
           </List>
           <Divider orientation="vertical" />
         </Box>

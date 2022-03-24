@@ -1,5 +1,6 @@
 // Native
-import { join } from 'path'
+import { readdirSync, Stats, statSync } from 'fs'
+import { basename, dirname, join } from 'path'
 import { format } from 'url'
 
 // Packages
@@ -32,8 +33,6 @@ app.on('ready', async () => {
     ...windowState,
     titleBarStyle: 'hidden',
     webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
       preload: join(__dirname, 'preload.js'),
     },
   })
@@ -57,7 +56,7 @@ app.on('ready', async () => {
 app.on('window-all-closed', app.quit)
 
 // listen the channel `message` and resend the received message to the renderer process
-ipcMain.handle('message', (_event: IpcMainInvokeEvent, message: any) => {
+ipcMain.handle('message', (_event: IpcMainInvokeEvent, message: string) => {
   console.log(message)
   return 'hi from electron'
 })
@@ -79,4 +78,63 @@ ipcMain.handle('doubleClickTitleBar', () => {
       mainWindow.maximize()
     }
   }
+})
+type Content = {
+  dateModified: number
+  name: string
+  path: string
+  type: 'file' | 'directory'
+}
+const getContentType = (stats: Stats) => {
+  if (stats.isFile()) {
+    return 'file'
+  } else if (stats.isDirectory()) {
+    return 'directory'
+  } else {
+    return 'other'
+  }
+}
+const getContent = (filePath: string): Content | undefined => {
+  const stats = statSync(filePath)
+  const type = getContentType(stats)
+  if (type === 'other') {
+    return undefined
+  }
+  return {
+    dateModified: stats.mtimeMs,
+    name: basename(filePath).normalize('NFC'),
+    path: filePath,
+    type,
+  }
+}
+const listContents = (dirPath: string, recursive = false): Content[] => {
+  const filenames = readdirSync(dirPath)
+  return filenames.reduce((carry, filename) => {
+    try {
+      if (filename.match(/^\./)) {
+        return carry
+      }
+      const filePath = join(dirPath, filename)
+      const content = getContent(filePath)
+      if (!content) {
+        return carry
+      }
+      if (!recursive || content.type === 'file') {
+        return [...carry, content]
+      }
+      const contents = listContents(filePath, recursive)
+      return [...carry, content, ...contents]
+    } catch (e) {
+      return carry
+    }
+  }, [] as Content[])
+}
+ipcMain.handle(
+  'listContents',
+  (_event: IpcMainInvokeEvent, dirPath: string, recursive = false) => {
+    return listContents(dirPath, recursive)
+  }
+)
+ipcMain.handle('getDirname', (_event: IpcMainInvokeEvent, filePath: string) => {
+  return dirname(filePath)
 })

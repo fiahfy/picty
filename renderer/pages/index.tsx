@@ -1,148 +1,161 @@
-import { Box, Divider, IconButton, Typography } from '@mui/material'
+import {
+  Box,
+  Divider,
+  IconButton,
+  InputAdornment,
+  OutlinedInput,
+  styled,
+} from '@mui/material'
 import {
   ArrowBack as ArrowBackIcon,
   ArrowForward as ArrowForwardIcon,
   ArrowUpward as ArrowUpwardIcon,
+  Close as CloseIcon,
+  Search as SearchIcon,
 } from '@mui/icons-material'
 import Layout from 'components/Layout'
+import VirtualizedTable from 'components/VirtualizedTable'
+import { KeyboardEvent, useEffect, useMemo, useState } from 'react'
+import usePersistedState from 'hooks/usePersistedState'
+import { RowMouseEventHandlerParams } from 'react-virtualized'
+import { format } from 'date-fns'
+
+const RoundedOutlinedInput = styled(OutlinedInput)({
+  fieldset: {
+    borderRadius: '50px',
+  },
+})
 
 const IndexPage = () => {
+  const [currentDirectory, setCurrentDirectory] = useState('')
+  const [query, setQuery] = useState('')
+  const [contents, setContents] = useState([])
+
+  const [state, setState] = usePersistedState()
+
+  useEffect(() => {
+    ;(async () => {
+      setCurrentDirectory(state.currentDirectory ?? '')
+      if (state.currentDirectory) {
+        const contents = await window.electronAPI.listContents(
+          state.currentDirectory
+        )
+        setContents(contents)
+      }
+    })()
+  }, [state])
+
+  const filteredContents = useMemo(() => {
+    return contents.filter((content) => !query || content.name.includes(query))
+  }, [contents, query])
+
+  const moveDirectory = (dirPath: string) => {
+    setState({ currentDirectory: dirPath })
+  }
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+      setState({ currentDirectory })
+    }
+  }
+
+  const handleClickUpward = async () => {
+    const dir = await window.electronAPI.getDirname(currentDirectory)
+    setState({ currentDirectory: dir })
+  }
+
+  const handleClickClose = () => {
+    setQuery('')
+  }
+
+  const handleRowDoubleClick = (info: RowMouseEventHandlerParams) => {
+    moveDirectory(info.rowData.path)
+  }
+
   return (
     <Layout>
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Box sx={{ flexShrink: 0, p: 1 }}>
-          <IconButton>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          width: '100%',
+        }}
+      >
+        <Box sx={{ display: 'flex', flexShrink: 0, py: 0.5 }}>
+          <IconButton sx={{ mx: 0.5 }}>
             <ArrowBackIcon />
           </IconButton>
-          <IconButton>
+          <IconButton sx={{ mx: 0.5 }}>
             <ArrowForwardIcon />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={handleClickUpward} sx={{ mx: 0.5 }}>
             <ArrowUpwardIcon />
           </IconButton>
+          <Box sx={{ display: 'flex', flexGrow: 1, mx: 0.5 }}>
+            <RoundedOutlinedInput
+              fullWidth
+              onChange={(e) => {
+                const value = e.currentTarget.value
+                setCurrentDirectory(value)
+              }}
+              onKeyDown={handleKeyDown}
+              size="small"
+              sx={{ flex: 2, mx: 0.5 }}
+              value={currentDirectory}
+            />
+            <RoundedOutlinedInput
+              endAdornment={
+                query && (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickClose} size="small">
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }
+              fullWidth
+              onChange={(e) => {
+                const value = e.currentTarget.value
+                setQuery(value)
+              }}
+              placeholder="Search..."
+              size="small"
+              startAdornment={
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              }
+              sx={{ flex: 1, mx: 0.5 }}
+              value={query}
+            />
+          </Box>
         </Box>
         <Divider />
         <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
-          <Typography paragraph>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-            dolor purus non enim praesent elementum facilisis leo vel. Risus at
-            ultrices mi tempus imperdiet. Semper risus in hendrerit gravida
-            rutrum quisque non tellus. Convallis convallis tellus id interdum
-            velit laoreet id donec ultrices. Odio morbi quis commodo odio aenean
-            sed adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-            integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-            eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-            quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-            vivamus at augue. At augue eget arcu dictum varius duis at
-            consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-            donec massa sapien faucibus et molestie ac.
-          </Typography>
-          <Typography paragraph>
-            Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-            ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-            elementum integer enim neque volutpat ac tincidunt. Ornare
-            suspendisse sed nisi lacus sed viverra tellus. Purus sit amet
-            volutpat consequat mauris. Elementum eu facilisis sed odio morbi.
-            Euismod lacinia at quis risus sed vulputate odio. Morbi tincidunt
-            ornare massa eget egestas purus viverra accumsan in. In hendrerit
-            gravida rutrum quisque non tellus orci ac. Pellentesque nec nam
-            aliquam sem et tortor. Habitant morbi tristique senectus et.
-            Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean
-            euismod elementum nisi quis eleifend. Commodo viverra maecenas
-            accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
-            ultrices sagittis orci a.
-          </Typography>
-          <Typography paragraph>
-            Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-            ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-            elementum integer enim neque volutpat ac tincidunt. Ornare
-            suspendisse sed nisi lacus sed viverra tellus. Purus sit amet
-            volutpat consequat mauris. Elementum eu facilisis sed odio morbi.
-            Euismod lacinia at quis risus sed vulputate odio. Morbi tincidunt
-            ornare massa eget egestas purus viverra accumsan in. In hendrerit
-            gravida rutrum quisque non tellus orci ac. Pellentesque nec nam
-            aliquam sem et tortor. Habitant morbi tristique senectus et.
-            Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean
-            euismod elementum nisi quis eleifend. Commodo viverra maecenas
-            accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
-            ultrices sagittis orci a.
-          </Typography>
-          <Typography paragraph>
-            Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-            ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-            elementum integer enim neque volutpat ac tincidunt. Ornare
-            suspendisse sed nisi lacus sed viverra tellus. Purus sit amet
-            volutpat consequat mauris. Elementum eu facilisis sed odio morbi.
-            Euismod lacinia at quis risus sed vulputate odio. Morbi tincidunt
-            ornare massa eget egestas purus viverra accumsan in. In hendrerit
-            gravida rutrum quisque non tellus orci ac. Pellentesque nec nam
-            aliquam sem et tortor. Habitant morbi tristique senectus et.
-            Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean
-            euismod elementum nisi quis eleifend. Commodo viverra maecenas
-            accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
-            ultrices sagittis orci a.
-          </Typography>
-          <Typography paragraph>
-            Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-            ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-            elementum integer enim neque volutpat ac tincidunt. Ornare
-            suspendisse sed nisi lacus sed viverra tellus. Purus sit amet
-            volutpat consequat mauris. Elementum eu facilisis sed odio morbi.
-            Euismod lacinia at quis risus sed vulputate odio. Morbi tincidunt
-            ornare massa eget egestas purus viverra accumsan in. In hendrerit
-            gravida rutrum quisque non tellus orci ac. Pellentesque nec nam
-            aliquam sem et tortor. Habitant morbi tristique senectus et.
-            Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean
-            euismod elementum nisi quis eleifend. Commodo viverra maecenas
-            accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
-            ultrices sagittis orci a.
-          </Typography>
-          <Typography paragraph>
-            Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-            ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-            elementum integer enim neque volutpat ac tincidunt. Ornare
-            suspendisse sed nisi lacus sed viverra tellus. Purus sit amet
-            volutpat consequat mauris. Elementum eu facilisis sed odio morbi.
-            Euismod lacinia at quis risus sed vulputate odio. Morbi tincidunt
-            ornare massa eget egestas purus viverra accumsan in. In hendrerit
-            gravida rutrum quisque non tellus orci ac. Pellentesque nec nam
-            aliquam sem et tortor. Habitant morbi tristique senectus et.
-            Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean
-            euismod elementum nisi quis eleifend. Commodo viverra maecenas
-            accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
-            ultrices sagittis orci a.
-          </Typography>
-          <Typography paragraph>
-            Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-            ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-            elementum integer enim neque volutpat ac tincidunt. Ornare
-            suspendisse sed nisi lacus sed viverra tellus. Purus sit amet
-            volutpat consequat mauris. Elementum eu facilisis sed odio morbi.
-            Euismod lacinia at quis risus sed vulputate odio. Morbi tincidunt
-            ornare massa eget egestas purus viverra accumsan in. In hendrerit
-            gravida rutrum quisque non tellus orci ac. Pellentesque nec nam
-            aliquam sem et tortor. Habitant morbi tristique senectus et.
-            Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean
-            euismod elementum nisi quis eleifend. Commodo viverra maecenas
-            accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
-            ultrices sagittis orci a.
-          </Typography>
-          <Typography paragraph>
-            Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-            ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-            elementum integer enim neque volutpat ac tincidunt. Ornare
-            suspendisse sed nisi lacus sed viverra tellus. Purus sit amet
-            volutpat consequat mauris. Elementum eu facilisis sed odio morbi.
-            Euismod lacinia at quis risus sed vulputate odio. Morbi tincidunt
-            ornare massa eget egestas purus viverra accumsan in. In hendrerit
-            gravida rutrum quisque non tellus orci ac. Pellentesque nec nam
-            aliquam sem et tortor. Habitant morbi tristique senectus et.
-            Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean
-            euismod elementum nisi quis eleifend. Commodo viverra maecenas
-            accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
-            ultrices sagittis orci a.
-          </Typography>
+          <VirtualizedTable
+            columns={[
+              {
+                label: 'Name',
+                dataKey: 'name',
+              },
+              {
+                width: 200,
+                label: 'Date Modified',
+                dataKey: 'dateModified',
+              },
+            ]}
+            onRowClick={() => undefined}
+            onRowDoubleClick={handleRowDoubleClick}
+            rowCount={filteredContents.length}
+            rowGetter={({ index }) => {
+              const content = filteredContents[index]
+              return {
+                ...content,
+                dateModified: format(content.dateModified, 'PP HH:mm'),
+              }
+            }}
+          />
         </Box>
       </Box>
     </Layout>

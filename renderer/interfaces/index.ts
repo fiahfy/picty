@@ -9,6 +9,8 @@ export interface IElectronAPI {
   sendMessage: (message: string) => Promise<string>
   isDarwin: () => Promise<boolean>
   doubleClickTitleBar: () => Promise<void>
+  listContents: (dirPath: string) => Promise<Content[]>
+  getDirname: (filePath: string) => Promise<string>
 }
 
 declare global {
@@ -17,7 +19,9 @@ declare global {
   }
 }
 
-export type User = {
-  id: number
+export type Content = {
+  dateModified: number
   name: string
+  path: string
+  type: 'file' | 'directory'
 }

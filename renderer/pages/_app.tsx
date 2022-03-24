@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import { AppProps } from 'next/app'
-import { ThemeProvider } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
+import { CssBaseline, ThemeProvider } from '@mui/material'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'

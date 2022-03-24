@@ -50,7 +50,7 @@ const TitleBar = () => {
           }}
         >
           <Typography align="center" component="div" noWrap variant="caption">
-            Clipped drawer
+            next-explorer
           </Typography>
         </Toolbar>
       </AppBar>
