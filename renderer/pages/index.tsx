@@ -1,3 +1,6 @@
+import { ChangeEvent, KeyboardEvent, useEffect, useMemo, useState } from 'react'
+import { RowMouseEventHandlerParams } from 'react-virtualized'
+import { format } from 'date-fns'
 import {
   Box,
   Divider,
@@ -15,10 +18,7 @@ import {
 } from '@mui/icons-material'
 import Layout from 'components/Layout'
 import VirtualizedTable from 'components/VirtualizedTable'
-import { KeyboardEvent, useEffect, useMemo, useState } from 'react'
-import usePersistedState from 'hooks/usePersistedState'
-import { RowMouseEventHandlerParams } from 'react-virtualized'
-import { format } from 'date-fns'
+import { usePersistedState } from 'utils/PersistedStateContext'
 
 const RoundedOutlinedInput = styled(OutlinedInput)({
   fieldset: {
@@ -27,15 +27,15 @@ const RoundedOutlinedInput = styled(OutlinedInput)({
 })
 
 const IndexPage = () => {
-  const [currentDirectory, setCurrentDirectory] = useState('')
+  const [directory, setDirectory] = useState('')
   const [query, setQuery] = useState('')
   const [contents, setContents] = useState([])
 
-  const [state, setState] = usePersistedState()
+  const { state, setCurrentDirectory } = usePersistedState()
 
   useEffect(() => {
     ;(async () => {
-      setCurrentDirectory(state.currentDirectory ?? '')
+      setDirectory(state.currentDirectory ?? '')
       if (state.currentDirectory) {
         const contents = await window.electronAPI.listContents(
           state.currentDirectory
@@ -43,25 +43,35 @@ const IndexPage = () => {
         setContents(contents)
       }
     })()
-  }, [state])
+  }, [state.currentDirectory])
 
   const filteredContents = useMemo(() => {
     return contents.filter((content) => !query || content.name.includes(query))
   }, [contents, query])
 
   const moveDirectory = (dirPath: string) => {
-    setState({ currentDirectory: dirPath })
+    setCurrentDirectory(dirPath)
+  }
+
+  const handleClickUpward = async () => {
+    const dirPath = await window.electronAPI.getDirname(directory)
+    setCurrentDirectory(dirPath)
+  }
+
+  const handleChangeDirectory = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value
+    setDirectory(value)
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-      setState({ currentDirectory })
+      setCurrentDirectory(directory)
     }
   }
 
-  const handleClickUpward = async () => {
-    const dir = await window.electronAPI.getDirname(currentDirectory)
-    setState({ currentDirectory: dir })
+  const handleChangeQuery = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value
+    setQuery(value)
   }
 
   const handleClickClose = () => {
@@ -82,53 +92,52 @@ const IndexPage = () => {
           width: '100%',
         }}
       >
-        <Box sx={{ display: 'flex', flexShrink: 0, py: 0.5 }}>
-          <IconButton sx={{ mx: 0.5 }}>
+        <Box sx={{ display: 'flex', flexShrink: 0, p: 0.5 }}>
+          <IconButton disabled sx={{ mx: 0.5 }}>
             <ArrowBackIcon />
           </IconButton>
-          <IconButton sx={{ mx: 0.5 }}>
+          <IconButton disabled sx={{ mx: 0.5 }}>
             <ArrowForwardIcon />
           </IconButton>
           <IconButton onClick={handleClickUpward} sx={{ mx: 0.5 }}>
             <ArrowUpwardIcon />
           </IconButton>
-          <Box sx={{ display: 'flex', flexGrow: 1, mx: 0.5 }}>
-            <RoundedOutlinedInput
-              fullWidth
-              onChange={(e) => {
-                const value = e.currentTarget.value
-                setCurrentDirectory(value)
-              }}
-              onKeyDown={handleKeyDown}
-              size="small"
-              sx={{ flex: 2, mx: 0.5 }}
-              value={currentDirectory}
-            />
-            <RoundedOutlinedInput
-              endAdornment={
-                query && (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleClickClose} size="small">
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
+          <Box sx={{ display: 'flex', flexGrow: 1 }}>
+            <Box sx={{ display: 'flex', flex: '2 1 0' }}>
+              <RoundedOutlinedInput
+                fullWidth
+                onChange={handleChangeDirectory}
+                onKeyDown={handleKeyDown}
+                size="small"
+                spellCheck={false}
+                sx={{ mx: 0.5 }}
+                value={directory}
+              />
+            </Box>
+            <Box sx={{ display: 'flex', flex: '1 1 0' }}>
+              <RoundedOutlinedInput
+                endAdornment={
+                  query && (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickClose} size="small">
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }
+                fullWidth
+                onChange={handleChangeQuery}
+                placeholder="Search..."
+                size="small"
+                startAdornment={
+                  <InputAdornment position="start">
+                    <SearchIcon />
                   </InputAdornment>
-                )
-              }
-              fullWidth
-              onChange={(e) => {
-                const value = e.currentTarget.value
-                setQuery(value)
-              }}
-              placeholder="Search..."
-              size="small"
-              startAdornment={
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              }
-              sx={{ flex: 1, mx: 0.5 }}
-              value={query}
-            />
+                }
+                sx={{ mx: 0.5 }}
+                value={query}
+              />
+            </Box>
           </Box>
         </Box>
         <Divider />

@@ -137,7 +137,8 @@ const VirtualizedTable = (props: Props) => {
           cursor: onRowClick ? 'pointer' : 'initial',
           display: 'flex',
           '&:hover': {
-            backgroundColor: onRowClick ? 'grey.200' : 'initial',
+            backgroundColor: (theme) =>
+              onRowClick ? theme.palette.action.hover : 'initial',
           },
         },
       }}

@@ -1,13 +1,13 @@
 import Head from 'next/head'
 import { AppProps } from 'next/app'
-import { CssBaseline, ThemeProvider } from '@mui/material'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
-import theme from 'src/theme'
-import createEmotionCache from 'src/createEmotionCache'
+import createEmotionCache from 'utils/createEmotionCache'
+import { PersistedStateProvider } from 'utils/PersistedStateContext'
+import { ThemeProvider } from 'utils/ThemeContext'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
@@ -23,11 +23,11 @@ export default function MyApp(props: MyAppProps) {
       <Head>
         <meta content="initial-scale=1, width=device-width" name="viewport" />
       </Head>
-      <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <PersistedStateProvider>
+        <ThemeProvider>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </PersistedStateProvider>
     </CacheProvider>
   )
 }

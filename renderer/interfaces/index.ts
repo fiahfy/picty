@@ -19,6 +19,12 @@ declare global {
   }
 }
 
+declare module '@mui/material/styles/createMixins' {
+  interface Mixins {
+    titleBar: CSSProperties
+  }
+}
+
 export type Content = {
   dateModified: number
   name: string

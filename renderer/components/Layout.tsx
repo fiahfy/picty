@@ -5,13 +5,14 @@ import SideBar from 'components/SideBar'
 
 type Props = {
   children: ReactNode
+  hiddenSideBar?: boolean
 }
 
 const Layout = (props: Props) => {
-  const { children } = props
+  const { children, hiddenSideBar = false } = props
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '100%' }}>
       <style global jsx>{`
         html,
         body,
@@ -22,15 +23,22 @@ const Layout = (props: Props) => {
         }
       `}</style>
       <TitleBar />
-      <SideBar />
+      {!hiddenSideBar && <SideBar />}
       <Box
         component="main"
-        sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          flexGrow: 1,
+        }}
       >
-        <Toolbar sx={{ flexShrink: 0 }} />
-        <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'auto' }}>
-          {children}
-        </Box>
+        <Toolbar
+          sx={{
+            flexShrink: 0,
+            minHeight: (theme) => `${theme.mixins.titleBar.height}px!important`,
+          }}
+        />
+        <Box sx={{ flexGrow: 1, overflow: 'auto' }}>{children}</Box>
       </Box>
     </Box>
   )

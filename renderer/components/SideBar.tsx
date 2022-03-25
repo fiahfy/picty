@@ -14,6 +14,8 @@ import {
   Favorite as FavoriteIcon,
   Settings as SettingsIcon,
 } from '@mui/icons-material'
+import { useState } from 'react'
+import SettingsDialog from './SettingsDialog'
 
 const drawerWidth = 320
 const drawerMinWidth = 56
@@ -35,7 +37,7 @@ const closedMixin = (theme: Theme) =>
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    width: `calc(${drawerMinWidth}px + 1px)`,
+    width: drawerMinWidth,
   } as const)
 
 const Drawer = styled(MuiDrawer, {
@@ -55,21 +57,34 @@ const Drawer = styled(MuiDrawer, {
   }),
 }))
 
-const open = true
-
-const items = [
-  { icon: <ExploreIcon />, key: 'explorer' },
-  { icon: <FavoriteIcon />, key: 'favorite' },
-  { key: 'spacer', type: 'spacer' },
-  { icon: <SettingsIcon />, key: 'settings' },
-]
+const open = false
 
 const SideBar = () => {
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  const items = [
+    { icon: <ExploreIcon />, key: 'explorer' },
+    { icon: <FavoriteIcon />, key: 'favorite' },
+    { key: 'spacer', type: 'spacer' },
+    {
+      icon: <SettingsIcon />,
+      key: 'settings',
+      onClick: () => setDialogOpen(true),
+    },
+  ]
+
+  const handleRequestClose = () => setDialogOpen(false)
+
   return (
     <Drawer anchor="left" open={open} variant="permanent">
-      <Toolbar sx={{ flexShrink: 0 }} />
+      <Toolbar
+        sx={{
+          flexShrink: 0,
+          minHeight: (theme) => `${theme.mixins.titleBar.height}px!important`,
+        }}
+      />
       <Box sx={{ display: 'flex', flexGrow: 1 }}>
-        <Box sx={{ display: 'flex', width: drawerMinWidth + 1 }}>
+        <Box sx={{ display: 'flex', flexShrink: 0, width: drawerMinWidth }}>
           <List
             disablePadding
             sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
@@ -80,6 +95,7 @@ const SideBar = () => {
               ) : (
                 <ListItemButton
                   key={item.key}
+                  onClick={item.onClick}
                   selected
                   sx={{
                     flexGrow: 0,
@@ -103,6 +119,7 @@ const SideBar = () => {
         </Box>
         <Box sx={{ flexGrow: 1 }}></Box>
       </Box>
+      <SettingsDialog onRequestClose={handleRequestClose} open={dialogOpen} />
     </Drawer>
   )
 }
