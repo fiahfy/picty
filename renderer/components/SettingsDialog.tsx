@@ -11,7 +11,7 @@ import {
   Checkbox,
 } from '@mui/material'
 import { Close as CloseIcon } from '@mui/icons-material'
-import Layout from './Layout'
+import Layout from 'components/Layout'
 import { usePersistedState } from 'utils/PersistedStateContext'
 
 type Props = {

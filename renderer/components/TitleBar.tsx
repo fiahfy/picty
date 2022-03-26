@@ -41,33 +41,36 @@ const TitleBar = () => {
   }
 
   return (
-    isVisible && (
-      <AppBar
-        color="default"
-        elevation={0}
-        onDoubleClick={handleDoubleClick}
-        position="fixed"
-        sx={{
-          WebkitAppRegion: 'drag',
-          top: 0,
-          userSelect: 'none',
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-        }}
-      >
-        <Toolbar
-          disableGutters
+    <>
+      {isVisible && (
+        <AppBar
+          color="default"
+          component="div"
+          elevation={0}
+          onDoubleClick={handleDoubleClick}
+          position="fixed"
           sx={{
-            justifyContent: 'center',
-            minHeight: '22px!important',
-            padding: '0 72px',
+            WebkitAppRegion: 'drag',
+            top: 0,
+            userSelect: 'none',
+            zIndex: (theme) => theme.zIndex.drawer + 1,
           }}
         >
-          <Typography align="center" component="div" noWrap variant="caption">
-            next-explorer
-          </Typography>
-        </Toolbar>
-      </AppBar>
-    )
+          <Toolbar
+            disableGutters
+            sx={{
+              justifyContent: 'center',
+              minHeight: '22px!important',
+              padding: '0 72px',
+            }}
+          >
+            <Typography align="center" component="div" noWrap variant="caption">
+              next-explorer
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      )}
+    </>
   )
 }
 

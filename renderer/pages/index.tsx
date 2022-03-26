@@ -3,22 +3,30 @@ import { RowMouseEventHandlerParams } from 'react-virtualized'
 import { format } from 'date-fns'
 import {
   Box,
+  colors,
   Divider,
   IconButton,
   InputAdornment,
   OutlinedInput,
   styled,
+  Typography,
 } from '@mui/material'
 import {
   ArrowBack as ArrowBackIcon,
   ArrowForward as ArrowForwardIcon,
   ArrowUpward as ArrowUpwardIcon,
   Close as CloseIcon,
+  Folder as FolderIcon,
+  InsertDriveFile as InsertDriveFileIcon,
   Search as SearchIcon,
 } from '@mui/icons-material'
 import Layout from 'components/Layout'
-import VirtualizedTable from 'components/VirtualizedTable'
+import VirtualizedTable, {
+  RowFocusEventHandlerParams,
+} from 'components/VirtualizedTable'
+import { Content } from 'interfaces'
 import { usePersistedState } from 'utils/PersistedStateContext'
+import PresentationDialog from 'components/PresentationDialog'
 
 const RoundedOutlinedInput = styled(OutlinedInput)({
   fieldset: {
@@ -29,7 +37,10 @@ const RoundedOutlinedInput = styled(OutlinedInput)({
 const IndexPage = () => {
   const [directory, setDirectory] = useState('')
   const [query, setQuery] = useState('')
-  const [contents, setContents] = useState([])
+  const [contents, setContents] = useState<Content[]>([])
+  const [loading, setLoading] = useState(false)
+  const [selected, setSelected] = useState<string[]>([])
+  const [open, setOpen] = useState(false)
 
   const { state, setCurrentDirectory } = usePersistedState()
 
@@ -37,10 +48,13 @@ const IndexPage = () => {
     ;(async () => {
       setDirectory(state.currentDirectory ?? '')
       if (state.currentDirectory) {
+        setLoading(true)
+        setContents([])
         const contents = await window.electronAPI.listContents(
           state.currentDirectory
         )
         setContents(contents)
+        setLoading(false)
       }
     })()
   }, [state.currentDirectory])
@@ -63,7 +77,7 @@ const IndexPage = () => {
     setDirectory(value)
   }
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDownDirectory = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
       setCurrentDirectory(directory)
     }
@@ -78,8 +92,22 @@ const IndexPage = () => {
     setQuery('')
   }
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+      setOpen(true)
+    }
+  }
+
+  const handleRowClick = (info: RowMouseEventHandlerParams) => {
+    setSelected([info.rowData.path])
+  }
+
   const handleRowDoubleClick = (info: RowMouseEventHandlerParams) => {
     moveDirectory(info.rowData.path)
+  }
+
+  const handleRowFocus = (info: RowFocusEventHandlerParams) => {
+    setSelected([info.rowData.path])
   }
 
   return (
@@ -93,13 +121,17 @@ const IndexPage = () => {
         }}
       >
         <Box sx={{ display: 'flex', flexShrink: 0, p: 0.5 }}>
-          <IconButton disabled sx={{ mx: 0.5 }}>
+          <IconButton color="inherit" disabled sx={{ mx: 0.5 }}>
             <ArrowBackIcon />
           </IconButton>
-          <IconButton disabled sx={{ mx: 0.5 }}>
+          <IconButton color="inherit" disabled sx={{ mx: 0.5 }}>
             <ArrowForwardIcon />
           </IconButton>
-          <IconButton onClick={handleClickUpward} sx={{ mx: 0.5 }}>
+          <IconButton
+            color="inherit"
+            onClick={handleClickUpward}
+            sx={{ mx: 0.5 }}
+          >
             <ArrowUpwardIcon />
           </IconButton>
           <Box sx={{ display: 'flex', flexGrow: 1 }}>
@@ -107,7 +139,7 @@ const IndexPage = () => {
               <RoundedOutlinedInput
                 fullWidth
                 onChange={handleChangeDirectory}
-                onKeyDown={handleKeyDown}
+                onKeyDown={handleKeyDownDirectory}
                 size="small"
                 spellCheck={false}
                 sx={{ mx: 0.5 }}
@@ -119,7 +151,11 @@ const IndexPage = () => {
                 endAdornment={
                   query && (
                     <InputAdornment position="end">
-                      <IconButton onClick={handleClickClose} size="small">
+                      <IconButton
+                        color="inherit"
+                        onClick={handleClickClose}
+                        size="small"
+                      >
                         <CloseIcon fontSize="small" />
                       </IconButton>
                     </InputAdornment>
@@ -154,19 +190,33 @@ const IndexPage = () => {
                 dataKey: 'dateModified',
               },
             ]}
-            onRowClick={() => undefined}
+            loading={loading}
+            onKeyDown={handleKeyDown}
+            onRowClick={handleRowClick}
             onRowDoubleClick={handleRowDoubleClick}
-            rowCount={filteredContents.length}
-            rowGetter={({ index }) => {
-              const content = filteredContents[index]
-              return {
-                ...content,
-                dateModified: format(content.dateModified, 'PP HH:mm'),
-              }
-            }}
+            onRowFocus={handleRowFocus}
+            rowRenderer={(row) => ({
+              ...row,
+              name: (
+                <Box sx={{ alignItems: 'center', display: 'flex' }}>
+                  {row.type === 'directory' ? (
+                    <FolderIcon sx={{ color: colors.blue['300'] }} />
+                  ) : (
+                    <InsertDriveFileIcon sx={{ color: colors.grey['400'] }} />
+                  )}
+                  <Typography noWrap sx={{ ml: 1 }} variant="body2">
+                    {row.name}
+                  </Typography>
+                </Box>
+              ),
+              dateModified: format(row.dateModified, 'PP HH:mm'),
+            })}
+            rowSelected={(row) => selected.includes(row.path)}
+            rows={filteredContents}
           />
         </Box>
       </Box>
+      <PresentationDialog onRequestClose={() => setOpen(false)} open={open} />
     </Layout>
   )
 }

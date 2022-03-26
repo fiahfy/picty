@@ -40,7 +40,10 @@ export const PersistedStateProvider = (props: Props) => {
 
   const [state, setState] = useState(initialState)
 
-  const parse = useCallback((json: string) => {
+  const parse = useCallback((json: string | null) => {
+    if (!json) {
+      return false
+    }
     try {
       return JSON.parse(json) ?? false
     } catch (e) {

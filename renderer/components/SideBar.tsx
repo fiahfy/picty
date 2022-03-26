@@ -15,7 +15,7 @@ import {
   Settings as SettingsIcon,
 } from '@mui/icons-material'
 import { useState } from 'react'
-import SettingsDialog from './SettingsDialog'
+import SettingsDialog from 'components/SettingsDialog'
 
 const drawerWidth = 320
 const drawerMinWidth = 56
