@@ -1,15 +1,26 @@
-import { createContext, ReactNode, useContext, useMemo, useState } from 'react'
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
 import {
   CssBaseline,
   ThemeProvider as MuiThemeProvider,
   createTheme,
+  PaletteMode,
 } from '@mui/material'
 import { usePersistedState } from './PersistedStateContext'
+import { useTitleBar } from './TitleBarContext'
 
 const ThemeContext = createContext<{
-  setTitleBar: (titleBar: boolean) => void
+  forceMode: (mode: PaletteMode) => void
+  resetMode: () => void
 }>({
-  setTitleBar: () => undefined,
+  forceMode: () => undefined,
+  resetMode: () => undefined,
 })
 
 type Props = { children: ReactNode }
@@ -18,8 +29,19 @@ export const ThemeProvider = (props: Props) => {
   const { children } = props
 
   const { state } = usePersistedState()
+  const { shown } = useTitleBar()
 
-  const [titleBar, setTitleBar] = useState(false)
+  const [mode, setMode] = useState<PaletteMode>()
+
+  const forceMode = useCallback((mode: PaletteMode) => setMode(mode), [])
+  const resetMode = useCallback(() => setMode(undefined), [])
+
+  const currentMode = useMemo(() => {
+    if (mode) {
+      return mode
+    }
+    return state.settings.darkMode ? 'dark' : 'light'
+  }, [mode, state.settings.darkMode])
 
   const theme = useMemo(
     () =>
@@ -28,18 +50,18 @@ export const ThemeProvider = (props: Props) => {
           MuiAppBar: {
             styleOverrides: {
               root: {
-                top: titleBar ? 22 : 0,
+                top: shown ? 22 : 0,
               },
             },
           },
         },
         mixins: {
           titleBar: {
-            height: titleBar ? 22 : 0,
+            height: shown ? 22 : 0,
           },
         },
         palette: {
-          mode: state.settings.darkMode ? 'dark' : 'light',
+          mode: currentMode,
           primary: {
             main: '#ff4081',
           },
@@ -51,10 +73,10 @@ export const ThemeProvider = (props: Props) => {
           // },
         },
       }),
-    [state.settings.darkMode, titleBar]
+    [currentMode, shown]
   )
 
-  const value = { setTitleBar, theme }
+  const value = { forceMode, resetMode, theme }
 
   return (
     <ThemeContext.Provider value={value}>

@@ -8,6 +8,7 @@ import '@fontsource/roboto/700.css'
 import createEmotionCache from 'utils/createEmotionCache'
 import { PersistedStateProvider } from 'utils/PersistedStateContext'
 import { ThemeProvider } from 'utils/ThemeContext'
+import { TitleBarProvider } from 'utils/TitleBarContext'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
@@ -24,9 +25,11 @@ export default function MyApp(props: MyAppProps) {
         <meta content="initial-scale=1, width=device-width" name="viewport" />
       </Head>
       <PersistedStateProvider>
-        <ThemeProvider>
-          <Component {...pageProps} />
-        </ThemeProvider>
+        <TitleBarProvider>
+          <ThemeProvider>
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </TitleBarProvider>
       </PersistedStateProvider>
     </CacheProvider>
   )

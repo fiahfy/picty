@@ -64,14 +64,14 @@ export const PersistedStateProvider = (props: Props) => {
     localStorage.setItem(key, json)
   }, [state])
 
-  const setCurrentDirectory = (currentDirectory: string) => {
+  const setCurrentDirectory = useCallback((currentDirectory: string) => {
     setState((prevState) => ({
       ...prevState,
       currentDirectory,
     }))
-  }
+  }, [])
 
-  const setDarkMode = (darkMode: boolean) => {
+  const setDarkMode = useCallback((darkMode: boolean) => {
     setState((prevState) => ({
       ...prevState,
       settings: {
@@ -79,7 +79,7 @@ export const PersistedStateProvider = (props: Props) => {
         darkMode,
       },
     }))
-  }
+  }, [])
 
   const value = { setCurrentDirectory, setDarkMode, state }
 

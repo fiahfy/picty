@@ -38,7 +38,9 @@ const Layout = (props: Props) => {
             minHeight: (theme) => `${theme.mixins.titleBar.height}px!important`,
           }}
         />
-        <Box sx={{ flexGrow: 1, overflow: 'auto' }}>{children}</Box>
+        <Box sx={{ flexGrow: 1, position: 'relative', overflow: 'auto' }}>
+          {children}
+        </Box>
       </Box>
     </Box>
   )

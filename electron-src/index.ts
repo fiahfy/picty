@@ -10,6 +10,7 @@ import {
   app,
   ipcMain,
   systemPreferences,
+  protocol,
 } from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
@@ -34,6 +35,7 @@ app.on('ready', async () => {
     titleBarStyle: 'hidden',
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
+      webSecurity: !isDev,
     },
   })
 
@@ -54,6 +56,15 @@ app.on('ready', async () => {
 
 // Quit the app once all windows are closed
 app.on('window-all-closed', app.quit)
+
+// @see https://github.com/electron/electron/issues/23757#issuecomment-640146333
+app.whenReady().then(() => {
+  console.log('ready')
+  protocol.registerFileProtocol('file', (request, callback) => {
+    const pathname = decodeURIComponent(request.url.replace('file:///', ''))
+    callback(pathname)
+  })
+})
 
 // listen the channel `message` and resend the received message to the renderer process
 ipcMain.handle('message', (_event: IpcMainInvokeEvent, message: string) => {

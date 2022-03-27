@@ -22,6 +22,7 @@
     "electron-is-dev": "^2.0.0",
     "electron-next": "^3.1.5",
     "electron-window-state": "^5.0.3",
+    "file-url": "^4.0.0",
     "next": "^12.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

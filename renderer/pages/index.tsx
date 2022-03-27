@@ -9,6 +9,7 @@ import {
   InputAdornment,
   OutlinedInput,
   styled,
+  Toolbar,
   Typography,
 } from '@mui/material'
 import {
@@ -40,22 +41,26 @@ const IndexPage = () => {
   const [contents, setContents] = useState<Content[]>([])
   const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
-  const [open, setOpen] = useState(false)
+  const [dialogState, setDialogState] = useState<{
+    open: boolean
+    directory?: string
+  }>({ open: false })
 
   const { state, setCurrentDirectory } = usePersistedState()
 
   useEffect(() => {
     ;(async () => {
       setDirectory(state.currentDirectory ?? '')
-      if (state.currentDirectory) {
-        setLoading(true)
-        setContents([])
-        const contents = await window.electronAPI.listContents(
-          state.currentDirectory
-        )
-        setContents(contents)
-        setLoading(false)
+      setContents([])
+      if (!state.currentDirectory) {
+        return
       }
+      setLoading(true)
+      const contents = await window.electronAPI.listContents(
+        state.currentDirectory
+      )
+      setContents(contents)
+      setLoading(false)
     })()
   }, [state.currentDirectory])
 
@@ -94,7 +99,7 @@ const IndexPage = () => {
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-      setOpen(true)
+      setDialogState({ directory: selected[0], open: true })
     }
   }
 
@@ -110,6 +115,10 @@ const IndexPage = () => {
     setSelected([info.rowData.path])
   }
 
+  const handleRequestClose = () => {
+    setDialogState({ open: false })
+  }
+
   return (
     <Layout>
       <Box
@@ -120,21 +129,17 @@ const IndexPage = () => {
           width: '100%',
         }}
       >
-        <Box sx={{ display: 'flex', flexShrink: 0, p: 0.5 }}>
-          <IconButton color="inherit" disabled sx={{ mx: 0.5 }}>
+        <Toolbar variant="dense">
+          <IconButton color="inherit" disabled edge="start">
             <ArrowBackIcon />
           </IconButton>
-          <IconButton color="inherit" disabled sx={{ mx: 0.5 }}>
+          <IconButton color="inherit" disabled>
             <ArrowForwardIcon />
           </IconButton>
-          <IconButton
-            color="inherit"
-            onClick={handleClickUpward}
-            sx={{ mx: 0.5 }}
-          >
+          <IconButton color="inherit" onClick={handleClickUpward}>
             <ArrowUpwardIcon />
           </IconButton>
-          <Box sx={{ display: 'flex', flexGrow: 1 }}>
+          <Box sx={{ display: 'flex', flexGrow: 1, ml: 1 }}>
             <Box sx={{ display: 'flex', flex: '2 1 0' }}>
               <RoundedOutlinedInput
                 fullWidth
@@ -142,7 +147,7 @@ const IndexPage = () => {
                 onKeyDown={handleKeyDownDirectory}
                 size="small"
                 spellCheck={false}
-                sx={{ mx: 0.5 }}
+                sx={{ mr: 0.5 }}
                 value={directory}
               />
             </Box>
@@ -170,12 +175,12 @@ const IndexPage = () => {
                     <SearchIcon />
                   </InputAdornment>
                 }
-                sx={{ mx: 0.5 }}
+                sx={{ ml: 0.5 }}
                 value={query}
               />
             </Box>
           </Box>
-        </Box>
+        </Toolbar>
         <Divider />
         <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
           <VirtualizedTable
@@ -216,7 +221,11 @@ const IndexPage = () => {
           />
         </Box>
       </Box>
-      <PresentationDialog onRequestClose={() => setOpen(false)} open={open} />
+      <PresentationDialog
+        directory={dialogState.directory}
+        onRequestClose={handleRequestClose}
+        open={dialogState.open}
+      />
     </Layout>
   )
 }

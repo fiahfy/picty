@@ -1,40 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
 import { AppBar, Toolbar, Typography } from '@mui/material'
-import { useTheme } from 'utils/ThemeContext'
+import { useTitleBar } from 'utils/TitleBarContext'
 
 const TitleBar = () => {
-  const [fullScreen, setFullScreen] = useState(false)
-  const [isDarwin, setIsDarwin] = useState(false)
-
-  const { setTitleBar } = useTheme()
-
-  const isVisible = useMemo(
-    () => isDarwin && !fullScreen,
-    [fullScreen, isDarwin]
-  )
-
-  useEffect(() => {
-    setTitleBar(isVisible)
-  }, [isVisible, setTitleBar])
-
-  const handleFullScreenChange = () => {
-    setFullScreen(!!document.fullscreenElement)
-  }
-
-  useEffect(() => {
-    ;(async () => {
-      setFullScreen(!!document.fullscreenElement)
-      const isDarwin = await window.electronAPI.isDarwin()
-      setIsDarwin(isDarwin)
-      document.body.addEventListener('fullscreenchange', handleFullScreenChange)
-    })()
-    return () => {
-      document.body.removeEventListener(
-        'fullscreenchange',
-        handleFullScreenChange
-      )
-    }
-  }, [])
+  const { shown } = useTitleBar()
 
   const handleDoubleClick = async () => {
     await window.electronAPI.doubleClickTitleBar()
@@ -42,7 +10,7 @@ const TitleBar = () => {
 
   return (
     <>
-      {isVisible && (
+      {shown && (
         <AppBar
           color="default"
           component="div"
@@ -64,7 +32,7 @@ const TitleBar = () => {
               padding: '0 72px',
             }}
           >
-            <Typography align="center" component="div" noWrap variant="caption">
+            <Typography align="center" noWrap variant="caption">
               next-explorer
             </Typography>
           </Toolbar>
