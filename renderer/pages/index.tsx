@@ -5,9 +5,9 @@ import {
   Box,
   colors,
   Divider,
+  FilledInput,
   IconButton,
   InputAdornment,
-  OutlinedInput,
   styled,
   Toolbar,
   Typography,
@@ -29,11 +29,23 @@ import { Content } from 'interfaces'
 import { usePersistedState } from 'utils/PersistedStateContext'
 import PresentationDialog from 'components/PresentationDialog'
 
-const RoundedOutlinedInput = styled(OutlinedInput)({
-  fieldset: {
-    borderRadius: '50px',
-  },
-})
+const RoundedFilledInput = styled(FilledInput)(
+  ({ endAdornment, startAdornment, theme }) => ({
+    '&': {
+      borderRadius: '40px',
+      '::after': {
+        display: 'none',
+      },
+      '::before': {
+        display: 'none',
+      },
+      input: {
+        ...(endAdornment ? {} : { paddingRight: theme.spacing(2.5) }),
+        ...(startAdornment ? {} : { paddingLeft: theme.spacing(2.5) }),
+      },
+    },
+  })
+)
 
 const IndexPage = () => {
   const [directory, setDirectory] = useState('')
@@ -50,15 +62,12 @@ const IndexPage = () => {
 
   useEffect(() => {
     ;(async () => {
-      setDirectory(state.currentDirectory ?? '')
+      const directory =
+        state.currentDirectory || (await window.electronAPI.getHomePath())
+      setDirectory(directory)
       setContents([])
-      if (!state.currentDirectory) {
-        return
-      }
       setLoading(true)
-      const contents = await window.electronAPI.listContents(
-        state.currentDirectory
-      )
+      const contents = await window.electronAPI.listContents(directory)
       setContents(contents)
       setLoading(false)
     })()
@@ -141,8 +150,9 @@ const IndexPage = () => {
           </IconButton>
           <Box sx={{ display: 'flex', flexGrow: 1, ml: 1 }}>
             <Box sx={{ display: 'flex', flex: '2 1 0' }}>
-              <RoundedOutlinedInput
+              <RoundedFilledInput
                 fullWidth
+                hiddenLabel
                 onChange={handleChangeDirectory}
                 onKeyDown={handleKeyDownDirectory}
                 size="small"
@@ -152,7 +162,7 @@ const IndexPage = () => {
               />
             </Box>
             <Box sx={{ display: 'flex', flex: '1 1 0' }}>
-              <RoundedOutlinedInput
+              <RoundedFilledInput
                 endAdornment={
                   query && (
                     <InputAdornment position="end">
@@ -167,6 +177,7 @@ const IndexPage = () => {
                   )
                 }
                 fullWidth
+                hiddenLabel
                 onChange={handleChangeQuery}
                 placeholder="Search..."
                 size="small"

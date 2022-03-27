@@ -18,14 +18,14 @@ type Props = { children: ReactNode }
 export const TitleBarProvider = (props: Props) => {
   const { children } = props
 
+  const [ready, setReady] = useState(false)
   const [darwin, setDarwin] = useState(false)
   const [fullScreen, setFullScreen] = useState(false)
 
-  const handleFullScreenChange = () => {
-    setFullScreen(!!document.fullscreenElement)
-  }
-
   const shown = useMemo(() => darwin && !fullScreen, [darwin, fullScreen])
+
+  const handleFullScreenChange = () =>
+    setFullScreen(!!document.fullscreenElement)
 
   useEffect(() => {
     ;(async () => {
@@ -33,6 +33,7 @@ export const TitleBarProvider = (props: Props) => {
       const darwin = await window.electronAPI.isDarwin()
       setDarwin(darwin)
       document.body.addEventListener('fullscreenchange', handleFullScreenChange)
+      setReady(true)
     })()
     return () => {
       document.body.removeEventListener(
@@ -46,7 +47,7 @@ export const TitleBarProvider = (props: Props) => {
 
   return (
     <TitleBarContext.Provider value={value}>
-      {children}
+      {ready && children}
     </TitleBarContext.Provider>
   )
 }

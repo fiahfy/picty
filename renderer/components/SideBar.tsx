@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import {
   Explore as ExploreIcon,
-  Favorite as FavoriteIcon,
+  // Favorite as FavoriteIcon,
   Settings as SettingsIcon,
 } from '@mui/icons-material'
 import { useState } from 'react'
@@ -64,7 +64,7 @@ const SideBar = () => {
 
   const items = [
     { icon: <ExploreIcon />, key: 'explorer' },
-    { icon: <FavoriteIcon />, key: 'favorite' },
+    // { icon: <FavoriteIcon />, key: 'favorite' },
     { key: 'spacer', type: 'spacer' },
     {
       icon: <SettingsIcon />,
@@ -96,7 +96,6 @@ const SideBar = () => {
                 <ListItemButton
                   key={item.key}
                   onClick={item.onClick}
-                  selected
                   sx={{
                     flexGrow: 0,
                     height: 48,

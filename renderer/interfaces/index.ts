@@ -6,11 +6,11 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export interface IElectronAPI {
-  sendMessage: (message: string) => Promise<string>
-  isDarwin: () => Promise<boolean>
   doubleClickTitleBar: () => Promise<void>
-  listContents: (dirPath: string) => Promise<Content[]>
   getDirname: (filePath: string) => Promise<string>
+  getHomePath: () => Promise<string>
+  isDarwin: () => Promise<boolean>
+  listContents: (dirPath: string) => Promise<Content[]>
 }
 
 declare global {

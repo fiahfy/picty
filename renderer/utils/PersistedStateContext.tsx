@@ -38,6 +38,7 @@ type Props = { children: ReactNode }
 export const PersistedStateProvider = (props: Props) => {
   const { children } = props
 
+  const [restored, setRestored] = useState(false)
   const [state, setState] = useState(initialState)
 
   const parse = useCallback((json: string | null) => {
@@ -57,6 +58,7 @@ export const PersistedStateProvider = (props: Props) => {
     if (data) {
       setState(data)
     }
+    setRestored(true)
   }, [parse])
 
   useEffect(() => {
@@ -85,7 +87,7 @@ export const PersistedStateProvider = (props: Props) => {
 
   return (
     <PersistedStateContext.Provider value={value}>
-      {children}
+      {restored && children}
     </PersistedStateContext.Provider>
   )
 }
