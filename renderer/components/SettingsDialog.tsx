@@ -22,11 +22,11 @@ type Props = {
 const SettingsDialog = (props: Props) => {
   const { onRequestClose, open } = props
 
-  const { state, setDarkMode } = usePersistedState()
+  const { settings } = usePersistedState()
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.checked
-    setDarkMode(value)
+    settings.setDarkMode(value)
   }
 
   return (
@@ -48,10 +48,7 @@ const SettingsDialog = (props: Props) => {
             <Typography variant="subtitle2">General</Typography>
             <FormControlLabel
               control={
-                <Checkbox
-                  checked={state.settings.darkMode}
-                  onChange={handleChange}
-                />
+                <Checkbox checked={settings.darkMode} onChange={handleChange} />
               }
               label="Use Dark Mode"
             />

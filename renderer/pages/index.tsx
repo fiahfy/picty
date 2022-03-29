@@ -18,6 +18,7 @@ import {
   ArrowUpward as ArrowUpwardIcon,
   Close as CloseIcon,
   Folder as FolderIcon,
+  Home as HomeIcon,
   InsertDriveFile as InsertDriveFileIcon,
   Search as SearchIcon,
 } from '@mui/icons-material'
@@ -58,12 +59,18 @@ const IndexPage = () => {
     directory?: string
   }>({ open: false })
 
-  const { state, setCurrentDirectory } = usePersistedState()
+  const { currentDirectory, setCurrentDirectory } = usePersistedState()
+
+  useEffect(() => {
+    window.electronAPI.onSearchText((_e, text) => {
+      setQuery(text)
+    })
+  }, [])
 
   useEffect(() => {
     ;(async () => {
       const directory =
-        state.currentDirectory || (await window.electronAPI.getHomePath())
+        currentDirectory || (await window.electronAPI.getHomePath())
       setDirectory(directory)
       setContents([])
       setLoading(true)
@@ -71,7 +78,7 @@ const IndexPage = () => {
       setContents(contents)
       setLoading(false)
     })()
-  }, [state.currentDirectory])
+  }, [currentDirectory])
 
   const filteredContents = useMemo(() => {
     return contents.filter((content) => !query || content.name.includes(query))
@@ -84,6 +91,11 @@ const IndexPage = () => {
   const handleClickUpward = async () => {
     const dirPath = await window.electronAPI.getDirname(directory)
     setCurrentDirectory(dirPath)
+  }
+
+  const handleClickHome = async () => {
+    const homePath = await window.electronAPI.getHomePath()
+    setCurrentDirectory(homePath)
   }
 
   const handleChangeDirectory = (e: ChangeEvent<HTMLInputElement>) => {
@@ -147,6 +159,9 @@ const IndexPage = () => {
           </IconButton>
           <IconButton color="inherit" onClick={handleClickUpward}>
             <ArrowUpwardIcon />
+          </IconButton>
+          <IconButton color="inherit" onClick={handleClickHome}>
+            <HomeIcon />
           </IconButton>
           <Box sx={{ display: 'flex', flexGrow: 1, ml: 1 }}>
             <Box sx={{ display: 'flex', flex: '2 1 0' }}>

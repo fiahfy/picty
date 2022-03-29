@@ -28,7 +28,7 @@ type Props = { children: ReactNode }
 export const ThemeProvider = (props: Props) => {
   const { children } = props
 
-  const { state } = usePersistedState()
+  const { settings } = usePersistedState()
   const { shown } = useTitleBar()
 
   const [mode, setMode] = useState<PaletteMode>()
@@ -40,8 +40,8 @@ export const ThemeProvider = (props: Props) => {
     if (mode) {
       return mode
     }
-    return state.settings.darkMode ? 'dark' : 'light'
-  }, [mode, state.settings.darkMode])
+    return settings.darkMode ? 'dark' : 'light'
+  }, [mode, settings.darkMode])
 
   const theme = useMemo(
     () =>

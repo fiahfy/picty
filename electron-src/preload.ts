@@ -1,4 +1,4 @@
-import { ipcRenderer, contextBridge } from 'electron'
+import { ipcRenderer, contextBridge, IpcRendererEvent } from 'electron'
 
 contextBridge.exposeInMainWorld('electronAPI', {
   doubleClickTitleBar: () => ipcRenderer.invoke('doubleClickTitleBar'),
@@ -7,4 +7,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   isDarwin: () => ipcRenderer.invoke('isDarwin'),
   listContents: (dirPath: string) =>
     ipcRenderer.invoke('listContents', dirPath),
+  onSearchText: (callback: (event: IpcRendererEvent, text: string) => void) => {
+    ipcRenderer.on('searchText', callback)
+  },
 })

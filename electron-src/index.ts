@@ -1,9 +1,6 @@
-// Native
 import { readdirSync, Stats, statSync } from 'fs'
 import { basename, dirname, join } from 'path'
-import { format } from 'url'
 
-// Packages
 import {
   BrowserWindow,
   IpcMainInvokeEvent,
@@ -11,13 +8,33 @@ import {
   ipcMain,
   systemPreferences,
   protocol,
+  BrowserView,
+  WebContents,
 } from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
 import windowStateKeeper from 'electron-window-state'
 import contextMenu from 'electron-context-menu'
 
-contextMenu()
+const webContents = (
+  win: BrowserWindow | BrowserView | Electron.WebviewTag | WebContents
+) => ('webContents' in win ? win.webContents : win)
+
+contextMenu({
+  prepend: (_defaultActions, parameters, browserWindow) => {
+    return [
+      {
+        label: 'Search',
+        visible: parameters.selectionText.trim().length > 0,
+        click: () => {
+          const text = parameters.selectionText
+          const wc = webContents(browserWindow)
+          wc && wc.send('searchText', text)
+        },
+      },
+    ]
+  },
+})
 
 let mainWindow: BrowserWindow
 
@@ -43,11 +60,8 @@ app.on('ready', async () => {
     mainWindow.loadURL('http://localhost:8000/')
     mainWindow.webContents.openDevTools()
   } else {
-    const url = format({
-      pathname: join(__dirname, '../renderer/out/index.html'),
-      protocol: 'file:',
-      slashes: true,
-    })
+    const pathname = join(__dirname, '../renderer/out/index.html')
+    const url = `file://${pathname}`
     mainWindow.loadURL(url)
   }
 

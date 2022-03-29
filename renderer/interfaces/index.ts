@@ -5,12 +5,17 @@
 // import User from 'path/to/interfaces';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
+import { IpcRendererEvent } from 'electron'
+
 export interface IElectronAPI {
   doubleClickTitleBar: () => Promise<void>
   getDirname: (filePath: string) => Promise<string>
   getHomePath: () => Promise<string>
   isDarwin: () => Promise<boolean>
   listContents: (dirPath: string) => Promise<Content[]>
+  onSearchText: (
+    callback: (event: IpcRendererEvent, text: string) => void
+  ) => void
 }
 
 declare global {
