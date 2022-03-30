@@ -59,7 +59,7 @@ const IndexPage = () => {
     directory?: string
   }>({ open: false })
 
-  const { currentDirectory, setCurrentDirectory } = usePersistedState()
+  const { explorer } = usePersistedState()
 
   useEffect(() => {
     window.electronAPI.onSearchText((_e, text) => {
@@ -70,7 +70,7 @@ const IndexPage = () => {
   useEffect(() => {
     ;(async () => {
       const directory =
-        currentDirectory || (await window.electronAPI.getHomePath())
+        explorer.directory || (await window.electronAPI.getHomePath())
       setDirectory(directory)
       setContents([])
       setLoading(true)
@@ -78,24 +78,24 @@ const IndexPage = () => {
       setContents(contents)
       setLoading(false)
     })()
-  }, [currentDirectory])
+  }, [explorer.directory])
 
   const filteredContents = useMemo(() => {
     return contents.filter((content) => !query || content.name.includes(query))
   }, [contents, query])
 
   const moveDirectory = (dirPath: string) => {
-    setCurrentDirectory(dirPath)
+    explorer.setDirectory(dirPath)
   }
 
   const handleClickUpward = async () => {
     const dirPath = await window.electronAPI.getDirname(directory)
-    setCurrentDirectory(dirPath)
+    explorer.setDirectory(dirPath)
   }
 
   const handleClickHome = async () => {
     const homePath = await window.electronAPI.getHomePath()
-    setCurrentDirectory(homePath)
+    explorer.setDirectory(homePath)
   }
 
   const handleChangeDirectory = (e: ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +105,7 @@ const IndexPage = () => {
 
   const handleKeyDownDirectory = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-      setCurrentDirectory(directory)
+      explorer.setDirectory(directory)
     }
   }
 

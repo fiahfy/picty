@@ -12,8 +12,8 @@ import {
   createTheme,
   PaletteMode,
 } from '@mui/material'
-import { usePersistedState } from './PersistedStateContext'
-import { useTitleBar } from './TitleBarContext'
+import { usePersistedState } from 'utils/PersistedStateContext'
+import { useTitleBar } from 'utils/TitleBarContext'
 
 const ThemeContext = createContext<
   | {
