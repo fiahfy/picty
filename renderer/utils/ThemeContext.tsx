@@ -15,13 +15,13 @@ import {
 import { usePersistedState } from './PersistedStateContext'
 import { useTitleBar } from './TitleBarContext'
 
-const ThemeContext = createContext<{
-  forceMode: (mode: PaletteMode) => void
-  resetMode: () => void
-}>({
-  forceMode: () => undefined,
-  resetMode: () => undefined,
-})
+const ThemeContext = createContext<
+  | {
+      forceMode: (mode: PaletteMode) => void
+      resetMode: () => void
+    }
+  | undefined
+>(undefined)
 
 type Props = { children: ReactNode }
 
@@ -89,4 +89,10 @@ export const ThemeProvider = (props: Props) => {
   )
 }
 
-export const useTheme = () => useContext(ThemeContext)
+export const useTheme = () => {
+  const context = useContext(ThemeContext)
+  if (!context) {
+    throw new Error('useTheme must be used within a Provider')
+  }
+  return context
+}

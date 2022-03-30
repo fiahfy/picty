@@ -7,11 +7,12 @@ import {
   useState,
 } from 'react'
 
-const TitleBarContext = createContext<{
-  shown: boolean
-}>({
-  shown: false,
-})
+const TitleBarContext = createContext<
+  | {
+      shown: boolean
+    }
+  | undefined
+>(undefined)
 
 type Props = { children: ReactNode }
 
@@ -52,4 +53,10 @@ export const TitleBarProvider = (props: Props) => {
   )
 }
 
-export const useTitleBar = () => useContext(TitleBarContext)
+export const useTitleBar = () => {
+  const context = useContext(TitleBarContext)
+  if (!context) {
+    throw new Error('useTitleBar must be used within a Provider')
+  }
+  return context
+}
