@@ -6,7 +6,9 @@ export type State = {
   index: number
 }
 
-export type Action = { type: 'history/push'; payload: string }
+export type Action =
+  | { type: 'history/go'; payload: number }
+  | { type: 'history/push'; payload: string }
 
 export const initialState: State = {
   directories: [],
@@ -16,17 +18,29 @@ export const initialState: State = {
 export const reducer = (state: GlobalState, action: GlobalAction) => {
   const { type, payload } = action
   switch (type) {
-    case 'history/push':
+    case 'history/go': {
+      const index = state.history.index + payload
+      const directory = state.history.directories[index]
+      return directory
+        ? {
+            ...state,
+            history: {
+              ...state.history,
+              index,
+            },
+          }
+        : state
+    }
+    case 'history/push': {
+      const index = state.history.index + 1
       return {
         ...state,
         history: {
-          directories: [
-            ...state.history.directories.slice(0, state.history.index),
-            payload,
-          ],
-          index: state.history.index + 1,
+          directories: [...state.history.directories.slice(0, index), payload],
+          index,
         },
       }
+    }
     default:
       return state
   }
@@ -34,11 +48,17 @@ export const reducer = (state: GlobalState, action: GlobalAction) => {
 
 export const selectors = (state: GlobalState) => {
   const canBack = state.history.index > 0
-  return { canBack }
+  const canForward = state.history.index < state.history.directories.length - 1
+  const directory = state.history.directories[state.history.index]
+  return { canBack, canForward, directory }
 }
 
 export const operations = (dispatch: Dispatch<Action>) => {
   const push = (directory: string) =>
     dispatch({ type: 'history/push', payload: directory })
-  return { push }
+  const go = (offset: number) =>
+    dispatch({ type: 'history/go', payload: offset })
+  const back = () => go(-1)
+  const forward = () => go(1)
+  return { back, forward, go, push }
 }

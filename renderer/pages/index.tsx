@@ -59,7 +59,7 @@ const IndexPage = () => {
     directory?: string
   }>({ open: false })
 
-  const { explorer } = useStore()
+  const { history } = useStore()
 
   useEffect(() => {
     window.electronAPI.onSearchText((_e, text) => {
@@ -69,33 +69,35 @@ const IndexPage = () => {
 
   useEffect(() => {
     ;(async () => {
-      const directory =
-        explorer.directory || (await window.electronAPI.getHomePath())
-      setDirectory(directory)
+      if (!history.directory) {
+        const homePath = await window.electronAPI.getHomePath()
+        return history.push(homePath)
+      }
+      setDirectory(history.directory)
       setContents([])
       setLoading(true)
-      const contents = await window.electronAPI.listContents(directory)
+      const contents = await window.electronAPI.listContents(history.directory)
       setContents(contents)
       setLoading(false)
     })()
-  }, [explorer.directory])
+  }, [history])
 
   const filteredContents = useMemo(() => {
     return contents.filter((content) => !query || content.name.includes(query))
   }, [contents, query])
 
-  const moveDirectory = (dirPath: string) => {
-    explorer.setDirectory(dirPath)
-  }
+  const handleClickBack = () => history.back()
+
+  const handleClickForward = () => history.forward()
 
   const handleClickUpward = async () => {
     const dirPath = await window.electronAPI.getDirname(directory)
-    explorer.setDirectory(dirPath)
+    history.push(dirPath)
   }
 
   const handleClickHome = async () => {
     const homePath = await window.electronAPI.getHomePath()
-    explorer.setDirectory(homePath)
+    history.push(homePath)
   }
 
   const handleChangeDirectory = (e: ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +107,7 @@ const IndexPage = () => {
 
   const handleKeyDownDirectory = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-      explorer.setDirectory(directory)
+      history.push(directory)
     }
   }
 
@@ -129,7 +131,7 @@ const IndexPage = () => {
   }
 
   const handleRowDoubleClick = (info: RowMouseEventHandlerParams) => {
-    moveDirectory(info.rowData.path)
+    history.push(info.rowData.path)
   }
 
   const handleRowFocus = (info: RowFocusEventHandlerParams) => {
@@ -151,10 +153,19 @@ const IndexPage = () => {
         }}
       >
         <Toolbar variant="dense">
-          <IconButton color="inherit" disabled edge="start">
+          <IconButton
+            color="inherit"
+            disabled={!history.canBack}
+            edge="start"
+            onClick={handleClickBack}
+          >
             <ArrowBackIcon />
           </IconButton>
-          <IconButton color="inherit" disabled>
+          <IconButton
+            color="inherit"
+            disabled={!history.canForward}
+            onClick={handleClickForward}
+          >
             <ArrowForwardIcon />
           </IconButton>
           <IconButton color="inherit" onClick={handleClickUpward}>

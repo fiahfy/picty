@@ -1,11 +1,8 @@
 import { useCallback, useReducer } from 'react'
-import * as explorer from 'store/explorer'
 import * as history from 'store/history'
 import * as settings from 'store/settings'
 
 export type Store = {
-  explorer: ReturnType<typeof explorer.selectors> &
-    ReturnType<typeof explorer.operations>
   history: ReturnType<typeof history.selectors> &
     ReturnType<typeof history.operations>
   settings: ReturnType<typeof settings.selectors> &
@@ -15,19 +12,16 @@ export type Store = {
 }
 
 export type GlobalState = {
-  explorer: explorer.State
   history: history.State
   settings: settings.State
 }
 
 export type GlobalAction =
-  | explorer.Action
   | history.Action
   | settings.Action
   | { type: 'set'; payload: GlobalState }
 
 const initialState = {
-  explorer: explorer.initialState,
   history: history.initialState,
   settings: settings.initialState,
 }
@@ -39,9 +33,9 @@ const rootReducer = (state: GlobalState, action: GlobalAction) => {
       // TODO: deep merge
       return { ...state, ...payload }
     default:
-      return settings.reducer(
-        history.reducer(explorer.reducer(state, action), action),
-        action
+      return [history.reducer, settings.reducer].reduce(
+        (state, reducer) => reducer(state, action),
+        state
       )
   }
 }
@@ -55,10 +49,6 @@ export const useStore = () => {
   )
 
   const store = {
-    explorer: {
-      ...explorer.selectors(state),
-      ...explorer.operations(dispatch),
-    },
     history: { ...history.selectors(state), ...history.operations(dispatch) },
     settings: {
       ...settings.selectors(state),
