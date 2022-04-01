@@ -12,7 +12,6 @@ import {
   Box,
   Toolbar,
   Dialog,
-  Container,
   IconButton,
   Typography,
   Fade,
@@ -24,13 +23,15 @@ import {
   ChevronRight as ChevronRightIcon,
   Close as CloseIcon,
   Fullscreen as FullscreenIcon,
+  FullscreenExit as FullscreenExitIcon,
 } from '@mui/icons-material'
 import Layout from 'components/Layout'
 import { Content } from 'interfaces'
 import { useTheme } from 'utils/ThemeContext'
+import { isImageFile } from 'utils/image'
 
 type Props = {
-  directory?: string
+  directory: string
   onRequestClose: () => void
   open: boolean
 }
@@ -47,8 +48,6 @@ const PresentationDialog = (props: Props) => {
   const timer = useRef<number>()
   const topToolbar = useRef<HTMLDivElement>()
   const bottomToolbar = useRef<HTMLDivElement>()
-
-  const content = useMemo(() => contents[index], [contents, index])
 
   const clearTimer = () => {
     window.clearTimeout(timer.current)
@@ -68,19 +67,14 @@ const PresentationDialog = (props: Props) => {
 
   useEffect(() => {
     ;(async () => {
-      if (open) {
-        forceMode('dark')
-        resetTimer()
-        setIndex(0)
-        setContents([])
-        if (!directory) {
-          return
-        }
-        setLoading(true)
-        const contents = await window.electronAPI.listContents(directory)
-        setContents(contents)
-        setLoading(false)
-      }
+      forceMode('dark')
+      resetTimer()
+      setIndex(0)
+      setContents([])
+      setLoading(true)
+      const contents = await window.electronAPI.listContents(directory)
+      setContents(contents)
+      setLoading(false)
     })()
     return () => {
       clearTimer()
@@ -88,11 +82,20 @@ const PresentationDialog = (props: Props) => {
     }
   }, [directory, forceMode, open, resetMode, resetTimer])
 
+  const images = useMemo(
+    () => contents.filter((content) => isImageFile(content.path)),
+    [contents]
+  )
+
+  const image = useMemo(() => images[index], [images, index])
+
+  const fullscreen = !!document.fullscreenElement
+
   const movePrevious = () => {
     setIndex((prevIndex) => {
       let index = prevIndex - 1
       if (index < 0) {
-        index = contents.length - 1
+        index = images.length - 1
       }
       return index
     })
@@ -100,7 +103,7 @@ const PresentationDialog = (props: Props) => {
   const moveNext = () => {
     setIndex((prevIndex) => {
       let index = prevIndex + 1
-      if (index > contents.length - 1) {
+      if (index > images.length - 1) {
         index = 0
       }
       return index
@@ -108,7 +111,6 @@ const PresentationDialog = (props: Props) => {
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    resetTimer()
     switch (e.key) {
       case 'ArrowLeft':
       case 'ArrowUp':
@@ -116,6 +118,8 @@ const PresentationDialog = (props: Props) => {
       case 'ArrowRight':
       case 'ArrowDown':
         return moveNext()
+      case 'Tab':
+        return resetTimer()
     }
   }
 
@@ -124,6 +128,10 @@ const PresentationDialog = (props: Props) => {
   const handleClickPrevious = () => movePrevious()
 
   const handleClickNext = () => moveNext()
+
+  const handleClickFullscreenEnter = () => document.body.requestFullscreen()
+
+  const handleClickFullscreenExit = () => document.exitFullscreen()
 
   const handleChange = (_e: Event, value: number | number[]) => {
     if (!Array.isArray(value)) {
@@ -162,7 +170,7 @@ const PresentationDialog = (props: Props) => {
                   sx={{ ml: 2, flex: 1 }}
                   variant="subtitle1"
                 >
-                  {content?.name}
+                  {image?.name}
                 </Typography>
               </Toolbar>
             </Box>
@@ -173,10 +181,10 @@ const PresentationDialog = (props: Props) => {
             <LinearProgress />
           </Box>
         )}
-        {content && (
+        {image && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={fileUrl(content.path)}
+            src={fileUrl(image.path)}
             style={{
               display: 'block',
               height: '100%',
@@ -201,7 +209,7 @@ const PresentationDialog = (props: Props) => {
             >
               <Toolbar variant="dense">
                 <Slider
-                  max={contents.length - 1}
+                  max={images.length - 1}
                   min={0}
                   onChange={handleChange}
                   size="small"
@@ -226,11 +234,15 @@ const PresentationDialog = (props: Props) => {
                   <ChevronRightIcon />
                 </IconButton>
                 <Typography component="div" sx={{ ml: 1 }} variant="body1">
-                  {index + 1} / {contents.length}
+                  {index + 1} / {images.length}
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
                 <IconButton color="inherit" edge="end">
-                  <FullscreenIcon />
+                  {fullscreen ? (
+                    <FullscreenExitIcon onClick={handleClickFullscreenExit} />
+                  ) : (
+                    <FullscreenIcon onClick={handleClickFullscreenEnter} />
+                  )}
                 </IconButton>
               </Toolbar>
             </Box>

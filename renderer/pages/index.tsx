@@ -20,6 +20,7 @@ import {
   Folder as FolderIcon,
   Home as HomeIcon,
   InsertDriveFile as InsertDriveFileIcon,
+  Photo as PhotoIcon,
   Search as SearchIcon,
 } from '@mui/icons-material'
 import Layout from 'components/Layout'
@@ -29,6 +30,7 @@ import VirtualizedTable, {
 import { Content } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 import PresentationDialog from 'components/PresentationDialog'
+import { isImageFile } from 'utils/image'
 
 const RoundedFilledInput = styled(FilledInput)(
   ({ endAdornment, startAdornment, theme }) => ({
@@ -54,10 +56,12 @@ const IndexPage = () => {
   const [contents, setContents] = useState<Content[]>([])
   const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
-  const [dialogState, setDialogState] = useState<{
-    open: boolean
-    directory?: string
-  }>({ open: false })
+  const [dialogState, setDialogState] = useState<
+    | {
+        open: false
+      }
+    | { open: true; directory: string }
+  >({ open: false })
 
   const { history } = useStore()
 
@@ -116,9 +120,7 @@ const IndexPage = () => {
     setQuery(value)
   }
 
-  const handleClickClose = () => {
-    setQuery('')
-  }
+  const handleClickClearQuery = () => setQuery('')
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
@@ -126,21 +128,16 @@ const IndexPage = () => {
     }
   }
 
-  const handleRowClick = (info: RowMouseEventHandlerParams) => {
+  const handleRowClick = (info: RowMouseEventHandlerParams) =>
     setSelected([info.rowData.path])
-  }
 
-  const handleRowDoubleClick = (info: RowMouseEventHandlerParams) => {
+  const handleRowDoubleClick = (info: RowMouseEventHandlerParams) =>
     history.push(info.rowData.path)
-  }
 
-  const handleRowFocus = (info: RowFocusEventHandlerParams) => {
+  const handleRowFocus = (info: RowFocusEventHandlerParams) =>
     setSelected([info.rowData.path])
-  }
 
-  const handleRequestClose = () => {
-    setDialogState({ open: false })
-  }
+  const handleRequestClose = () => setDialogState({ open: false })
 
   return (
     <Layout>
@@ -194,7 +191,7 @@ const IndexPage = () => {
                     <InputAdornment position="end">
                       <IconButton
                         color="inherit"
-                        onClick={handleClickClose}
+                        onClick={handleClickClearQuery}
                         size="small"
                       >
                         <CloseIcon fontSize="small" />
@@ -241,11 +238,15 @@ const IndexPage = () => {
               ...row,
               name: (
                 <Box sx={{ alignItems: 'center', display: 'flex' }}>
-                  {row.type === 'directory' ? (
-                    <FolderIcon sx={{ color: colors.blue['300'] }} />
-                  ) : (
-                    <InsertDriveFileIcon sx={{ color: colors.grey['400'] }} />
+                  {row.type === 'directory' && (
+                    <FolderIcon sx={{ color: colors.blue['200'] }} />
                   )}
+                  {row.type === 'file' &&
+                    (isImageFile(row.path) ? (
+                      <PhotoIcon sx={{ color: colors.green['200'] }} />
+                    ) : (
+                      <InsertDriveFileIcon sx={{ color: colors.grey['400'] }} />
+                    ))}
                   <Typography noWrap sx={{ ml: 1 }} variant="body2">
                     {row.name}
                   </Typography>
@@ -258,11 +259,13 @@ const IndexPage = () => {
           />
         </Box>
       </Box>
-      <PresentationDialog
-        directory={dialogState.directory}
-        onRequestClose={handleRequestClose}
-        open={dialogState.open}
-      />
+      {dialogState.open && (
+        <PresentationDialog
+          directory={dialogState.directory}
+          onRequestClose={handleRequestClose}
+          open
+        />
+      )}
     </Layout>
   )
 }
