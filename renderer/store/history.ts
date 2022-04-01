@@ -46,19 +46,21 @@ export const reducer = (state: GlobalState, action: GlobalAction) => {
   }
 }
 
-export const selectors = (state: GlobalState) => {
+export const createSelectorsAndOperations = (
+  state: GlobalState,
+  dispatch: Dispatch<GlobalAction>
+) => {
   const canBack = state.history.index > 0
   const canForward = state.history.index < state.history.directories.length - 1
   const directory = state.history.directories[state.history.index]
-  return { canBack, canForward, directory }
-}
-
-export const operations = (dispatch: Dispatch<Action>) => {
-  const push = (directory: string) =>
-    dispatch({ type: 'history/push', payload: directory })
+  const push = (dir: string) => {
+    if (dir !== directory) {
+      dispatch({ type: 'history/push', payload: dir })
+    }
+  }
   const go = (offset: number) =>
     dispatch({ type: 'history/go', payload: offset })
   const back = () => go(-1)
   const forward = () => go(1)
-  return { back, forward, go, push }
+  return { back, canBack, canForward, directory, forward, go, push }
 }

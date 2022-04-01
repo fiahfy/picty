@@ -21,13 +21,12 @@ export const reducer = (state: GlobalState, action: GlobalAction) => {
   }
 }
 
-export const selectors = (state: GlobalState) => {
+export const createSelectorsAndOperations = (
+  state: GlobalState,
+  dispatch: Dispatch<GlobalAction>
+) => {
   const darkMode = state.settings.darkMode
-  return { darkMode }
-}
-
-export const operations = (dispatch: Dispatch<Action>) => {
   const setDarkMode = (darkMode: boolean) =>
     dispatch({ type: 'settings/set', payload: { darkMode } })
-  return { setDarkMode }
+  return { darkMode, setDarkMode }
 }

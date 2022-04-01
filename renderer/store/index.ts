@@ -3,10 +3,8 @@ import * as history from 'store/history'
 import * as settings from 'store/settings'
 
 export type Store = {
-  history: ReturnType<typeof history.selectors> &
-    ReturnType<typeof history.operations>
-  settings: ReturnType<typeof settings.selectors> &
-    ReturnType<typeof settings.operations>
+  history: ReturnType<typeof history.createSelectorsAndOperations>
+  settings: ReturnType<typeof settings.createSelectorsAndOperations>
   setState: (state: GlobalState) => void
   state: GlobalState
 }
@@ -49,10 +47,9 @@ export const useStore = () => {
   )
 
   const store = {
-    history: { ...history.selectors(state), ...history.operations(dispatch) },
+    history: { ...history.createSelectorsAndOperations(state, dispatch) },
     settings: {
-      ...settings.selectors(state),
-      ...settings.operations(dispatch),
+      ...settings.createSelectorsAndOperations(state, dispatch),
     },
     setState,
     state,
