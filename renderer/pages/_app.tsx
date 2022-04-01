@@ -6,7 +6,7 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import createEmotionCache from 'utils/createEmotionCache'
-import { PersistedStateProvider } from 'utils/PersistedStateContext'
+import { StoreProvider } from 'utils/StoreContext'
 import { ThemeProvider } from 'utils/ThemeContext'
 import { TitleBarProvider } from 'utils/TitleBarContext'
 
@@ -24,13 +24,13 @@ export default function MyApp(props: MyAppProps) {
       <Head>
         <meta content="initial-scale=1, width=device-width" name="viewport" />
       </Head>
-      <PersistedStateProvider>
+      <StoreProvider>
         <TitleBarProvider>
           <ThemeProvider>
             <Component {...pageProps} />
           </ThemeProvider>
         </TitleBarProvider>
-      </PersistedStateProvider>
+      </StoreProvider>
     </CacheProvider>
   )
 }

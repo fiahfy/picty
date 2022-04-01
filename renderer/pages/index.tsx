@@ -27,7 +27,7 @@ import VirtualizedTable, {
   RowFocusEventHandlerParams,
 } from 'components/VirtualizedTable'
 import { Content } from 'interfaces'
-import { usePersistedState } from 'utils/PersistedStateContext'
+import { useStore } from 'utils/StoreContext'
 import PresentationDialog from 'components/PresentationDialog'
 
 const RoundedFilledInput = styled(FilledInput)(
@@ -59,7 +59,7 @@ const IndexPage = () => {
     directory?: string
   }>({ open: false })
 
-  const { explorer } = usePersistedState()
+  const { explorer } = useStore()
 
   useEffect(() => {
     window.electronAPI.onSearchText((_e, text) => {

@@ -12,7 +12,7 @@ import {
   createTheme,
   PaletteMode,
 } from '@mui/material'
-import { usePersistedState } from 'utils/PersistedStateContext'
+import { useStore } from 'utils/StoreContext'
 import { useTitleBar } from 'utils/TitleBarContext'
 
 const ThemeContext = createContext<
@@ -28,7 +28,7 @@ type Props = { children: ReactNode }
 export const ThemeProvider = (props: Props) => {
   const { children } = props
 
-  const { settings } = usePersistedState()
+  const { settings } = useStore()
   const { shown } = useTitleBar()
 
   const [mode, setMode] = useState<PaletteMode>()

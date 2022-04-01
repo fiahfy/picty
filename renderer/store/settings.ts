@@ -1,5 +1,5 @@
 import { Dispatch } from 'react'
-import { GlobalAction, GlobalState } from 'utils/PersistedStateContext'
+import { GlobalAction, GlobalState } from 'store'
 
 export type State = {
   darkMode: boolean

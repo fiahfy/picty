@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import { Close as CloseIcon } from '@mui/icons-material'
 import Layout from 'components/Layout'
-import { usePersistedState } from 'utils/PersistedStateContext'
+import { useStore } from 'utils/StoreContext'
 
 type Props = {
   onRequestClose: () => void
@@ -22,7 +22,7 @@ type Props = {
 const SettingsDialog = (props: Props) => {
   const { onRequestClose, open } = props
 
-  const { settings } = usePersistedState()
+  const { settings } = useStore()
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.checked
