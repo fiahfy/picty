@@ -9,10 +9,11 @@ import { IpcRendererEvent } from 'electron'
 
 export interface IElectronAPI {
   doubleClickTitleBar: () => Promise<void>
-  getDirname: (filePath: string) => Promise<string>
+  getDirname: (path: string) => Promise<string>
   getHomePath: () => Promise<string>
   isDarwin: () => Promise<boolean>
-  listContents: (dirPath: string) => Promise<Content[]>
+  listContents: (path: string) => Promise<Content[]>
+  listContentsForPath: (path: string) => Promise<Content[]>
   onSearchText: (
     callback: (event: IpcRendererEvent, text: string) => void
   ) => void

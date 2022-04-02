@@ -31,13 +31,13 @@ import { useTheme } from 'utils/ThemeContext'
 import { isImageFile } from 'utils/image'
 
 type Props = {
-  directory: string
   onRequestClose: () => void
   open: boolean
+  path: string
 }
 
 const PresentationDialog = (props: Props) => {
-  const { directory, onRequestClose, open } = props
+  const { path, onRequestClose, open } = props
 
   const { forceMode, resetMode } = useTheme()
 
@@ -72,22 +72,21 @@ const PresentationDialog = (props: Props) => {
       setIndex(0)
       setContents([])
       setLoading(true)
-      const contents = await window.electronAPI.listContents(directory)
+      const contents = (
+        await window.electronAPI.listContentsForPath(path)
+      ).filter((content) => isImageFile(content.path))
       setContents(contents)
+      const index = contents.findIndex((content) => content.path === path)
+      setIndex(index > -1 ? index : 0)
       setLoading(false)
     })()
     return () => {
       clearTimer()
       resetMode()
     }
-  }, [directory, forceMode, open, resetMode, resetTimer])
+  }, [path, forceMode, open, resetMode, resetTimer])
 
-  const images = useMemo(
-    () => contents.filter((content) => isImageFile(content.path)),
-    [contents]
-  )
-
-  const image = useMemo(() => images[index], [images, index])
+  const content = useMemo(() => contents[index], [contents, index])
 
   const fullscreen = !!document.fullscreenElement
 
@@ -95,7 +94,7 @@ const PresentationDialog = (props: Props) => {
     setIndex((prevIndex) => {
       let index = prevIndex - 1
       if (index < 0) {
-        index = images.length - 1
+        index = contents.length - 1
       }
       return index
     })
@@ -103,7 +102,7 @@ const PresentationDialog = (props: Props) => {
   const moveNext = () => {
     setIndex((prevIndex) => {
       let index = prevIndex + 1
-      if (index > images.length - 1) {
+      if (index > contents.length - 1) {
         index = 0
       }
       return index
@@ -129,9 +128,8 @@ const PresentationDialog = (props: Props) => {
 
   const handleClickNext = () => moveNext()
 
-  const handleClickFullscreenEnter = () => document.body.requestFullscreen()
-
-  const handleClickFullscreenExit = () => document.exitFullscreen()
+  const handleClickFullscreen = () =>
+    fullscreen ? document.exitFullscreen() : document.body.requestFullscreen()
 
   const handleChange = (_e: Event, value: number | number[]) => {
     if (!Array.isArray(value)) {
@@ -170,7 +168,7 @@ const PresentationDialog = (props: Props) => {
                   sx={{ ml: 2, flex: 1 }}
                   variant="subtitle1"
                 >
-                  {image?.name}
+                  {content?.name}
                 </Typography>
               </Toolbar>
             </Box>
@@ -181,10 +179,10 @@ const PresentationDialog = (props: Props) => {
             <LinearProgress />
           </Box>
         )}
-        {image && (
+        {content && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={fileUrl(image.path)}
+            src={fileUrl(content.path)}
             style={{
               display: 'block',
               height: '100%',
@@ -209,7 +207,7 @@ const PresentationDialog = (props: Props) => {
             >
               <Toolbar variant="dense">
                 <Slider
-                  max={images.length - 1}
+                  max={contents.length - 1}
                   min={0}
                   onChange={handleChange}
                   size="small"
@@ -234,15 +232,15 @@ const PresentationDialog = (props: Props) => {
                   <ChevronRightIcon />
                 </IconButton>
                 <Typography component="div" sx={{ ml: 1 }} variant="body1">
-                  {index + 1} / {images.length}
+                  {index + 1} / {contents.length}
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
-                <IconButton color="inherit" edge="end">
-                  {fullscreen ? (
-                    <FullscreenExitIcon onClick={handleClickFullscreenExit} />
-                  ) : (
-                    <FullscreenIcon onClick={handleClickFullscreenEnter} />
-                  )}
+                <IconButton
+                  color="inherit"
+                  edge="end"
+                  onClick={handleClickFullscreen}
+                >
+                  {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
                 </IconButton>
               </Toolbar>
             </Box>

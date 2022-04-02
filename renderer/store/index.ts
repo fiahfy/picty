@@ -1,26 +1,31 @@
 import { useCallback, useReducer } from 'react'
 import * as history from 'store/history'
+import * as rating from 'store/rating'
 import * as settings from 'store/settings'
 
 export type Store = {
-  history: ReturnType<typeof history.createSelectorsAndOperations>
-  settings: ReturnType<typeof settings.createSelectorsAndOperations>
+  history: ReturnType<typeof history.useSelectorsAndOperations>
+  rating: ReturnType<typeof rating.useSelectorsAndOperations>
+  settings: ReturnType<typeof settings.useSelectorsAndOperations>
   setState: (state: GlobalState) => void
   state: GlobalState
 }
 
 export type GlobalState = {
   history: history.State
+  rating: rating.State
   settings: settings.State
 }
 
 export type GlobalAction =
   | history.Action
+  | rating.Action
   | settings.Action
   | { type: 'set'; payload: GlobalState }
 
 const initialState = {
   history: history.initialState,
+  rating: rating.initialState,
   settings: settings.initialState,
 }
 
@@ -31,7 +36,7 @@ const rootReducer = (state: GlobalState, action: GlobalAction) => {
       // TODO: deep merge
       return { ...state, ...payload }
     default:
-      return [history.reducer, settings.reducer].reduce(
+      return [history.reducer, rating.reducer, settings.reducer].reduce(
         (state, reducer) => reducer(state, action),
         state
       )
@@ -47,9 +52,10 @@ export const useStore = () => {
   )
 
   const store = {
-    history: { ...history.createSelectorsAndOperations(state, dispatch) },
+    history: { ...history.useSelectorsAndOperations(state, dispatch) },
+    rating: { ...rating.useSelectorsAndOperations(state, dispatch) },
     settings: {
-      ...settings.createSelectorsAndOperations(state, dispatch),
+      ...settings.useSelectorsAndOperations(state, dispatch),
     },
     setState,
     state,

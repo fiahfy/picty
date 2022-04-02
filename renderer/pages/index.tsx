@@ -8,6 +8,7 @@ import {
   FilledInput,
   IconButton,
   InputAdornment,
+  Rating,
   styled,
   Toolbar,
   Typography,
@@ -50,20 +51,29 @@ const RoundedFilledInput = styled(FilledInput)(
   })
 )
 
+const StyledRating = styled(Rating)(({ theme }) => ({
+  '& .MuiRating-iconFilled': {
+    color: theme.palette.primary.main,
+  },
+  '& .MuiRating-iconHover': {
+    color: theme.palette.primary.main,
+  },
+}))
+
 const IndexPage = () => {
   const [directory, setDirectory] = useState('')
   const [query, setQuery] = useState('')
-  const [contents, setContents] = useState<Content[]>([])
   const [loading, setLoading] = useState(false)
+  const [contents, setContents] = useState<Content[]>([])
   const [selected, setSelected] = useState<string[]>([])
   const [dialogState, setDialogState] = useState<
     | {
         open: false
       }
-    | { open: true; directory: string }
+    | { open: true; path: string }
   >({ open: false })
 
-  const { history } = useStore()
+  const { history, rating } = useStore()
 
   useEffect(() => {
     window.electronAPI.onSearchText((_e, text) => {
@@ -75,7 +85,7 @@ const IndexPage = () => {
     ;(async () => {
       if (!history.directory) {
         const homePath = await window.electronAPI.getHomePath()
-        return history.push(homePath)
+        return history.push.call(null, homePath)
       }
       setDirectory(history.directory)
       setContents([])
@@ -84,11 +94,13 @@ const IndexPage = () => {
       setContents(contents)
       setLoading(false)
     })()
-  }, [history])
+  }, [history.directory, history.push])
 
   const filteredContents = useMemo(() => {
-    return contents.filter((content) => !query || content.name.includes(query))
-  }, [contents, query])
+    return contents
+      .filter((content) => !query || content.name.includes(query))
+      .map((content) => ({ ...content, rating: rating.isRating(content.path) }))
+  }, [contents, query, rating])
 
   const handleClickBack = () => history.back()
 
@@ -123,8 +135,16 @@ const IndexPage = () => {
   const handleClickClearQuery = () => setQuery('')
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-      setDialogState({ directory: selected[0], open: true })
+    switch (e.key) {
+      case 'Enter':
+        if (!e.nativeEvent.isComposing) {
+          setDialogState({ path: selected[0], open: true })
+        }
+        return
+      case 'ArrowUp':
+        return
+      case 'ArrowDown':
+        return
     }
   }
 
@@ -220,13 +240,18 @@ const IndexPage = () => {
           <VirtualizedTable
             columns={[
               {
-                label: 'Name',
                 dataKey: 'name',
+                label: 'Name',
               },
               {
-                width: 200,
-                label: 'Date Modified',
+                dataKey: 'rating',
+                label: 'Rating',
+                width: 150,
+              },
+              {
                 dataKey: 'dateModified',
+                label: 'Date Modified',
+                width: 200,
               },
             ]}
             loading={loading}
@@ -252,6 +277,14 @@ const IndexPage = () => {
                   </Typography>
                 </Box>
               ),
+              rating: (
+                <StyledRating
+                  color="primary"
+                  onChange={(_e, value) => rating.rate(row.path, value ?? 0)}
+                  precision={0.5}
+                  value={row.rating}
+                />
+              ),
               dateModified: format(row.dateModified, 'PP HH:mm'),
             })}
             rowSelected={(row) => selected.includes(row.path)}
@@ -261,9 +294,9 @@ const IndexPage = () => {
       </Box>
       {dialogState.open && (
         <PresentationDialog
-          directory={dialogState.directory}
           onRequestClose={handleRequestClose}
           open
+          path={dialogState.path}
         />
       )}
     </Layout>

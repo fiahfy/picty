@@ -1,4 +1,4 @@
-import { Dispatch } from 'react'
+import { Dispatch, useCallback } from 'react'
 import { GlobalAction, GlobalState } from 'store'
 
 export type State = {
@@ -21,12 +21,15 @@ export const reducer = (state: GlobalState, action: GlobalAction) => {
   }
 }
 
-export const createSelectorsAndOperations = (
+export const useSelectorsAndOperations = (
   state: GlobalState,
   dispatch: Dispatch<GlobalAction>
 ) => {
   const darkMode = state.settings.darkMode
-  const setDarkMode = (darkMode: boolean) =>
-    dispatch({ type: 'settings/set', payload: { darkMode } })
+  const setDarkMode = useCallback(
+    (darkMode: boolean) =>
+      dispatch({ type: 'settings/set', payload: { darkMode } }),
+    [dispatch]
+  )
   return { darkMode, setDarkMode }
 }
