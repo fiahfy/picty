@@ -2,17 +2,28 @@ import { ChangeEvent } from 'react'
 import {
   AppBar,
   Box,
-  Toolbar,
-  Dialog,
-  Container,
-  IconButton,
-  Typography,
-  FormControlLabel,
   Checkbox,
+  Container,
+  Dialog,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Toolbar,
+  Typography,
 } from '@mui/material'
 import { Close as CloseIcon } from '@mui/icons-material'
 import Layout from 'components/Layout'
 import { useStore } from 'utils/StoreContext'
+
+const explorerLayoutOptions = [
+  { text: 'List View', value: 'list' },
+  { text: 'Thumbnail View', value: 'thumbnail' },
+]
 
 type Props = {
   onRequestClose: () => void
@@ -24,9 +35,16 @@ const SettingsDialog = (props: Props) => {
 
   const { settings } = useStore()
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeDarkMode = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.checked
     settings.setDarkMode(value)
+  }
+
+  const handleChangeExplorerLayout = (
+    e: SelectChangeEvent<'list' | 'thumbnail'>
+  ) => {
+    const value = e.target.value as 'list' | 'thumbnail'
+    settings.setExplorerLayout(value)
   }
 
   return (
@@ -46,12 +64,34 @@ const SettingsDialog = (props: Props) => {
         <Container>
           <Box sx={{ my: 2 }}>
             <Typography variant="subtitle2">General</Typography>
-            <FormControlLabel
-              control={
-                <Checkbox checked={settings.darkMode} onChange={handleChange} />
-              }
-              label="Use Dark Mode"
-            />
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={settings.darkMode}
+                    onChange={handleChangeDarkMode}
+                  />
+                }
+                label="Use Dark Mode"
+              />
+            </FormGroup>
+          </Box>
+          <Box sx={{ my: 2 }}>
+            <Typography variant="subtitle2">Explorer</Typography>
+            <FormControl sx={{ mt: 2 }}>
+              <InputLabel>Layout</InputLabel>
+              <Select
+                label="Layout"
+                onChange={handleChangeExplorerLayout}
+                value={settings.explorerLayout}
+              >
+                {explorerLayoutOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.text}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
         </Container>
       </Layout>

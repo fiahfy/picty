@@ -36,6 +36,7 @@ import Layout from 'components/Layout'
 import VirtualizedTable, {
   RowFocusEventHandlerParams,
 } from 'components/VirtualizedTable'
+import VirtualizedGridList from 'components/VirtualizedGridList'
 import { Content } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 import PresentationDialog from 'components/PresentationDialog'
@@ -75,7 +76,7 @@ const IndexPage = () => {
     | { open: true; path: string }
   >({ open: false })
 
-  const { history, rating, sorting } = useStore()
+  const { history, rating, settings, sorting } = useStore()
 
   useEffect(() => {
     window.electronAPI.onSearchText((_e, text) => {
@@ -277,63 +278,127 @@ const IndexPage = () => {
         </Toolbar>
         <Divider />
         <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
-          <VirtualizedTable
-            columns={[
-              {
-                dataKey: 'name',
-                label: 'Name',
-              },
-              {
-                dataKey: 'rating',
-                label: 'Rating',
-                width: 150,
-                reverse: true,
-              },
-              {
-                dataKey: 'dateModified',
-                label: 'Date Modified',
-                width: 200,
-                reverse: true,
-              },
-            ]}
-            loading={loading}
-            onChangeSortOption={handleChangeSortOption}
-            onKeyDown={handleKeyDownTable}
-            onRowClick={handleRowClick}
-            onRowDoubleClick={handleRowDoubleClick}
-            onRowFocus={handleRowFocus}
-            rowRenderer={(row) => ({
-              ...row,
-              name: (
-                <Box sx={{ alignItems: 'center', display: 'flex' }}>
-                  {row.type === 'directory' && (
-                    <FolderIcon sx={{ color: colors.blue['200'] }} />
-                  )}
-                  {row.type === 'file' &&
-                    (isImageFile(row.path) ? (
-                      <PhotoIcon sx={{ color: colors.green['200'] }} />
-                    ) : (
-                      <InsertDriveFileIcon sx={{ color: colors.grey['400'] }} />
-                    ))}
-                  <Typography noWrap sx={{ ml: 1 }} variant="body2">
-                    {row.name}
-                  </Typography>
-                </Box>
-              ),
-              rating: (
-                <StyledRating
-                  color="primary"
-                  onChange={(_e, value) => rating.rate(row.path, value ?? 0)}
-                  precision={0.5}
-                  value={row.rating}
-                />
-              ),
-              dateModified: format(row.dateModified, 'PP HH:mm'),
-            })}
-            rowSelected={(row) => selected.includes(row.path)}
-            rows={adjustedContents}
-            sortOption={sortOption}
-          />
+          {settings.explorerLayout === 'list' ? (
+            <VirtualizedTable
+              columns={[
+                {
+                  dataKey: 'name',
+                  label: 'Name',
+                },
+                {
+                  dataKey: 'rating',
+                  label: 'Rating',
+                  width: 150,
+                  reverse: true,
+                },
+                {
+                  dataKey: 'dateModified',
+                  label: 'Date Modified',
+                  width: 200,
+                  reverse: true,
+                },
+              ]}
+              loading={loading}
+              onChangeSortOption={handleChangeSortOption}
+              onKeyDown={handleKeyDownTable}
+              onRowClick={handleRowClick}
+              onRowDoubleClick={handleRowDoubleClick}
+              onRowFocus={handleRowFocus}
+              rowRenderer={(row) => ({
+                ...row,
+                name: (
+                  <Box sx={{ alignItems: 'center', display: 'flex' }}>
+                    {row.type === 'directory' && (
+                      <FolderIcon sx={{ color: colors.blue['200'] }} />
+                    )}
+                    {row.type === 'file' &&
+                      (isImageFile(row.path) ? (
+                        <PhotoIcon sx={{ color: colors.green['200'] }} />
+                      ) : (
+                        <InsertDriveFileIcon
+                          sx={{ color: colors.grey['400'] }}
+                        />
+                      ))}
+                    <Typography noWrap sx={{ ml: 1 }} variant="body2">
+                      {row.name}
+                    </Typography>
+                  </Box>
+                ),
+                rating: (
+                  <StyledRating
+                    color="primary"
+                    onChange={(_e, value) => rating.rate(row.path, value ?? 0)}
+                    precision={0.5}
+                    value={row.rating}
+                  />
+                ),
+                dateModified: format(row.dateModified, 'PP HH:mm'),
+              })}
+              rowSelected={(row) => selected.includes(row.path)}
+              rows={adjustedContents}
+              sortOption={sortOption}
+            />
+          ) : (
+            <VirtualizedGridList
+              columns={[
+                {
+                  dataKey: 'name',
+                  label: 'Name',
+                },
+                {
+                  dataKey: 'rating',
+                  label: 'Rating',
+                  width: 150,
+                  reverse: true,
+                },
+                {
+                  dataKey: 'dateModified',
+                  label: 'Date Modified',
+                  width: 200,
+                  reverse: true,
+                },
+              ]}
+              loading={loading}
+              onChangeSortOption={handleChangeSortOption}
+              onKeyDown={handleKeyDownTable}
+              onRowClick={handleRowClick}
+              onRowDoubleClick={handleRowDoubleClick}
+              onRowFocus={handleRowFocus}
+              rowRenderer={(row) => ({
+                ...row,
+                name: (
+                  <Box sx={{ alignItems: 'center', display: 'flex' }}>
+                    {row.type === 'directory' && (
+                      <FolderIcon sx={{ color: colors.blue['200'] }} />
+                    )}
+                    {row.type === 'file' &&
+                      (isImageFile(row.path) ? (
+                        <PhotoIcon sx={{ color: colors.green['200'] }} />
+                      ) : (
+                        <InsertDriveFileIcon
+                          sx={{ color: colors.grey['400'] }}
+                        />
+                      ))}
+                    <Typography noWrap sx={{ ml: 1 }} variant="body2">
+                      {row.name}
+                    </Typography>
+                  </Box>
+                ),
+                rating: (
+                  <StyledRating
+                    color="primary"
+                    onChange={(_e, value) => rating.rate(row.path, value ?? 0)}
+                    precision={0.5}
+                    value={row.rating}
+                  />
+                ),
+                dateModified: format(row.dateModified, 'PP HH:mm'),
+              })}
+              rowSelected={(row) => selected.includes(row.path)}
+              rows={adjustedContents}
+              sortOption={sortOption}
+            />
+          )}
         </Box>
       </Box>
       {dialogState.open && (
