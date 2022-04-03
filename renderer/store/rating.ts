@@ -7,7 +7,7 @@ type State = {
 type Action =
   | { type: 'set'; payload: Partial<State> }
   | {
-      type: 'rate'
+      type: 'setRating'
       payload: { path: string; rating: number }
     }
 
@@ -16,7 +16,7 @@ const initialState: State = {}
 const reducer = (state: State, action: Action) => {
   const { type, payload } = action
   switch (type) {
-    case 'rate': {
+    case 'setRating': {
       const { path, rating } = payload
       return {
         ...state,
@@ -31,17 +31,17 @@ const reducer = (state: State, action: Action) => {
 export const useStore = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const isRating = useCallback((path: string) => state[path] ?? 0, [state])
+  const getRating = useCallback((path: string) => state[path] ?? 0, [state])
 
   const setState = useCallback(
     (state: Partial<State>) => dispatch({ type: 'set', payload: state }),
     []
   )
-  const rate = useCallback(
+  const setRating = useCallback(
     (path: string, rating: number) =>
-      dispatch({ type: 'rate', payload: { path, rating } }),
+      dispatch({ type: 'setRating', payload: { path, rating } }),
     [dispatch]
   )
 
-  return { isRating, rate, setState, state }
+  return { getRating, setRating, setState, state }
 }

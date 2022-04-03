@@ -6,19 +6,14 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { RowMouseEventHandlerParams } from 'react-virtualized'
-import { format } from 'date-fns'
 import {
   Box,
-  colors,
   Divider,
   FilledInput,
   IconButton,
   InputAdornment,
-  Rating,
-  styled,
   Toolbar,
-  Typography,
+  styled,
 } from '@mui/material'
 import {
   ArrowBack as ArrowBackIcon,
@@ -27,20 +22,14 @@ import {
   Close as CloseIcon,
   Folder as FolderIcon,
   Home as HomeIcon,
-  InsertDriveFile as InsertDriveFileIcon,
-  Photo as PhotoIcon,
   Refresh as RefreshIcon,
   Search as SearchIcon,
 } from '@mui/icons-material'
+import ExplorerTable from 'components/ExplorerTable'
 import Layout from 'components/Layout'
-import VirtualizedTable, {
-  RowFocusEventHandlerParams,
-} from 'components/VirtualizedTable'
-import VirtualizedGridList from 'components/VirtualizedGridList'
+import PresentationDialog from 'components/PresentationDialog'
 import { Content } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
-import PresentationDialog from 'components/PresentationDialog'
-import { isImageFile } from 'utils/image'
 
 const RoundedFilledInput = styled(FilledInput)({
   '&': {
@@ -53,15 +42,6 @@ const RoundedFilledInput = styled(FilledInput)({
     },
   },
 })
-
-const StyledRating = styled(Rating)(({ theme }) => ({
-  '& .MuiRating-iconFilled': {
-    color: theme.palette.primary.main,
-  },
-  '& .MuiRating-iconHover': {
-    color: theme.palette.primary.main,
-  },
-}))
 
 const IndexPage = () => {
   const [directory, setDirectory] = useState('')
@@ -76,7 +56,7 @@ const IndexPage = () => {
     | { open: true; path: string }
   >({ open: false })
 
-  const { history, rating, settings, sorting } = useStore()
+  const { history, settings, sorting } = useStore()
 
   useEffect(() => {
     window.electronAPI.onSearchText((_e, text) => {
@@ -104,11 +84,10 @@ const IndexPage = () => {
     })()
   }, [history.directory, history.push, load])
 
-  const adjustedContents = useMemo(() => {
-    return contents
-      .filter((content) => !query || content.name.includes(query))
-      .map((content) => ({ ...content, rating: rating.isRating(content.path) }))
-  }, [contents, query, rating])
+  const filteredContents = useMemo(
+    () => contents.filter((content) => !query || content.name.includes(query)),
+    [contents, query]
+  )
 
   const sortOption = useMemo(
     () => sorting.getOption.call(null, history.directory),
@@ -153,14 +132,7 @@ const IndexPage = () => {
 
   const handleClickClearQuery = () => setQuery('')
 
-  const handleChangeSortOption = (sortOption: {
-    order: 'asc' | 'desc'
-    orderBy: 'name' | 'rating' | 'dateModified'
-  }) => {
-    sorting.sort(history.directory, sortOption)
-  }
-
-  const handleKeyDownTable = (e: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     switch (e.key) {
       case 'Enter':
         if (!e.nativeEvent.isComposing) {
@@ -174,14 +146,24 @@ const IndexPage = () => {
     }
   }
 
-  const handleRowClick = (info: RowMouseEventHandlerParams) =>
-    setSelected([info.rowData.path])
+  const handleChangeSortOption = (sortOption: {
+    order: 'asc' | 'desc'
+    orderBy: 'name' | 'rating' | 'dateModified'
+  }) => {
+    sorting.sort(history.directory, sortOption)
+  }
 
-  const handleRowDoubleClick = (info: RowMouseEventHandlerParams) =>
-    history.push(info.rowData.path)
+  const handleClickContent = (content: Content) => {
+    setSelected([content.path])
+  }
 
-  const handleRowFocus = (info: RowFocusEventHandlerParams) =>
-    setSelected([info.rowData.path])
+  const handleDoubleClickContent = (content: Content) =>
+    history.push(content.path)
+
+  const handleFocusContent = (content: Content) => setSelected([content.path])
+
+  const isContentSelected = (content: Content) =>
+    selected.includes(content.path)
 
   const handleRequestClose = () => setDialogState({ open: false })
 
@@ -279,125 +261,48 @@ const IndexPage = () => {
         <Divider />
         <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
           {settings.explorerLayout === 'list' ? (
-            <VirtualizedTable
-              columns={[
-                {
-                  dataKey: 'name',
-                  label: 'Name',
-                },
-                {
-                  dataKey: 'rating',
-                  label: 'Rating',
-                  width: 150,
-                  reverse: true,
-                },
-                {
-                  dataKey: 'dateModified',
-                  label: 'Date Modified',
-                  width: 200,
-                  reverse: true,
-                },
-              ]}
+            <ExplorerTable
+              contentSelected={isContentSelected}
+              contents={filteredContents}
               loading={loading}
               onChangeSortOption={handleChangeSortOption}
-              onKeyDown={handleKeyDownTable}
-              onRowClick={handleRowClick}
-              onRowDoubleClick={handleRowDoubleClick}
-              onRowFocus={handleRowFocus}
-              rowRenderer={(row) => ({
-                ...row,
-                name: (
-                  <Box sx={{ alignItems: 'center', display: 'flex' }}>
-                    {row.type === 'directory' && (
-                      <FolderIcon sx={{ color: colors.blue['200'] }} />
-                    )}
-                    {row.type === 'file' &&
-                      (isImageFile(row.path) ? (
-                        <PhotoIcon sx={{ color: colors.green['200'] }} />
-                      ) : (
-                        <InsertDriveFileIcon
-                          sx={{ color: colors.grey['400'] }}
-                        />
-                      ))}
-                    <Typography noWrap sx={{ ml: 1 }} variant="body2">
-                      {row.name}
-                    </Typography>
-                  </Box>
-                ),
-                rating: (
-                  <StyledRating
-                    color="primary"
-                    onChange={(_e, value) => rating.rate(row.path, value ?? 0)}
-                    precision={0.5}
-                    value={row.rating}
-                  />
-                ),
-                dateModified: format(row.dateModified, 'PP HH:mm'),
-              })}
-              rowSelected={(row) => selected.includes(row.path)}
-              rows={adjustedContents}
+              onClickContent={handleClickContent}
+              onDoubleClickContent={handleDoubleClickContent}
+              onFocusContent={handleFocusContent}
+              onKeyDown={handleKeyDown}
               sortOption={sortOption}
             />
           ) : (
-            <VirtualizedGridList
-              columns={[
-                {
-                  dataKey: 'name',
-                  label: 'Name',
-                },
-                {
-                  dataKey: 'rating',
-                  label: 'Rating',
-                  width: 150,
-                  reverse: true,
-                },
-                {
-                  dataKey: 'dateModified',
-                  label: 'Date Modified',
-                  width: 200,
-                  reverse: true,
-                },
-              ]}
-              loading={loading}
-              onChangeSortOption={handleChangeSortOption}
-              onKeyDown={handleKeyDownTable}
-              onRowClick={handleRowClick}
-              onRowDoubleClick={handleRowDoubleClick}
-              onRowFocus={handleRowFocus}
-              rowRenderer={(row) => ({
-                ...row,
-                name: (
-                  <Box sx={{ alignItems: 'center', display: 'flex' }}>
-                    {row.type === 'directory' && (
-                      <FolderIcon sx={{ color: colors.blue['200'] }} />
-                    )}
-                    {row.type === 'file' &&
-                      (isImageFile(row.path) ? (
-                        <PhotoIcon sx={{ color: colors.green['200'] }} />
-                      ) : (
-                        <InsertDriveFileIcon
-                          sx={{ color: colors.grey['400'] }}
-                        />
-                      ))}
-                    <Typography noWrap sx={{ ml: 1 }} variant="body2">
-                      {row.name}
-                    </Typography>
-                  </Box>
-                ),
-                rating: (
-                  <StyledRating
-                    color="primary"
-                    onChange={(_e, value) => rating.rate(row.path, value ?? 0)}
-                    precision={0.5}
-                    value={row.rating}
-                  />
-                ),
-                dateModified: format(row.dateModified, 'PP HH:mm'),
-              })}
-              rowSelected={(row) => selected.includes(row.path)}
-              rows={adjustedContents}
-              sortOption={sortOption}
-            />
+            <>dummy</>
+            // <VirtualizedGridList
+            //   columns={[
+            //     {
+            //       dataKey: 'name',
+            //       label: 'Name',
+            //     },
+            //     {
+            //       dataKey: 'rating',
+            //       label: 'Rating',
+            //       width: 150,
+            //       reverse: true,
+            //     },
+            //     {
+            //       dataKey: 'dateModified',
+            //       label: 'Date Modified',
+            //       width: 200,
+            //       reverse: true,
+            //     },
+            //   ]}
+            //   loading={loading}
+            //   onChangeSortOption={handleChangeSortOption}
+            //   onKeyDown={handleKeyDownTable}
+            //   onRowClick={handleRowClick}
+            //   onRowDoubleClick={handleRowDoubleClick}
+            //   onRowFocus={handleRowFocus}
+            //   rowSelected={(row) => selected.includes(row.path)}
+            //   rows={filteredContents}
+            //   sortOption={sortOption}
+            // />
           )}
         </Box>
       </Box>
