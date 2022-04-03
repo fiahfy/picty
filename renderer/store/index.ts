@@ -1,62 +1,36 @@
-import { useCallback, useReducer } from 'react'
-import * as history from 'store/history'
-import * as rating from 'store/rating'
-import * as settings from 'store/settings'
-
-export type Store = {
-  history: ReturnType<typeof history.useSelectorsAndOperations>
-  rating: ReturnType<typeof rating.useSelectorsAndOperations>
-  settings: ReturnType<typeof settings.useSelectorsAndOperations>
-  setState: (state: GlobalState) => void
-  state: GlobalState
-}
-
-export type GlobalState = {
-  history: history.State
-  rating: rating.State
-  settings: settings.State
-}
-
-export type GlobalAction =
-  | history.Action
-  | rating.Action
-  | settings.Action
-  | { type: 'set'; payload: GlobalState }
-
-const initialState = {
-  history: history.initialState,
-  rating: rating.initialState,
-  settings: settings.initialState,
-}
-
-const rootReducer = (state: GlobalState, action: GlobalAction) => {
-  const { type, payload } = action
-  switch (type) {
-    case 'set':
-      // TODO: deep merge
-      return { ...state, ...payload }
-    default:
-      return [history.reducer, rating.reducer, settings.reducer].reduce(
-        (state, reducer) => reducer(state, action),
-        state
-      )
-  }
-}
+import { useCallback, useMemo } from 'react'
+import { useStore as useHistoryStore } from 'store/history'
+import { useStore as useRatingStore } from 'store/rating'
+import { useStore as useSettingsStore } from 'store/settings'
 
 export const useStore = () => {
-  const [state, dispatch] = useReducer(rootReducer, initialState)
+  const historyStore = useHistoryStore()
+  const ratingStore = useRatingStore()
+  const settingsStore = useSettingsStore()
+
+  const state = useMemo(
+    () => ({
+      history: historyStore.state,
+      rating: ratingStore.state,
+      settings: settingsStore.state,
+    }),
+    [historyStore.state, ratingStore.state, settingsStore.state]
+  )
 
   const setState = useCallback(
-    (state: GlobalState) => dispatch({ type: 'set', payload: state }),
-    []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (state: any) => {
+      historyStore.setState.call(null, state.history)
+      ratingStore.setState.call(null, state.rating)
+      settingsStore.setState.call(null, state.settings)
+    },
+    [historyStore.setState, ratingStore.setState, settingsStore.setState]
   )
 
   const store = {
-    history: { ...history.useSelectorsAndOperations(state, dispatch) },
-    rating: { ...rating.useSelectorsAndOperations(state, dispatch) },
-    settings: {
-      ...settings.useSelectorsAndOperations(state, dispatch),
-    },
+    history: historyStore,
+    rating: ratingStore,
+    settings: settingsStore,
     setState,
     state,
   }

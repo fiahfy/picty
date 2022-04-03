@@ -5,9 +5,11 @@ import {
   useContext,
   useEffect,
 } from 'react'
-import { Store, useStore as useOriginalStore } from 'store'
+import { useStore as useOriginalStore } from 'store'
 
-const StoreContext = createContext<Store | undefined>(undefined)
+const StoreContext = createContext<
+  ReturnType<typeof useOriginalStore> | undefined
+>(undefined)
 
 const key = 'store'
 

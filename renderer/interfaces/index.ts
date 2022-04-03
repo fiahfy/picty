@@ -17,6 +17,7 @@ export interface IElectronAPI {
   onSearchText: (
     callback: (event: IpcRendererEvent, text: string) => void
   ) => void
+  openPath: (path: string) => Promise<void>
 }
 
 declare global {

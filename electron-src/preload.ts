@@ -1,4 +1,4 @@
-import { ipcRenderer, contextBridge, IpcRendererEvent } from 'electron'
+import { IpcRendererEvent, ipcRenderer, contextBridge } from 'electron'
 
 contextBridge.exposeInMainWorld('electronAPI', {
   doubleClickTitleBar: () => ipcRenderer.invoke('doubleClickTitleBar'),
@@ -11,4 +11,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onSearchText: (callback: (event: IpcRendererEvent, text: string) => void) => {
     ipcRenderer.on('searchText', callback)
   },
+  openPath: (path: string) => ipcRenderer.invoke('openPath', path),
 })

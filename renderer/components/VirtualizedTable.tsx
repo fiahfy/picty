@@ -30,6 +30,7 @@ type ColumnData<T> = {
   label: string
   align?: MuiTableCellProps['align']
   width?: number
+  reverse?: boolean
 }
 
 type Order = 'asc' | 'desc'
@@ -122,9 +123,14 @@ const VirtualizedTable = <K extends string, T extends { [key in K]: unknown }>(
       } else {
         result = 0
       }
-      return order === 'desc' ? -1 * result : result
+      const orderSign = order === 'desc' ? -1 : 1
+      const reverseSign = columns.find((column) => column.dataKey === orderBy)
+        ?.reverse
+        ? -1
+        : 1
+      return orderSign * reverseSign * result
     },
-    [order, orderBy]
+    [columns, order, orderBy]
   )
 
   const sortedRows = useMemo(

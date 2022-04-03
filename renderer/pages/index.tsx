@@ -1,4 +1,11 @@
-import { ChangeEvent, KeyboardEvent, useEffect, useMemo, useState } from 'react'
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { RowMouseEventHandlerParams } from 'react-virtualized'
 import { format } from 'date-fns'
 import {
@@ -22,6 +29,7 @@ import {
   Home as HomeIcon,
   InsertDriveFile as InsertDriveFileIcon,
   Photo as PhotoIcon,
+  Refresh as RefreshIcon,
   Search as SearchIcon,
 } from '@mui/icons-material'
 import Layout from 'components/Layout'
@@ -33,23 +41,17 @@ import { useStore } from 'utils/StoreContext'
 import PresentationDialog from 'components/PresentationDialog'
 import { isImageFile } from 'utils/image'
 
-const RoundedFilledInput = styled(FilledInput)(
-  ({ endAdornment, startAdornment, theme }) => ({
-    '&': {
-      borderRadius: '40px',
-      '::after': {
-        display: 'none',
-      },
-      '::before': {
-        display: 'none',
-      },
-      input: {
-        ...(endAdornment ? {} : { paddingRight: theme.spacing(2.5) }),
-        ...(startAdornment ? {} : { paddingLeft: theme.spacing(2.5) }),
-      },
+const RoundedFilledInput = styled(FilledInput)({
+  '&': {
+    borderRadius: '40px',
+    '::after': {
+      display: 'none',
     },
-  })
-)
+    '::before': {
+      display: 'none',
+    },
+  },
+})
 
 const StyledRating = styled(Rating)(({ theme }) => ({
   '& .MuiRating-iconFilled': {
@@ -81,6 +83,14 @@ const IndexPage = () => {
     })
   }, [])
 
+  const load = useCallback(async () => {
+    setContents([])
+    setLoading(true)
+    const contents = await window.electronAPI.listContents(history.directory)
+    setContents(contents)
+    setLoading(false)
+  }, [history.directory])
+
   useEffect(() => {
     ;(async () => {
       if (!history.directory) {
@@ -88,15 +98,11 @@ const IndexPage = () => {
         return history.push.call(null, homePath)
       }
       setDirectory(history.directory)
-      setContents([])
-      setLoading(true)
-      const contents = await window.electronAPI.listContents(history.directory)
-      setContents(contents)
-      setLoading(false)
+      await load()
     })()
-  }, [history.directory, history.push])
+  }, [history.directory, history.push, load])
 
-  const filteredContents = useMemo(() => {
+  const adjustedContents = useMemo(() => {
     return contents
       .filter((content) => !query || content.name.includes(query))
       .map((content) => ({ ...content, rating: rating.isRating(content.path) }))
@@ -114,6 +120,12 @@ const IndexPage = () => {
   const handleClickHome = async () => {
     const homePath = await window.electronAPI.getHomePath()
     history.push(homePath)
+  }
+
+  const handleClickRefresh = load
+
+  const handleClickFolder = async () => {
+    await window.electronAPI.openPath(history.directory)
   }
 
   const handleChangeDirectory = (e: ChangeEvent<HTMLInputElement>) => {
@@ -191,6 +203,9 @@ const IndexPage = () => {
           <IconButton color="inherit" onClick={handleClickHome}>
             <HomeIcon />
           </IconButton>
+          <IconButton color="inherit" onClick={handleClickRefresh}>
+            <RefreshIcon />
+          </IconButton>
           <Box sx={{ display: 'flex', flexGrow: 1, ml: 1 }}>
             <Box sx={{ display: 'flex', flex: '2 1 0' }}>
               <RoundedFilledInput
@@ -200,6 +215,18 @@ const IndexPage = () => {
                 onKeyDown={handleKeyDownDirectory}
                 size="small"
                 spellCheck={false}
+                startAdornment={
+                  <InputAdornment position="start" sx={{ mr: 0 }}>
+                    <IconButton
+                      color="inherit"
+                      edge="start"
+                      onClick={handleClickFolder}
+                      sx={{ width: (theme) => theme.spacing(6) }}
+                    >
+                      <FolderIcon />
+                    </IconButton>
+                  </InputAdornment>
+                }
                 sx={{ mr: 0.5 }}
                 value={directory}
               />
@@ -247,11 +274,13 @@ const IndexPage = () => {
                 dataKey: 'rating',
                 label: 'Rating',
                 width: 150,
+                reverse: true,
               },
               {
                 dataKey: 'dateModified',
                 label: 'Date Modified',
                 width: 200,
+                reverse: true,
               },
             ]}
             loading={loading}
@@ -288,7 +317,7 @@ const IndexPage = () => {
               dateModified: format(row.dateModified, 'PP HH:mm'),
             })}
             rowSelected={(row) => selected.includes(row.path)}
-            rows={filteredContents}
+            rows={adjustedContents}
           />
         </Box>
       </Box>

@@ -1,35 +1,38 @@
-import { Dispatch, useCallback } from 'react'
-import { GlobalAction, GlobalState } from 'store'
+import { useCallback, useMemo, useReducer } from 'react'
 
-export type State = {
+type State = {
   darkMode: boolean
 }
 
-export type Action = { type: 'settings/set'; payload: Partial<State> }
+type Action = { type: 'set'; payload: Partial<State> }
 
-export const initialState: State = {
+const initialState: State = {
   darkMode: false,
 }
 
-export const reducer = (state: GlobalState, action: GlobalAction) => {
+const reducer = (state: State, action: Action) => {
   const { type, payload } = action
   switch (type) {
-    case 'settings/set':
-      return { ...state, settings: { ...state.settings, ...payload } }
+    case 'set':
+      return { ...state, ...payload }
     default:
       return state
   }
 }
 
-export const useSelectorsAndOperations = (
-  state: GlobalState,
-  dispatch: Dispatch<GlobalAction>
-) => {
-  const darkMode = state.settings.darkMode
+export const useStore = () => {
+  const [state, dispatch] = useReducer(reducer, initialState)
+
+  const darkMode = useMemo(() => state.darkMode, [state.darkMode])
+
+  const setState = useCallback(
+    (state: Partial<State>) => dispatch({ type: 'set', payload: state }),
+    []
+  )
   const setDarkMode = useCallback(
-    (darkMode: boolean) =>
-      dispatch({ type: 'settings/set', payload: { darkMode } }),
+    (darkMode: boolean) => dispatch({ type: 'set', payload: { darkMode } }),
     [dispatch]
   )
-  return { darkMode, setDarkMode }
+
+  return { darkMode, setDarkMode, setState, state }
 }

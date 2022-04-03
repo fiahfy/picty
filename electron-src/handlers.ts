@@ -1,11 +1,12 @@
 import { readdirSync, Stats, statSync } from 'fs'
 import { basename, dirname, join } from 'path'
 import {
+  BrowserWindow,
   IpcMainInvokeEvent,
   app,
   ipcMain,
+  shell,
   systemPreferences,
-  BrowserWindow,
 } from 'electron'
 
 type Content = {
@@ -99,5 +100,8 @@ export const createIpcHandlers = (browserWindow: BrowserWindow) => {
         return listContents(dirname(path), recursive)
       }
     }
+  )
+  ipcMain.handle('openPath', (_event: IpcMainInvokeEvent, path: string) =>
+    shell.openPath(path)
   )
 }

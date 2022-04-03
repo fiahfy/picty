@@ -1,10 +1,10 @@
 import { join } from 'path'
 import {
+  BrowserView,
   BrowserWindow,
+  WebContents,
   app,
   protocol,
-  BrowserView,
-  WebContents,
 } from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'

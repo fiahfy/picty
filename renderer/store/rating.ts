@@ -1,28 +1,26 @@
-import { Dispatch, useCallback } from 'react'
-import { GlobalAction, GlobalState } from 'store'
+import { useCallback, useReducer } from 'react'
 
-export type State = {
+type State = {
   [path: string]: number
 }
 
-export type Action = {
-  type: 'rating/rate'
-  payload: { path: string; rating: number }
-}
+type Action =
+  | { type: 'set'; payload: Partial<State> }
+  | {
+      type: 'rate'
+      payload: { path: string; rating: number }
+    }
 
-export const initialState: State = {}
+const initialState: State = {}
 
-export const reducer = (state: GlobalState, action: GlobalAction) => {
+const reducer = (state: State, action: Action) => {
   const { type, payload } = action
   switch (type) {
-    case 'rating/rate': {
+    case 'rate': {
       const { path, rating } = payload
       return {
         ...state,
-        rating: {
-          ...state.rating,
-          [path]: rating,
-        },
+        [path]: rating,
       }
     }
     default:
@@ -30,15 +28,20 @@ export const reducer = (state: GlobalState, action: GlobalAction) => {
   }
 }
 
-export const useSelectorsAndOperations = (
-  state: GlobalState,
-  dispatch: Dispatch<GlobalAction>
-) => {
-  const isRating = (path: string) => state.rating[path] ?? 0
+export const useStore = () => {
+  const [state, dispatch] = useReducer(reducer, initialState)
+
+  const isRating = useCallback((path: string) => state[path] ?? 0, [state])
+
+  const setState = useCallback(
+    (state: Partial<State>) => dispatch({ type: 'set', payload: state }),
+    []
+  )
   const rate = useCallback(
     (path: string, rating: number) =>
-      dispatch({ type: 'rating/rate', payload: { path, rating } }),
+      dispatch({ type: 'rate', payload: { path, rating } }),
     [dispatch]
   )
-  return { isRating, rate }
+
+  return { isRating, rate, setState, state }
 }
