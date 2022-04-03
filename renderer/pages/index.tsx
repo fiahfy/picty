@@ -75,7 +75,7 @@ const IndexPage = () => {
     | { open: true; path: string }
   >({ open: false })
 
-  const { history, rating } = useStore()
+  const { history, rating, sorting } = useStore()
 
   useEffect(() => {
     window.electronAPI.onSearchText((_e, text) => {
@@ -98,6 +98,7 @@ const IndexPage = () => {
         return history.push.call(null, homePath)
       }
       setDirectory(history.directory)
+      setSelected([])
       await load()
     })()
   }, [history.directory, history.push, load])
@@ -107,6 +108,11 @@ const IndexPage = () => {
       .filter((content) => !query || content.name.includes(query))
       .map((content) => ({ ...content, rating: rating.isRating(content.path) }))
   }, [contents, query, rating])
+
+  const sortOption = useMemo(
+    () => sorting.getOption.call(null, history.directory),
+    [history.directory, sorting.getOption]
+  )
 
   const handleClickBack = () => history.back()
 
@@ -146,7 +152,14 @@ const IndexPage = () => {
 
   const handleClickClearQuery = () => setQuery('')
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const handleChangeSortOption = (sortOption: {
+    order: 'asc' | 'desc'
+    orderBy: 'name' | 'rating' | 'dateModified'
+  }) => {
+    sorting.sort(history.directory, sortOption)
+  }
+
+  const handleKeyDownTable = (e: KeyboardEvent<HTMLDivElement>) => {
     switch (e.key) {
       case 'Enter':
         if (!e.nativeEvent.isComposing) {
@@ -284,7 +297,8 @@ const IndexPage = () => {
               },
             ]}
             loading={loading}
-            onKeyDown={handleKeyDown}
+            onChangeSortOption={handleChangeSortOption}
+            onKeyDown={handleKeyDownTable}
             onRowClick={handleRowClick}
             onRowDoubleClick={handleRowDoubleClick}
             onRowFocus={handleRowFocus}
@@ -318,6 +332,7 @@ const IndexPage = () => {
             })}
             rowSelected={(row) => selected.includes(row.path)}
             rows={adjustedContents}
+            sortOption={sortOption}
           />
         </Box>
       </Box>

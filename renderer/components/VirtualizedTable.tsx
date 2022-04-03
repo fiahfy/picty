@@ -48,12 +48,14 @@ type Props<K, T> = Pick<
   columns: ColumnData<K>[]
   headerHeight?: number
   loading?: boolean
+  onChangeSortOption?: (sortOption: { order: Order; orderBy: K }) => void
   onKeyDown?: (e: KeyboardEvent<HTMLDivElement>) => void
   onRowFocus?: (info: RowFocusEventHandlerParams) => void
   rowHeight?: number
   rows: T[]
   rowRenderer?: (row: T) => ReactNode
   rowSelected?: (row: T) => boolean
+  sortOption: { order: Order; orderBy: K }
 }
 
 const VirtualizedTable = <K extends string, T extends { [key in K]: unknown }>(
@@ -63,6 +65,7 @@ const VirtualizedTable = <K extends string, T extends { [key in K]: unknown }>(
     columns,
     headerHeight = 48,
     loading = false,
+    onChangeSortOption,
     onKeyDown,
     onRowClick,
     onRowDoubleClick,
@@ -71,13 +74,11 @@ const VirtualizedTable = <K extends string, T extends { [key in K]: unknown }>(
     rows,
     rowRenderer = (row) => row,
     rowSelected = () => false,
+    sortOption,
   } = props
 
   const ref = useRef<HTMLDivElement>()
   const [wrapperWidth, setWrapperWidth] = useState(0)
-
-  const [order, setOrder] = useState<Order>('asc')
-  const [orderBy, setOrderBy] = useState<K>(columns[0].dataKey)
 
   useEffect(() => {
     const el = ref.current
@@ -112,8 +113,8 @@ const VirtualizedTable = <K extends string, T extends { [key in K]: unknown }>(
   const comparator = useCallback(
     (a: T, b: T) => {
       let result = 0
-      const aValue = a[orderBy]
-      const bValue = b[orderBy]
+      const aValue = a[sortOption.orderBy]
+      const bValue = b[sortOption.orderBy]
       if (aValue !== undefined && bValue !== undefined) {
         if (aValue > bValue) {
           result = 1
@@ -123,14 +124,15 @@ const VirtualizedTable = <K extends string, T extends { [key in K]: unknown }>(
       } else {
         result = 0
       }
-      const orderSign = order === 'desc' ? -1 : 1
-      const reverseSign = columns.find((column) => column.dataKey === orderBy)
-        ?.reverse
+      const orderSign = sortOption.order === 'desc' ? -1 : 1
+      const reverseSign = columns.find(
+        (column) => column.dataKey === sortOption.orderBy
+      )?.reverse
         ? -1
         : 1
       return orderSign * reverseSign * result
     },
-    [columns, order, orderBy]
+    [columns, sortOption]
   )
 
   const sortedRows = useMemo(
@@ -151,9 +153,9 @@ const VirtualizedTable = <K extends string, T extends { [key in K]: unknown }>(
   }
 
   const handleClickHeaderCell = (dataKey: K) => {
-    const isAsc = orderBy === dataKey && order === 'asc'
-    setOrder(isAsc ? 'desc' : 'asc')
-    setOrderBy(dataKey)
+    const isAsc = sortOption.orderBy === dataKey && sortOption.order === 'asc'
+    onChangeSortOption &&
+      onChangeSortOption({ order: isAsc ? 'desc' : 'asc', orderBy: dataKey })
   }
 
   const headerRenderer = ({
@@ -165,7 +167,9 @@ const VirtualizedTable = <K extends string, T extends { [key in K]: unknown }>(
       <TableCell
         align={column.align}
         component="div"
-        sortDirection={orderBy === column.dataKey ? order : false}
+        sortDirection={
+          sortOption.orderBy === column.dataKey ? sortOption.order : false
+        }
         sx={{
           alignItems: 'center',
           display: 'flex',
@@ -175,8 +179,10 @@ const VirtualizedTable = <K extends string, T extends { [key in K]: unknown }>(
         variant="head"
       >
         <TableSortLabel
-          active={orderBy === column.dataKey}
-          direction={orderBy === column.dataKey ? order : 'asc'}
+          active={sortOption.orderBy === column.dataKey}
+          direction={
+            sortOption.orderBy === column.dataKey ? sortOption.order : 'asc'
+          }
           onClick={() => handleClickHeaderCell(column.dataKey)}
           sx={{ width: '100%' }}
         >
