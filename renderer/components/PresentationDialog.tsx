@@ -10,13 +10,13 @@ import fileUrl from 'file-url'
 import {
   AppBar,
   Box,
-  Toolbar,
   Dialog,
-  IconButton,
-  Typography,
   Fade,
+  IconButton,
   LinearProgress,
   Slider,
+  Toolbar,
+  Typography,
 } from '@mui/material'
 import {
   ChevronLeft as ChevronLeftIcon,

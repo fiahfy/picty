@@ -1,6 +1,6 @@
 import {
-  createContext,
   ReactNode,
+  createContext,
   useCallback,
   useContext,
   useMemo,
@@ -8,9 +8,9 @@ import {
 } from 'react'
 import {
   CssBaseline,
+  PaletteMode,
   ThemeProvider as MuiThemeProvider,
   createTheme,
-  PaletteMode,
 } from '@mui/material'
 import { useStore } from 'utils/StoreContext'
 import { useTitleBar } from 'utils/TitleBarContext'

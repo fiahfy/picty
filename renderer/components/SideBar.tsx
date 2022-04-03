@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Box,
   Divider,
@@ -5,16 +6,15 @@ import {
   List,
   ListItemButton,
   ListItemIcon,
+  Theme,
   Toolbar,
   styled,
-  Theme,
 } from '@mui/material'
 import {
   Explore as ExploreIcon,
   // Favorite as FavoriteIcon,
   Settings as SettingsIcon,
 } from '@mui/icons-material'
-import { useState } from 'react'
 import SettingsDialog from 'components/SettingsDialog'
 
 const drawerWidth = 320
