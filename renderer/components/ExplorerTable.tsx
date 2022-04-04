@@ -19,31 +19,21 @@ import { format } from 'date-fns'
 import {
   Box,
   LinearProgress,
-  Rating,
   TableCell,
   TableSortLabel,
   Typography,
   alpha,
   colors,
-  styled,
 } from '@mui/material'
 import {
   Folder as FolderIcon,
   InsertDriveFile as InsertDriveFileIcon,
   Photo as PhotoIcon,
 } from '@mui/icons-material'
+import Rating from 'components/Rating'
 import { Content } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 import { isImageFile } from 'utils/image'
-
-const StyledRating = styled(Rating)(({ theme }) => ({
-  '& .MuiRating-iconFilled': {
-    color: theme.palette.primary.main,
-  },
-  '& .MuiRating-iconHover': {
-    color: theme.palette.primary.main,
-  },
-}))
 
 const columns = [
   {
@@ -269,7 +259,7 @@ const ExplorerTable = (props: Props) => {
                 </Box>
               ),
               rating: (
-                <StyledRating
+                <Rating
                   color="primary"
                   onChange={(_e, value) =>
                     rating.setRating(rowData.path, value ?? 0)

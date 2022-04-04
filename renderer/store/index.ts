@@ -28,6 +28,7 @@ export const useStore = () => {
   const setState = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (state: any) => {
+      // @see https://github.com/facebook/react/issues/16265#issuecomment-1048648676
       historyStore.setState.call(null, state.history)
       ratingStore.setState.call(null, state.rating)
       settingsStore.setState.call(null, state.settings)

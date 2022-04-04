@@ -9,11 +9,9 @@ import {
 import {
   Box,
   Divider,
-  FilledInput,
   IconButton,
   InputAdornment,
   Toolbar,
-  styled,
 } from '@mui/material'
 import {
   ArrowBack as ArrowBackIcon,
@@ -25,23 +23,13 @@ import {
   Refresh as RefreshIcon,
   Search as SearchIcon,
 } from '@mui/icons-material'
+import ExplorerGridList from 'components/ExplorerGridList'
 import ExplorerTable from 'components/ExplorerTable'
 import Layout from 'components/Layout'
 import PresentationDialog from 'components/PresentationDialog'
+import RoundedFilledInput from 'components/RoundedFilledInput'
 import { Content } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
-
-const RoundedFilledInput = styled(FilledInput)({
-  '&': {
-    borderRadius: '40px',
-    '::after': {
-      display: 'none',
-    },
-    '::before': {
-      display: 'none',
-    },
-  },
-})
 
 const IndexPage = () => {
   const [directory, setDirectory] = useState('')
@@ -76,6 +64,7 @@ const IndexPage = () => {
     ;(async () => {
       if (!history.directory) {
         const homePath = await window.electronAPI.getHomePath()
+        // @see https://github.com/facebook/react/issues/16265#issuecomment-1048648676
         return history.push.call(null, homePath)
       }
       setDirectory(history.directory)
@@ -90,8 +79,8 @@ const IndexPage = () => {
   )
 
   const sortOption = useMemo(
-    () => sorting.getOption.call(null, history.directory),
-    [history.directory, sorting.getOption]
+    () => sorting.getOption(history.directory),
+    [history.directory, sorting]
   )
 
   const handleClickBack = () => history.back()
@@ -273,36 +262,17 @@ const IndexPage = () => {
               sortOption={sortOption}
             />
           ) : (
-            <>dummy</>
-            // <VirtualizedGridList
-            //   columns={[
-            //     {
-            //       dataKey: 'name',
-            //       label: 'Name',
-            //     },
-            //     {
-            //       dataKey: 'rating',
-            //       label: 'Rating',
-            //       width: 150,
-            //       reverse: true,
-            //     },
-            //     {
-            //       dataKey: 'dateModified',
-            //       label: 'Date Modified',
-            //       width: 200,
-            //       reverse: true,
-            //     },
-            //   ]}
-            //   loading={loading}
-            //   onChangeSortOption={handleChangeSortOption}
-            //   onKeyDown={handleKeyDownTable}
-            //   onRowClick={handleRowClick}
-            //   onRowDoubleClick={handleRowDoubleClick}
-            //   onRowFocus={handleRowFocus}
-            //   rowSelected={(row) => selected.includes(row.path)}
-            //   rows={filteredContents}
-            //   sortOption={sortOption}
-            // />
+            <ExplorerGridList
+              contentSelected={isContentSelected}
+              contents={filteredContents}
+              loading={loading}
+              onChangeSortOption={handleChangeSortOption}
+              onClickContent={handleClickContent}
+              onDoubleClickContent={handleDoubleClickContent}
+              onFocusContent={handleFocusContent}
+              onKeyDown={handleKeyDown}
+              sortOption={sortOption}
+            />
           )}
         </Box>
       </Box>
