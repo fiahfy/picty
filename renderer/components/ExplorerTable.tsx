@@ -43,13 +43,13 @@ const columns = [
   {
     dataKey: 'rating',
     label: 'Rating',
-    width: 150,
+    width: 152,
     reverse: true,
   },
   {
     dataKey: 'dateModified',
     label: 'Date Modified',
-    width: 200,
+    width: 168,
     reverse: true,
   },
 ]
@@ -63,30 +63,30 @@ type Order = 'asc' | 'desc'
 type Row = Content & { rating: number }
 
 type Props = {
+  contentSelected: (content: Content) => boolean
   contents: Content[]
   loading: boolean
   onChangeSortOption: (sortOption: {
     order: Order
     orderBy: 'name' | 'rating' | 'dateModified'
   }) => void
-  onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => void
   onClickContent: (content: Content) => void
   onDoubleClickContent: (content: Content) => void
   onFocusContent: (content: Content) => void
-  contentSelected: (content: Content) => boolean
+  onKeyDownEnter: (e: KeyboardEvent<HTMLDivElement>) => void
   sortOption: { order: Order; orderBy: 'name' | 'rating' | 'dateModified' }
 }
 
 const ExplorerTable = (props: Props) => {
   const {
+    contentSelected,
     contents,
     loading,
     onChangeSortOption,
-    onKeyDown,
     onClickContent,
     onDoubleClickContent,
     onFocusContent,
-    contentSelected,
+    onKeyDownEnter,
     sortOption,
   } = props
 
@@ -161,7 +161,30 @@ const ExplorerTable = (props: Props) => {
     [comparator, contents, rating]
   )
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => onKeyDown(e)
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const index = Number(document.activeElement?.getAttribute('aria-rowindex'))
+    switch (e.key) {
+      case 'Enter':
+        if (!e.nativeEvent.isComposing) {
+          onKeyDownEnter(e)
+        }
+        break
+      case 'ArrowUp': {
+        const el = ref.current?.querySelector<HTMLDivElement>(
+          `[aria-rowindex="${index - 1}"]`
+        )
+        el && el.focus()
+        break
+      }
+      case 'ArrowDown': {
+        const el = ref.current?.querySelector<HTMLDivElement>(
+          `[aria-rowindex="${index + 1}"]`
+        )
+        el && el.focus()
+        break
+      }
+    }
+  }
 
   const handleFocus = (e: FocusEvent<HTMLDivElement>) => {
     const index = Number(e.target.getAttribute('aria-rowindex')) - 1
@@ -259,16 +282,22 @@ const ExplorerTable = (props: Props) => {
                 </Box>
               ),
               rating: (
-                <Rating
-                  color="primary"
-                  onChange={(_e, value) =>
-                    rating.setRating(rowData.path, value ?? 0)
-                  }
-                  precision={0.5}
-                  value={rating.getRating(rowData.path)}
-                />
+                <Box sx={{ display: 'flex' }}>
+                  <Rating
+                    color="primary"
+                    onChange={(_e, value) =>
+                      rating.setRating(rowData.path, value ?? 0)
+                    }
+                    precision={0.5}
+                    value={rating.getRating(rowData.path)}
+                  />
+                </Box>
               ),
-              dateModified: format(rowData.dateModified, 'PP HH:mm'),
+              dateModified: (
+                <Typography noWrap variant="body2">
+                  {format(rowData.dateModified, 'PP HH:mm')}
+                </Typography>
+              ),
             }[dataKey]
           }
         </Box>
@@ -292,6 +321,12 @@ const ExplorerTable = (props: Props) => {
         '.ReactVirtualized__Table__row': {
           cursor: 'pointer',
           display: 'flex',
+          '&:focus': {
+            outlineColor: (theme) => theme.palette.primary.main,
+            outlineOffset: '-1px',
+            outlineStyle: 'solid',
+            outlineWidth: '1px',
+          },
           '&:hover': {
             backgroundColor: (theme) => theme.palette.action.hover,
           },

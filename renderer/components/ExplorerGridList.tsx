@@ -53,10 +53,10 @@ type Props = {
     order: Order
     orderBy: 'name' | 'rating' | 'dateModified'
   }) => void
-  onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => void
   onClickContent: (content: Content) => void
   onDoubleClickContent: (content: Content) => void
   onFocusContent: (content: Content) => void
+  onKeyDownEnter: (e: KeyboardEvent<HTMLDivElement>) => void
   contentSelected: (content: Content) => boolean
   sortOption: { order: Order; orderBy: 'name' | 'rating' | 'dateModified' }
 }
@@ -66,10 +66,10 @@ const ExplorerGridList = (props: Props) => {
     contents,
     loading,
     onChangeSortOption,
-    onKeyDown,
     onClickContent,
     onDoubleClickContent,
     onFocusContent,
+    onKeyDownEnter,
     contentSelected,
     sortOption,
   } = props
@@ -134,7 +134,19 @@ const ExplorerGridList = (props: Props) => {
     )
   }, [comparator, contents, rating])
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => onKeyDown(e)
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    switch (e.key) {
+      case 'Enter':
+        if (!e.nativeEvent.isComposing) {
+          onKeyDownEnter(e)
+        }
+        return
+      case 'ArrowUp':
+        return
+      case 'ArrowDown':
+        return
+    }
+  }
 
   const handleFocus = (e: FocusEvent<HTMLDivElement>) => {
     const index = Number(e.target.getAttribute('aria-rowindex')) - 1
@@ -179,6 +191,12 @@ const ExplorerGridList = (props: Props) => {
                     m: 0.5,
                     overflow: 'hidden',
                     width: '33%',
+                    '&:focus': {
+                      outlineColor: (theme) => theme.palette.primary.main,
+                      outlineOffset: '-1px',
+                      outlineStyle: 'solid',
+                      outlineWidth: '1px',
+                    },
                     '&:hover': {
                       backgroundColor: (theme) => theme.palette.action.hover,
                     },
@@ -297,6 +315,7 @@ const ExplorerGridList = (props: Props) => {
           >
             <Column
               cellRenderer={cellRenderer}
+              dataKey=""
               headerRenderer={headerRenderer}
               width={wrapperWidth}
             />

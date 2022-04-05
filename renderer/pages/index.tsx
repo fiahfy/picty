@@ -121,19 +121,8 @@ const IndexPage = () => {
 
   const handleClickClearQuery = () => setQuery('')
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    switch (e.key) {
-      case 'Enter':
-        if (!e.nativeEvent.isComposing) {
-          setDialogState({ path: selected[0], open: true })
-        }
-        return
-      case 'ArrowUp':
-        return
-      case 'ArrowDown':
-        return
-    }
-  }
+  const handleKeyDownEnter = () =>
+    setDialogState({ path: selected[0], open: true })
 
   const handleChangeSortOption = (sortOption: {
     order: 'asc' | 'desc'
@@ -258,7 +247,7 @@ const IndexPage = () => {
               onClickContent={handleClickContent}
               onDoubleClickContent={handleDoubleClickContent}
               onFocusContent={handleFocusContent}
-              onKeyDown={handleKeyDown}
+              onKeyDownEnter={handleKeyDownEnter}
               sortOption={sortOption}
             />
           ) : (
@@ -270,7 +259,7 @@ const IndexPage = () => {
               onClickContent={handleClickContent}
               onDoubleClickContent={handleDoubleClickContent}
               onFocusContent={handleFocusContent}
-              onKeyDown={handleKeyDown}
+              onKeyDownEnter={handleKeyDownEnter}
               sortOption={sortOption}
             />
           )}
