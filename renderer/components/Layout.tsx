@@ -12,7 +12,7 @@ const Layout = (props: Props) => {
   const { children, hiddenSideBar = false } = props
 
   return (
-    <Box sx={{ display: 'flex', height: '100%' }}>
+    <Box sx={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
       <style global jsx>{`
         html,
         body,

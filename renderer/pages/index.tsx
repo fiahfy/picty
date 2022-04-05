@@ -1,5 +1,6 @@
 import {
   ChangeEvent,
+  createElement,
   KeyboardEvent,
   useCallback,
   useEffect,
@@ -23,7 +24,7 @@ import {
   Refresh as RefreshIcon,
   Search as SearchIcon,
 } from '@mui/icons-material'
-import ExplorerGridList from 'components/ExplorerGridList'
+import ExplorerGrid from 'components/ExplorerGrid'
 import ExplorerTable from 'components/ExplorerTable'
 import Layout from 'components/Layout'
 import PresentationDialog from 'components/PresentationDialog'
@@ -238,30 +239,19 @@ const IndexPage = () => {
         </Toolbar>
         <Divider />
         <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
-          {settings.explorerLayout === 'list' ? (
-            <ExplorerTable
-              contentSelected={isContentSelected}
-              contents={filteredContents}
-              loading={loading}
-              onChangeSortOption={handleChangeSortOption}
-              onClickContent={handleClickContent}
-              onDoubleClickContent={handleDoubleClickContent}
-              onFocusContent={handleFocusContent}
-              onKeyDownEnter={handleKeyDownEnter}
-              sortOption={sortOption}
-            />
-          ) : (
-            <ExplorerGridList
-              contentSelected={isContentSelected}
-              contents={filteredContents}
-              loading={loading}
-              onChangeSortOption={handleChangeSortOption}
-              onClickContent={handleClickContent}
-              onDoubleClickContent={handleDoubleClickContent}
-              onFocusContent={handleFocusContent}
-              onKeyDownEnter={handleKeyDownEnter}
-              sortOption={sortOption}
-            />
+          {createElement(
+            settings.explorerLayout === 'list' ? ExplorerTable : ExplorerGrid,
+            {
+              contentSelected: isContentSelected,
+              contents: filteredContents,
+              loading,
+              onChangeSortOption: handleChangeSortOption,
+              onClickContent: handleClickContent,
+              onDoubleClickContent: handleDoubleClickContent,
+              onFocusContent: handleFocusContent,
+              onKeyDownEnter: handleKeyDownEnter,
+              sortOption,
+            }
           )}
         </Box>
       </Box>

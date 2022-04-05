@@ -43,20 +43,20 @@ const columns = [
   {
     dataKey: 'rating',
     label: 'Rating',
-    width: 152,
+    width: 128,
     reverse: true,
   },
   {
     dataKey: 'dateModified',
     label: 'Date Modified',
-    width: 168,
+    width: 160,
     reverse: true,
   },
 ]
 
-const headerHeight = 48
+const headerHeight = 32
 
-const rowHeight = 48
+const rowHeight = 32
 
 type Order = 'asc' | 'desc'
 
@@ -91,27 +91,10 @@ const ExplorerTable = (props: Props) => {
   } = props
 
   const ref = useRef<HTMLDivElement>()
-  const [wrapperWidth, setWrapperWidth] = useState(0)
 
   const { rating } = useStore()
 
-  useEffect(() => {
-    const el = ref.current
-    if (!el) {
-      return
-    }
-    const handleResize = (entries: ResizeObserverEntry[]) => {
-      const entry = entries[0]
-      if (entry) {
-        setWrapperWidth(entry.contentRect.width)
-      }
-    }
-    const observer = new ResizeObserver(handleResize)
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
-  const widths = useMemo(() => {
+  const getWidths = useCallback((wrapperWidth) => {
     const widths = columns.map((column) => column.width)
     const flexibleNum = widths.filter((width) => width === undefined).length
     if (flexibleNum === 0) {
@@ -123,7 +106,7 @@ const ExplorerTable = (props: Props) => {
     )
     const flexibleWidth = (wrapperWidth - sumWidth) / flexibleNum
     return widths.map((width) => (width === undefined ? flexibleWidth : width))
-  }, [wrapperWidth])
+  }, [])
 
   const comparator = useCallback(
     (a: Row, b: Row) => {
@@ -162,7 +145,7 @@ const ExplorerTable = (props: Props) => {
   )
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    const index = Number(document.activeElement?.getAttribute('aria-rowindex'))
+    const row = Number(document.activeElement?.getAttribute('aria-rowindex'))
     switch (e.key) {
       case 'Enter':
         if (!e.nativeEvent.isComposing) {
@@ -171,14 +154,14 @@ const ExplorerTable = (props: Props) => {
         break
       case 'ArrowUp': {
         const el = ref.current?.querySelector<HTMLDivElement>(
-          `[aria-rowindex="${index - 1}"]`
+          `[aria-rowindex="${row - 1}"]`
         )
         el && el.focus()
         break
       }
       case 'ArrowDown': {
         const el = ref.current?.querySelector<HTMLDivElement>(
-          `[aria-rowindex="${index + 1}"]`
+          `[aria-rowindex="${row + 1}"]`
         )
         el && el.focus()
         break
@@ -209,6 +192,7 @@ const ExplorerTable = (props: Props) => {
         }
         sx={{
           alignItems: 'center',
+          borderBottom: 'none',
           display: 'flex',
           height: headerHeight,
           py: 0,
@@ -236,7 +220,9 @@ const ExplorerTable = (props: Props) => {
               whiteSpace: 'nowrap',
             }}
           >
-            {label}
+            <Typography noWrap variant="caption">
+              {label}
+            </Typography>
           </Box>
         </TableSortLabel>
       </TableCell>
@@ -249,6 +235,7 @@ const ExplorerTable = (props: Props) => {
         component="div"
         sx={{
           alignItems: 'center',
+          borderBottom: 'none',
           display: 'flex',
           height: rowHeight,
           py: 0,
@@ -268,15 +255,24 @@ const ExplorerTable = (props: Props) => {
               name: (
                 <Box sx={{ alignItems: 'center', display: 'flex' }}>
                   {rowData.type === 'directory' && (
-                    <FolderIcon sx={{ color: colors.blue['200'] }} />
+                    <FolderIcon
+                      fontSize="small"
+                      sx={{ color: colors.blue['200'] }}
+                    />
                   )}
                   {rowData.type === 'file' &&
                     (isImageFile(rowData.path) ? (
-                      <PhotoIcon sx={{ color: colors.green['200'] }} />
+                      <PhotoIcon
+                        fontSize="small"
+                        sx={{ color: colors.green['200'] }}
+                      />
                     ) : (
-                      <InsertDriveFileIcon sx={{ color: colors.grey['400'] }} />
+                      <InsertDriveFileIcon
+                        fontSize="small"
+                        sx={{ color: colors.grey['400'] }}
+                      />
                     ))}
-                  <Typography noWrap sx={{ ml: 1 }} variant="body2">
+                  <Typography noWrap sx={{ ml: 1 }} variant="caption">
                     {rowData.name}
                   </Typography>
                 </Box>
@@ -289,12 +285,13 @@ const ExplorerTable = (props: Props) => {
                       rating.setRating(rowData.path, value ?? 0)
                     }
                     precision={0.5}
+                    size="small"
                     value={rating.getRating(rowData.path)}
                   />
                 </Box>
               ),
               dateModified: (
-                <Typography noWrap variant="body2">
+                <Typography noWrap variant="caption">
                   {format(rowData.dateModified, 'PP HH:mm')}
                 </Typography>
               ),
@@ -349,34 +346,37 @@ const ExplorerTable = (props: Props) => {
       }}
     >
       <AutoSizer>
-        {({ height, width }) => (
-          <Table
-            headerHeight={headerHeight}
-            height={height}
-            onRowClick={handleRowClick}
-            onRowDoubleClick={handleRowDoubleClick}
-            rowClassName={({ index }) => {
-              // TODO: @see https://github.com/bvaughn/react-virtualized/issues/1357
-              const row = rows[index]
-              return row && contentSelected(row) ? 'selected' : ''
-            }}
-            rowCount={rows.length}
-            rowGetter={({ index }) => rows[index]}
-            rowHeight={rowHeight}
-            width={width}
-          >
-            {columns.map(({ dataKey, label }, index) => (
-              <Column
-                cellRenderer={cellRenderer}
-                dataKey={dataKey}
-                headerRenderer={headerRenderer}
-                key={dataKey}
-                label={label}
-                width={widths[index] ?? 0}
-              />
-            ))}
-          </Table>
-        )}
+        {({ height, width }) => {
+          const widths = getWidths(width)
+          return (
+            <Table
+              headerHeight={headerHeight}
+              height={height}
+              onRowClick={handleRowClick}
+              onRowDoubleClick={handleRowDoubleClick}
+              rowClassName={({ index }) => {
+                // TODO: @see https://github.com/bvaughn/react-virtualized/issues/1357
+                const row = rows[index]
+                return row && contentSelected(row) ? 'selected' : ''
+              }}
+              rowCount={rows.length}
+              rowGetter={({ index }) => rows[index]}
+              rowHeight={rowHeight}
+              width={width}
+            >
+              {columns.map(({ dataKey, label }, index) => (
+                <Column
+                  cellRenderer={cellRenderer}
+                  dataKey={dataKey}
+                  headerRenderer={headerRenderer}
+                  key={dataKey}
+                  label={label}
+                  width={widths[index] ?? 0}
+                />
+              ))}
+            </Table>
+          )
+        }}
       </AutoSizer>
       {loading && (
         <Box sx={{ marginTop: `${headerHeight}px`, width: '100%' }}>
