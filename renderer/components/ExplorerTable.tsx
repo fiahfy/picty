@@ -210,7 +210,10 @@ const ExplorerTable = (props: Props) => {
               orderBy: dataKey as 'name' | 'rating' | 'dateModified',
             })
           }}
-          sx={{ width: '100%' }}
+          sx={{
+            width: '100%',
+            '.MuiTableSortLabel-icon': { fontSize: '16px' },
+          }}
         >
           <Box
             component="span"

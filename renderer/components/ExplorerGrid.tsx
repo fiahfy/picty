@@ -15,7 +15,13 @@ import {
   Typography,
   ImageListItem,
   ImageListItemBar,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  Toolbar,
+  InputAdornment,
 } from '@mui/material'
+import { Sort as SortIcon } from '@mui/icons-material'
 import Rating from 'components/Rating'
 import { Content } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
@@ -34,11 +40,18 @@ const columns = [
   },
 ]
 
-const headerHeight = 48
+const sortOptions = [
+  { text: 'Name Ascending', value: 'name-asc' },
+  { text: 'Name Descending', value: 'name-desc' },
+  { text: 'Rating Ascending', value: 'rating-asc' },
+  { text: 'Rating Descending', value: 'rating-desc' },
+  { text: 'Date Modified Ascending', value: 'dateModified-asc' },
+  { text: 'Date Modified Descending', value: 'dateModified-desc' },
+]
+
+const headerHeight = 32
 
 const rowHeight = 256
-
-const size = 3
 
 type Order = 'asc' | 'desc'
 
@@ -73,8 +86,30 @@ const ExplorerGrid = (props: Props) => {
   } = props
 
   const ref = useRef<HTMLDivElement>()
+  const [wrapperWidth, setWrapperWidth] = useState(0)
 
   const { rating } = useStore()
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) {
+      return
+    }
+    const handleResize = (entries: ResizeObserverEntry[]) => {
+      const entry = entries[0]
+      if (entry) {
+        setWrapperWidth(entry.contentRect.width)
+      }
+    }
+    const observer = new ResizeObserver(handleResize)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const size = useMemo(
+    () => Math.ceil(wrapperWidth / rowHeight) || 1,
+    [wrapperWidth]
+  )
 
   const comparator = useCallback(
     (a: Row, b: Row) => {
@@ -113,7 +148,7 @@ const ExplorerGrid = (props: Props) => {
         i % size ? carry : [...carry, sorted.slice(i, i + size)],
       [] as Row[][]
     )
-  }, [comparator, contents, rating])
+  }, [comparator, contents, rating, size])
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     const row = Number(document.activeElement?.getAttribute('data-grid-row'))
@@ -166,15 +201,28 @@ const ExplorerGrid = (props: Props) => {
     onFocusContent(rows[rowIndex][columnIndex])
   }
 
+  const handleChange = (e: SelectChangeEvent) => {
+    const [orderBy, order] = e.target.value.split('-') as [
+      'name' | 'rating' | 'dateModified',
+      Order
+    ]
+    onChangeSortOption({ orderBy, order })
+  }
+
   const handleRowClick = (content: Row) => onClickContent(content)
 
   const handleRowDoubleClick = (content: Row) => onDoubleClickContent(content)
 
-  const cellRenderer = ({ columnIndex, rowIndex, style }: GridCellProps) => {
+  const cellRenderer = ({
+    columnIndex,
+    key,
+    rowIndex,
+    style,
+  }: GridCellProps) => {
     const content = rows[rowIndex][columnIndex]
     return (
       content && (
-        <Box style={style} sx={{ p: 0.25 }}>
+        <Box key={key} style={style} sx={{ p: 0.25 }}>
           <ImageListItem
             className={contentSelected(content) ? 'selected' : undefined}
             component="div"
@@ -188,13 +236,11 @@ const ExplorerGrid = (props: Props) => {
               width: '100%',
               '&.selected': {
                 outlineColor: (theme) => theme.palette.primary.main,
-                // outlineOffset: '-1px',
                 outlineStyle: 'solid',
                 outlineWidth: '1px',
               },
               '&:focus': {
                 outlineColor: (theme) => theme.palette.primary.main,
-                // outlineOffset: '-2px',
                 outlineStyle: 'solid',
                 outlineWidth: '2px',
               },
@@ -207,7 +253,6 @@ const ExplorerGrid = (props: Props) => {
               style={{ objectPosition: 'center top' }}
             />
             <ImageListItemBar
-              // actionIcon={}
               subtitle={
                 <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
                   <Rating
@@ -257,30 +302,63 @@ const ExplorerGrid = (props: Props) => {
   }
 
   return (
-    <Box
-      onFocus={handleFocus}
-      onKeyDown={handleKeyDown}
-      ref={ref}
-      sx={{ height: '100%' }}
-    >
-      <AutoSizer>
-        {({ height, width }) => (
-          <Grid
-            cellRenderer={cellRenderer}
-            columnCount={size}
-            columnWidth={width / size}
-            height={height}
-            rowCount={rows.length}
-            rowHeight={rowHeight}
-            width={width}
-          />
-        )}
-      </AutoSizer>
-      {loading && (
-        <Box sx={{ marginTop: `${headerHeight}px`, width: '100%' }}>
-          <LinearProgress />
-        </Box>
-      )}
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Toolbar sx={{ minHeight: `${headerHeight}px!important` }}>
+        <div style={{ flexGrow: 1 }} />
+        <Select
+          onChange={handleChange}
+          startAdornment={
+            <InputAdornment position="start">
+              <SortIcon fontSize="small" />
+            </InputAdornment>
+          }
+          sx={{
+            '&': {
+              borderRadius: '40px',
+              '::after': {
+                display: 'none',
+              },
+              '::before': {
+                display: 'none',
+              },
+              '.MuiSelect-select': {
+                background: 'none',
+                py: (theme) => theme.spacing(0.5),
+                typography: 'caption',
+              },
+            },
+          }}
+          value={`${sortOption.orderBy}-${sortOption.order}`}
+          variant="filled"
+        >
+          {sortOptions.map((option, index) => (
+            <MenuItem dense key={index} value={option.value}>
+              {option.text}
+            </MenuItem>
+          ))}
+        </Select>
+      </Toolbar>
+      {loading && <LinearProgress />}
+      <Box
+        onFocus={handleFocus}
+        onKeyDown={handleKeyDown}
+        ref={ref}
+        sx={{ flexGrow: 1 }}
+      >
+        <AutoSizer>
+          {({ height, width }) => (
+            <Grid
+              cellRenderer={cellRenderer}
+              columnCount={size}
+              columnWidth={width / size}
+              height={height}
+              rowCount={rows.length}
+              rowHeight={rowHeight}
+              width={width}
+            />
+          )}
+        </AutoSizer>
+      </Box>
     </Box>
   )
 }

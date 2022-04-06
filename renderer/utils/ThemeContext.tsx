@@ -11,6 +11,7 @@ import {
   PaletteMode,
   ThemeProvider as MuiThemeProvider,
   createTheme,
+  Theme,
 } from '@mui/material'
 import { useStore } from 'utils/StoreContext'
 import { useTitleBar } from 'utils/TitleBarContext'
@@ -19,6 +20,7 @@ const ThemeContext = createContext<
   | {
       forceMode: (mode: PaletteMode) => void
       resetMode: () => void
+      theme: Theme
     }
   | undefined
 >(undefined)
