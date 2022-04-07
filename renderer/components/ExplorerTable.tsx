@@ -1,12 +1,4 @@
-import {
-  FocusEvent,
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { FocusEvent, KeyboardEvent, useCallback, useMemo, useRef } from 'react'
 import {
   AutoSizer,
   Column,
@@ -23,17 +15,11 @@ import {
   TableSortLabel,
   Typography,
   alpha,
-  colors,
 } from '@mui/material'
-import {
-  Folder as FolderIcon,
-  InsertDriveFile as InsertDriveFileIcon,
-  Photo as PhotoIcon,
-} from '@mui/icons-material'
-import Rating from 'components/Rating'
+import ExplorerContentIcon from 'components/ExplorerContentIcon'
+import ExplorerContentRating from 'components/ExplorerContentRating'
 import { Content } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
-import { isImageFile } from 'utils/image'
 
 const columns = [
   {
@@ -210,10 +196,6 @@ const ExplorerTable = (props: Props) => {
               orderBy: dataKey as 'name' | 'rating' | 'dateModified',
             })
           }}
-          sx={{
-            width: '100%',
-            '.MuiTableSortLabel-icon': { fontSize: '16px' },
-          }}
         >
           <Box
             component="span"
@@ -257,32 +239,20 @@ const ExplorerTable = (props: Props) => {
             {
               name: (
                 <Box sx={{ alignItems: 'center', display: 'flex' }}>
-                  {rowData.type === 'directory' && (
-                    <FolderIcon
-                      fontSize="small"
-                      sx={{ color: colors.blue['200'] }}
-                    />
-                  )}
-                  {rowData.type === 'file' &&
-                    (isImageFile(rowData.path) ? (
-                      <PhotoIcon
-                        fontSize="small"
-                        sx={{ color: colors.green['200'] }}
-                      />
-                    ) : (
-                      <InsertDriveFileIcon
-                        fontSize="small"
-                        sx={{ color: colors.grey['400'] }}
-                      />
-                    ))}
-                  <Typography noWrap sx={{ ml: 1 }} variant="caption">
+                  <ExplorerContentIcon content={rowData} size="small" />
+                  <Typography
+                    noWrap
+                    sx={{ ml: 1 }}
+                    title={rowData.name}
+                    variant="caption"
+                  >
                     {rowData.name}
                   </Typography>
                 </Box>
               ),
               rating: (
                 <Box sx={{ display: 'flex' }}>
-                  <Rating
+                  <ExplorerContentRating
                     color="primary"
                     onChange={(_e, value) =>
                       rating.setRating(rowData.path, value ?? 0)

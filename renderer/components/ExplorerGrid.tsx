@@ -8,13 +8,9 @@ import {
   useState,
 } from 'react'
 import { AutoSizer, Grid, GridCellProps } from 'react-virtualized'
-import fileUrl from 'file-url'
 import {
   Box,
   LinearProgress,
-  Typography,
-  ImageListItem,
-  ImageListItemBar,
   Select,
   MenuItem,
   SelectChangeEvent,
@@ -22,9 +18,9 @@ import {
   InputAdornment,
 } from '@mui/material'
 import { Sort as SortIcon } from '@mui/icons-material'
-import Rating from 'components/Rating'
 import { Content } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
+import ExplorerGridItem from './ExplorerGlidItem'
 
 const columns = [
   {
@@ -223,79 +219,14 @@ const ExplorerGrid = (props: Props) => {
     return (
       content && (
         <Box key={key} style={style} sx={{ p: 0.25 }}>
-          <ImageListItem
-            className={contentSelected(content) ? 'selected' : undefined}
-            component="div"
-            data-grid-column={columnIndex + 1}
-            data-grid-row={rowIndex + 1}
+          <ExplorerGridItem
+            columnIndex={columnIndex}
+            content={content}
             onClick={() => handleRowClick(content)}
             onDoubleClick={() => handleRowDoubleClick(content)}
-            sx={{
-              cursor: 'pointer',
-              height: '100%!important',
-              width: '100%',
-              '&.selected': {
-                outlineColor: (theme) => theme.palette.primary.main,
-                outlineStyle: 'solid',
-                outlineWidth: '1px',
-              },
-              '&:focus': {
-                outlineColor: (theme) => theme.palette.primary.main,
-                outlineStyle: 'solid',
-                outlineWidth: '2px',
-              },
-            }}
-            tabIndex={0}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={fileUrl(content.path)}
-              style={{ objectPosition: 'center top' }}
-            />
-            <ImageListItemBar
-              subtitle={
-                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
-                  <Rating
-                    color="primary"
-                    onChange={(_e, value) =>
-                      rating.setRating(content.path, value ?? 0)
-                    }
-                    precision={0.5}
-                    size="small"
-                    value={rating.getRating(content.path)}
-                  />
-                </Box>
-              }
-              sx={{ '.MuiImageListItemBar-titleWrap': { p: 0 } }}
-              title={
-                <Box
-                  sx={{
-                    alignItems: 'center',
-                    display: 'flex',
-                    height: (theme) => theme.spacing(5),
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Typography
-                    align="center"
-                    sx={{
-                      WebkitBoxOrient: 'vertical',
-                      WebkitLineClamp: 2,
-                      display: '-webkit-box',
-                      lineHeight: 1.4,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'initial',
-                      wordBreak: 'break-all',
-                    }}
-                    variant="caption"
-                  >
-                    {content.name}
-                  </Typography>
-                </Box>
-              }
-            />
-          </ImageListItem>
+            rowIndex={rowIndex}
+            selected={contentSelected(content)}
+          />
         </Box>
       )
     )
@@ -303,7 +234,10 @@ const ExplorerGrid = (props: Props) => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Toolbar sx={{ minHeight: `${headerHeight}px!important` }}>
+      <Toolbar
+        disableGutters
+        sx={{ minHeight: `${headerHeight}px!important`, px: 1 }}
+      >
         <div style={{ flexGrow: 1 }} />
         <Select
           onChange={handleChange}
@@ -314,7 +248,7 @@ const ExplorerGrid = (props: Props) => {
           }
           sx={{
             '&': {
-              borderRadius: '40px',
+              borderRadius: (theme) => theme.spacing(4),
               '::after': {
                 display: 'none',
               },
@@ -324,7 +258,7 @@ const ExplorerGrid = (props: Props) => {
               '.MuiSelect-select': {
                 background: 'none',
                 py: (theme) => theme.spacing(0.5),
-                typography: 'caption',
+                typography: 'body2',
               },
             },
           }}

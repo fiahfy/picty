@@ -156,30 +156,31 @@ const IndexPage = () => {
           width: '100%',
         }}
       >
-        <Toolbar variant="dense">
+        <Toolbar disableGutters sx={{ minHeight: '32px!important', px: 1 }}>
           <IconButton
             color="inherit"
             disabled={!history.canBack}
-            edge="start"
             onClick={handleClickBack}
+            size="small"
           >
-            <ArrowBackIcon />
+            <ArrowBackIcon fontSize="small" />
           </IconButton>
           <IconButton
             color="inherit"
             disabled={!history.canForward}
             onClick={handleClickForward}
+            size="small"
           >
-            <ArrowForwardIcon />
+            <ArrowForwardIcon fontSize="small" />
           </IconButton>
-          <IconButton color="inherit" onClick={handleClickUpward}>
-            <ArrowUpwardIcon />
+          <IconButton color="inherit" onClick={handleClickUpward} size="small">
+            <ArrowUpwardIcon fontSize="small" />
           </IconButton>
-          <IconButton color="inherit" onClick={handleClickHome}>
-            <HomeIcon />
+          <IconButton color="inherit" onClick={handleClickHome} size="small">
+            <HomeIcon fontSize="small" />
           </IconButton>
-          <IconButton color="inherit" onClick={handleClickRefresh}>
-            <RefreshIcon />
+          <IconButton color="inherit" onClick={handleClickRefresh} size="small">
+            <RefreshIcon fontSize="small" />
           </IconButton>
           <Box sx={{ display: 'flex', flexGrow: 1, ml: 1 }}>
             <Box sx={{ display: 'flex', flex: '2 1 0' }}>
@@ -191,14 +192,13 @@ const IndexPage = () => {
                 size="small"
                 spellCheck={false}
                 startAdornment={
-                  <InputAdornment position="start" sx={{ mr: 0 }}>
+                  <InputAdornment position="start">
                     <IconButton
                       color="inherit"
-                      edge="start"
                       onClick={handleClickFolder}
-                      sx={{ width: (theme) => theme.spacing(6) }}
+                      size="small"
                     >
-                      <FolderIcon />
+                      <FolderIcon fontSize="small" />
                     </IconButton>
                   </InputAdornment>
                 }
@@ -228,7 +228,7 @@ const IndexPage = () => {
                 size="small"
                 startAdornment={
                   <InputAdornment position="start">
-                    <SearchIcon />
+                    <SearchIcon fontSize="small" />
                   </InputAdornment>
                 }
                 sx={{ ml: 0.5 }}

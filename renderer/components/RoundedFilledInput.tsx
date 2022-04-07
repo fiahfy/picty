@@ -1,15 +1,21 @@
-import { FilledInput, styled } from '@mui/material'
+import { FilledInput, experimental_sx as sx, styled } from '@mui/material'
 
-const RoundedFilledInput = styled(FilledInput)({
-  '&': {
-    borderRadius: '40px',
-    '::after': {
-      display: 'none',
+const RoundedFilledInput = styled(FilledInput)(
+  sx({
+    '&': {
+      borderRadius: 4,
+      '::after': {
+        display: 'none',
+      },
+      '::before': {
+        display: 'none',
+      },
+      '.MuiFilledInput-input': {
+        py: 0.5,
+        typography: 'body2',
+      },
     },
-    '::before': {
-      display: 'none',
-    },
-  },
-})
+  })
+)
 
 export default RoundedFilledInput
