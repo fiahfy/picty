@@ -68,13 +68,16 @@ export const createIpcHandlers = (browserWindow: BrowserWindow) => {
   ipcMain.handle('isDarwin', () => process.platform === 'darwin')
   // @see https://github.com/electron/electron/issues/16385
   ipcMain.handle('doubleClickTitleBar', () => {
-    const doubleClickAction = systemPreferences.getUserDefault(
+    const action = systemPreferences.getUserDefault(
       'AppleActionOnDoubleClick',
       'string'
     )
-    if (doubleClickAction === 'Minimize') {
+
+    if (action === 'None') {
+      // noop
+    } else if (action === 'Minimize') {
       browserWindow.minimize()
-    } else if (doubleClickAction === 'Maximize') {
+    } else {
       if (browserWindow.isMaximized()) {
         browserWindow.unmaximize()
       } else {

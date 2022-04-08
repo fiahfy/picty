@@ -48,9 +48,10 @@ const IndexPage = () => {
   const { history, settings, sorting } = useStore()
 
   useEffect(() => {
-    window.electronAPI.onSearchText((_e, text) => {
-      setQuery(text)
+    const unsubscribe = window.electronAPI.subscribeSearchText((text) => {
+      setQuery(text ?? window.getSelection()?.toString() ?? '')
     })
+    return () => unsubscribe()
   }, [])
 
   const load = useCallback(async () => {

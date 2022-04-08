@@ -5,6 +5,7 @@ import {
   WebContents,
   app,
   protocol,
+  globalShortcut,
 } from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
@@ -20,13 +21,14 @@ contextMenu({
   prepend: (_defaultActions, parameters, browserWindow) => {
     return [
       {
-        label: 'Search',
-        visible: parameters.selectionText.trim().length > 0,
+        accelerator: 'CommandOrControl+F',
         click: () => {
           const text = parameters.selectionText
           const wc = webContents(browserWindow)
           wc && wc.send('searchText', text)
         },
+        label: 'Search for “{selection}”',
+        visible: parameters.selectionText.trim().length > 0,
       },
     ]
   },
@@ -73,5 +75,8 @@ app.whenReady().then(() => {
   protocol.registerFileProtocol('file', (request, callback) => {
     const pathname = decodeURIComponent(request.url.replace('file:///', ''))
     callback(pathname)
+  })
+  globalShortcut.register('CommandOrControl+F', () => {
+    mainWindow.webContents.send('searchText')
   })
 })

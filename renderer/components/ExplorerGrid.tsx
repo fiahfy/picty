@@ -87,7 +87,7 @@ const ExplorerGrid = (props: Props) => {
   const { rating } = useStore()
 
   useEffect(() => {
-    const el = ref.current
+    const el = ref.current?.querySelector('.ReactVirtualized__Grid')
     if (!el) {
       return
     }
@@ -284,7 +284,7 @@ const ExplorerGrid = (props: Props) => {
             <Grid
               cellRenderer={cellRenderer}
               columnCount={size}
-              columnWidth={width / size}
+              columnWidth={wrapperWidth / size}
               height={height}
               rowCount={rows.length}
               rowHeight={rowHeight}

@@ -8,8 +8,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   listContents: (path: string) => ipcRenderer.invoke('listContents', path),
   listContentsForPath: (path: string) =>
     ipcRenderer.invoke('listContentsForPath', path),
-  onSearchText: (callback: (event: IpcRendererEvent, text: string) => void) => {
-    ipcRenderer.on('searchText', callback)
+  subscribeSearchText: (callback: (text: string) => void) => {
+    const cb = (_e: IpcRendererEvent, text: string) => callback(text)
+    ipcRenderer.on('searchText', cb)
+    return () => {
+      ipcRenderer.removeListener('searchText', cb)
+    }
   },
   openPath: (path: string) => ipcRenderer.invoke('openPath', path),
 })
