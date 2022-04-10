@@ -29,6 +29,8 @@ const ExplorerGridItem = (props: Props) => {
   useEffect(() => {
     ;(async () => {
       setLoading(true)
+      setImages(0)
+      setImagePath(undefined)
       if (content.type === 'file') {
         if (isImageFile(content.path)) {
           setImagePath(content.path)
@@ -116,7 +118,7 @@ const ExplorerGridItem = (props: Props) => {
               size="small"
               value={rating.getRating(content.path)}
             />
-            {content.type === 'directory' && (
+            {!loading && content.type === 'directory' && (
               <Typography ml={1} noWrap variant="caption">
                 {images} images
               </Typography>
