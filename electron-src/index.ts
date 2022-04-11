@@ -5,7 +5,6 @@ import {
   WebContents,
   app,
   protocol,
-  globalShortcut,
 } from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
@@ -75,8 +74,5 @@ app.whenReady().then(() => {
   protocol.registerFileProtocol('file', (request, callback) => {
     const pathname = decodeURIComponent(request.url.replace('file:///', ''))
     callback(pathname)
-  })
-  globalShortcut.register('CommandOrControl+F', () => {
-    mainWindow.webContents.send('searchText')
   })
 })

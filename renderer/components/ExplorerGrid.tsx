@@ -1,90 +1,41 @@
 import {
   FocusEvent,
   KeyboardEvent,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react'
 import { AutoSizer, Grid, GridCellProps } from 'react-virtualized'
-import {
-  Box,
-  LinearProgress,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-  Toolbar,
-  InputAdornment,
-} from '@mui/material'
-import { Sort as SortIcon } from '@mui/icons-material'
-import { Content } from 'interfaces'
-import { useStore } from 'utils/StoreContext'
+import { Box, LinearProgress } from '@mui/material'
+import { Item } from 'interfaces'
 import ExplorerGridItem from './ExplorerGlidItem'
-
-const columns = [
-  {
-    dataKey: 'name',
-  },
-  {
-    dataKey: 'rating',
-    reverse: true,
-  },
-  {
-    dataKey: 'dateModified',
-    reverse: true,
-  },
-]
-
-const sortOptions = [
-  { text: 'Name Ascending', value: 'name-asc' },
-  { text: 'Name Descending', value: 'name-desc' },
-  { text: 'Rating Ascending', value: 'rating-asc' },
-  { text: 'Rating Descending', value: 'rating-desc' },
-  { text: 'Date Modified Ascending', value: 'dateModified-asc' },
-  { text: 'Date Modified Descending', value: 'dateModified-desc' },
-]
-
-const headerHeight = 32
 
 const rowHeight = 256
 
-type Order = 'asc' | 'desc'
-
-type Row = Content & { rating: number }
-
 type Props = {
-  contents: Content[]
+  itemSelected: (item: Item) => boolean
+  items: Item[]
   loading: boolean
-  onChangeSortOption: (sortOption: {
-    order: Order
-    orderBy: 'name' | 'rating' | 'dateModified'
-  }) => void
-  onClickContent: (content: Content) => void
-  onDoubleClickContent: (content: Content) => void
-  onFocusContent: (content: Content) => void
+  onClickItem: (item: Item) => void
+  onDoubleClickItem: (item: Item) => void
+  onFocusItem: (item: Item) => void
   onKeyDownEnter: (e: KeyboardEvent<HTMLDivElement>) => void
-  contentSelected: (content: Content) => boolean
-  sortOption: { order: Order; orderBy: 'name' | 'rating' | 'dateModified' }
 }
 
 const ExplorerGrid = (props: Props) => {
   const {
-    contents,
+    itemSelected,
+    items,
     loading,
-    onChangeSortOption,
-    onClickContent,
-    onDoubleClickContent,
-    onFocusContent,
+    onClickItem,
+    onDoubleClickItem,
+    onFocusItem,
     onKeyDownEnter,
-    contentSelected,
-    sortOption,
   } = props
 
   const ref = useRef<HTMLDivElement>()
   const [wrapperWidth, setWrapperWidth] = useState(0)
-
-  const { rating } = useStore()
 
   useEffect(() => {
     const el = ref.current?.querySelector('.ReactVirtualized__Grid')
@@ -107,44 +58,15 @@ const ExplorerGrid = (props: Props) => {
     [wrapperWidth]
   )
 
-  const comparator = useCallback(
-    (a: Row, b: Row) => {
-      let result = 0
-      const aValue = a[sortOption.orderBy]
-      const bValue = b[sortOption.orderBy]
-      if (aValue !== undefined && bValue !== undefined) {
-        if (aValue > bValue) {
-          result = 1
-        } else if (aValue < bValue) {
-          result = -1
-        }
-      } else {
-        result = 0
-      }
-      const orderSign = sortOption.order === 'desc' ? -1 : 1
-      const reverseSign = columns.find(
-        (column) => column.dataKey === sortOption.orderBy
-      )?.reverse
-        ? -1
-        : 1
-      return orderSign * reverseSign * result
-    },
-    [sortOption]
+  const chunks = useMemo(
+    () =>
+      items.reduce(
+        (carry, _, i) =>
+          i % size ? carry : [...carry, items.slice(i, i + size)],
+        [] as Item[][]
+      ),
+    [items, size]
   )
-
-  const rows = useMemo(() => {
-    const sorted = contents
-      .map((content) => ({
-        ...content,
-        rating: rating.getRating(content.path),
-      }))
-      .sort((a, b) => comparator(a, b))
-    return sorted.reduce(
-      (carry, _, i) =>
-        i % size ? carry : [...carry, sorted.slice(i, i + size)],
-      [] as Row[][]
-    )
-  }, [comparator, contents, rating, size])
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     const row = Number(document.activeElement?.getAttribute('data-grid-row'))
@@ -194,20 +116,12 @@ const ExplorerGrid = (props: Props) => {
     if (rowIndex < 0 || columnIndex < 0) {
       return
     }
-    onFocusContent(rows[rowIndex][columnIndex])
+    onFocusItem(chunks[rowIndex][columnIndex])
   }
 
-  const handleChange = (e: SelectChangeEvent) => {
-    const [orderBy, order] = e.target.value.split('-') as [
-      'name' | 'rating' | 'dateModified',
-      Order
-    ]
-    onChangeSortOption({ orderBy, order })
-  }
+  const handleItemClick = (item: Item) => onClickItem(item)
 
-  const handleRowClick = (content: Row) => onClickContent(content)
-
-  const handleRowDoubleClick = (content: Row) => onDoubleClickContent(content)
+  const handleItemDoubleClick = (item: Item) => onDoubleClickItem(item)
 
   const cellRenderer = ({
     columnIndex,
@@ -215,17 +129,17 @@ const ExplorerGrid = (props: Props) => {
     rowIndex,
     style,
   }: GridCellProps) => {
-    const content = rows[rowIndex][columnIndex]
+    const item = chunks[rowIndex][columnIndex]
     return (
-      content && (
+      item && (
         <Box key={key} style={style} sx={{ p: 0.25 }}>
           <ExplorerGridItem
             columnIndex={columnIndex}
-            content={content}
-            onClick={() => handleRowClick(content)}
-            onDoubleClick={() => handleRowDoubleClick(content)}
+            item={item}
+            onClick={() => handleItemClick(item)}
+            onDoubleClick={() => handleItemDoubleClick(item)}
             rowIndex={rowIndex}
-            selected={contentSelected(content)}
+            selected={itemSelected(item)}
           />
         </Box>
       )
@@ -233,66 +147,26 @@ const ExplorerGrid = (props: Props) => {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Toolbar
-        disableGutters
-        sx={{ minHeight: `${headerHeight}px!important`, px: 1 }}
-      >
-        <div style={{ flexGrow: 1 }} />
-        <Select
-          onChange={handleChange}
-          startAdornment={
-            <InputAdornment position="start">
-              <SortIcon fontSize="small" />
-            </InputAdornment>
-          }
-          sx={{
-            '&': {
-              borderRadius: (theme) => theme.spacing(4),
-              '::after': {
-                display: 'none',
-              },
-              '::before': {
-                display: 'none',
-              },
-              '.MuiSelect-select': {
-                background: 'none',
-                py: (theme) => theme.spacing(0.5),
-                typography: 'body2',
-              },
-            },
-          }}
-          value={`${sortOption.orderBy}-${sortOption.order}`}
-          variant="filled"
-        >
-          {sortOptions.map((option, index) => (
-            <MenuItem dense key={index} value={option.value}>
-              {option.text}
-            </MenuItem>
-          ))}
-        </Select>
-      </Toolbar>
+    <Box
+      onFocus={handleFocus}
+      onKeyDown={handleKeyDown}
+      ref={ref}
+      sx={{ height: '100%' }}
+    >
+      <AutoSizer>
+        {({ height, width }) => (
+          <Grid
+            cellRenderer={cellRenderer}
+            columnCount={size}
+            columnWidth={wrapperWidth / size}
+            height={height}
+            rowCount={chunks.length}
+            rowHeight={rowHeight}
+            width={width}
+          />
+        )}
+      </AutoSizer>
       {loading && <LinearProgress />}
-      <Box
-        onFocus={handleFocus}
-        onKeyDown={handleKeyDown}
-        ref={ref}
-        sx={{ flexGrow: 1 }}
-      >
-        <AutoSizer>
-          {({ height, width }) => (
-            <Grid
-              cellRenderer={cellRenderer}
-              columnCount={size}
-              columnWidth={wrapperWidth / size}
-              height={height}
-              rowCount={rows.length}
-              rowHeight={rowHeight}
-              width={width}
-            />
-          )}
-        </AutoSizer>
-      </Box>
     </Box>
   )
 }

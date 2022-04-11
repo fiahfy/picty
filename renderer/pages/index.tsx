@@ -1,9 +1,9 @@
-import { createElement, useMemo, useState } from 'react'
+import { createElement, useCallback, useMemo, useState } from 'react'
 import ExplorerGrid from 'components/ExplorerGrid'
 import ExplorerTable from 'components/ExplorerTable'
 import Layout from 'components/Layout'
 import PresentationDialog from 'components/PresentationDialog'
-import { Content } from 'interfaces'
+import { Item } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 
 const IndexPage = () => {
@@ -14,19 +14,45 @@ const IndexPage = () => {
     | { open: true; path: string }
   >({ open: false })
 
-  const { explorer, history, settings, sorting } = useStore()
-
-  const filteredContents = useMemo(
-    () =>
-      explorer.contents.filter(
-        (content) => !explorer.query || content.name.includes(explorer.query)
-      ),
-    [explorer.contents, explorer.query]
-  )
+  const { explorer, history, rating, settings, sorting } = useStore()
 
   const sortOption = useMemo(
     () => sorting.getOption(history.directory),
     [history.directory, sorting]
+  )
+
+  const comparator = useCallback(
+    (a: Item, b: Item) => {
+      let result = 0
+      const aValue = a[sortOption.orderBy]
+      const bValue = b[sortOption.orderBy]
+      if (aValue !== undefined && bValue !== undefined) {
+        if (aValue > bValue) {
+          result = 1
+        } else if (aValue < bValue) {
+          result = -1
+        }
+      } else {
+        result = 0
+      }
+      const orderSign = sortOption.order === 'desc' ? -1 : 1
+      return orderSign * result
+    },
+    [sortOption]
+  )
+
+  const items = useMemo(
+    () =>
+      explorer.contents
+        .filter(
+          (content) => !explorer.query || content.name.includes(explorer.query)
+        )
+        .map((content) => ({
+          ...content,
+          rating: rating.getRating(content.path),
+        }))
+        .sort((a, b) => comparator(a, b)),
+    [comparator, explorer.contents, explorer.query, rating]
   )
 
   const handleKeyDownEnter = () =>
@@ -39,17 +65,13 @@ const IndexPage = () => {
     sorting.sort(history.directory, sortOption)
   }
 
-  const handleClickContent = (content: Content) =>
-    explorer.setSelected([content.path])
+  const handleClickItem = (item: Item) => explorer.setSelected([item.path])
 
-  const handleDoubleClickContent = (content: Content) =>
-    history.push(content.path)
+  const handleDoubleClickItem = (item: Item) => history.push(item.path)
 
-  const handleFocusContent = (content: Content) =>
-    explorer.setSelected([content.path])
+  const handleFocusItem = (item: Item) => explorer.setSelected([item.path])
 
-  const isContentSelected = (content: Content) =>
-    explorer.selected.includes(content.path)
+  const isItemSelected = (item: Item) => explorer.selected.includes(item.path)
 
   const handleRequestClose = () => setDialogState({ open: false })
 
@@ -58,13 +80,13 @@ const IndexPage = () => {
       {createElement(
         settings.explorerLayout === 'list' ? ExplorerTable : ExplorerGrid,
         {
-          contentSelected: isContentSelected,
-          contents: filteredContents,
+          itemSelected: isItemSelected,
+          items,
           loading: explorer.loading,
           onChangeSortOption: handleChangeSortOption,
-          onClickContent: handleClickContent,
-          onDoubleClickContent: handleDoubleClickContent,
-          onFocusContent: handleFocusContent,
+          onClickItem: handleClickItem,
+          onDoubleClickItem: handleDoubleClickItem,
+          onFocusItem: handleFocusItem,
           onKeyDownEnter: handleKeyDownEnter,
           sortOption,
         }

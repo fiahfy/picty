@@ -10,7 +10,7 @@ type State = {
 }
 
 type Action =
-  | { type: 'set'; payload: Partial<State> }
+  | { type: 'set'; payload: State }
   | {
       type: 'sort'
       payload: { path: string; option: Option }
@@ -21,6 +21,8 @@ const initialState: State = {}
 const reducer = (state: State, action: Action) => {
   const { type, payload } = action
   switch (type) {
+    case 'set':
+      return { ...state, ...payload }
     case 'sort': {
       const { path, option } = payload
       return {
@@ -42,7 +44,7 @@ export const useStore = () => {
   )
 
   const setState = useCallback(
-    (state: Partial<State>) => dispatch({ type: 'set', payload: state }),
+    (state: State) => dispatch({ type: 'set', payload: state }),
     []
   )
   const sort = useCallback(

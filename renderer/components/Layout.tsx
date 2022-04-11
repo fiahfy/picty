@@ -44,7 +44,7 @@ const Layout = (props: Props) => {
           <Toolbar
             sx={{
               flexShrink: 0,
-              minHeight: '33px!important',
+              minHeight: '65px!important',
             }}
           />
         )}

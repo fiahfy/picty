@@ -1,15 +1,15 @@
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import fileUrl from 'file-url'
 import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
-import ExplorerContentIcon from 'components/ExplorerContentIcon'
-import ExplorerContentRating from 'components/ExplorerContentRating'
-import { Content } from 'interfaces'
+import ExplorerItemIcon from 'components/ExplorerItemIcon'
+import ExplorerItemRating from 'components/ExplorerItemRating'
+import { Item } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 import { isImageFile } from 'utils/image'
 
 type Props = {
   columnIndex: number
-  content: Content
+  item: Item
   onClick: (e: MouseEvent<HTMLDivElement>) => void
   onDoubleClick: (e: MouseEvent<HTMLDivElement>) => void
   rowIndex: number
@@ -17,7 +17,7 @@ type Props = {
 }
 
 const ExplorerGridItem = (props: Props) => {
-  const { columnIndex, content, onClick, onDoubleClick, rowIndex, selected } =
+  const { columnIndex, item, onClick, onDoubleClick, rowIndex, selected } =
     props
 
   const { rating } = useStore()
@@ -31,9 +31,9 @@ const ExplorerGridItem = (props: Props) => {
       setLoading(true)
       setImages(0)
       setImagePath(undefined)
-      if (content.type === 'file') {
-        if (isImageFile(content.path)) {
-          setImagePath(content.path)
+      if (item.type === 'file') {
+        if (isImageFile(item.path)) {
+          setImagePath(item.path)
         }
       } else {
         const contents = await window.electronAPI.listContents(content.path)
@@ -43,7 +43,7 @@ const ExplorerGridItem = (props: Props) => {
       }
       setLoading(false)
     })()
-  }, [content.path, content.type])
+  }, [item.path, item.type])
 
   const message = useMemo(
     () => (loading ? 'Loading...' : 'No Images'),
@@ -96,7 +96,7 @@ const ExplorerGridItem = (props: Props) => {
       <ImageListItemBar
         actionIcon={
           <Box mt={-3} mx={1}>
-            <ExplorerContentIcon content={content} size="small" />
+            <ExplorerItemIcon item={item} size="small" />
           </Box>
         }
         actionPosition="left"
@@ -109,16 +109,14 @@ const ExplorerGridItem = (props: Props) => {
               mr: 1,
             }}
           >
-            <ExplorerContentRating
+            <ExplorerItemRating
               color="primary"
-              onChange={(_e, value) =>
-                rating.setRating(content.path, value ?? 0)
-              }
+              onChange={(_e, value) => rating.setRating(item.path, value ?? 0)}
               precision={0.5}
               size="small"
-              value={rating.getRating(content.path)}
+              value={item.rating}
             />
-            {!loading && content.type === 'directory' && (
+            {!loading && item.type === 'directory' && (
               <Typography ml={1} noWrap variant="caption">
                 {images} images
               </Typography>
@@ -146,10 +144,10 @@ const ExplorerGridItem = (props: Props) => {
                 whiteSpace: 'initial',
                 wordBreak: 'break-all',
               }}
-              title={content.name}
+              title={item.name}
               variant="caption"
             >
-              {content.name}
+              {item.name}
             </Typography>
           </Box>
         }

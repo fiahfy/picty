@@ -5,22 +5,22 @@ import {
   InsertDriveFile as InsertDriveFileIcon,
   Photo as PhotoIcon,
 } from '@mui/icons-material'
-import { Content } from 'interfaces'
+import { Item } from 'interfaces'
 import { isImageFile } from 'utils/image'
 
 type Props = {
-  content: Content
+  item: Item
   size?: 'small' | 'medium'
 }
 
-const ExplorerContentIcon = (props: Props) => {
-  const { content, size } = props
+const ExplorerItemIcon = (props: Props) => {
+  const { item, size } = props
   const type = useMemo(() => {
-    if (content.type === 'directory') {
+    if (item.type === 'directory') {
       return 'directory'
     }
-    return isImageFile(content.path) ? 'image' : 'file'
-  }, [content.path, content.type])
+    return isImageFile(item.path) ? 'image' : 'file'
+  }, [item.path, item.type])
 
   const Icon = useMemo(() => {
     switch (type) {
@@ -47,4 +47,4 @@ const ExplorerContentIcon = (props: Props) => {
   return <Icon fontSize={size} sx={{ color }} />
 }
 
-export default ExplorerContentIcon
+export default ExplorerItemIcon

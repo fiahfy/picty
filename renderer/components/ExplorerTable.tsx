@@ -1,4 +1,4 @@
-import { FocusEvent, KeyboardEvent, useCallback, useMemo, useRef } from 'react'
+import { FocusEvent, KeyboardEvent, useCallback, useRef } from 'react'
 import {
   AutoSizer,
   Column,
@@ -16,62 +16,64 @@ import {
   Typography,
   alpha,
 } from '@mui/material'
-import ExplorerContentIcon from 'components/ExplorerContentIcon'
-import ExplorerContentRating from 'components/ExplorerContentRating'
-import { Content } from 'interfaces'
+import ExplorerItemIcon from 'components/ExplorerItemIcon'
+import ExplorerItemRating from 'components/ExplorerItemRating'
+import { Item } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 
-const columns = [
+const headerHeight = 32
+const rowHeight = 32
+
+type Key = 'name' | 'rating' | 'dateModified'
+type Order = 'asc' | 'desc'
+
+type ColumnType = {
+  defaultOrder?: Order
+  key: Key
+  label: string
+  width?: number
+}
+
+const columns: ColumnType[] = [
   {
-    dataKey: 'name',
+    key: 'name',
     label: 'Name',
   },
   {
-    dataKey: 'rating',
+    defaultOrder: 'desc',
+    key: 'rating',
     label: 'Rating',
     width: 128,
-    reverse: true,
   },
   {
-    dataKey: 'dateModified',
+    defaultOrder: 'desc',
+    key: 'dateModified',
     label: 'Date Modified',
     width: 160,
-    reverse: true,
   },
 ]
 
-const headerHeight = 32
-
-const rowHeight = 32
-
-type Order = 'asc' | 'desc'
-
-type Row = Content & { rating: number }
-
 type Props = {
-  contentSelected: (content: Content) => boolean
-  contents: Content[]
+  itemSelected: (item: Item) => boolean
+  items: Item[]
   loading: boolean
-  onChangeSortOption: (sortOption: {
-    order: Order
-    orderBy: 'name' | 'rating' | 'dateModified'
-  }) => void
-  onClickContent: (content: Content) => void
-  onDoubleClickContent: (content: Content) => void
-  onFocusContent: (content: Content) => void
+  onChangeSortOption: (sortOption: { order: Order; orderBy: Key }) => void
+  onClickItem: (item: Item) => void
+  onDoubleClickItem: (item: Item) => void
+  onFocusItem: (item: Item) => void
   onKeyDownEnter: (e: KeyboardEvent<HTMLDivElement>) => void
-  sortOption: { order: Order; orderBy: 'name' | 'rating' | 'dateModified' }
+  sortOption: { order: Order; orderBy: Key }
 }
 
 const ExplorerTable = (props: Props) => {
   const {
-    contentSelected,
-    contents,
+    itemSelected,
+    items,
     loading,
     onChangeSortOption,
-    onClickContent,
-    onDoubleClickContent,
-    onFocusContent,
+    onClickItem,
+    onDoubleClickItem,
+    onFocusItem,
     onKeyDownEnter,
     sortOption,
   } = props
@@ -93,42 +95,6 @@ const ExplorerTable = (props: Props) => {
     const flexibleWidth = (wrapperWidth - sumWidth) / flexibleNum
     return widths.map((width) => (width === undefined ? flexibleWidth : width))
   }, [])
-
-  const comparator = useCallback(
-    (a: Row, b: Row) => {
-      let result = 0
-      const aValue = a[sortOption.orderBy]
-      const bValue = b[sortOption.orderBy]
-      if (aValue !== undefined && bValue !== undefined) {
-        if (aValue > bValue) {
-          result = 1
-        } else if (aValue < bValue) {
-          result = -1
-        }
-      } else {
-        result = 0
-      }
-      const orderSign = sortOption.order === 'desc' ? -1 : 1
-      const reverseSign = columns.find(
-        (column) => column.dataKey === sortOption.orderBy
-      )?.reverse
-        ? -1
-        : 1
-      return orderSign * reverseSign * result
-    },
-    [sortOption]
-  )
-
-  const rows = useMemo(
-    () =>
-      contents
-        .map((content) => ({
-          ...content,
-          rating: rating.getRating(content.path),
-        }))
-        .sort((a, b) => comparator(a, b)),
-    [comparator, contents, rating]
-  )
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     const row = Number(document.activeElement?.getAttribute('aria-rowindex'))
@@ -160,14 +126,14 @@ const ExplorerTable = (props: Props) => {
     if (index < 0) {
       return
     }
-    onFocusContent(rows[index])
+    onFocusItem(items[index])
   }
 
   const handleRowClick = (info: RowMouseEventHandlerParams) =>
-    onClickContent(info.rowData)
+    onClickItem(info.rowData)
 
   const handleRowDoubleClick = (info: RowMouseEventHandlerParams) =>
-    onDoubleClickContent(info.rowData)
+    onDoubleClickItem(info.rowData)
 
   const headerRenderer = ({ dataKey, label }: TableHeaderProps) => {
     return (
@@ -189,11 +155,18 @@ const ExplorerTable = (props: Props) => {
           active={sortOption.orderBy === dataKey}
           direction={sortOption.orderBy === dataKey ? sortOption.order : 'asc'}
           onClick={() => {
-            const isAsc =
-              sortOption.orderBy === dataKey && sortOption.order === 'asc'
+            const defaultOrder =
+              columns.find((column) => column.key === dataKey)?.defaultOrder ??
+              'asc'
+            const reverseSign =
+              sortOption.orderBy === dataKey &&
+              sortOption.order === defaultOrder
+                ? -1
+                : 1
+            const defaultSign = defaultOrder === 'asc' ? 1 : -1
             onChangeSortOption({
-              order: isAsc ? 'desc' : 'asc',
-              orderBy: dataKey as 'name' | 'rating' | 'dateModified',
+              order: defaultSign * reverseSign === 1 ? 'asc' : 'desc',
+              orderBy: dataKey as Key,
             })
           }}
         >
@@ -239,7 +212,7 @@ const ExplorerTable = (props: Props) => {
             {
               name: (
                 <Box sx={{ alignItems: 'center', display: 'flex' }}>
-                  <ExplorerContentIcon content={rowData} size="small" />
+                  <ExplorerItemIcon item={rowData} size="small" />
                   <Typography
                     noWrap
                     sx={{ ml: 1 }}
@@ -252,7 +225,7 @@ const ExplorerTable = (props: Props) => {
               ),
               rating: (
                 <Box sx={{ display: 'flex' }}>
-                  <ExplorerContentRating
+                  <ExplorerItemRating
                     color="primary"
                     onChange={(_e, value) =>
                       rating.setRating(rowData.path, value ?? 0)
@@ -329,20 +302,20 @@ const ExplorerTable = (props: Props) => {
               onRowDoubleClick={handleRowDoubleClick}
               rowClassName={({ index }) => {
                 // TODO: @see https://github.com/bvaughn/react-virtualized/issues/1357
-                const row = rows[index]
-                return row && contentSelected(row) ? 'selected' : ''
+                const item = items[index]
+                return item && itemSelected(item) ? 'selected' : ''
               }}
-              rowCount={rows.length}
-              rowGetter={({ index }) => rows[index]}
+              rowCount={items.length}
+              rowGetter={({ index }) => items[index]}
               rowHeight={rowHeight}
               width={width}
             >
-              {columns.map(({ dataKey, label }, index) => (
+              {columns.map(({ key, label }, index) => (
                 <Column
                   cellRenderer={cellRenderer}
-                  dataKey={dataKey}
+                  dataKey={key}
                   headerRenderer={headerRenderer}
-                  key={dataKey}
+                  key={key}
                   label={label}
                   width={widths[index] ?? 0}
                 />
@@ -351,11 +324,7 @@ const ExplorerTable = (props: Props) => {
           )
         }}
       </AutoSizer>
-      {loading && (
-        <Box sx={{ marginTop: `${headerHeight}px`, width: '100%' }}>
-          <LinearProgress />
-        </Box>
-      )}
+      {loading && <LinearProgress />}
     </Box>
   )
 }

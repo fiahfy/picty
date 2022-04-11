@@ -3,6 +3,7 @@ import {
   KeyboardEvent,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 import {
@@ -11,6 +12,9 @@ import {
   Divider,
   IconButton,
   InputAdornment,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
   Toolbar,
 } from '@mui/material'
 import {
@@ -22,20 +26,27 @@ import {
   Home as HomeIcon,
   Refresh as RefreshIcon,
   Search as SearchIcon,
+  Sort as SortIcon,
 } from '@mui/icons-material'
 import RoundedFilledInput from 'components/RoundedFilledInput'
 import { useStore } from 'utils/StoreContext'
 
+const sortOptions = [
+  { text: 'Name Ascending', value: 'name-asc' },
+  { text: 'Name Descending', value: 'name-desc' },
+  { text: 'Rating Ascending', value: 'rating-asc' },
+  { text: 'Rating Descending', value: 'rating-desc' },
+  { text: 'Date Modified Ascending', value: 'dateModified-asc' },
+  { text: 'Date Modified Descending', value: 'dateModified-desc' },
+]
+
 const AddressBar = () => {
   const [directory, setDirectory] = useState('')
-  const { explorer, history } = useStore()
+  const { explorer, history, sorting } = useStore()
 
   useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeSearchText((text) => {
-      explorer.setQuery.call(
-        null,
-        text ?? window.getSelection()?.toString() ?? ''
-      )
+      explorer.setQuery.call(null, text)
     })
     return () => unsubscribe()
   }, [explorer.setQuery])
@@ -60,6 +71,11 @@ const AddressBar = () => {
       await load()
     })()
   }, [explorer.setSelected, history.directory, history.push, load])
+
+  const sortOption = useMemo(
+    () => sorting.getOption(history.directory),
+    [history.directory, sorting]
+  )
 
   const handleClickBack = () => history.back()
 
@@ -98,6 +114,14 @@ const AddressBar = () => {
   }
 
   const handleClickClearQuery = () => explorer.setQuery('')
+
+  const handleChange = (e: SelectChangeEvent) => {
+    const [orderBy, order] = e.target.value.split('-') as [
+      'name' | 'rating' | 'dateModified',
+      'asc' | 'desc'
+    ]
+    sorting.sort(history.directory, { orderBy, order })
+  }
 
   return (
     <AppBar
@@ -186,6 +210,41 @@ const AddressBar = () => {
             />
           </Box>
         </Box>
+      </Toolbar>
+      <Toolbar disableGutters sx={{ minHeight: '32px!important', px: 1 }}>
+        <div style={{ flexGrow: 1 }} />
+        <Select
+          onChange={handleChange}
+          startAdornment={
+            <InputAdornment position="start">
+              <SortIcon fontSize="small" />
+            </InputAdornment>
+          }
+          sx={{
+            '&': {
+              borderRadius: (theme) => theme.spacing(4),
+              '::after': {
+                display: 'none',
+              },
+              '::before': {
+                display: 'none',
+              },
+              '.MuiSelect-select': {
+                background: 'none',
+                py: (theme) => theme.spacing(0.5),
+                typography: 'body2',
+              },
+            },
+          }}
+          value={`${sortOption.orderBy}-${sortOption.order}`}
+          variant="filled"
+        >
+          {sortOptions.map((option, index) => (
+            <MenuItem dense key={index} value={option.value}>
+              {option.text}
+            </MenuItem>
+          ))}
+        </Select>
       </Toolbar>
       <Divider />
     </AppBar>

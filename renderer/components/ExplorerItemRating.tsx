@@ -1,6 +1,6 @@
 import { Rating, experimental_sx as sx, styled } from '@mui/material'
 
-const ExplorerContentRating = styled(Rating)(
+const ExplorerItemRating = styled(Rating)(
   sx({
     '.MuiRating-iconActive': {
       outline: 'none!important',
@@ -8,4 +8,4 @@ const ExplorerContentRating = styled(Rating)(
   })
 )
 
-export default ExplorerContentRating
+export default ExplorerItemRating

@@ -86,7 +86,7 @@ const SideBar = () => {
       <Toolbar
         sx={{
           flexShrink: 0,
-          minHeight: '33px!important',
+          minHeight: '65px!important',
         }}
       />
       <Box sx={{ display: 'flex', flexGrow: 1 }}>

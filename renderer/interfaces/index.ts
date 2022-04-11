@@ -34,3 +34,5 @@ export type Content = {
   path: string
   type: 'file' | 'directory'
 }
+
+export type Item = Content & { rating: number }
