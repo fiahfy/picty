@@ -83,6 +83,12 @@ const SideBar = () => {
           minHeight: (theme) => `${theme.mixins.titleBar.height}px!important`,
         }}
       />
+      <Toolbar
+        sx={{
+          flexShrink: 0,
+          minHeight: '33px!important',
+        }}
+      />
       <Box sx={{ display: 'flex', flexGrow: 1 }}>
         <Box sx={{ display: 'flex', flexShrink: 0, width: drawerMinWidth }}>
           <List

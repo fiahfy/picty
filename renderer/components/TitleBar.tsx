@@ -16,20 +16,19 @@ const TitleBar = () => {
           component="div"
           elevation={0}
           onDoubleClick={handleDoubleClick}
-          position="fixed"
           sx={{
-            WebkitAppRegion: 'drag',
             top: 0,
-            userSelect: 'none',
             zIndex: (theme) => theme.zIndex.drawer + 1,
           }}
         >
           <Toolbar
             disableGutters
             sx={{
+              WebkitAppRegion: 'drag',
               justifyContent: 'center',
               minHeight: '22px!important',
               padding: '0 72px',
+              userSelect: 'none',
             }}
           >
             <Typography align="center" noWrap variant="caption">

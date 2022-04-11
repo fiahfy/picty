@@ -145,7 +145,7 @@ const PresentationDialog = (props: Props) => {
       onMouseMove={handleMouseMove}
       open={open}
     >
-      <Layout hiddenSideBar>
+      <Layout hideBars>
         <Fade in={toolbar} ref={topToolbar}>
           <AppBar color="transparent" elevation={0}>
             <Box
