@@ -1,6 +1,7 @@
 import {
   ChangeEvent,
   KeyboardEvent,
+  MouseEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -15,7 +16,9 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  ToggleButton,
   Toolbar,
+  Tooltip,
 } from '@mui/material'
 import {
   ArrowBack as ArrowBackIcon,
@@ -27,7 +30,10 @@ import {
   Refresh as RefreshIcon,
   Search as SearchIcon,
   Sort as SortIcon,
+  TableRows as TableRowsIcon,
+  ViewComfy as ViewComfyIcon,
 } from '@mui/icons-material'
+import FilledToggleButtonGroup from 'components/FilledToggleButtonGroup'
 import RoundedFilledInput from 'components/RoundedFilledInput'
 import { useStore } from 'utils/StoreContext'
 
@@ -40,9 +46,9 @@ const sortOptions = [
   { text: 'Date Modified Descending', value: 'dateModified-desc' },
 ]
 
-const AddressBar = () => {
+const ExplorerBar = () => {
   const [directory, setDirectory] = useState('')
-  const { explorer, history, sorting } = useStore()
+  const { explorer, history, settings, sorting } = useStore()
 
   useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeSearchText((text) => {
@@ -115,7 +121,12 @@ const AddressBar = () => {
 
   const handleClickClearQuery = () => explorer.setQuery('')
 
-  const handleChange = (e: SelectChangeEvent) => {
+  const handleChangeExplorerLayout = (
+    _e: MouseEvent<HTMLElement>,
+    value: 'list' | 'thumbnail'
+  ) => settings.setExplorerLayout(value)
+
+  const handleChangeSortOption = (e: SelectChangeEvent) => {
     const [orderBy, order] = e.target.value.split('-') as [
       'name' | 'rating' | 'dateModified',
       'asc' | 'desc'
@@ -131,31 +142,41 @@ const AddressBar = () => {
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
       <Toolbar disableGutters sx={{ minHeight: '32px!important', px: 1 }}>
-        <IconButton
-          color="inherit"
-          disabled={!history.canBack}
-          onClick={handleClickBack}
-          size="small"
-        >
-          <ArrowBackIcon fontSize="small" />
-        </IconButton>
-        <IconButton
-          color="inherit"
-          disabled={!history.canForward}
-          onClick={handleClickForward}
-          size="small"
-        >
-          <ArrowForwardIcon fontSize="small" />
-        </IconButton>
-        <IconButton color="inherit" onClick={handleClickUpward} size="small">
-          <ArrowUpwardIcon fontSize="small" />
-        </IconButton>
-        <IconButton color="inherit" onClick={handleClickHome} size="small">
-          <HomeIcon fontSize="small" />
-        </IconButton>
-        <IconButton color="inherit" onClick={handleClickRefresh} size="small">
-          <RefreshIcon fontSize="small" />
-        </IconButton>
+        <Tooltip title="Go back">
+          <IconButton
+            color="inherit"
+            disabled={!history.canBack}
+            onClick={handleClickBack}
+            size="small"
+          >
+            <ArrowBackIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Go forward">
+          <IconButton
+            color="inherit"
+            disabled={!history.canForward}
+            onClick={handleClickForward}
+            size="small"
+          >
+            <ArrowForwardIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Go up">
+          <IconButton color="inherit" onClick={handleClickUpward} size="small">
+            <ArrowUpwardIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Go home">
+          <IconButton color="inherit" onClick={handleClickHome} size="small">
+            <HomeIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Refresh">
+          <IconButton color="inherit" onClick={handleClickRefresh} size="small">
+            <RefreshIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
         <Box sx={{ display: 'flex', flexGrow: 1, ml: 1 }}>
           <Box sx={{ display: 'flex', flex: '2 1 0' }}>
             <RoundedFilledInput
@@ -213,8 +234,32 @@ const AddressBar = () => {
       </Toolbar>
       <Toolbar disableGutters sx={{ minHeight: '32px!important', px: 1 }}>
         <div style={{ flexGrow: 1 }} />
+        <FilledToggleButtonGroup
+          exclusive
+          onChange={handleChangeExplorerLayout}
+          size="small"
+          sx={{ mr: 1 }}
+          value={settings.explorerLayout}
+        >
+          <ToggleButton
+            sx={{ height: (theme) => theme.spacing(3.5), py: 0 }}
+            value="list"
+          >
+            <Tooltip title="List View">
+              <TableRowsIcon fontSize="small" />
+            </Tooltip>
+          </ToggleButton>
+          <ToggleButton
+            sx={{ height: (theme) => theme.spacing(3.5), py: 0 }}
+            value="thumbnail"
+          >
+            <Tooltip title="Thumbnail View">
+              <ViewComfyIcon fontSize="small" />
+            </Tooltip>
+          </ToggleButton>
+        </FilledToggleButtonGroup>
         <Select
-          onChange={handleChange}
+          onChange={handleChangeSortOption}
           startAdornment={
             <InputAdornment position="start">
               <SortIcon fontSize="small" />
@@ -251,4 +296,4 @@ const AddressBar = () => {
   )
 }
 
-export default AddressBar
+export default ExplorerBar

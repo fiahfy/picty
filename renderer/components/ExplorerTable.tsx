@@ -13,11 +13,12 @@ import {
   LinearProgress,
   TableCell,
   TableSortLabel,
+  Tooltip,
   Typography,
   alpha,
 } from '@mui/material'
 import ExplorerItemIcon from 'components/ExplorerItemIcon'
-import ExplorerItemRating from 'components/ExplorerItemRating'
+import NoOutlineRating from 'components/NoOutlineRating'
 import { Item } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 
@@ -212,20 +213,19 @@ const ExplorerTable = (props: Props) => {
             {
               name: (
                 <Box sx={{ alignItems: 'center', display: 'flex' }}>
-                  <ExplorerItemIcon item={rowData} size="small" />
-                  <Typography
-                    noWrap
-                    sx={{ ml: 1 }}
-                    title={rowData.name}
-                    variant="caption"
-                  >
-                    {rowData.name}
-                  </Typography>
+                  <Box sx={{ mr: 1 }}>
+                    <ExplorerItemIcon item={rowData} size="small" />
+                  </Box>
+                  <Tooltip title={rowData.name}>
+                    <Typography noWrap variant="caption">
+                      {rowData.name}
+                    </Typography>
+                  </Tooltip>
                 </Box>
               ),
               rating: (
                 <Box sx={{ display: 'flex' }}>
-                  <ExplorerItemRating
+                  <NoOutlineRating
                     color="primary"
                     onChange={(_e, value) =>
                       rating.setRating(rowData.path, value ?? 0)

@@ -1,8 +1,14 @@
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import fileUrl from 'file-url'
-import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
+import {
+  Box,
+  ImageListItem,
+  ImageListItemBar,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import ExplorerItemIcon from 'components/ExplorerItemIcon'
-import ExplorerItemRating from 'components/ExplorerItemRating'
+import NoOutlineRating from 'components/NoOutlineRating'
 import { Item } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 import { isImageFile } from 'utils/image'
@@ -36,7 +42,7 @@ const ExplorerGridItem = (props: Props) => {
           setImagePath(item.path)
         }
       } else {
-        const contents = await window.electronAPI.listContents(content.path)
+        const contents = await window.electronAPI.listContents(item.path)
         const images = contents.filter((content) => isImageFile(content.path))
         setImages(images.length)
         setImagePath(images[0]?.path)
@@ -109,7 +115,7 @@ const ExplorerGridItem = (props: Props) => {
               mr: 1,
             }}
           >
-            <ExplorerItemRating
+            <NoOutlineRating
               color="primary"
               onChange={(_e, value) => rating.setRating(item.path, value ?? 0)}
               precision={0.5}
@@ -133,22 +139,23 @@ const ExplorerGridItem = (props: Props) => {
               mr: 1,
             }}
           >
-            <Typography
-              sx={{
-                WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: 2,
-                display: '-webkit-box',
-                lineHeight: 1.4,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'initial',
-                wordBreak: 'break-all',
-              }}
-              title={item.name}
-              variant="caption"
-            >
-              {item.name}
-            </Typography>
+            <Tooltip title={item.name}>
+              <Typography
+                sx={{
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: 2,
+                  display: '-webkit-box',
+                  lineHeight: 1.4,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'initial',
+                  wordBreak: 'break-all',
+                }}
+                variant="caption"
+              >
+                {item.name}
+              </Typography>
+            </Tooltip>
           </Box>
         }
       />

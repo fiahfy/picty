@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 import { Box, Toolbar } from '@mui/material'
-import AddressBar from 'components/AddressBar'
-import TitleBar from 'components/TitleBar'
+import ExplorerBar from 'components/ExplorerBar'
 import SideBar from 'components/SideBar'
+import TitleBar from 'components/TitleBar'
 
 type Props = {
   children: ReactNode
@@ -24,7 +24,7 @@ const Layout = (props: Props) => {
         }
       `}</style>
       <TitleBar />
-      {!hideBars && <AddressBar />}
+      {!hideBars && <ExplorerBar />}
       {!hideBars && <SideBar />}
       <Box
         component="main"
