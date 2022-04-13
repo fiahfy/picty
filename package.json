@@ -30,22 +30,27 @@
     "electron": "^17.1.2",
     "electron-builder": "^22.14.13",
     "eslint": "^8.11.0",
+    "husky": "^7.0.4",
     "prettier": "^2.6.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.6.2"
   },
   "main": "main/index.js",
   "private": true,
-  "productName": "ElectronTypescriptNext",
+  "productName": "next-explorer",
   "scripts": {
     "build": "npm run build-renderer && npm run build-electron",
     "build-electron": "tsc -p electron-src",
     "build-renderer": "next build renderer && next export renderer",
     "clean": "rimraf dist main renderer/out renderer/.next",
     "dev": "npm run build-electron && electron .",
-    "dist": "npm run build && electron-builder",
-    "lint": "next lint renderer",
-    "pack-app": "npm run build && electron-builder --dir",
-    "type-check": "tsc"
+    "lint": "npm run lint:eslint && npm run lint:prettier",
+    "lint:eslint": "eslint --ext .js,.ts,.tsx --ignore-path .gitignore .",
+    "lint:prettier": "prettier -c --ignore-path .gitignore .",
+    "package": "npm run build && electron-builder",
+    "package-dir": "npm run build && electron-builder --dir",
+    "prepare": "husky install",
+    "release": "npm run build && electron-builder -mlw -p",
+    "test": "npm run lint"
   }
 }
