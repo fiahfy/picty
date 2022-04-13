@@ -29,6 +29,7 @@ import Layout from 'components/Layout'
 import { Content } from 'interfaces'
 import { useTheme } from 'utils/ThemeContext'
 import { isImageFile } from 'utils/image'
+import { useStore } from 'utils/StoreContext'
 
 type Props = {
   onRequestClose: () => void
@@ -39,6 +40,7 @@ type Props = {
 const PresentationDialog = (props: Props) => {
   const { path, onRequestClose, open } = props
 
+  const { settings } = useStore()
   const { forceMode, resetMode } = useTheme()
 
   const [index, setIndex] = useState(0)
@@ -67,6 +69,7 @@ const PresentationDialog = (props: Props) => {
 
   useEffect(() => {
     ;(async () => {
+      settings.fullscreenOnPresentation && document.body.requestFullscreen()
       forceMode('dark')
       resetTimer()
       setIndex(0)
@@ -84,7 +87,14 @@ const PresentationDialog = (props: Props) => {
       clearTimer()
       resetMode()
     }
-  }, [path, forceMode, open, resetMode, resetTimer])
+  }, [
+    path,
+    forceMode,
+    open,
+    resetMode,
+    resetTimer,
+    settings.fullscreenOnPresentation,
+  ])
 
   const content = useMemo(() => contents[index], [contents, index])
 

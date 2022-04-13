@@ -67,7 +67,10 @@ const IndexPage = () => {
 
   const handleClickItem = (item: Item) => explorer.setSelected([item.path])
 
-  const handleDoubleClickItem = (item: Item) => history.push(item.path)
+  const handleDoubleClickItem = async (item: Item) =>
+    item.type === 'directory'
+      ? history.push(item.path)
+      : await window.electronAPI.openPath(item.path)
 
   const handleFocusItem = (item: Item) => explorer.setSelected([item.path])
 

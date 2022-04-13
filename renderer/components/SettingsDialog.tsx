@@ -47,6 +47,13 @@ const SettingsDialog = (props: Props) => {
     settings.setExplorerLayout(value)
   }
 
+  const handleChangeFullscreenOnPresentation = (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.currentTarget.checked
+    settings.setFullscreenOnPresentation(value)
+  }
+
   return (
     <Dialog fullScreen onClose={onRequestClose} open={open}>
       <Layout hideBars>
@@ -92,6 +99,17 @@ const SettingsDialog = (props: Props) => {
                 ))}
               </Select>
             </FormControl>
+            <FormGroup sx={{ mt: 2 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={settings.fullscreenOnPresentation}
+                    onChange={handleChangeFullscreenOnPresentation}
+                  />
+                }
+                label="Enter Fullscreen on Presentation"
+              />
+            </FormGroup>
           </Box>
         </Container>
       </Layout>

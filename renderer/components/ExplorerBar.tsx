@@ -143,24 +143,28 @@ const ExplorerBar = () => {
     >
       <Toolbar disableGutters sx={{ minHeight: '32px!important', px: 1 }}>
         <Tooltip title="Go back">
-          <IconButton
-            color="inherit"
-            disabled={!history.canBack}
-            onClick={handleClickBack}
-            size="small"
-          >
-            <ArrowBackIcon fontSize="small" />
-          </IconButton>
+          <span>
+            <IconButton
+              color="inherit"
+              disabled={!history.canBack}
+              onClick={handleClickBack}
+              size="small"
+            >
+              <ArrowBackIcon fontSize="small" />
+            </IconButton>
+          </span>
         </Tooltip>
         <Tooltip title="Go forward">
-          <IconButton
-            color="inherit"
-            disabled={!history.canForward}
-            onClick={handleClickForward}
-            size="small"
-          >
-            <ArrowForwardIcon fontSize="small" />
-          </IconButton>
+          <span>
+            <IconButton
+              color="inherit"
+              disabled={!history.canForward}
+              onClick={handleClickForward}
+              size="small"
+            >
+              <ArrowForwardIcon fontSize="small" />
+            </IconButton>
+          </span>
         </Tooltip>
         <Tooltip title="Go up">
           <IconButton color="inherit" onClick={handleClickUpward} size="small">
