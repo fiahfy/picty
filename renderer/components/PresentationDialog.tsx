@@ -154,6 +154,7 @@ const PresentationDialog = (props: Props) => {
       onKeyDown={handleKeyDown}
       onMouseMove={handleMouseMove}
       open={open}
+      transitionDuration={0}
     >
       <Layout hideBars>
         <Fade in={toolbar} ref={topToolbar}>

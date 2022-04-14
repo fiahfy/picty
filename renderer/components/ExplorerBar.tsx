@@ -14,7 +14,6 @@ import {
   IconButton,
   InputAdornment,
   MenuItem,
-  Select,
   SelectChangeEvent,
   ToggleButton,
   Toolbar,
@@ -35,6 +34,7 @@ import {
 } from '@mui/icons-material'
 import FilledToggleButtonGroup from 'components/FilledToggleButtonGroup'
 import RoundedFilledInput from 'components/RoundedFilledInput'
+import RoundedFilledSelect from 'components/RoundedFilledSelect'
 import { useStore } from 'utils/StoreContext'
 
 const sortOptions = [
@@ -97,7 +97,10 @@ const ExplorerBar = () => {
     history.push(homePath)
   }
 
-  const handleClickRefresh = load
+  const handleClickRefresh = async () => {
+    setDirectory(history.directory)
+    await load()
+  }
 
   const handleClickFolder = async () => {
     await window.electronAPI.openPath(history.directory)
@@ -262,38 +265,21 @@ const ExplorerBar = () => {
             </Tooltip>
           </ToggleButton>
         </FilledToggleButtonGroup>
-        <Select
+        <RoundedFilledSelect
           onChange={handleChangeSortOption}
           startAdornment={
             <InputAdornment position="start">
               <SortIcon fontSize="small" />
             </InputAdornment>
           }
-          sx={{
-            '&': {
-              borderRadius: (theme) => theme.spacing(4),
-              '::after': {
-                display: 'none',
-              },
-              '::before': {
-                display: 'none',
-              },
-              '.MuiSelect-select': {
-                background: 'none',
-                py: (theme) => theme.spacing(0.5),
-                typography: 'body2',
-              },
-            },
-          }}
           value={`${sortOption.orderBy}-${sortOption.order}`}
-          variant="filled"
         >
           {sortOptions.map((option, index) => (
             <MenuItem dense key={index} value={option.value}>
               {option.text}
             </MenuItem>
           ))}
-        </Select>
+        </RoundedFilledSelect>
       </Toolbar>
       <Divider />
     </AppBar>

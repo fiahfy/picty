@@ -11,10 +11,11 @@ import {
   styled,
 } from '@mui/material'
 import {
-  Explore as ExploreIcon,
+  // Explore as ExploreIcon,
   // Favorite as FavoriteIcon,
   Settings as SettingsIcon,
 } from '@mui/icons-material'
+import ExplorerTreeView from 'components/ExplorerTreeView'
 import SettingsDialog from 'components/SettingsDialog'
 
 const drawerWidth = 320
@@ -63,7 +64,7 @@ const SideBar = () => {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const items = [
-    { icon: <ExploreIcon />, key: 'explorer' },
+    // { icon: <ExploreIcon />, key: 'explorer' },
     // { icon: <FavoriteIcon />, key: 'favorite' },
     { key: 'spacer', type: 'spacer' },
     {
@@ -89,7 +90,7 @@ const SideBar = () => {
           minHeight: '65px!important',
         }}
       />
-      <Box sx={{ display: 'flex', flexGrow: 1 }}>
+      <Box sx={{ display: 'flex', flexGrow: 1, minHeight: 0 }}>
         <Box sx={{ display: 'flex', flexShrink: 0, width: drawerMinWidth }}>
           <List
             disablePadding
@@ -122,7 +123,9 @@ const SideBar = () => {
           </List>
           <Divider orientation="vertical" />
         </Box>
-        <Box sx={{ flexGrow: 1 }}></Box>
+        <Box sx={{ flexGrow: 1 }}>
+          <ExplorerTreeView />
+        </Box>
       </Box>
       <SettingsDialog onRequestClose={handleRequestClose} open={dialogOpen} />
     </Drawer>

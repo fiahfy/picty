@@ -213,7 +213,7 @@ const ExplorerTable = (props: Props) => {
             {
               name: (
                 <Box sx={{ alignItems: 'center', display: 'flex' }}>
-                  <Box sx={{ mr: 1 }}>
+                  <Box sx={{ alignItems: 'center', display: 'flex', mr: 1 }}>
                     <ExplorerItemIcon item={rowData} size="small" />
                   </Box>
                   <Tooltip title={rowData.name}>

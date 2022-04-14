@@ -9,7 +9,7 @@ import {
 import { AutoSizer, Grid, GridCellProps } from 'react-virtualized'
 import { Box, LinearProgress } from '@mui/material'
 import { Item } from 'interfaces'
-import ExplorerGridItem from './ExplorerGlidItem'
+import ExplorerGridItem from './ExplorerGridItem'
 
 const rowHeight = 256
 
