@@ -18,7 +18,6 @@ import {
   SelectChangeEvent,
   ToggleButton,
   Toolbar,
-  Tooltip,
 } from '@mui/material'
 import {
   ArrowBack as ArrowBackIcon,
@@ -162,45 +161,48 @@ const ExplorerBar = () => {
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
       <Toolbar disableGutters sx={{ minHeight: '32px!important', px: 1 }}>
-        <Tooltip title="Go back">
-          <span>
-            <IconButton
-              color="inherit"
-              disabled={!history.canBack}
-              onClick={handleClickBack}
-              size="small"
-            >
-              <ArrowBackIcon fontSize="small" />
-            </IconButton>
-          </span>
-        </Tooltip>
-        <Tooltip title="Go forward">
-          <span>
-            <IconButton
-              color="inherit"
-              disabled={!history.canForward}
-              onClick={handleClickForward}
-              size="small"
-            >
-              <ArrowForwardIcon fontSize="small" />
-            </IconButton>
-          </span>
-        </Tooltip>
-        <Tooltip title="Go up">
-          <IconButton color="inherit" onClick={handleClickUpward} size="small">
-            <ArrowUpwardIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Go home">
-          <IconButton color="inherit" onClick={handleClickHome} size="small">
-            <HomeIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Refresh">
-          <IconButton color="inherit" onClick={handleClickRefresh} size="small">
-            <RefreshIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
+        <IconButton
+          color="inherit"
+          disabled={!history.canBack}
+          onClick={handleClickBack}
+          size="small"
+          title="Go back"
+        >
+          <ArrowBackIcon fontSize="small" />
+        </IconButton>
+        <IconButton
+          color="inherit"
+          disabled={!history.canForward}
+          onClick={handleClickForward}
+          size="small"
+          title="Go forward"
+        >
+          <ArrowForwardIcon fontSize="small" />
+        </IconButton>
+        <IconButton
+          color="inherit"
+          onClick={handleClickUpward}
+          size="small"
+          title="Go up"
+        >
+          <ArrowUpwardIcon fontSize="small" />
+        </IconButton>
+        <IconButton
+          color="inherit"
+          onClick={handleClickHome}
+          size="small"
+          title="Go home"
+        >
+          <HomeIcon fontSize="small" />
+        </IconButton>
+        <IconButton
+          color="inherit"
+          onClick={handleClickRefresh}
+          size="small"
+          title="Refresh"
+        >
+          <RefreshIcon fontSize="small" />
+        </IconButton>
         <Box sx={{ display: 'flex', flexGrow: 1, ml: 1 }}>
           <Box sx={{ display: 'flex', flex: '2 1 0' }}>
             <RoundedFilledInput
@@ -268,19 +270,17 @@ const ExplorerBar = () => {
         >
           <ToggleButton
             sx={{ height: (theme) => theme.spacing(3.5), py: 0 }}
+            title="List View"
             value="list"
           >
-            <Tooltip title="List View">
-              <TableRowsIcon fontSize="small" />
-            </Tooltip>
+            <TableRowsIcon fontSize="small" />
           </ToggleButton>
           <ToggleButton
             sx={{ height: (theme) => theme.spacing(3.5), py: 0 }}
+            title="Thumbnail View"
             value="thumbnail"
           >
-            <Tooltip title="Thumbnail View">
-              <ViewComfyIcon fontSize="small" />
-            </Tooltip>
+            <ViewComfyIcon fontSize="small" />
           </ToggleButton>
         </FilledToggleButtonGroup>
         <RoundedFilledSelect

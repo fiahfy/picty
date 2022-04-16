@@ -2,10 +2,10 @@ import { useState } from 'react'
 import {
   Box,
   Divider,
-  Drawer as MuiDrawer,
   List,
   ListItemButton,
   ListItemIcon,
+  Drawer as MuiDrawer,
   Theme,
   Toolbar,
   styled,
@@ -58,7 +58,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }))
 
-const open = false
+const open = true
 
 const SideBar = () => {
   const [dialogOpen, setDialogOpen] = useState(false)

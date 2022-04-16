@@ -22,8 +22,8 @@ import {
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
   Close as CloseIcon,
-  Fullscreen as FullscreenIcon,
   FullscreenExit as FullscreenExitIcon,
+  Fullscreen as FullscreenIcon,
 } from '@mui/icons-material'
 import Layout from 'components/Layout'
 import { Content } from 'interfaces'

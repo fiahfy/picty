@@ -1,4 +1,4 @@
-import { readdirSync, Stats, statSync } from 'fs'
+import { Stats, readdirSync, statSync } from 'fs'
 import { basename, dirname, join } from 'path'
 import {
   BrowserWindow,

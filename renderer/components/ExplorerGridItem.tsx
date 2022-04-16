@@ -1,12 +1,6 @@
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import fileUrl from 'file-url'
-import {
-  Box,
-  ImageListItem,
-  ImageListItemBar,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
 import ExplorerItemIcon from 'components/ExplorerItemIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { Item } from 'interfaces'
@@ -158,23 +152,22 @@ const ExplorerGridItem = (props: Props) => {
               height: (theme) => theme.spacing(5),
             }}
           >
-            <Tooltip title={item.name}>
-              <Typography
-                sx={{
-                  WebkitBoxOrient: 'vertical',
-                  WebkitLineClamp: 2,
-                  display: '-webkit-box',
-                  lineHeight: 1.4,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'initial',
-                  wordBreak: 'break-all',
-                }}
-                variant="caption"
-              >
-                {item.name}
-              </Typography>
-            </Tooltip>
+            <Typography
+              sx={{
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: 2,
+                display: '-webkit-box',
+                lineHeight: 1.4,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'initial',
+                wordBreak: 'break-all',
+              }}
+              title={item.name}
+              variant="caption"
+            >
+              {item.name}
+            </Typography>
           </Box>
         }
       />

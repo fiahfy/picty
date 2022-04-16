@@ -13,7 +13,6 @@ import {
   LinearProgress,
   TableCell,
   TableSortLabel,
-  Tooltip,
   Typography,
   alpha,
 } from '@mui/material'
@@ -216,11 +215,9 @@ const ExplorerTable = (props: Props) => {
                   <Box sx={{ alignItems: 'center', display: 'flex', mr: 1 }}>
                     <ExplorerItemIcon item={rowData} size="small" />
                   </Box>
-                  <Tooltip title={rowData.name}>
-                    <Typography noWrap variant="caption">
-                      {rowData.name}
-                    </Typography>
-                  </Tooltip>
+                  <Typography noWrap title={rowData.name} variant="caption">
+                    {rowData.name}
+                  </Typography>
                 </Box>
               ),
               rating: (

@@ -8,9 +8,9 @@ import {
 } from 'react'
 import {
   CssBaseline,
+  ThemeProvider as MuiThemeProvider,
   PaletteMode,
   Theme,
-  ThemeProvider as MuiThemeProvider,
   createTheme,
 } from '@mui/material'
 import { useStore } from 'utils/StoreContext'

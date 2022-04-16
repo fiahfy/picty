@@ -1,4 +1,4 @@
-import { Rating, experimental_sx as sx, styled } from '@mui/material'
+import { Rating, styled, experimental_sx as sx } from '@mui/material'
 
 const NoOutlineRating = styled(Rating)(
   sx({

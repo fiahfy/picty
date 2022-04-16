@@ -6,7 +6,7 @@ import {
   Folder as FolderIcon,
   Star as StarIcon,
 } from '@mui/icons-material'
-import { TreeView, TreeItem, treeItemClasses } from '@mui/lab'
+import { TreeItem, TreeView, treeItemClasses } from '@mui/lab'
 
 type Props = {
   children?: ReactNode
