@@ -86,6 +86,7 @@ const PresentationDialog = (props: Props) => {
     return () => {
       clearTimer()
       resetMode()
+      document.exitFullscreen()
     }
   }, [
     path,

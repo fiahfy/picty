@@ -5,6 +5,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import {
@@ -48,13 +49,29 @@ const sortOptions = [
 
 const ExplorerBar = () => {
   const [directory, setDirectory] = useState('')
+  const ref = useRef<HTMLInputElement>()
+
   const { explorer, history, settings, sorting } = useStore()
 
   useEffect(() => {
-    const unsubscribe = window.electronAPI.subscribeSearchText((text) => {
-      explorer.setQuery.call(null, text)
+    const unsubscribe = window.electronAPI.subscribeSearch(() => {
+      explorer.setQuery.call(null, document.getSelection()?.toString() ?? '')
+      ref.current && ref.current?.focus()
     })
-    return () => unsubscribe()
+    const handler = (e: globalThis.KeyboardEvent) => {
+      if (
+        e.key === 'f' &&
+        ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey))
+      ) {
+        explorer.setQuery.call(null, document.getSelection()?.toString() ?? '')
+        ref.current && ref.current?.focus()
+      }
+    }
+    document.addEventListener('keydown', handler)
+    return () => {
+      document.removeEventListener('keydown', handler)
+      unsubscribe()
+    }
   }, [explorer.setQuery])
 
   const load = useCallback(async () => {
@@ -225,6 +242,7 @@ const ExplorerBar = () => {
               }
               fullWidth
               hiddenLabel
+              inputRef={ref}
               onChange={handleChangeQuery}
               placeholder="Search..."
               size="small"

@@ -1,19 +1,28 @@
-import { IpcRendererEvent, ipcRenderer, contextBridge } from 'electron'
+import { ipcRenderer, contextBridge } from 'electron'
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  doubleClickTitleBar: () => ipcRenderer.invoke('doubleClickTitleBar'),
-  getDirname: (path: string) => ipcRenderer.invoke('getDirname', path),
-  getHomePath: () => ipcRenderer.invoke('getHomePath'),
-  isDarwin: () => ipcRenderer.invoke('isDarwin'),
-  listContents: (path: string) => ipcRenderer.invoke('listContents', path),
+  doubleClickTitleBar: () => ipcRenderer.invoke('double-click-title-bar'),
+  getDirname: (path: string) => ipcRenderer.invoke('get-dirname', path),
+  getHomePath: () => ipcRenderer.invoke('get-home-path'),
+  isDarwin: () => ipcRenderer.invoke('is-darwin'),
+  listContents: (path: string) => ipcRenderer.invoke('list-contents', path),
   listContentsForPath: (path: string) =>
-    ipcRenderer.invoke('listContentsForPath', path),
-  subscribeSearchText: (callback: (text: string) => void) => {
-    const cb = (_e: IpcRendererEvent, text: string) => callback(text)
-    ipcRenderer.on('searchText', cb)
+    ipcRenderer.invoke('list-contents-for-path', path),
+  openPath: (path: string) => ipcRenderer.invoke('open-path', path),
+  sendParamsForContextMenu: (params?: unknown) =>
+    ipcRenderer.invoke('send-params-for-context-menu', params),
+  subscribeStartPresentation: (callback: () => void) => {
+    const cb = () => callback()
+    ipcRenderer.on('start-presentation', cb)
     return () => {
-      ipcRenderer.removeListener('searchText', cb)
+      ipcRenderer.removeListener('start-presentation', cb)
     }
   },
-  openPath: (path: string) => ipcRenderer.invoke('openPath', path),
+  subscribeSearch: (callback: () => void) => {
+    const cb = () => callback()
+    ipcRenderer.on('search', cb)
+    return () => {
+      ipcRenderer.removeListener('search', cb)
+    }
+  },
 })

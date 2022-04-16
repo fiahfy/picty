@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { MouseEvent, ReactNode } from 'react'
 import { Box, Toolbar } from '@mui/material'
 import ExplorerBar from 'components/ExplorerBar'
 import SideBar from 'components/SideBar'
@@ -12,8 +12,25 @@ type Props = {
 const Layout = (props: Props) => {
   const { children, hideBars = false } = props
 
+  const getTargetParams = (e: HTMLElement): string | undefined => {
+    const params = e.dataset.params
+    if (params) {
+      return JSON.parse(params)
+    }
+    const parent = e.parentElement
+    return parent ? getTargetParams(parent) : undefined
+  }
+
+  const handleMouseDown = async (e: MouseEvent<HTMLDivElement>) => {
+    const params = getTargetParams(e.target as HTMLElement)
+    await window.electronAPI.sendParamsForContextMenu(params)
+  }
+
   return (
-    <Box sx={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
+    <Box
+      onMouseDown={handleMouseDown}
+      sx={{ display: 'flex', height: '100%', overflow: 'hidden' }}
+    >
       <style global jsx>{`
         html,
         body,

@@ -12,8 +12,10 @@ export interface IElectronAPI {
   isDarwin: () => Promise<boolean>
   listContents: (path: string) => Promise<Content[]>
   listContentsForPath: (path: string) => Promise<Content[]>
-  subscribeSearchText: (callback: (text: string) => void) => () => void
   openPath: (path: string) => Promise<void>
+  sendParamsForContextMenu: (params?: unknown) => Promise<void>
+  subscribeStartPresentation: (callback: () => void) => () => void
+  subscribeSearch: (callback: () => void) => () => void
 }
 
 declare global {

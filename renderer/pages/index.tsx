@@ -1,7 +1,6 @@
-import { createElement, useCallback, useMemo, useState } from 'react'
+import { createElement, useCallback, useEffect, useMemo, useState } from 'react'
 import ExplorerGrid from 'components/ExplorerGrid'
 import ExplorerTable from 'components/ExplorerTable'
-import Layout from 'components/Layout'
 import PresentationDialog from 'components/PresentationDialog'
 import { Item } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
@@ -15,6 +14,13 @@ const IndexPage = () => {
   >({ open: false })
 
   const { explorer, history, rating, settings, sorting } = useStore()
+
+  useEffect(() => {
+    const unsubscribe = window.electronAPI.subscribeStartPresentation(() => {
+      setDialogState({ path: explorer.selected[0], open: true })
+    })
+    return () => unsubscribe()
+  }, [explorer.selected])
 
   const sortOption = useMemo(
     () => sorting.getOption(history.directory),
@@ -79,7 +85,7 @@ const IndexPage = () => {
   const handleRequestClose = () => setDialogState({ open: false })
 
   return (
-    <Layout>
+    <>
       {createElement(
         settings.explorerLayout === 'list' ? ExplorerTable : ExplorerGrid,
         {
@@ -101,7 +107,7 @@ const IndexPage = () => {
           path={dialogState.path}
         />
       )}
-    </Layout>
+    </>
   )
 }
 

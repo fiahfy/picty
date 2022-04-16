@@ -68,12 +68,21 @@ const ExplorerGridItem = (props: Props) => {
     [loading]
   )
 
+  const enabled = useMemo(
+    () => item.type === 'directory' || isImageFile(item.path),
+    [item.path, item.type]
+  )
+
   return (
     <ImageListItem
       className={selected ? 'selected' : undefined}
       component="div"
       data-grid-column={columnIndex + 1}
       data-grid-row={rowIndex + 1}
+      data-params={JSON.stringify({
+        id: 'presentation',
+        enabled,
+      })}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
       sx={{

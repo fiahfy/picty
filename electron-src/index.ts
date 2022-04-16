@@ -1,37 +1,10 @@
 import { join } from 'path'
-import {
-  BrowserView,
-  BrowserWindow,
-  WebContents,
-  app,
-  protocol,
-} from 'electron'
+import { BrowserWindow, app, protocol } from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
 import windowStateKeeper from 'electron-window-state'
-import contextMenu from 'electron-context-menu'
-import { createIpcHandlers } from './handlers'
-
-const webContents = (
-  win: BrowserWindow | BrowserView | Electron.WebviewTag | WebContents
-) => ('webContents' in win ? win.webContents : win)
-
-contextMenu({
-  prepend: (_defaultActions, parameters, browserWindow) => {
-    return [
-      {
-        accelerator: 'CommandOrControl+F',
-        click: () => {
-          const text = parameters.selectionText
-          const wc = webContents(browserWindow)
-          wc && wc.send('searchText', text)
-        },
-        label: 'Search for “{selection}”',
-        visible: parameters.selectionText.trim().length > 0,
-      },
-    ]
-  },
-})
+import { createContextMenu } from './context-menu'
+import { addHandlers } from './handlers'
 
 let mainWindow: BrowserWindow
 
@@ -63,7 +36,9 @@ app.on('ready', async () => {
   }
 
   windowState.manage(mainWindow)
-  createIpcHandlers(mainWindow)
+
+  addHandlers(mainWindow)
+  createContextMenu()
 })
 
 // Quit the app once all windows are closed

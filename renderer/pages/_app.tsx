@@ -5,6 +5,7 @@ import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
+import Layout from 'components/Layout'
 import { StoreProvider } from 'utils/StoreContext'
 import { ThemeProvider } from 'utils/ThemeContext'
 import { TitleBarProvider } from 'utils/TitleBarContext'
@@ -27,7 +28,9 @@ export default function MyApp(props: MyAppProps) {
       <StoreProvider>
         <TitleBarProvider>
           <ThemeProvider>
-            <Component {...pageProps} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </ThemeProvider>
         </TitleBarProvider>
       </StoreProvider>
