@@ -12,6 +12,7 @@ import NoOutlineRating from 'components/NoOutlineRating'
 import { Item } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 import { isImageFile } from 'utils/image'
+import { semaphore } from 'utils/semaphore'
 
 type Props = {
   columnIndex: number
@@ -33,22 +34,33 @@ const ExplorerGridItem = (props: Props) => {
   const [imagePath, setImagePath] = useState<string>()
 
   useEffect(() => {
-    ;(async () => {
-      setLoading(true)
-      setImages(0)
-      setImagePath(undefined)
-      if (item.type === 'file') {
-        if (isImageFile(item.path)) {
-          setImagePath(item.path)
-        }
-      } else {
-        const contents = await window.electronAPI.listContents(item.path)
-        const images = contents.filter((content) => isImageFile(content.path))
-        setImages(images.length)
-        setImagePath(images[0]?.path)
+    setLoading(true)
+    setImages(0)
+    setImagePath(undefined)
+
+    if (item.type === 'file') {
+      if (isImageFile(item.path)) {
+        setImagePath(item.path)
       }
       setLoading(false)
-    })()
+      return
+    }
+
+    let unmounted = false
+    semaphore.acquire(async () => {
+      const contents = await window.electronAPI.listContents(item.path)
+      if (unmounted) {
+        return
+      }
+      const images = contents.filter((content) => isImageFile(content.path))
+      setImages(images.length)
+      setImagePath(images[0]?.path)
+      setLoading(false)
+    })
+
+    return () => {
+      unmounted = true
+    }
   }, [item.path, item.type])
 
   const message = useMemo(
@@ -111,8 +123,6 @@ const ExplorerGridItem = (props: Props) => {
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
-              mb: 1,
-              mr: 1,
             }}
           >
             <NoOutlineRating
@@ -120,6 +130,7 @@ const ExplorerGridItem = (props: Props) => {
               onChange={(_e, value) => rating.setRating(item.path, value ?? 0)}
               precision={0.5}
               size="small"
+              sx={{ my: 0.25 }}
               value={item.rating}
             />
             {!loading && item.type === 'directory' && (
@@ -129,14 +140,13 @@ const ExplorerGridItem = (props: Props) => {
             )}
           </Box>
         }
-        sx={{ '.MuiImageListItemBar-titleWrap': { p: 0 } }}
+        sx={{ '.MuiImageListItemBar-titleWrap': { p: 0, pb: 1, pr: 1 } }}
         title={
           <Box
             sx={{
               alignItems: 'center',
               display: 'flex',
               height: (theme) => theme.spacing(5),
-              mr: 1,
             }}
           >
             <Tooltip title={item.name}>

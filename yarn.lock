@@ -282,6 +282,11 @@
     "@typescript-eslint/parser" "^5.14.0"
     eslint-config-prettier "^8.5.0"
 
+"@fiahfy/semaphore@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@fiahfy/semaphore/-/semaphore-0.0.2.tgz#f3121454fd03ac1ba35ee6cf6b2ae2d1a0d7d117"
+  integrity sha512-dkxuLmntMXqE6VaLE7PnJiCMqGKm3P7B7PQcwNqIj7rrAYXT00MSYnBQ66TDrrq6vY2gmbkOqc7KB8gCsLQUdw==
+
 "@fontsource/roboto@^4.5.3":
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-4.5.3.tgz#c729ac22c35ae1c224cde10042ce7ab356bc4dda"
