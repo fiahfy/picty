@@ -7,6 +7,7 @@
 
 export interface IElectronAPI {
   doubleClickTitleBar: () => Promise<void>
+  getBasename: (path: string) => Promise<string>
   getDirname: (path: string) => Promise<string>
   getHomePath: () => Promise<string>
   isDarwin: () => Promise<boolean>
@@ -14,7 +15,8 @@ export interface IElectronAPI {
   listContentsForPath: (path: string) => Promise<Content[]>
   openPath: (path: string) => Promise<void>
   sendParamsForContextMenu: (params?: unknown) => Promise<void>
-  subscribeStartPresentation: (callback: () => void) => () => void
+  subscribeRemoveFavorite: (callback: (path: string) => void) => () => void
+  subscribeStartPresentation: (callback: (path: string) => void) => () => void
   subscribeSearch: (callback: () => void) => () => void
 }
 

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { Box, Typography, colors } from '@mui/material'
 import {
   ChevronRight as ChevronRightIcon,
@@ -7,18 +7,22 @@ import {
   Star as StarIcon,
 } from '@mui/icons-material'
 import { TreeItem, TreeView, treeItemClasses } from '@mui/lab'
+import { useStore } from 'utils/StoreContext'
 
 type Props = {
   children?: ReactNode
+  'data-params'?: string
   label: string
   nodeId: string
+  title?: string
 }
 
 const StyledTreeItem = (props: Props) => {
-  const { children, label, nodeId } = props
+  const { children, 'data-params': dataParams, label, nodeId, title } = props
 
   return (
     <TreeItem
+      data-params={dataParams}
       label={
         <Box sx={{ alignItems: 'center', display: 'flex', py: 0.75 }}>
           <Box sx={{ alignItems: 'center', display: 'flex', mr: 1 }}>
@@ -29,7 +33,9 @@ const StyledTreeItem = (props: Props) => {
             )}
           </Box>
           <Typography
+            noWrap
             sx={{ fontWeight: 'inherit', flexGrow: 1 }}
+            title={title}
             variant="caption"
           >
             {label}
@@ -37,6 +43,7 @@ const StyledTreeItem = (props: Props) => {
         </Box>
       }
       nodeId={nodeId}
+      sx={{ userSelect: 'none' }}
     >
       {children}
     </TreeItem>
@@ -44,6 +51,34 @@ const StyledTreeItem = (props: Props) => {
 }
 
 const ExplorerTreeView = () => {
+  const { favorite } = useStore()
+
+  const [favorites, setFavorites] = useState<{ name: string; path: string }[]>(
+    []
+  )
+
+  useEffect(() => {
+    const unsubscribe = window.electronAPI.subscribeRemoveFavorite((path) =>
+      favorite.remove.call(null, path)
+    )
+    return () => unsubscribe()
+  }, [favorite.remove])
+
+  useEffect(() => {
+    ;(async () => {
+      const names = await Promise.all(
+        favorite.list.map((path) => window.electronAPI.getBasename(path))
+      )
+      const favorites = favorite.list
+        .map((path, i) => ({
+          name: names[i],
+          path,
+        }))
+        .sort((a, b) => (a.name > b.name ? 1 : -1))
+      setFavorites(favorites)
+    })()
+  }, [favorite.list])
+
   return (
     <TreeView
       defaultCollapseIcon={<ExpandMoreIcon />}
@@ -62,8 +97,18 @@ const ExplorerTreeView = () => {
       }}
     >
       <StyledTreeItem label="Favorites" nodeId="root">
-        <StyledTreeItem label="Calendar" nodeId="2" />
-        <StyledTreeItem label="Documents" nodeId="5" />
+        {favorites.map((favorite) => (
+          <StyledTreeItem
+            data-params={JSON.stringify({
+              id: 'favorite',
+              path: favorite.path,
+            })}
+            key={favorite.path}
+            label={favorite.name}
+            nodeId={favorite.path}
+            title={favorite.path}
+          />
+        ))}
       </StyledTreeItem>
     </TreeView>
   )

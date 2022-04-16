@@ -20,6 +20,7 @@ import ExplorerItemIcon from 'components/ExplorerItemIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { Item } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
+import { isImageFile } from 'utils/image'
 
 const headerHeight = 32
 const rowHeight = 32
@@ -188,9 +189,15 @@ const ExplorerTable = (props: Props) => {
   }
 
   const cellRenderer = ({ dataKey, rowData }: TableCellProps) => {
+    const enabled = rowData.type === 'directory' || isImageFile(rowData.path)
     return (
       <TableCell
         component="div"
+        data-params={JSON.stringify({
+          id: 'content',
+          enabled,
+          path: rowData.path,
+        })}
         sx={{
           alignItems: 'center',
           borderBottom: 'none',

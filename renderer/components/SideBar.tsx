@@ -123,7 +123,7 @@ const SideBar = () => {
           </List>
           <Divider orientation="vertical" />
         </Box>
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, minWidth: 0 }}>
           <ExplorerTreeView />
         </Box>
       </Box>

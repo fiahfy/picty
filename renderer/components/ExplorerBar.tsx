@@ -29,6 +29,8 @@ import {
   Refresh as RefreshIcon,
   Search as SearchIcon,
   Sort as SortIcon,
+  StarBorder as StarBorderIcon,
+  Star as StarIcon,
   TableRows as TableRowsIcon,
   ViewComfy as ViewComfyIcon,
 } from '@mui/icons-material'
@@ -47,7 +49,7 @@ const sortOptions = [
 ]
 
 const ExplorerBar = () => {
-  const { explorer, history, settings, sorting } = useStore()
+  const { explorer, favorite, history, settings, sorting } = useStore()
 
   const [directory, setDirectory] = useState('')
   const ref = useRef<HTMLInputElement>()
@@ -94,6 +96,11 @@ const ExplorerBar = () => {
     })()
   }, [explorer.setSelected, history.directory, history.push, load])
 
+  const favorited = useMemo(
+    () => favorite.isFavorited(history.directory),
+    [favorite, history.directory]
+  )
+
   const sortOption = useMemo(
     () => sorting.getOption(history.directory),
     [history.directory, sorting]
@@ -121,6 +128,8 @@ const ExplorerBar = () => {
   const handleClickFolder = async () => {
     await window.electronAPI.openPath(history.directory)
   }
+
+  const handleClickFavorite = () => favorite.toggle(history.directory)
 
   const handleChangeDirectory = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value
@@ -206,6 +215,21 @@ const ExplorerBar = () => {
         <Box sx={{ display: 'flex', flexGrow: 1, ml: 1 }}>
           <Box sx={{ display: 'flex', flex: '2 1 0' }}>
             <RoundedFilledInput
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    color="inherit"
+                    onClick={handleClickFavorite}
+                    size="small"
+                  >
+                    {favorited ? (
+                      <StarIcon fontSize="small" sx={{ color: '#faaf00' }} />
+                    ) : (
+                      <StarBorderIcon fontSize="small" />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
               fullWidth
               hiddenLabel
               onChange={handleChangeDirectory}

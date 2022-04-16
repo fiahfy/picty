@@ -83,6 +83,9 @@ export const addHandlers = (browserWindow: BrowserWindow) => {
       }
     }
   })
+  ipcMain.handle('get-basename', (_event: IpcMainInvokeEvent, path: string) =>
+    basename(path)
+  )
   ipcMain.handle('get-dirname', (_event: IpcMainInvokeEvent, path: string) =>
     dirname(path)
   )

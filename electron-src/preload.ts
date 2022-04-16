@@ -1,7 +1,8 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { IpcRendererEvent, contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('electronAPI', {
   doubleClickTitleBar: () => ipcRenderer.invoke('double-click-title-bar'),
+  getBasename: (path: string) => ipcRenderer.invoke('get-basename', path),
   getDirname: (path: string) => ipcRenderer.invoke('get-dirname', path),
   getHomePath: () => ipcRenderer.invoke('get-home-path'),
   isDarwin: () => ipcRenderer.invoke('is-darwin'),
@@ -11,8 +12,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openPath: (path: string) => ipcRenderer.invoke('open-path', path),
   sendParamsForContextMenu: (params?: unknown) =>
     ipcRenderer.invoke('send-params-for-context-menu', params),
-  subscribeStartPresentation: (callback: () => void) => {
-    const cb = () => callback()
+  subscribeRemoveFavorite: (callback: (path: string) => void) => {
+    const cb = (_e: IpcRendererEvent, path: string) => callback(path)
+    ipcRenderer.on('remove-favorite', cb)
+    return () => {
+      ipcRenderer.removeListener('remove-favorite', cb)
+    }
+  },
+  subscribeStartPresentation: (callback: (path: string) => void) => {
+    const cb = (_e: IpcRendererEvent, path: string) => callback(path)
     ipcRenderer.on('start-presentation', cb)
     return () => {
       ipcRenderer.removeListener('start-presentation', cb)

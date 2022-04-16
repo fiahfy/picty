@@ -74,8 +74,9 @@ const ExplorerGridItem = (props: Props) => {
       data-grid-column={columnIndex + 1}
       data-grid-row={rowIndex + 1}
       data-params={JSON.stringify({
-        id: 'presentation',
+        id: 'content',
         enabled,
+        path: item.path,
       })}
       onClick={onClick}
       onDoubleClick={onDoubleClick}

@@ -31,11 +31,20 @@ export const createContextMenu = () => {
           accelerator: 'Enter',
           click: () => {
             const wc = webContents(browserWindow)
-            wc && wc.send('start-presentation')
+            wc && wc.send('start-presentation', params.path)
           },
           enabled: params.enabled,
           label: 'Start Presentation',
-          visible: params.id === 'presentation',
+          visible: params.id === 'content',
+        },
+        {
+          click: () => {
+            const wc = webContents(browserWindow)
+            wc && wc.send('remove-favorite', params.path)
+          },
+          enabled: params.enabled,
+          label: 'Remove from Favorites',
+          visible: params.id === 'favorite',
         },
       ]
     },

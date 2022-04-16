@@ -16,9 +16,9 @@ const IndexPage = () => {
   >({ open: false })
 
   useEffect(() => {
-    const unsubscribe = window.electronAPI.subscribeStartPresentation(() => {
-      setDialogState({ path: explorer.selected[0], open: true })
-    })
+    const unsubscribe = window.electronAPI.subscribeStartPresentation((path) =>
+      setDialogState({ path, open: true })
+    )
     return () => unsubscribe()
   }, [explorer.selected])
 
