@@ -16,6 +16,7 @@ type Props = {
 
 const StyledTreeItem = (props: Props) => {
   const { children, label, nodeId } = props
+
   return (
     <TreeItem
       label={

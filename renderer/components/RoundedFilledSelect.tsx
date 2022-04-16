@@ -7,6 +7,7 @@ import {
 
 const RoundedFilledSelect = styled((props) => (
   <Select {...props} variant="filled" />
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ))<SelectProps<any>>(
   sx({
     '&': {

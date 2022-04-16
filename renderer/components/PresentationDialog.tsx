@@ -51,9 +51,7 @@ const PresentationDialog = (props: Props) => {
   const topToolbar = useRef<HTMLDivElement>()
   const bottomToolbar = useRef<HTMLDivElement>()
 
-  const clearTimer = () => {
-    window.clearTimeout(timer.current)
-  }
+  const clearTimer = useCallback(() => window.clearTimeout(timer.current), [])
 
   const resetTimer = useCallback(() => {
     setToolbar(true)
@@ -65,7 +63,7 @@ const PresentationDialog = (props: Props) => {
       return
     }
     timer.current = window.setTimeout(() => setToolbar(false), 2000)
-  }, [])
+  }, [clearTimer])
 
   useEffect(() => {
     ;(async () => {
@@ -89,9 +87,10 @@ const PresentationDialog = (props: Props) => {
       document.exitFullscreen()
     }
   }, [
-    path,
+    clearTimer,
     forceMode,
     open,
+    path,
     resetMode,
     resetTimer,
     settings.fullscreenOnPresentation,
@@ -110,6 +109,7 @@ const PresentationDialog = (props: Props) => {
       return index
     })
   }
+
   const moveNext = () => {
     setIndex((prevIndex) => {
       let index = prevIndex + 1

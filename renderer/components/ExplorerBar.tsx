@@ -48,10 +48,10 @@ const sortOptions = [
 ]
 
 const ExplorerBar = () => {
+  const { explorer, history, settings, sorting } = useStore()
+
   const [directory, setDirectory] = useState('')
   const ref = useRef<HTMLInputElement>()
-
-  const { explorer, history, settings, sorting } = useStore()
 
   useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeSearch(() => {

@@ -6,14 +6,14 @@ import { Item } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 
 const IndexPage = () => {
+  const { explorer, history, rating, settings, sorting } = useStore()
+
   const [dialogState, setDialogState] = useState<
     | {
         open: false
       }
     | { open: true; path: string }
   >({ open: false })
-
-  const { explorer, history, rating, settings, sorting } = useStore()
 
   useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeStartPresentation(() => {

@@ -79,9 +79,9 @@ const ExplorerTable = (props: Props) => {
     sortOption,
   } = props
 
-  const ref = useRef<HTMLDivElement>()
-
   const { rating } = useStore()
+
+  const ref = useRef<HTMLDivElement>()
 
   const getWidths = useCallback((wrapperWidth) => {
     const widths = columns.map((column) => column.width)
@@ -301,7 +301,7 @@ const ExplorerTable = (props: Props) => {
               onRowClick={handleRowClick}
               onRowDoubleClick={handleRowDoubleClick}
               rowClassName={({ index }) => {
-                // TODO: @see https://github.com/bvaughn/react-virtualized/issues/1357
+                // @see https://github.com/bvaughn/react-virtualized/issues/1357
                 const item = items[index]
                 return item && itemSelected(item) ? 'selected' : ''
               }}

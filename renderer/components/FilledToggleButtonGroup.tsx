@@ -1,4 +1,9 @@
-import { ToggleButtonGroup, experimental_sx as sx, styled } from '@mui/material'
+import {
+  Theme,
+  ToggleButtonGroup,
+  experimental_sx as sx,
+  styled,
+} from '@mui/material'
 
 const FilledToggleButtonGroup = styled(ToggleButtonGroup)(
   sx({
@@ -8,10 +13,10 @@ const FilledToggleButtonGroup = styled(ToggleButtonGroup)(
         border: 0,
       },
       '&:not(:first-of-type)': {
-        borderRadius: (theme: any) => `${theme.shape.borderRadius}px`,
+        borderRadius: (theme: Theme) => `${theme.shape.borderRadius}px`,
       },
       '&:first-of-type': {
-        borderRadius: (theme: any) => `${theme.shape.borderRadius}px`,
+        borderRadius: (theme: Theme) => `${theme.shape.borderRadius}px`,
         mr: 0.5,
       },
     },

@@ -15,6 +15,7 @@ type Props = {
 
 const ExplorerItemIcon = (props: Props) => {
   const { item, size } = props
+
   const type = useMemo(() => {
     if (item.type === 'directory') {
       return 'directory'

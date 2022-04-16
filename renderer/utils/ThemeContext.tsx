@@ -9,9 +9,9 @@ import {
 import {
   CssBaseline,
   PaletteMode,
+  Theme,
   ThemeProvider as MuiThemeProvider,
   createTheme,
-  Theme,
 } from '@mui/material'
 import { useStore } from 'utils/StoreContext'
 import { useTitleBar } from 'utils/TitleBarContext'
