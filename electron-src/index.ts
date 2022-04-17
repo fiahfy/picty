@@ -3,6 +3,7 @@ import { BrowserWindow, app, protocol } from 'electron'
 import isDev from 'electron-is-dev'
 import prepareNext from 'electron-next'
 import windowStateKeeper from 'electron-window-state'
+import { createApplicationMenu } from './application-menu'
 import { createContextMenu } from './context-menu'
 import { addHandlers } from './handlers'
 
@@ -38,6 +39,7 @@ app.on('ready', async () => {
   windowState.manage(mainWindow)
 
   addHandlers(mainWindow)
+  createApplicationMenu(mainWindow)
   createContextMenu()
 })
 
