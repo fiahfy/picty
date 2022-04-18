@@ -14,11 +14,19 @@ type Props = {
   'data-params'?: string
   label: string
   nodeId: string
+  onClick?: () => void
   title?: string
 }
 
 const StyledTreeItem = (props: Props) => {
-  const { children, 'data-params': dataParams, label, nodeId, title } = props
+  const {
+    children,
+    'data-params': dataParams,
+    label,
+    nodeId,
+    onClick,
+    title,
+  } = props
 
   return (
     <TreeItem
@@ -43,6 +51,7 @@ const StyledTreeItem = (props: Props) => {
         </Box>
       }
       nodeId={nodeId}
+      onClick={onClick}
       sx={{ userSelect: 'none' }}
     >
       {children}
@@ -51,7 +60,7 @@ const StyledTreeItem = (props: Props) => {
 }
 
 const ExplorerTreeView = () => {
-  const { favorite } = useStore()
+  const { favorite, history } = useStore()
 
   const [favorites, setFavorites] = useState<{ name: string; path: string }[]>(
     []
@@ -59,10 +68,10 @@ const ExplorerTreeView = () => {
 
   useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeRemoveFavorite((path) =>
-      favorite.remove.call(null, path)
+      favorite.remove(path)
     )
     return () => unsubscribe()
-  }, [favorite.remove])
+  }, [favorite])
 
   useEffect(() => {
     ;(async () => {
@@ -78,6 +87,8 @@ const ExplorerTreeView = () => {
       setFavorites(favorites)
     })()
   }, [favorite.list])
+
+  const handleClick = (path: string) => history.push(path)
 
   return (
     <TreeView
@@ -106,6 +117,7 @@ const ExplorerTreeView = () => {
             key={favorite.path}
             label={favorite.name}
             nodeId={favorite.path}
+            onClick={() => handleClick(favorite.path)}
             title={favorite.path}
           />
         ))}

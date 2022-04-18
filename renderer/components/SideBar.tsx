@@ -17,7 +17,7 @@ import {
 //   Settings as SettingsIcon,
 // } from '@mui/icons-material'
 import ExplorerTreeView from 'components/ExplorerTreeView'
-import SettingsDialog from 'components/SettingsDialog'
+import { useStore } from 'utils/StoreContext'
 
 // const drawerWidth = 256
 // const drawerMinWidth = 56
@@ -58,8 +58,7 @@ import SettingsDialog from 'components/SettingsDialog'
 const minContentWidth = 64
 
 const SideBar = () => {
-  const [drawerWidth, setDrawerWidth] = useState(256)
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const { settings } = useStore()
 
   // const items = [
   //   { icon: <ExploreIcon />, key: 'explorer' },
@@ -72,15 +71,6 @@ const SideBar = () => {
   //   },
   // ]
 
-  useEffect(() => {
-    const unsubscribe = window.electronAPI.subscribeShowSettings(() =>
-      setDialogOpen(true)
-    )
-    return () => unsubscribe()
-  }, [])
-
-  const handleRequestClose = () => setDialogOpen(false)
-
   const handleMouseDown = () => {
     document.addEventListener('mouseup', handleMouseUp, true)
     document.addEventListener('mousemove', handleMouseMove, true)
@@ -91,22 +81,25 @@ const SideBar = () => {
     document.removeEventListener('mousemove', handleMouseMove, true)
   }
 
-  const handleMouseMove = useCallback((e) => {
-    const newWidth = e.clientX - document.body.offsetLeft + 3
-    if (
-      newWidth > minContentWidth &&
-      newWidth < document.body.offsetWidth - minContentWidth
-    ) {
-      setDrawerWidth(newWidth)
-    }
-  }, [])
+  const handleMouseMove = useCallback(
+    (e) => {
+      const newWidth = e.clientX - document.body.offsetLeft + 3
+      if (
+        newWidth > minContentWidth &&
+        newWidth < document.body.offsetWidth - minContentWidth
+      ) {
+        settings.setDrawerWidth(newWidth)
+      }
+    },
+    [settings]
+  )
 
   return (
     <Drawer
-      PaperProps={{ style: { width: drawerWidth } }}
+      PaperProps={{ style: { width: settings.drawerWidth } }}
       anchor="left"
       open
-      style={{ width: drawerWidth }}
+      style={{ width: settings.drawerWidth }}
       variant="permanent"
     >
       <Toolbar
@@ -173,7 +166,6 @@ const SideBar = () => {
           width: 5,
         }}
       />
-      <SettingsDialog onRequestClose={handleRequestClose} open={dialogOpen} />
     </Drawer>
   )
 }

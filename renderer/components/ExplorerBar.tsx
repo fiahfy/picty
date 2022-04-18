@@ -28,6 +28,7 @@ import {
   Home as HomeIcon,
   Refresh as RefreshIcon,
   Search as SearchIcon,
+  Settings as SettingsIcon,
   Sort as SortIcon,
   StarBorder as StarBorderIcon,
   Star as StarIcon,
@@ -37,6 +38,7 @@ import {
 import FilledToggleButtonGroup from 'components/FilledToggleButtonGroup'
 import RoundedFilledInput from 'components/RoundedFilledInput'
 import RoundedFilledSelect from 'components/RoundedFilledSelect'
+import SettingsDialog from 'components/SettingsDialog'
 import { useStore } from 'utils/StoreContext'
 
 const sortOptions = [
@@ -52,11 +54,19 @@ const ExplorerBar = () => {
   const { explorer, favorite, history, settings, sorting } = useStore()
 
   const [directory, setDirectory] = useState('')
+  const [open, setOpen] = useState(false)
   const ref = useRef<HTMLInputElement>()
 
   useEffect(() => {
+    const unsubscribe = window.electronAPI.subscribeShowSettings(() =>
+      setOpen(true)
+    )
+    return () => unsubscribe()
+  }, [])
+
+  useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeSearch(() => {
-      explorer.setQuery.call(null, document.getSelection()?.toString() ?? '')
+      explorer.setQuery(document.getSelection()?.toString() ?? '')
       ref.current && ref.current?.focus()
     })
     const handler = (e: globalThis.KeyboardEvent) => {
@@ -64,7 +74,7 @@ const ExplorerBar = () => {
         e.key === 'f' &&
         ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey))
       ) {
-        explorer.setQuery.call(null, document.getSelection()?.toString() ?? '')
+        explorer.setQuery(document.getSelection()?.toString() ?? '')
         ref.current && ref.current?.focus()
       }
     }
@@ -73,7 +83,7 @@ const ExplorerBar = () => {
       document.removeEventListener('keydown', handler)
       unsubscribe()
     }
-  }, [explorer.setQuery])
+  }, [explorer])
 
   const load = useCallback(async () => {
     // @see https://github.com/facebook/react/issues/16265#issuecomment-1048648676
@@ -106,6 +116,7 @@ const ExplorerBar = () => {
     [history.directory, sorting]
   )
 
+  // click handlers
   const handleClickBack = () => history.back()
 
   const handleClickForward = () => history.forward()
@@ -125,29 +136,25 @@ const ExplorerBar = () => {
     await load()
   }
 
-  const handleClickFolder = async () => {
+  const handleClickSettings = async () => setOpen(true)
+
+  const handleClickFolder = async () =>
     await window.electronAPI.openPath(history.directory)
-  }
 
   const handleClickFavorite = () => favorite.toggle(history.directory)
 
+  const handleClickClearQuery = () => explorer.setQuery('')
+
+  // change handlers
   const handleChangeDirectory = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value
     setDirectory(value)
-  }
-
-  const handleKeyDownDirectory = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-      history.push(directory)
-    }
   }
 
   const handleChangeQuery = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value
     explorer.setQuery(value)
   }
-
-  const handleClickClearQuery = () => explorer.setQuery('')
 
   const handleChangeExplorerLayout = (
     _e: MouseEvent<HTMLElement>,
@@ -160,6 +167,12 @@ const ExplorerBar = () => {
       'asc' | 'desc'
     ]
     sorting.sort(history.directory, { orderBy, order })
+  }
+
+  const handleKeyDownDirectory = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.nativeEvent.isComposing && directory) {
+      history.push(directory)
+    }
   }
 
   return (
@@ -212,7 +225,7 @@ const ExplorerBar = () => {
         >
           <RefreshIcon fontSize="small" />
         </IconButton>
-        <Box sx={{ display: 'flex', flexGrow: 1, ml: 1 }}>
+        <Box sx={{ display: 'flex', flexGrow: 1, mx: 1 }}>
           <Box sx={{ display: 'flex', flex: '2 1 0' }}>
             <RoundedFilledInput
               endAdornment={
@@ -282,6 +295,14 @@ const ExplorerBar = () => {
             />
           </Box>
         </Box>
+        <IconButton
+          color="inherit"
+          onClick={handleClickSettings}
+          size="small"
+          title="Settings"
+        >
+          <SettingsIcon fontSize="small" />
+        </IconButton>
       </Toolbar>
       <Toolbar disableGutters sx={{ minHeight: '32px!important', px: 1 }}>
         <div style={{ flexGrow: 1 }} />
@@ -324,6 +345,7 @@ const ExplorerBar = () => {
         </RoundedFilledSelect>
       </Toolbar>
       <Divider />
+      <SettingsDialog onRequestClose={() => setOpen(false)} open={open} />
     </AppBar>
   )
 }
