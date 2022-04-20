@@ -34,6 +34,7 @@ import {
   Star as StarIcon,
   TableRows as TableRowsIcon,
   ViewComfy as ViewComfyIcon,
+  ViewSidebar as ViewSidebarIcon,
 } from '@mui/icons-material'
 import FilledToggleButtonGroup from 'components/FilledToggleButtonGroup'
 import RoundedFilledInput from 'components/RoundedFilledInput'
@@ -155,6 +156,11 @@ const ExplorerBar = () => {
     const value = e.currentTarget.value
     explorer.setQuery(value)
   }
+
+  const handleChangeViewSidebar = (
+    _e: MouseEvent<HTMLElement>,
+    value: 'sidebar'[]
+  ) => settings.setDrawerHidden(!value.includes('sidebar'))
 
   const handleChangeExplorerLayout = (
     _e: MouseEvent<HTMLElement>,
@@ -305,6 +311,19 @@ const ExplorerBar = () => {
         </IconButton>
       </Toolbar>
       <Toolbar disableGutters sx={{ minHeight: '32px!important', px: 1 }}>
+        <FilledToggleButtonGroup
+          onChange={handleChangeViewSidebar}
+          size="small"
+          value={settings.drawerHidden ? [] : ['sidebar']}
+        >
+          <ToggleButton
+            sx={{ height: (theme) => theme.spacing(3.5), py: 0 }}
+            title="Toggle Sidebar"
+            value="sidebar"
+          >
+            <ViewSidebarIcon fontSize="small" />
+          </ToggleButton>
+        </FilledToggleButtonGroup>
         <div style={{ flexGrow: 1 }} />
         <FilledToggleButtonGroup
           exclusive

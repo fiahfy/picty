@@ -26,7 +26,7 @@ const TitleBar = () => {
             sx={{
               WebkitAppRegion: 'drag',
               justifyContent: 'center',
-              minHeight: '22px!important',
+              minHeight: '28px!important',
               padding: '0 72px',
               userSelect: 'none',
             }}

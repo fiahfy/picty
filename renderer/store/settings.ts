@@ -2,6 +2,7 @@ import { useCallback, useMemo, useReducer } from 'react'
 
 type State = {
   darkMode: boolean
+  drawerHidden: boolean
   drawerWidth: number
   explorerLayout: 'list' | 'thumbnail'
   fullscreenOnPresentation: boolean
@@ -11,6 +12,7 @@ type Action = { type: 'set'; payload: Partial<State> }
 
 const initialState: State = {
   darkMode: false,
+  drawerHidden: false,
   drawerWidth: 256,
   explorerLayout: 'list',
   fullscreenOnPresentation: false,
@@ -30,6 +32,7 @@ export const useStore = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const darkMode = useMemo(() => state.darkMode, [state.darkMode])
+  const drawerHidden = useMemo(() => state.drawerHidden, [state.drawerHidden])
   const drawerWidth = useMemo(() => state.drawerWidth, [state.drawerWidth])
   const explorerLayout = useMemo(
     () => state.explorerLayout,
@@ -46,6 +49,11 @@ export const useStore = () => {
   )
   const setDarkMode = useCallback(
     (darkMode: boolean) => dispatch({ type: 'set', payload: { darkMode } }),
+    [dispatch]
+  )
+  const setDrawerHidden = useCallback(
+    (drawerHidden: boolean) =>
+      dispatch({ type: 'set', payload: { drawerHidden } }),
     [dispatch]
   )
   const setDrawerWidth = useCallback(
@@ -66,10 +74,12 @@ export const useStore = () => {
 
   return {
     darkMode,
+    drawerHidden,
     drawerWidth,
     explorerLayout,
     fullscreenOnPresentation,
     setDarkMode,
+    setDrawerHidden,
     setDrawerWidth,
     setExplorerLayout,
     setFullscreenOnPresentation,

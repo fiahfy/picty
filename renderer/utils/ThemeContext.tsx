@@ -52,14 +52,14 @@ export const ThemeProvider = (props: Props) => {
           MuiAppBar: {
             styleOverrides: {
               root: {
-                top: shown ? 22 : 0,
+                top: shown ? 28 : 0,
               },
             },
           },
         },
         mixins: {
           titleBar: {
-            height: shown ? 22 : 0,
+            height: shown ? 28 : 0,
           },
         },
         palette: {

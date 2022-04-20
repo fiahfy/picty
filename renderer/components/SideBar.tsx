@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import {
   Box,
   // Divider,
   // List,
   // ListItemButton,
   // ListItemIcon,
-  Drawer,
+  Drawer as MuiDrawer,
   // Theme,
   Toolbar,
   colors,
-  // styled,
+  styled,
 } from '@mui/material'
 // import {
 //   Explore as ExploreIcon,
@@ -28,7 +28,6 @@ import { useStore } from 'utils/StoreContext'
 //       easing: theme.transitions.easing.sharp,
 //       duration: theme.transitions.duration.enteringScreen,
 //     }),
-//     width: drawerWidth,
 //   } as const)
 
 // const closedMixin = (theme: Theme) =>
@@ -37,22 +36,19 @@ import { useStore } from 'utils/StoreContext'
 //       easing: theme.transitions.easing.sharp,
 //       duration: theme.transitions.duration.leavingScreen,
 //     }),
-//     width: drawerMinWidth,
+//     width: '0!important',
 //   } as const)
 
-// const Drawer = styled(MuiDrawer, {
-//   shouldForwardProp: (prop) => prop !== 'open',
-// })(({ theme, open }) => ({
-//   boxSizing: 'border-box',
-//   ...(open && {
-//     ...openedMixin(theme),
-//     '& .MuiDrawer-paper': openedMixin(theme),
-//   }),
-//   ...(!open && {
-//     ...closedMixin(theme),
-//     '& .MuiDrawer-paper': closedMixin(theme),
-//   }),
-// }))
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ open }) => ({
+  ...(!open && {
+    width: '0!important',
+    '.MuiDrawer-paper': {
+      width: '0!important',
+    },
+  }),
+}))
 
 // const open = true
 const minContentWidth = 64
@@ -98,7 +94,7 @@ const SideBar = () => {
     <Drawer
       PaperProps={{ style: { width: settings.drawerWidth } }}
       anchor="left"
-      open
+      open={!settings.drawerHidden}
       style={{ width: settings.drawerWidth }}
       variant="permanent"
     >
