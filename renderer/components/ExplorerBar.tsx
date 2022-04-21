@@ -127,11 +127,6 @@ const ExplorerBar = () => {
     history.push(dirPath)
   }
 
-  const handleClickHome = async () => {
-    const homePath = await window.electronAPI.getHomePath()
-    history.push(homePath)
-  }
-
   const handleClickRefresh = async () => {
     setDirectory(history.directory)
     await load()
@@ -214,14 +209,6 @@ const ExplorerBar = () => {
           title="Go up"
         >
           <ArrowUpwardIcon fontSize="small" />
-        </IconButton>
-        <IconButton
-          color="inherit"
-          onClick={handleClickHome}
-          size="small"
-          title="Go home"
-        >
-          <HomeIcon fontSize="small" />
         </IconButton>
         <IconButton
           color="inherit"

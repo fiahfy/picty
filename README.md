@@ -1,20 +1,25 @@
-# next-explorer
+# Picty
 
-![badge](https://github.com/fiahfy/next-explorer/workflows/Electron%20CI/badge.svg)
+![badge](https://github.com/fiahfy/picty/workflows/Electron%20CI/badge.svg)
 
-> WIP
+> Simple Image Viewer based on Electron.
 
 ## Features
 
-- WIP
+- Favorite directories
+- Rating images
+- Presentation mode
+- Light/Dark mode
+- Cross platform support
 
 ## Screenshots
 
 ![screenshot](.github/img/screenshot1.png)
+![screenshot](.github/img/screenshot2.png)
 
 ## Installation
 
-Download the app from [release page](https://github.com/fiahfy/next-explorer/releases) and install it.  
+Download the app from [release page](https://github.com/fiahfy/picty/releases) and install it.  
 :warning: For macOS, this app is not signed, so a warning will be displayed at startup.
 
 ## Development

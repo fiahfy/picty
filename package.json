@@ -1,6 +1,6 @@
 {
-  "name": "next-explorer",
-  "description": "WIP",
+  "name": "picty",
+  "description": "Simple Image Viewer based on Electron",
   "version": "0.0.0",
   "dependencies": {
     "@emotion/cache": "^11.7.1",
@@ -39,7 +39,7 @@
   },
   "main": "main/index.js",
   "private": true,
-  "productName": "next-explorer",
+  "productName": "Picty",
   "scripts": {
     "build": "npm run build-renderer && npm run build-electron",
     "build-electron": "tsc -p electron-src",

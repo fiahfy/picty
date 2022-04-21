@@ -27,12 +27,12 @@ const TitleBar = () => {
               WebkitAppRegion: 'drag',
               justifyContent: 'center',
               minHeight: '28px!important',
-              padding: '0 72px',
+              padding: '2px 72px 0',
               userSelect: 'none',
             }}
           >
             <Typography align="center" noWrap variant="caption">
-              next-explorer
+              picty
             </Typography>
           </Toolbar>
         </AppBar>
