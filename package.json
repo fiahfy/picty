@@ -55,7 +55,7 @@
     "package": "npm run build && electron-builder",
     "package-dir": "npm run build && electron-builder --dir",
     "prepare": "husky install",
-    "release": "npm run build && electron-builder -mlw -p",
+    "release": "npm run build && electron-builder -mlw -c.snap.publish=github",
     "test": "npm run lint"
   }
 }
