@@ -18,6 +18,7 @@ import {
 // } from '@mui/icons-material'
 import ExplorerTreeView from 'components/ExplorerTreeView'
 import { useStore } from 'utils/StoreContext'
+import { throttle } from 'throttle-debounce'
 
 // const drawerWidth = 256
 // const drawerMinWidth = 56
@@ -77,18 +78,16 @@ const SideBar = () => {
     document.removeEventListener('mousemove', handleMouseMove, true)
   }
 
-  const handleMouseMove = useCallback(
-    (e) => {
-      const newWidth = e.clientX - document.body.offsetLeft + 3
-      if (
-        newWidth > minContentWidth &&
-        newWidth < document.body.offsetWidth - minContentWidth
-      ) {
-        settings.setDrawerWidth(newWidth)
-      }
-    },
-    [settings]
-  )
+  const handleMouseMove = throttle(100, (e) => {
+    const newWidth = e.clientX - document.body.offsetLeft + 3
+    if (
+      newWidth > minContentWidth &&
+      newWidth < document.body.offsetWidth - minContentWidth
+    ) {
+      settings.setDrawerWidth(newWidth)
+    }
+    settings.setDrawerHidden(newWidth < minContentWidth / 2)
+  })
 
   return (
     <Drawer
