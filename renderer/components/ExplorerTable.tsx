@@ -144,7 +144,7 @@ const ExplorerTable = (props: Props) => {
           sortOption.orderBy === dataKey ? sortOption.order : false
         }
         sx={{
-          alignContents: 'center',
+          alignItems: 'center',
           borderBottom: 'none',
           display: 'flex',
           height: headerHeight,
@@ -199,7 +199,7 @@ const ExplorerTable = (props: Props) => {
           path: rowData.path,
         })}
         sx={{
-          alignContents: 'center',
+          alignItems: 'center',
           borderBottom: 'none',
           display: 'flex',
           height: rowHeight,
@@ -218,8 +218,8 @@ const ExplorerTable = (props: Props) => {
           {
             {
               name: (
-                <Box sx={{ alignContents: 'center', display: 'flex' }}>
-                  <Box sx={{ alignContents: 'center', display: 'flex', mr: 1 }}>
+                <Box sx={{ alignItems: 'center', display: 'flex' }}>
+                  <Box sx={{ alignItems: 'center', display: 'flex', mr: 1 }}>
                     <ContentIcon content={rowData} size="small" />
                   </Box>
                   <Typography noWrap title={rowData.name} variant="caption">
