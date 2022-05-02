@@ -8,6 +8,7 @@
 export interface IElectronAPI {
   doubleClickTitleBar: () => Promise<void>
   getBasename: (path: string) => Promise<string>
+  getContentNode: (path: string) => Promise<ContentNode>
   getDirname: (path: string) => Promise<string>
   getHomePath: () => Promise<string>
   isDarwin: () => Promise<boolean>
@@ -40,4 +41,6 @@ export type Content = {
   type: 'file' | 'directory'
 }
 
-export type Item = Content & { rating: number }
+export type ContentNode = Content & { children?: ContentNode[] }
+
+export type ExplorerContent = Content & { rating: number }

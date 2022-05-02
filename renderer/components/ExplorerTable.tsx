@@ -16,9 +16,9 @@ import {
   Typography,
   alpha,
 } from '@mui/material'
-import ExplorerItemIcon from 'components/ExplorerItemIcon'
+import ExplorerContentIcon from 'components/ExplorerContentIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
-import { Item } from 'interfaces'
+import { ExplorerContent } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 import { isImageFile } from 'utils/image'
 
@@ -55,26 +55,26 @@ const columns: ColumnType[] = [
 ]
 
 type Props = {
-  itemSelected: (item: Item) => boolean
-  items: Item[]
+  contentSelected: (content: ExplorerContent) => boolean
+  contents: ExplorerContent[]
   loading: boolean
   onChangeSortOption: (sortOption: { order: Order; orderBy: Key }) => void
-  onClickItem: (item: Item) => void
-  onDoubleClickItem: (item: Item) => void
-  onFocusItem: (item: Item) => void
+  onClickContent: (content: ExplorerContent) => void
+  onDoubleClickContent: (content: ExplorerContent) => void
+  onFocusContent: (content: ExplorerContent) => void
   onKeyDownEnter: (e: KeyboardEvent<HTMLDivElement>) => void
   sortOption: { order: Order; orderBy: Key }
 }
 
 const ExplorerTable = (props: Props) => {
   const {
-    itemSelected,
-    items,
+    contentSelected,
+    contents,
     loading,
     onChangeSortOption,
-    onClickItem,
-    onDoubleClickItem,
-    onFocusItem,
+    onClickContent,
+    onDoubleClickContent,
+    onFocusContent,
     onKeyDownEnter,
     sortOption,
   } = props
@@ -127,14 +127,14 @@ const ExplorerTable = (props: Props) => {
     if (index < 0) {
       return
     }
-    onFocusItem(items[index])
+    onFocusContent(contents[index])
   }
 
   const handleRowClick = (info: RowMouseEventHandlerParams) =>
-    onClickItem(info.rowData)
+    onClickContent(info.rowData)
 
   const handleRowDoubleClick = (info: RowMouseEventHandlerParams) =>
-    onDoubleClickItem(info.rowData)
+    onDoubleClickContent(info.rowData)
 
   const headerRenderer = ({ dataKey, label }: TableHeaderProps) => {
     return (
@@ -144,7 +144,7 @@ const ExplorerTable = (props: Props) => {
           sortOption.orderBy === dataKey ? sortOption.order : false
         }
         sx={{
-          alignItems: 'center',
+          alignContents: 'center',
           borderBottom: 'none',
           display: 'flex',
           height: headerHeight,
@@ -199,7 +199,7 @@ const ExplorerTable = (props: Props) => {
           path: rowData.path,
         })}
         sx={{
-          alignItems: 'center',
+          alignContents: 'center',
           borderBottom: 'none',
           display: 'flex',
           height: rowHeight,
@@ -218,9 +218,9 @@ const ExplorerTable = (props: Props) => {
           {
             {
               name: (
-                <Box sx={{ alignItems: 'center', display: 'flex' }}>
-                  <Box sx={{ alignItems: 'center', display: 'flex', mr: 1 }}>
-                    <ExplorerItemIcon item={rowData} size="small" />
+                <Box sx={{ alignContents: 'center', display: 'flex' }}>
+                  <Box sx={{ alignContents: 'center', display: 'flex', mr: 1 }}>
+                    <ExplorerContentIcon content={rowData} size="small" />
                   </Box>
                   <Typography noWrap title={rowData.name} variant="caption">
                     {rowData.name}
@@ -306,11 +306,11 @@ const ExplorerTable = (props: Props) => {
               onRowDoubleClick={handleRowDoubleClick}
               rowClassName={({ index }) => {
                 // @see https://github.com/bvaughn/react-virtualized/issues/1357
-                const item = items[index]
-                return item && itemSelected(item) ? 'selected' : ''
+                const content = contents[index]
+                return content && contentSelected(content) ? 'selected' : ''
               }}
-              rowCount={items.length}
-              rowGetter={({ index }) => items[index]}
+              rowCount={contents.length}
+              rowGetter={({ index }) => contents[index]}
               rowHeight={rowHeight}
               width={width}
             >

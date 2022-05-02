@@ -19,6 +19,7 @@ import {
 import ExplorerTreeView from 'components/ExplorerTreeView'
 import { useStore } from 'utils/StoreContext'
 import { throttle } from 'throttle-debounce'
+import FavoriteTreeView from './FavoriteTreeView'
 
 // const drawerWidth = 256
 // const drawerMinWidth = 56
@@ -109,7 +110,9 @@ const SideBar = () => {
           minHeight: '65px!important',
         }}
       />
-      <Box sx={{ display: 'flex', flexGrow: 1, minHeight: 0 }}>
+      <Box
+        sx={{ display: 'flex', flexGrow: 1, marginRight: '5px', minHeight: 0 }}
+      >
         {/* <Box sx={{ display: 'flex', flexShrink: 0, width: drawerMinWidth }}>
           <List
             disablePadding
@@ -142,7 +145,8 @@ const SideBar = () => {
           </List>
           <Divider orientation="vertical" />
         </Box> */}
-        <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+        <Box sx={{ flexGrow: 1, minWidth: 0, overflow: 'auto' }}>
+          <FavoriteTreeView />
           <ExplorerTreeView />
         </Box>
       </Box>
@@ -158,7 +162,7 @@ const SideBar = () => {
           position: 'absolute',
           right: 0,
           top: 0,
-          width: 5,
+          width: '5px',
         }}
       />
     </Drawer>

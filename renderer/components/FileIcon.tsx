@@ -4,27 +4,21 @@ import {
   Folder as FolderIcon,
   InsertDriveFile as InsertDriveFileIcon,
   Photo as PhotoIcon,
+  Star as StarIcon,
 } from '@mui/icons-material'
-import { Item } from 'interfaces'
-import { isImageFile } from 'utils/image'
 
 type Props = {
-  item: Item
   size?: 'small' | 'medium'
+  type: 'favorite' | 'directory' | 'image' | 'file'
 }
 
-const ExplorerItemIcon = (props: Props) => {
-  const { item, size } = props
-
-  const type = useMemo(() => {
-    if (item.type === 'directory') {
-      return 'directory'
-    }
-    return isImageFile(item.path) ? 'image' : 'file'
-  }, [item.path, item.type])
+const FileIcon = (props: Props) => {
+  const { size, type } = props
 
   const Icon = useMemo(() => {
     switch (type) {
+      case 'favorite':
+        return StarIcon
       case 'directory':
         return FolderIcon
       case 'image':
@@ -36,6 +30,8 @@ const ExplorerItemIcon = (props: Props) => {
 
   const color = useMemo(() => {
     switch (type) {
+      case 'favorite':
+        return '#faaf00'
       case 'directory':
         return colors.blue['200']
       case 'image':
@@ -48,4 +44,4 @@ const ExplorerItemIcon = (props: Props) => {
   return <Icon fontSize={size} sx={{ color }} />
 }
 
-export default ExplorerItemIcon
+export default FileIcon

@@ -1,16 +1,16 @@
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import fileUrl from 'file-url'
 import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
-import ExplorerItemIcon from 'components/ExplorerItemIcon'
+import ExplorerContentIcon from 'components/ExplorerContentIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
-import { Item } from 'interfaces'
+import { ExplorerContent } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 import { isImageFile } from 'utils/image'
 import { semaphore } from 'utils/semaphore'
 
 type Props = {
   columnIndex: number
-  item: Item
+  content: ExplorerContent
   onClick: (e: MouseEvent<HTMLDivElement>) => void
   onDoubleClick: (e: MouseEvent<HTMLDivElement>) => void
   rowIndex: number
@@ -18,7 +18,7 @@ type Props = {
 }
 
 const ExplorerGridItem = (props: Props) => {
-  const { columnIndex, item, onClick, onDoubleClick, rowIndex, selected } =
+  const { columnIndex, content, onClick, onDoubleClick, rowIndex, selected } =
     props
 
   const { rating } = useStore()
@@ -32,9 +32,9 @@ const ExplorerGridItem = (props: Props) => {
     setImages(0)
     setImagePath(undefined)
 
-    if (item.type === 'file') {
-      if (isImageFile(item.path)) {
-        setImagePath(item.path)
+    if (content.type === 'file') {
+      if (isImageFile(content.path)) {
+        setImagePath(content.path)
       }
       setLoading(false)
       return
@@ -42,7 +42,7 @@ const ExplorerGridItem = (props: Props) => {
 
     let unmounted = false
     semaphore.acquire(async () => {
-      const contents = await window.electronAPI.listContents(item.path)
+      const contents = await window.electronAPI.listContents(content.path)
       if (unmounted) {
         return
       }
@@ -55,7 +55,7 @@ const ExplorerGridItem = (props: Props) => {
     return () => {
       unmounted = true
     }
-  }, [item.path, item.type])
+  }, [content.path, content.type])
 
   const message = useMemo(
     () => (loading ? 'Loading...' : 'No Images'),
@@ -63,8 +63,8 @@ const ExplorerGridItem = (props: Props) => {
   )
 
   const enabled = useMemo(
-    () => item.type === 'directory' || isImageFile(item.path),
-    [item.path, item.type]
+    () => content.type === 'directory' || isImageFile(content.path),
+    [content.path, content.type]
   )
 
   return (
@@ -76,7 +76,7 @@ const ExplorerGridItem = (props: Props) => {
       data-params={JSON.stringify({
         id: 'content',
         enabled,
-        path: item.path,
+        path: content.path,
       })}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
@@ -118,7 +118,7 @@ const ExplorerGridItem = (props: Props) => {
       <ImageListItemBar
         actionIcon={
           <Box mt={-3} mx={1}>
-            <ExplorerItemIcon item={item} size="small" />
+            <ExplorerContentIcon content={content} size="small" />
           </Box>
         }
         actionPosition="left"
@@ -131,13 +131,15 @@ const ExplorerGridItem = (props: Props) => {
           >
             <NoOutlineRating
               color="primary"
-              onChange={(_e, value) => rating.setRating(item.path, value ?? 0)}
+              onChange={(_e, value) =>
+                rating.setRating(content.path, value ?? 0)
+              }
               precision={0.5}
               size="small"
               sx={{ my: 0.25 }}
-              value={item.rating}
+              value={content.rating}
             />
-            {!loading && item.type === 'directory' && (
+            {!loading && content.type === 'directory' && (
               <Typography ml={1} noWrap variant="caption">
                 {images} images
               </Typography>
@@ -164,10 +166,10 @@ const ExplorerGridItem = (props: Props) => {
                 whiteSpace: 'initial',
                 wordBreak: 'break-all',
               }}
-              title={item.name}
+              title={content.name}
               variant="caption"
             >
-              {item.name}
+              {content.name}
             </Typography>
           </Box>
         }

@@ -3,6 +3,8 @@ import { IpcRendererEvent, contextBridge, ipcRenderer } from 'electron'
 contextBridge.exposeInMainWorld('electronAPI', {
   doubleClickTitleBar: () => ipcRenderer.invoke('double-click-title-bar'),
   getBasename: (path: string) => ipcRenderer.invoke('get-basename', path),
+  getContentNode: (path: string) =>
+    ipcRenderer.invoke('get-content-node', path),
   getDirname: (path: string) => ipcRenderer.invoke('get-dirname', path),
   getHomePath: () => ipcRenderer.invoke('get-home-path'),
   isDarwin: () => ipcRenderer.invoke('is-darwin'),

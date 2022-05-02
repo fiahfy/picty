@@ -1,127 +1,89 @@
-import { ReactNode, useEffect, useState } from 'react'
-import { Box, Typography, colors } from '@mui/material'
+import { ReactNode, SyntheticEvent, useEffect, useState } from 'react'
 import {
   ChevronRight as ChevronRightIcon,
   ExpandMore as ExpandMoreIcon,
-  Folder as FolderIcon,
-  Star as StarIcon,
 } from '@mui/icons-material'
-import { TreeItem, TreeView, treeItemClasses } from '@mui/lab'
+import { TreeView } from '@mui/lab'
+import FileIcon from 'components/FileIcon'
+import { FileTreeItem } from 'components/FileTreeItem'
+import { ContentNode } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 
-type Props = {
-  children?: ReactNode
-  'data-params'?: string
+type ExplorerTreeItemProps = {
+  children: ReactNode
   label: string
   nodeId: string
-  onClick?: () => void
-  title?: string
+  onClick: () => void
+  title: string
 }
 
-const StyledTreeItem = (props: Props) => {
-  const {
-    children,
-    'data-params': dataParams,
-    label,
-    nodeId,
-    onClick,
-    title,
-  } = props
-
+const ExplorerTreeItem = (props: ExplorerTreeItemProps) => {
+  const { children, ...others } = props
   return (
-    <TreeItem
-      data-params={dataParams}
-      label={
-        <Box sx={{ alignItems: 'center', display: 'flex', py: 0.75 }}>
-          <Box sx={{ alignItems: 'center', display: 'flex', mr: 1 }}>
-            {nodeId === 'root' ? (
-              <StarIcon fontSize="small" sx={{ color: '#faaf00' }} />
-            ) : (
-              <FolderIcon fontSize="small" sx={{ color: colors.blue['200'] }} />
-            )}
-          </Box>
-          <Typography
-            noWrap
-            sx={{ fontWeight: 'inherit', flexGrow: 1 }}
-            title={title}
-            variant="caption"
-          >
-            {label}
-          </Typography>
-        </Box>
-      }
-      nodeId={nodeId}
-      onClick={onClick}
-      sx={{ userSelect: 'none' }}
+    <FileTreeItem
+      {...others}
+      fileIcon={<FileIcon size="small" type="directory" />}
     >
       {children}
-    </TreeItem>
+    </FileTreeItem>
   )
 }
 
 const ExplorerTreeView = () => {
-  const { favorite, history } = useStore()
+  const { history } = useStore()
 
-  const [favorites, setFavorites] = useState<{ name: string; path: string }[]>(
-    []
-  )
-
-  useEffect(() => {
-    const unsubscribe = window.electronAPI.subscribeRemoveFavorite((path) =>
-      favorite.remove(path)
-    )
-    return () => unsubscribe()
-  }, [favorite])
+  const [expanded, setExpanded] = useState<string[]>([])
+  const [selected, setSelected] = useState<string[]>([])
+  const [contentNodes, setContentNodes] = useState<ContentNode[]>([])
 
   useEffect(() => {
     ;(async () => {
-      const names = await Promise.all(
-        favorite.list.map((path) => window.electronAPI.getBasename(path))
-      )
-      const favorites = favorite.list
-        .map((path, i) => ({
-          name: names[i],
-          path,
-        }))
-        .sort((a, b) => (a.name > b.name ? 1 : -1))
-      setFavorites(favorites)
+      const node = await window.electronAPI.getContentNode(history.directory)
+      const reducer = (carry: string[], node: ContentNode): string[] => {
+        return [node.path, ...(node.children ?? []).reduce(reducer, carry)]
+      }
+      const expanded = [node].reduce(reducer, [])
+      setExpanded(expanded)
+      setSelected([history.directory])
+      setContentNodes([node])
     })()
-  }, [favorite.list])
+  }, [history.directory])
+
+  const handleSelect = (_event: SyntheticEvent, nodeIds: string[] | string) => {
+    setSelected([])
+    if (Array.isArray(nodeIds)) {
+      return
+    }
+    history.push(nodeIds)
+  }
+
+  const handleToggle = (_event: SyntheticEvent, nodeIds: string[]) =>
+    setExpanded(nodeIds)
 
   const handleClick = (path: string) => history.push(path)
+
+  const renderNode = (node: ContentNode) => (
+    <ExplorerTreeItem
+      key={node.path}
+      label={node.name}
+      nodeId={node.path}
+      onClick={() => handleClick(node.path)}
+      title={node.path}
+    >
+      {node.children?.map((child) => renderNode(child))}
+    </ExplorerTreeItem>
+  )
 
   return (
     <TreeView
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
-      defaultExpanded={['root']}
-      disableSelection
-      sx={{
-        height: '100%',
-        overflowY: 'auto',
-        [`& .${treeItemClasses.group}`]: {
-          marginLeft: 0,
-          [`& .${treeItemClasses.content}`]: {
-            paddingLeft: 3,
-          },
-        },
-      }}
+      expanded={expanded}
+      onNodeSelect={handleSelect}
+      onNodeToggle={handleToggle}
+      selected={selected}
     >
-      <StyledTreeItem label="Favorites" nodeId="root">
-        {favorites.map((favorite) => (
-          <StyledTreeItem
-            data-params={JSON.stringify({
-              id: 'favorite',
-              path: favorite.path,
-            })}
-            key={favorite.path}
-            label={favorite.name}
-            nodeId={favorite.path}
-            onClick={() => handleClick(favorite.path)}
-            title={favorite.path}
-          />
-        ))}
-      </StyledTreeItem>
+      {contentNodes.map((node) => renderNode(node))}
     </TreeView>
   )
 }

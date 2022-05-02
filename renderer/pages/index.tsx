@@ -2,7 +2,7 @@ import { createElement, useCallback, useEffect, useMemo, useState } from 'react'
 import ExplorerGrid from 'components/ExplorerGrid'
 import ExplorerTable from 'components/ExplorerTable'
 import PresentationDialog from 'components/PresentationDialog'
-import { Item } from 'interfaces'
+import { ExplorerContent } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
 
 const IndexPage = () => {
@@ -28,7 +28,7 @@ const IndexPage = () => {
   )
 
   const comparator = useCallback(
-    (a: Item, b: Item) => {
+    (a: ExplorerContent, b: ExplorerContent) => {
       let result = 0
       const aValue = a[sortOption.orderBy]
       const bValue = b[sortOption.orderBy]
@@ -47,7 +47,7 @@ const IndexPage = () => {
     [sortOption]
   )
 
-  const items = useMemo(
+  const contents = useMemo(
     () =>
       explorer.contents
         .filter(
@@ -71,16 +71,19 @@ const IndexPage = () => {
     sorting.sort(history.directory, sortOption)
   }
 
-  const handleClickItem = (item: Item) => explorer.setSelected([item.path])
+  const handleClickContent = (content: ExplorerContent) =>
+    explorer.setSelected([content.path])
 
-  const handleDoubleClickItem = async (item: Item) =>
-    item.type === 'directory'
-      ? history.push(item.path)
-      : await window.electronAPI.openPath(item.path)
+  const handleDoubleClickContent = async (content: ExplorerContent) =>
+    content.type === 'directory'
+      ? history.push(content.path)
+      : await window.electronAPI.openPath(content.path)
 
-  const handleFocusItem = (item: Item) => explorer.setSelected([item.path])
+  const handleFocusContent = (content: ExplorerContent) =>
+    explorer.setSelected([content.path])
 
-  const isItemSelected = (item: Item) => explorer.selected.includes(item.path)
+  const isContentSelected = (content: ExplorerContent) =>
+    explorer.selected.includes(content.path)
 
   const handleRequestClose = () => setDialogState({ open: false })
 
@@ -89,13 +92,13 @@ const IndexPage = () => {
       {createElement(
         settings.explorerLayout === 'list' ? ExplorerTable : ExplorerGrid,
         {
-          itemSelected: isItemSelected,
-          items,
+          contentSelected: isContentSelected,
+          contents,
           loading: explorer.loading,
           onChangeSortOption: handleChangeSortOption,
-          onClickItem: handleClickItem,
-          onDoubleClickItem: handleDoubleClickItem,
-          onFocusItem: handleFocusItem,
+          onClickContent: handleClickContent,
+          onDoubleClickContent: handleDoubleClickContent,
+          onFocusContent: handleFocusContent,
           onKeyDownEnter: handleKeyDownEnter,
           sortOption,
         }

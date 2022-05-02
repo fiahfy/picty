@@ -1,5 +1,5 @@
 import { Stats, readdirSync, statSync } from 'fs'
-import { basename, dirname, join } from 'path'
+import { basename, dirname, join, sep } from 'path'
 import {
   BrowserWindow,
   IpcMainInvokeEvent,
@@ -15,6 +15,7 @@ type Content = {
   path: string
   type: 'file' | 'directory'
 }
+type ContentNode = Content & { children?: ContentNode[] }
 
 const getContentType = (stats: Stats) => {
   if (stats.isFile()) {
@@ -105,6 +106,53 @@ export const addHandlers = (browserWindow: BrowserWindow) => {
       } else {
         return listContents(dirname(path), recursive)
       }
+    }
+  )
+  ipcMain.handle(
+    'get-content-node',
+    (_event: IpcMainInvokeEvent, path: string) => {
+      const dirnames = path.split(sep)
+
+      // // for osx
+      if (dirnames[0] === '') {
+        dirnames[0] = '/'
+      }
+      // if (path === '') {
+      //   path = '/'
+      // }
+      const rootPath = dirnames[0]
+
+      let node: ContentNode = {
+        children: [
+          {
+            dateModified: Date.now(),
+            name: rootPath,
+            path: rootPath,
+            type: 'directory',
+          },
+        ],
+        dateModified: Date.now(),
+        name: '',
+        path: '',
+        type: 'directory',
+      }
+
+      node = dirnames.reduce((node, _dirname, i) => {
+        const targetNode = dirnames
+          .slice(0, i + 1)
+          .reduce(
+            (carry: ContentNode | undefined, dirname) =>
+              carry?.children?.find((node) => node.name === dirname),
+            node
+          )
+        if (targetNode) {
+          const path = dirnames.slice(0, i + 1).join(sep)
+          targetNode.children = listContents(path)
+        }
+        return node
+      }, node)
+
+      return node.children?.[0]
     }
   )
   ipcMain.handle('open-path', (_event: IpcMainInvokeEvent, path: string) =>

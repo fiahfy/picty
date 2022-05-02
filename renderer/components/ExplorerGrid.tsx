@@ -9,28 +9,28 @@ import {
 import { AutoSizer, Grid, GridCellProps } from 'react-virtualized'
 import { Box, LinearProgress } from '@mui/material'
 import ExplorerGridItem from 'components/ExplorerGridItem'
-import { Item } from 'interfaces'
+import { ExplorerContent } from 'interfaces'
 
 const rowHeight = 256
 
 type Props = {
-  itemSelected: (item: Item) => boolean
-  items: Item[]
+  contentSelected: (content: ExplorerContent) => boolean
+  contents: ExplorerContent[]
   loading: boolean
-  onClickItem: (item: Item) => void
-  onDoubleClickItem: (item: Item) => void
-  onFocusItem: (item: Item) => void
+  onClickContent: (content: ExplorerContent) => void
+  onDoubleClickContent: (content: ExplorerContent) => void
+  onFocusContent: (content: ExplorerContent) => void
   onKeyDownEnter: (e: KeyboardEvent<HTMLDivElement>) => void
 }
 
 const ExplorerGrid = (props: Props) => {
   const {
-    itemSelected,
-    items,
+    contentSelected,
+    contents,
     loading,
-    onClickItem,
-    onDoubleClickItem,
-    onFocusItem,
+    onClickContent,
+    onDoubleClickContent,
+    onFocusContent,
     onKeyDownEnter,
   } = props
 
@@ -60,12 +60,12 @@ const ExplorerGrid = (props: Props) => {
 
   const chunks = useMemo(
     () =>
-      items.reduce(
+      contents.reduce(
         (carry, _, i) =>
-          i % size ? carry : [...carry, items.slice(i, i + size)],
-        [] as Item[][]
+          i % size ? carry : [...carry, contents.slice(i, i + size)],
+        [] as ExplorerContent[][]
       ),
-    [items, size]
+    [contents, size]
   )
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -116,12 +116,14 @@ const ExplorerGrid = (props: Props) => {
     if (rowIndex < 0 || columnIndex < 0) {
       return
     }
-    onFocusItem(chunks[rowIndex][columnIndex])
+    onFocusContent(chunks[rowIndex][columnIndex])
   }
 
-  const handleItemClick = (item: Item) => onClickItem(item)
+  const handleContentClick = (content: ExplorerContent) =>
+    onClickContent(content)
 
-  const handleItemDoubleClick = (item: Item) => onDoubleClickItem(item)
+  const handleContentDoubleClick = (content: ExplorerContent) =>
+    onDoubleClickContent(content)
 
   const cellRenderer = ({
     columnIndex,
@@ -129,17 +131,17 @@ const ExplorerGrid = (props: Props) => {
     rowIndex,
     style,
   }: GridCellProps) => {
-    const item = chunks[rowIndex][columnIndex]
+    const content = chunks[rowIndex][columnIndex]
     return (
-      item && (
+      content && (
         <Box key={key} style={style} sx={{ p: 0.25 }}>
           <ExplorerGridItem
             columnIndex={columnIndex}
-            item={item}
-            onClick={() => handleItemClick(item)}
-            onDoubleClick={() => handleItemDoubleClick(item)}
+            content={content}
+            onClick={() => handleContentClick(content)}
+            onDoubleClick={() => handleContentDoubleClick(content)}
             rowIndex={rowIndex}
-            selected={itemSelected(item)}
+            selected={contentSelected(content)}
           />
         </Box>
       )
