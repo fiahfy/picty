@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import fileUrl from 'file-url'
 import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
-import ExplorerContentIcon from 'components/ExplorerContentIcon'
+import ContentIcon from 'components/ContentIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
@@ -118,7 +118,7 @@ const ExplorerGridItem = (props: Props) => {
       <ImageListItemBar
         actionIcon={
           <Box mt={-3} mx={1}>
-            <ExplorerContentIcon content={content} size="small" />
+            <ContentIcon content={content} size="small" />
           </Box>
         }
         actionPosition="left"

@@ -75,7 +75,7 @@ const FileTreeItemContent = forwardRef(function FileContent(
 
 type Props = TreeItemProps & { fileIcon: ReactNode }
 
-export const FileTreeItem = (props: Props) => {
+const FileTreeItem = (props: Props) => {
   const { children, fileIcon, label, ...others } = props
 
   return (
@@ -96,8 +96,11 @@ export const FileTreeItem = (props: Props) => {
           </Typography>
         </Box>
       }
+      sx={{ userSelect: 'none' }}
     >
       {children}
     </TreeItem>
   )
 }
+
+export default FileTreeItem

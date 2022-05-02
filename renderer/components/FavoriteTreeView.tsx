@@ -1,37 +1,11 @@
-import { ReactNode, SyntheticEvent, useEffect, useState } from 'react'
+import { SyntheticEvent, useEffect, useState } from 'react'
 import { TreeView } from '@mui/lab'
 import {
   ChevronRight as ChevronRightIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material'
-import FileIcon from 'components/FileIcon'
-import { FileTreeItem } from 'components/FileTreeItem'
+import FavoriteTreeItem from 'components/FavoriteTreeItem'
 import { useStore } from 'utils/StoreContext'
-
-type FavoriteTreeItemProps = {
-  children?: ReactNode
-  label: string
-  nodeId: string
-  title?: string
-}
-
-const FavoriteTreeItem = (props: FavoriteTreeItemProps) => {
-  const { children, ...others } = props
-  return (
-    <FileTreeItem
-      {...others}
-      fileIcon={
-        others.nodeId === 'root' ? (
-          <FileIcon size="small" type="favorite" />
-        ) : (
-          <FileIcon size="small" type="directory" />
-        )
-      }
-    >
-      {children}
-    </FileTreeItem>
-  )
-}
 
 const FavoriteTreeView = () => {
   const { favorite, history } = useStore()

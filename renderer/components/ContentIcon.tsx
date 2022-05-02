@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 import FileIcon from 'components/FileIcon'
-import { ExplorerContent } from 'interfaces'
+import { Content } from 'interfaces'
 import { isImageFile } from 'utils/image'
 
 type Props = {
-  content: ExplorerContent
+  content: Content
   size?: 'small' | 'medium'
 }
 
-const ExplorerContentIcon = (props: Props) => {
+const ContentIcon = (props: Props) => {
   const { content, size } = props
 
   const type = useMemo(() => {
@@ -21,4 +21,4 @@ const ExplorerContentIcon = (props: Props) => {
   return <FileIcon size={size} type={type} />
 }
 
-export default ExplorerContentIcon
+export default ContentIcon

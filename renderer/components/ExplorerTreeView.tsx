@@ -1,33 +1,12 @@
-import { ReactNode, SyntheticEvent, useEffect, useState } from 'react'
+import { SyntheticEvent, useEffect, useMemo, useState } from 'react'
 import {
   ChevronRight as ChevronRightIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material'
 import { TreeView } from '@mui/lab'
-import FileIcon from 'components/FileIcon'
-import { FileTreeItem } from 'components/FileTreeItem'
+import ExplorerTreeItem from 'components/ExplorerTreeItem'
 import { ContentNode } from 'interfaces'
 import { useStore } from 'utils/StoreContext'
-
-type ExplorerTreeItemProps = {
-  children: ReactNode
-  label: string
-  nodeId: string
-  onClick: () => void
-  title: string
-}
-
-const ExplorerTreeItem = (props: ExplorerTreeItemProps) => {
-  const { children, ...others } = props
-  return (
-    <FileTreeItem
-      {...others}
-      fileIcon={<FileIcon size="small" type="directory" />}
-    >
-      {children}
-    </FileTreeItem>
-  )
-}
 
 const ExplorerTreeView = () => {
   const { history } = useStore()
@@ -40,7 +19,10 @@ const ExplorerTreeView = () => {
     ;(async () => {
       const node = await window.electronAPI.getContentNode(history.directory)
       const reducer = (carry: string[], node: ContentNode): string[] => {
-        return [node.path, ...(node.children ?? []).reduce(reducer, carry)]
+        if (!node.children) {
+          return carry
+        }
+        return [node.path, ...node.children.reduce(reducer, carry)]
       }
       const expanded = [node].reduce(reducer, [])
       setExpanded(expanded)
@@ -49,30 +31,57 @@ const ExplorerTreeView = () => {
     })()
   }, [history.directory])
 
+  const contentNodeMap = useMemo(() => {
+    const reducer = (
+      carry: { [path: string]: ContentNode },
+      node: ContentNode
+    ): { [path: string]: ContentNode } => {
+      return {
+        [node.path]: node,
+        ...(node.children ?? []).reduce(reducer, carry),
+      }
+    }
+    return contentNodes.reduce(reducer, {})
+  }, [contentNodes])
+
   const handleSelect = (_event: SyntheticEvent, nodeIds: string[] | string) => {
-    setSelected([])
     if (Array.isArray(nodeIds)) {
       return
     }
-    history.push(nodeIds)
+    const content = contentNodeMap[nodeIds]
+    content?.type === 'directory' && history.push(nodeIds)
   }
 
-  const handleToggle = (_event: SyntheticEvent, nodeIds: string[]) =>
+  const handleToggle = async (_event: SyntheticEvent, nodeIds: string[]) => {
+    const expandedNodeId = nodeIds.filter(
+      (nodeId) => !expanded.includes(nodeId)
+    )[0]
     setExpanded(nodeIds)
-
-  const handleClick = (path: string) => history.push(path)
-
-  const renderNode = (node: ContentNode) => (
-    <ExplorerTreeItem
-      key={node.path}
-      label={node.name}
-      nodeId={node.path}
-      onClick={() => handleClick(node.path)}
-      title={node.path}
-    >
-      {node.children?.map((child) => renderNode(child))}
-    </ExplorerTreeItem>
-  )
+    if (!expandedNodeId) {
+      return
+    }
+    const content = contentNodeMap[expandedNodeId]
+    if (content?.type !== 'directory' || content.children) {
+      return
+    }
+    const children = await window.electronAPI.listContents(content.path)
+    const mapper = (node: ContentNode): ContentNode => {
+      if (node.path === content.path) {
+        return {
+          ...node,
+          children,
+        }
+      }
+      if (node.children) {
+        return {
+          ...node,
+          children: node.children.map(mapper),
+        }
+      }
+      return node
+    }
+    setContentNodes((prevNodes) => prevNodes.map(mapper))
+  }
 
   return (
     <TreeView
@@ -83,7 +92,9 @@ const ExplorerTreeView = () => {
       onNodeToggle={handleToggle}
       selected={selected}
     >
-      {contentNodes.map((node) => renderNode(node))}
+      {contentNodes.map((node) => (
+        <ExplorerTreeItem content={node} key={node.path} />
+      ))}
     </TreeView>
   )
 }
