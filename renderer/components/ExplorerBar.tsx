@@ -40,7 +40,7 @@ import FilledToggleButtonGroup from 'components/FilledToggleButtonGroup'
 import RoundedFilledInput from 'components/RoundedFilledInput'
 import RoundedFilledSelect from 'components/RoundedFilledSelect'
 import SettingsDialog from 'components/SettingsDialog'
-import { useStore } from 'utils/StoreContext'
+import { useStore } from 'contexts/StoreContext'
 
 const sortOptions = [
   { text: 'Name Ascending', value: 'name-asc' },
@@ -87,7 +87,6 @@ const ExplorerBar = () => {
   }, [explorer])
 
   const load = useCallback(async () => {
-    // @see https://github.com/facebook/react/issues/16265#issuecomment-1048648676
     explorer.setContents.call(null, [])
     explorer.setLoading.call(null, true)
     const contents = await window.electronAPI.listContents(history.directory)

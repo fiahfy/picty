@@ -4,7 +4,7 @@ import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
 import ContentIcon from 'components/ContentIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent } from 'interfaces'
-import { useStore } from 'utils/StoreContext'
+import { useStore } from 'contexts/StoreContext'
 import { isImageFile } from 'utils/image'
 import { semaphore } from 'utils/semaphore'
 

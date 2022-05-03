@@ -11,6 +11,7 @@ const webContents = (
   win: BrowserWindow | BrowserView | Electron.WebviewTag | WebContents
 ) => ('webContents' in win ? win.webContents : win)
 
+// @see https://github.com/sindresorhus/electron-context-menu/issues/102#issuecomment-735434790
 export const createContextMenu = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let params: any
@@ -50,7 +51,6 @@ export const createContextMenu = () => {
     },
   })
 
-  // @see https://github.com/sindresorhus/electron-context-menu/issues/102#issuecomment-735434790
   ipcMain.handle(
     'send-params-for-context-menu',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -9,6 +9,7 @@ import {
 const createTemplate = (browserWindow: BrowserWindow) => {
   const isMac = process.platform === 'darwin'
 
+  // @see https://www.electronjs.org/docs/latest/api/menu#examples
   const template: MenuItemConstructorOptions[] = [
     // { role: 'appMenu' }
     ...(isMac
@@ -37,7 +38,7 @@ const createTemplate = (browserWindow: BrowserWindow) => {
       : []),
     // { role: 'fileMenu' }
     {
-      label: 'ファイル',
+      label: 'File',
       submenu: [isMac ? { role: 'close' } : { role: 'quit' }],
     },
     // { role: 'editMenu' }

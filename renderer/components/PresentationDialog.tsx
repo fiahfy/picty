@@ -26,10 +26,10 @@ import {
   Fullscreen as FullscreenIcon,
 } from '@mui/icons-material'
 import Layout from 'components/Layout'
+import { useStore } from 'contexts/StoreContext'
+import { useTheme } from 'contexts/ThemeContext'
 import { Content } from 'interfaces'
-import { useTheme } from 'utils/ThemeContext'
 import { isImageFile } from 'utils/image'
-import { useStore } from 'utils/StoreContext'
 
 type Props = {
   onRequestClose: () => void

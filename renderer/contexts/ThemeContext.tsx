@@ -13,8 +13,8 @@ import {
   Theme,
   createTheme,
 } from '@mui/material'
-import { useStore } from 'utils/StoreContext'
-import { useTitleBar } from 'utils/TitleBarContext'
+import { useStore } from 'contexts/StoreContext'
+import { useTitleBar } from 'contexts/TitleBarContext'
 
 const ThemeContext = createContext<
   | {

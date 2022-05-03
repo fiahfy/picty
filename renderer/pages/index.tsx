@@ -3,7 +3,7 @@ import ExplorerGrid from 'components/ExplorerGrid'
 import ExplorerTable from 'components/ExplorerTable'
 import PresentationDialog from 'components/PresentationDialog'
 import { ExplorerContent } from 'interfaces'
-import { useStore } from 'utils/StoreContext'
+import { useStore } from 'contexts/StoreContext'
 
 const IndexPage = () => {
   const { explorer, history, rating, settings, sorting } = useStore()

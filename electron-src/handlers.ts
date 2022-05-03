@@ -113,13 +113,11 @@ export const addHandlers = (browserWindow: BrowserWindow) => {
     (_event: IpcMainInvokeEvent, path: string) => {
       const dirnames = path.split(sep)
 
-      // // for osx
+      // for darwin
       if (dirnames[0] === '') {
-        dirnames[0] = '/'
+        dirnames[0] = sep
       }
-      // if (path === '') {
-      //   path = '/'
-      // }
+
       const rootPath = dirnames[0]
 
       let node: ContentNode = {

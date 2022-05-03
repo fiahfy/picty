@@ -18,7 +18,7 @@ import {
 } from '@mui/material'
 import { Close as CloseIcon } from '@mui/icons-material'
 import Layout from 'components/Layout'
-import { useStore } from 'utils/StoreContext'
+import { useStore } from 'contexts/StoreContext'
 
 const explorerLayoutOptions = [
   { text: 'List View', value: 'list' },

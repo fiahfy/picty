@@ -6,7 +6,7 @@ import {
 import { TreeView } from '@mui/lab'
 import ExplorerTreeItem from 'components/ExplorerTreeItem'
 import { ContentNode } from 'interfaces'
-import { useStore } from 'utils/StoreContext'
+import { useStore } from 'contexts/StoreContext'
 
 const ExplorerTreeView = () => {
   const { history } = useStore()

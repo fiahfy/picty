@@ -5,7 +5,7 @@ import {
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material'
 import FavoriteTreeItem from 'components/FavoriteTreeItem'
-import { useStore } from 'utils/StoreContext'
+import { useStore } from 'contexts/StoreContext'
 
 const FavoriteTreeView = () => {
   const { favorite, history } = useStore()

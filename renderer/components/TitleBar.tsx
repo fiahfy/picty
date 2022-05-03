@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, Typography } from '@mui/material'
-import { useTitleBar } from 'utils/TitleBarContext'
+import { useTitleBar } from 'contexts/TitleBarContext'
 
 const TitleBar = () => {
   const { shown } = useTitleBar()
