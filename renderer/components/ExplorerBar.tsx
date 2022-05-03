@@ -25,7 +25,6 @@ import {
   ArrowUpward as ArrowUpwardIcon,
   Close as CloseIcon,
   Folder as FolderIcon,
-  Home as HomeIcon,
   Refresh as RefreshIcon,
   Search as SearchIcon,
   Settings as SettingsIcon,
@@ -188,6 +187,7 @@ const ExplorerBar = () => {
           disabled={!history.canBack}
           onClick={handleClickBack}
           size="small"
+          sx={{ mr: 0.5 }}
           title="Go back"
         >
           <ArrowBackIcon fontSize="small" />
@@ -197,6 +197,7 @@ const ExplorerBar = () => {
           disabled={!history.canForward}
           onClick={handleClickForward}
           size="small"
+          sx={{ mr: 0.5 }}
           title="Go forward"
         >
           <ArrowForwardIcon fontSize="small" />
@@ -205,6 +206,7 @@ const ExplorerBar = () => {
           color="inherit"
           onClick={handleClickUpward}
           size="small"
+          sx={{ mr: 0.5 }}
           title="Go up"
         >
           <ArrowUpwardIcon fontSize="small" />
