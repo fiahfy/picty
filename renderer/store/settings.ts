@@ -1,4 +1,6 @@
-import { useCallback, useMemo, useReducer } from 'react'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { useCallback, useMemo } from 'react'
+import { useAppDispatch, useAppSelector } from 'store'
 
 type State = {
   darkMode: boolean
@@ -8,8 +10,6 @@ type State = {
   fullscreenOnPresentation: boolean
 }
 
-type Action = { type: 'set'; payload: Partial<State> }
-
 const initialState: State = {
   darkMode: false,
   drawerHidden: false,
@@ -18,18 +18,23 @@ const initialState: State = {
   fullscreenOnPresentation: false,
 }
 
-const reducer = (state: State, action: Action) => {
-  const { type, payload } = action
-  switch (type) {
-    case 'set':
-      return { ...state, ...payload }
-    default:
-      return state
-  }
-}
+export const settingsSlice = createSlice({
+  name: 'settings',
+  initialState,
+  reducers: {
+    set(state, action: PayloadAction<Partial<State>>) {
+      return { ...state, ...action.payload }
+    },
+  },
+})
 
-export const useStore = () => {
-  const [state, dispatch] = useReducer(reducer, initialState)
+export const actions = settingsSlice.actions
+
+export default settingsSlice.reducer
+
+export const useSettings = () => {
+  const state = useAppSelector((state) => state.settings)
+  const dispatch = useAppDispatch()
 
   const darkMode = useMemo(() => state.darkMode, [state.darkMode])
   const drawerHidden = useMemo(() => state.drawerHidden, [state.drawerHidden])
@@ -44,31 +49,29 @@ export const useStore = () => {
   )
 
   const setState = useCallback(
-    (state: Partial<State>) => dispatch({ type: 'set', payload: state }),
-    []
+    (state: Partial<State>) => dispatch(actions.set(state)),
+    [dispatch]
   )
   const setDarkMode = useCallback(
-    (darkMode: boolean) => dispatch({ type: 'set', payload: { darkMode } }),
+    (darkMode: boolean) => dispatch(actions.set({ darkMode })),
     [dispatch]
   )
   const setDrawerHidden = useCallback(
-    (drawerHidden: boolean) =>
-      dispatch({ type: 'set', payload: { drawerHidden } }),
+    (drawerHidden: boolean) => dispatch(actions.set({ drawerHidden })),
     [dispatch]
   )
   const setDrawerWidth = useCallback(
-    (drawerWidth: number) =>
-      dispatch({ type: 'set', payload: { drawerWidth } }),
+    (drawerWidth: number) => dispatch(actions.set({ drawerWidth })),
     [dispatch]
   )
   const setExplorerLayout = useCallback(
     (explorerLayout: 'list' | 'thumbnail') =>
-      dispatch({ type: 'set', payload: { explorerLayout } }),
+      dispatch(actions.set({ explorerLayout })),
     [dispatch]
   )
   const setFullscreenOnPresentation = useCallback(
     (fullscreenOnPresentation: boolean) =>
-      dispatch({ type: 'set', payload: { fullscreenOnPresentation } }),
+      dispatch(actions.set({ fullscreenOnPresentation })),
     [dispatch]
   )
 

@@ -1,45 +1,47 @@
-import { useCallback, useMemo, useReducer } from 'react'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { useCallback, useMemo } from 'react'
+import { useAppDispatch, useAppSelector } from 'store'
 
 type State = {
   directories: string[]
   index: number
 }
 
-type Action =
-  | { type: 'set'; payload: Partial<State> }
-  | { type: 'go'; payload: number }
-  | { type: 'push'; payload: string }
-
 const initialState: State = {
   directories: [],
   index: -1,
 }
 
-const reducer = (state: State, action: Action) => {
-  const { type, payload } = action
-  switch (type) {
-    case 'set':
-      return { ...state, ...payload }
-    case 'go': {
-      const index = state.index + payload
+export const historySlice = createSlice({
+  name: 'history',
+  initialState,
+  reducers: {
+    set(state, action: PayloadAction<Partial<State>>) {
+      return { ...state, ...action.payload }
+    },
+    go(state, action: PayloadAction<number>) {
+      const index = state.index + action.payload
       const directory = state.directories[index]
       return directory ? { ...state, index } : state
-    }
-    case 'push': {
+    },
+    push(state, action: PayloadAction<string>) {
       const index = state.index + 1
       return {
         ...state,
-        directories: [...state.directories.slice(0, index), payload],
+        directories: [...state.directories.slice(0, index), action.payload],
         index,
       }
-    }
-    default:
-      return state
-  }
-}
+    },
+  },
+})
 
-export const useStore = () => {
-  const [state, dispatch] = useReducer(reducer, initialState)
+export const actions = historySlice.actions
+
+export default historySlice.reducer
+
+export const useHistory = () => {
+  const state = useAppSelector((state) => state.history)
+  const dispatch = useAppDispatch()
 
   const canBack = useMemo(() => state.index > 0, [state.index])
   const canForward = useMemo(
@@ -52,19 +54,19 @@ export const useStore = () => {
   )
 
   const setState = useCallback(
-    (state: Partial<State>) => dispatch({ type: 'set', payload: state }),
-    []
+    (state: Partial<State>) => dispatch(actions.set(state)),
+    [dispatch]
   )
   const push = useCallback(
     (dir: string) => {
       if (dir !== directory) {
-        dispatch({ type: 'push', payload: dir })
+        dispatch(actions.push(dir))
       }
     },
     [directory, dispatch]
   )
   const go = useCallback(
-    (offset: number) => dispatch({ type: 'go', payload: offset }),
+    (offset: number) => dispatch(actions.go(offset)),
     [dispatch]
   )
   const back = useCallback(() => go(-1), [go])

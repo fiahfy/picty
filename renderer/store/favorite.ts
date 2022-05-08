@@ -1,47 +1,41 @@
-import { useCallback, useMemo, useReducer } from 'react'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { useCallback, useMemo } from 'react'
+import { useAppDispatch, useAppSelector } from 'store'
 
 type State = {
   [path: string]: boolean
 }
 
-type Action =
-  | { type: 'set'; payload: State }
-  | {
-      type: 'add'
-      payload: { path: string }
-    }
-  | {
-      type: 'remove'
-      payload: { path: string }
-    }
-
 const initialState: State = {}
 
-const reducer = (state: State, action: Action) => {
-  const { type, payload } = action
-  switch (type) {
-    case 'set':
-      return { ...state, ...payload }
-    case 'add': {
-      const { path } = payload
+export const favoriteSlice = createSlice({
+  name: 'favorite',
+  initialState,
+  reducers: {
+    set(state, action: PayloadAction<State>) {
+      return { ...state, ...action.payload }
+    },
+    add(state, action: PayloadAction<string>) {
       return {
         ...state,
-        [path]: true,
+        [action.payload]: true,
       }
-    }
-    case 'remove': {
-      const { path } = payload
+    },
+    remove(state, action: PayloadAction<string>) {
       const newState = { ...state }
-      delete newState[path]
+      delete newState[action.payload]
       return newState
-    }
-    default:
-      return state
-  }
-}
+    },
+  },
+})
 
-export const useStore = () => {
-  const [state, dispatch] = useReducer(reducer, initialState)
+export const actions = favoriteSlice.actions
+
+export default favoriteSlice.reducer
+
+export const useFavorite = () => {
+  const state = useAppSelector((state) => state.favorite)
+  const dispatch = useAppDispatch()
 
   const list = useMemo(
     () =>
@@ -58,15 +52,15 @@ export const useStore = () => {
   )
 
   const setState = useCallback(
-    (state: State) => dispatch({ type: 'set', payload: state }),
-    []
+    (state: State) => dispatch(actions.set(state)),
+    [dispatch]
   )
   const add = useCallback(
-    (path: string) => dispatch({ type: 'add', payload: { path } }),
+    (path: string) => dispatch(actions.add(path)),
     [dispatch]
   )
   const remove = useCallback(
-    (path: string) => dispatch({ type: 'remove', payload: { path } }),
+    (path: string) => dispatch(actions.remove(path)),
     [dispatch]
   )
   const toggle = useCallback(

@@ -1,5 +1,7 @@
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { Content } from 'interfaces'
-import { useCallback, useMemo, useReducer } from 'react'
+import { useCallback, useMemo } from 'react'
+import { useAppDispatch, useAppSelector } from 'store'
 
 type State = {
   contents: Content[]
@@ -8,8 +10,6 @@ type State = {
   selected: string[]
 }
 
-type Action = { type: 'set'; payload: Partial<State> }
-
 const initialState: State = {
   contents: [],
   loading: false,
@@ -17,18 +17,23 @@ const initialState: State = {
   selected: [],
 }
 
-const reducer = (state: State, action: Action) => {
-  const { type, payload } = action
-  switch (type) {
-    case 'set':
-      return { ...state, ...payload }
-    default:
-      return state
-  }
-}
+export const explorerSlice = createSlice({
+  name: 'explorer',
+  initialState,
+  reducers: {
+    set(state, action: PayloadAction<Partial<State>>) {
+      return { ...state, ...action.payload }
+    },
+  },
+})
 
-export const useStore = () => {
-  const [state, dispatch] = useReducer(reducer, initialState)
+export const actions = explorerSlice.actions
+
+export default explorerSlice.reducer
+
+export const useExplorer = () => {
+  const state = useAppSelector((state) => state.explorer)
+  const dispatch = useAppDispatch()
 
   const contents = useMemo(() => state.contents, [state.contents])
   const loading = useMemo(() => state.loading, [state.loading])
@@ -36,23 +41,23 @@ export const useStore = () => {
   const selected = useMemo(() => state.selected, [state.selected])
 
   const setState = useCallback(
-    (state: Partial<State>) => dispatch({ type: 'set', payload: state }),
-    []
+    (state: Partial<State>) => dispatch(actions.set(state)),
+    [dispatch]
   )
   const setContents = useCallback(
-    (contents: Content[]) => dispatch({ type: 'set', payload: { contents } }),
+    (contents: Content[]) => dispatch(actions.set({ contents })),
     [dispatch]
   )
   const setLoading = useCallback(
-    (loading: boolean) => dispatch({ type: 'set', payload: { loading } }),
+    (loading: boolean) => dispatch(actions.set({ loading })),
     [dispatch]
   )
   const setQuery = useCallback(
-    (query: string) => dispatch({ type: 'set', payload: { query } }),
+    (query: string) => dispatch(actions.set({ query })),
     [dispatch]
   )
   const setSelected = useCallback(
-    (selected: string[]) => dispatch({ type: 'set', payload: { selected } }),
+    (selected: string[]) => dispatch(actions.set({ selected })),
     [dispatch]
   )
 
