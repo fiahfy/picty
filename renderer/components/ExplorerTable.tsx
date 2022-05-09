@@ -127,7 +127,8 @@ const ExplorerTable = (props: Props) => {
     if (index < 0) {
       return
     }
-    onFocusContent(contents[index])
+    const content = contents[index]
+    content && onFocusContent(content)
   }
 
   const handleRowClick = (info: RowMouseEventHandlerParams) =>

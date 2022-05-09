@@ -116,7 +116,8 @@ const ExplorerGrid = (props: Props) => {
     if (rowIndex < 0 || columnIndex < 0) {
       return
     }
-    onFocusContent(chunks[rowIndex][columnIndex])
+    const content = chunks[rowIndex]?.[columnIndex]
+    content && onFocusContent(content)
   }
 
   const handleContentClick = (content: ExplorerContent) =>
@@ -131,7 +132,7 @@ const ExplorerGrid = (props: Props) => {
     rowIndex,
     style,
   }: GridCellProps) => {
-    const content = chunks[rowIndex][columnIndex]
+    const content = chunks[rowIndex]?.[columnIndex]
     return (
       content && (
         <Box key={key} style={style} sx={{ p: 0.25 }}>

@@ -86,6 +86,9 @@ const ExplorerBar = () => {
   }, [explorer])
 
   const load = useCallback(async () => {
+    if (!history.directory) {
+      return
+    }
     explorer.setContents.call(null, [])
     explorer.setLoading.call(null, true)
     const contents = await window.electronAPI.listContents(history.directory)

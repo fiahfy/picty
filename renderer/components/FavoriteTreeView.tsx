@@ -29,7 +29,7 @@ const FavoriteTreeView = () => {
       )
       const favorites = favorite.list
         .map((path, i) => ({
-          name: names[i],
+          name: names[i] ?? '',
           path,
         }))
         .sort((a, b) => (a.name > b.name ? 1 : -1))

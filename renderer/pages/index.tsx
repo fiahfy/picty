@@ -61,8 +61,10 @@ const IndexPage = () => {
     [comparator, explorer.contents, explorer.query, rating]
   )
 
-  const handleKeyDownEnter = () =>
-    setDialogState({ path: explorer.selected[0], open: true })
+  const handleKeyDownEnter = () => {
+    const path = explorer.selected[0]
+    path && setDialogState({ path, open: true })
+  }
 
   const handleChangeSortOption = (sortOption: {
     order: 'asc' | 'desc'

@@ -113,12 +113,12 @@ export const addHandlers = (browserWindow: BrowserWindow) => {
     (_event: IpcMainInvokeEvent, path: string) => {
       const dirnames = path.split(sep)
 
+      let rootPath = dirnames[0]
       // for darwin
-      if (dirnames[0] === '') {
-        dirnames[0] = sep
+      if (!rootPath) {
+        rootPath = sep
       }
-
-      const rootPath = dirnames[0]
+      dirnames[0] = rootPath
 
       let node: ContentNode = {
         children: [

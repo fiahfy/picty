@@ -46,7 +46,7 @@ export const useHistory = () => {
     [state.directories.length, state.index]
   )
   const directory = useMemo(
-    () => state.directories[state.index],
+    () => state.directories[state.index] ?? '',
     [state.directories, state.index]
   )
 

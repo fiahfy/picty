@@ -36,7 +36,8 @@ export const useSorting = () => {
   const dispatch = useAppDispatch()
 
   const getOption = useCallback(
-    (path: string) => state[path] ?? { order: 'asc', orderBy: 'name' },
+    (path: string) =>
+      state[path] ?? ({ order: 'asc', orderBy: 'name' } as const),
     [state]
   )
 
