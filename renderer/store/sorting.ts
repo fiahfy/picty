@@ -17,9 +17,6 @@ export const sortingSlice = createSlice({
   name: 'sorting',
   initialState,
   reducers: {
-    set(state, action: PayloadAction<State>) {
-      return { ...state, ...action.payload }
-    },
     sort(state, action: PayloadAction<{ path: string; option: Option }>) {
       const { path, option } = action.payload
       return {
@@ -43,14 +40,10 @@ export const useSorting = () => {
     [state]
   )
 
-  const setState = useCallback(
-    (state: State) => dispatch(actions.set(state)),
-    [dispatch]
-  )
   const sort = useCallback(
     (path: string, option: Option) => dispatch(actions.sort({ path, option })),
     [dispatch]
   )
 
-  return { getOption, setState, sort, state }
+  return { getOption, sort, state }
 }

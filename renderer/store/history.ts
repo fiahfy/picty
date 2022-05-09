@@ -16,9 +16,6 @@ export const historySlice = createSlice({
   name: 'history',
   initialState,
   reducers: {
-    set(state, action: PayloadAction<Partial<State>>) {
-      return { ...state, ...action.payload }
-    },
     go(state, action: PayloadAction<number>) {
       const index = state.index + action.payload
       const directory = state.directories[index]
@@ -53,10 +50,6 @@ export const useHistory = () => {
     [state.directories, state.index]
   )
 
-  const setState = useCallback(
-    (state: Partial<State>) => dispatch(actions.set(state)),
-    [dispatch]
-  )
   const push = useCallback(
     (dir: string) => {
       if (dir !== directory) {
@@ -80,7 +73,6 @@ export const useHistory = () => {
     forward,
     go,
     push,
-    setState,
     state,
   }
 }

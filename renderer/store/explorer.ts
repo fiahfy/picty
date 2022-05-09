@@ -40,10 +40,6 @@ export const useExplorer = () => {
   const query = useMemo(() => state.query, [state.query])
   const selected = useMemo(() => state.selected, [state.selected])
 
-  const setState = useCallback(
-    (state: Partial<State>) => dispatch(actions.set(state)),
-    [dispatch]
-  )
   const setContents = useCallback(
     (contents: Content[]) => dispatch(actions.set({ contents })),
     [dispatch]
@@ -70,7 +66,6 @@ export const useExplorer = () => {
     setLoading,
     setQuery,
     setSelected,
-    setState,
     state,
   }
 }

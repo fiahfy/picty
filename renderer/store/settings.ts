@@ -48,10 +48,6 @@ export const useSettings = () => {
     [state.fullscreenOnPresentation]
   )
 
-  const setState = useCallback(
-    (state: Partial<State>) => dispatch(actions.set(state)),
-    [dispatch]
-  )
   const setDarkMode = useCallback(
     (darkMode: boolean) => dispatch(actions.set({ darkMode })),
     [dispatch]
@@ -86,7 +82,6 @@ export const useSettings = () => {
     setDrawerWidth,
     setExplorerLayout,
     setFullscreenOnPresentation,
-    setState,
     state,
   }
 }

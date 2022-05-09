@@ -12,9 +12,6 @@ export const favoriteSlice = createSlice({
   name: 'favorite',
   initialState,
   reducers: {
-    set(state, action: PayloadAction<State>) {
-      return { ...state, ...action.payload }
-    },
     add(state, action: PayloadAction<string>) {
       return {
         ...state,
@@ -51,10 +48,6 @@ export const useFavorite = () => {
     [state]
   )
 
-  const setState = useCallback(
-    (state: State) => dispatch(actions.set(state)),
-    [dispatch]
-  )
   const add = useCallback(
     (path: string) => dispatch(actions.add(path)),
     [dispatch]
@@ -68,5 +61,5 @@ export const useFavorite = () => {
     [add, isFavorited, remove]
   )
 
-  return { add, isFavorited, list, remove, setState, state, toggle }
+  return { add, isFavorited, list, remove, state, toggle }
 }

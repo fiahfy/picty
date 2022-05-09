@@ -12,9 +12,6 @@ export const ratingSlice = createSlice({
   name: 'rating',
   initialState,
   reducers: {
-    set(state, action: PayloadAction<State>) {
-      return { ...state, ...action.payload }
-    },
     setRating(state, action: PayloadAction<{ path: string; rating: number }>) {
       const { path, rating } = action.payload
       return {
@@ -35,15 +32,11 @@ export const useRating = () => {
 
   const getRating = useCallback((path: string) => state[path] ?? 0, [state])
 
-  const setState = useCallback(
-    (state: State) => dispatch(actions.set(state)),
-    []
-  )
   const setRating = useCallback(
     (path: string, rating: number) =>
       dispatch(actions.setRating({ path, rating })),
     [dispatch]
   )
 
-  return { getRating, setRating, setState, state }
+  return { getRating, setRating, state }
 }
