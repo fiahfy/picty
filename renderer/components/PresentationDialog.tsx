@@ -22,11 +22,8 @@ import {
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
   Close as CloseIcon,
-  FullscreenExit as FullscreenExitIcon,
-  Fullscreen as FullscreenIcon,
 } from '@mui/icons-material'
 import Layout from 'components/Layout'
-import { useStore } from 'contexts/StoreContext'
 import { useTheme } from 'contexts/ThemeContext'
 import { Content } from 'interfaces'
 import { isImageFile } from 'utils/image'
@@ -40,7 +37,6 @@ type Props = {
 const PresentationDialog = (props: Props) => {
   const { path, onRequestClose, open } = props
 
-  const { settings } = useStore()
   const { forceMode, resetMode } = useTheme()
 
   const [index, setIndex] = useState(0)
@@ -66,39 +62,38 @@ const PresentationDialog = (props: Props) => {
   }, [clearTimer])
 
   useEffect(() => {
-    ;(async () => {
-      settings.fullscreenOnPresentation && document.body.requestFullscreen()
-      forceMode('dark')
-      resetTimer()
-      setIndex(0)
-      setContents([])
-      setLoading(true)
-      const contents = (
-        await window.electronAPI.listContentsForPath(path)
-      ).filter((content) => isImageFile(content.path))
-      setContents(contents)
-      const index = contents.findIndex((content) => content.path === path)
-      setIndex(index > -1 ? index : 0)
-      setLoading(false)
-    })()
+    const handler = () => !document.fullscreenElement && onRequestClose()
+    document.body.addEventListener('fullscreenchange', handler)
     return () => {
-      clearTimer()
-      resetMode()
-      document.fullscreenElement && document.exitFullscreen()
+      document.body.removeEventListener('fullscreenchange', handler)
     }
-  }, [
-    clearTimer,
-    forceMode,
-    open,
-    path,
-    resetMode,
-    resetTimer,
-    settings.fullscreenOnPresentation,
-  ])
+  }, [onRequestClose])
+
+  useEffect(() => {
+    ;(async () => {
+      if (open) {
+        document.body.requestFullscreen()
+        forceMode('dark')
+        resetTimer()
+        setIndex(0)
+        setContents([])
+        setLoading(true)
+        const contents = (
+          await window.electronAPI.listContentsForPath(path)
+        ).filter((content) => isImageFile(content.path))
+        setContents(contents)
+        const index = contents.findIndex((content) => content.path === path)
+        setIndex(index > -1 ? index : 0)
+        setLoading(false)
+      } else {
+        clearTimer()
+        resetMode()
+        document.fullscreenElement && document.exitFullscreen()
+      }
+    })()
+  }, [clearTimer, forceMode, open, path, resetMode, resetTimer])
 
   const content = useMemo(() => contents[index], [contents, index])
-
-  const fullscreen = !!document.fullscreenElement
 
   const movePrevious = () => {
     setIndex((prevIndex) => {
@@ -138,9 +133,6 @@ const PresentationDialog = (props: Props) => {
   const handleClickPrevious = () => movePrevious()
 
   const handleClickNext = () => moveNext()
-
-  const handleClickFullscreen = () =>
-    fullscreen ? document.exitFullscreen() : document.body.requestFullscreen()
 
   const handleChange = (_e: Event, value: number | number[]) => {
     if (!Array.isArray(value)) {
@@ -246,14 +238,6 @@ const PresentationDialog = (props: Props) => {
                 <Typography component="div" sx={{ ml: 1 }} variant="body1">
                   {index + 1} / {contents.length}
                 </Typography>
-                <Box sx={{ flexGrow: 1 }} />
-                <IconButton
-                  color="inherit"
-                  edge="end"
-                  onClick={handleClickFullscreen}
-                >
-                  {fullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-                </IconButton>
               </Toolbar>
             </Box>
           </AppBar>

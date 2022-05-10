@@ -27,18 +27,20 @@ export const TitleBarProvider = (props: Props) => {
 
   useEffect(() => {
     const handler = () => setFullScreen(!!document.fullscreenElement)
-
-    ;(async () => {
-      setFullScreen(!!document.fullscreenElement)
-      const darwin = await window.electronAPI.isDarwin()
-      setDarwin(darwin)
-      document.body.addEventListener('fullscreenchange', handler)
-      // for initial rendering
-      setReady(true)
-    })()
+    handler()
+    document.body.addEventListener('fullscreenchange', handler)
     return () => {
       document.body.removeEventListener('fullscreenchange', handler)
     }
+  }, [])
+
+  useEffect(() => {
+    ;(async () => {
+      const darwin = await window.electronAPI.isDarwin()
+      setDarwin(darwin)
+      // for initial rendering
+      setReady(true)
+    })()
   }, [])
 
   const value = { shown }

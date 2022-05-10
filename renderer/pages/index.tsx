@@ -4,23 +4,22 @@ import ExplorerTable from 'components/ExplorerTable'
 import PresentationDialog from 'components/PresentationDialog'
 import { ExplorerContent } from 'interfaces'
 import { useStore } from 'contexts/StoreContext'
+import { isImageFile } from 'utils/image'
 
 const IndexPage = () => {
   const { explorer, history, rating, settings, sorting } = useStore()
 
-  const [dialogState, setDialogState] = useState<
-    | {
-        open: false
-      }
-    | { open: true; path: string }
-  >({ open: false })
+  const [dialogState, setDialogState] = useState<{
+    open: boolean
+    path: string
+  }>({ open: false, path: '' })
 
   useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeStartPresentation((path) =>
-      setDialogState({ path, open: true })
+      setDialogState({ open: true, path })
     )
     return () => unsubscribe()
-  }, [explorer.selected])
+  }, [])
 
   const sortOption = useMemo(
     () => sorting.getOption(history.directory),
@@ -62,8 +61,13 @@ const IndexPage = () => {
   )
 
   const handleKeyDownEnter = () => {
-    const path = explorer.selected[0]
-    path && setDialogState({ path, open: true })
+    const content = explorer.selected[0]
+    if (
+      content &&
+      (content.type === 'directory' || isImageFile(content.path))
+    ) {
+      setDialogState({ path: content.path, open: true })
+    }
   }
 
   const handleChangeSortOption = (sortOption: {
@@ -74,7 +78,7 @@ const IndexPage = () => {
   }
 
   const handleClickContent = (content: ExplorerContent) =>
-    explorer.setSelected([content.path])
+    explorer.setSelected([content])
 
   const handleDoubleClickContent = async (content: ExplorerContent) =>
     content.type === 'directory'
@@ -82,12 +86,12 @@ const IndexPage = () => {
       : await window.electronAPI.openPath(content.path)
 
   const handleFocusContent = (content: ExplorerContent) =>
-    explorer.setSelected([content.path])
+    explorer.setSelected([content])
 
   const isContentSelected = (content: ExplorerContent) =>
-    explorer.selected.includes(content.path)
+    explorer.isSelected(content)
 
-  const handleRequestClose = () => setDialogState({ open: false })
+  const handleRequestClose = () => setDialogState({ open: false, path: '' })
 
   return (
     <>
@@ -105,13 +109,11 @@ const IndexPage = () => {
           sortOption,
         }
       )}
-      {dialogState.open && (
-        <PresentationDialog
-          onRequestClose={handleRequestClose}
-          open
-          path={dialogState.path}
-        />
-      )}
+      <PresentationDialog
+        onRequestClose={handleRequestClose}
+        open={dialogState.open}
+        path={dialogState.path}
+      />
     </>
   )
 }

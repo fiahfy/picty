@@ -7,7 +7,6 @@ type State = {
   drawerHidden: boolean
   drawerWidth: number
   explorerLayout: 'list' | 'thumbnail'
-  fullscreenOnPresentation: boolean
 }
 
 const initialState: State = {
@@ -15,7 +14,6 @@ const initialState: State = {
   drawerHidden: false,
   drawerWidth: 256,
   explorerLayout: 'list',
-  fullscreenOnPresentation: false,
 }
 
 export const settingsSlice = createSlice({
@@ -43,10 +41,6 @@ export const useSettings = () => {
     () => state.explorerLayout,
     [state.explorerLayout]
   )
-  const fullscreenOnPresentation = useMemo(
-    () => state.fullscreenOnPresentation,
-    [state.fullscreenOnPresentation]
-  )
 
   const setDarkMode = useCallback(
     (darkMode: boolean) => dispatch(actions.set({ darkMode })),
@@ -65,23 +59,16 @@ export const useSettings = () => {
       dispatch(actions.set({ explorerLayout })),
     [dispatch]
   )
-  const setFullscreenOnPresentation = useCallback(
-    (fullscreenOnPresentation: boolean) =>
-      dispatch(actions.set({ fullscreenOnPresentation })),
-    [dispatch]
-  )
 
   return {
     darkMode,
     drawerHidden,
     drawerWidth,
     explorerLayout,
-    fullscreenOnPresentation,
     setDarkMode,
     setDrawerHidden,
     setDrawerWidth,
     setExplorerLayout,
-    setFullscreenOnPresentation,
     state,
   }
 }

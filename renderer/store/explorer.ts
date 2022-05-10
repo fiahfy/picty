@@ -7,7 +7,7 @@ type State = {
   contents: Content[]
   loading: boolean
   query: string
-  selected: string[]
+  selected: Content[]
 }
 
 const initialState: State = {
@@ -40,6 +40,13 @@ export const useExplorer = () => {
   const query = useMemo(() => state.query, [state.query])
   const selected = useMemo(() => state.selected, [state.selected])
 
+  const isSelected = useCallback(
+    (content: Content) =>
+      state.selected.findIndex((selected) => selected.path === content.path) >
+      -1,
+    [state.selected]
+  )
+
   const setContents = useCallback(
     (contents: Content[]) => dispatch(actions.set({ contents })),
     [dispatch]
@@ -53,12 +60,13 @@ export const useExplorer = () => {
     [dispatch]
   )
   const setSelected = useCallback(
-    (selected: string[]) => dispatch(actions.set({ selected })),
+    (selected: Content[]) => dispatch(actions.set({ selected })),
     [dispatch]
   )
 
   return {
     contents,
+    isSelected,
     loading,
     query,
     selected,
