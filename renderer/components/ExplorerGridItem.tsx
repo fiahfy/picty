@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import fileUrl from 'file-url'
 import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
-import ContentIcon from 'components/ContentIcon'
+import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent } from 'interfaces'
 import { useStore } from 'contexts/StoreContext'
@@ -42,11 +42,11 @@ const ExplorerGridItem = (props: Props) => {
 
     let unmounted = false
     semaphore.acquire(async () => {
-      const contents = await window.electronAPI.listContents(content.path)
+      const files = await window.electronAPI.listFiles(content.path)
       if (unmounted) {
         return
       }
-      const images = contents.filter((content) => isImageFile(content.path))
+      const images = files.filter((file) => isImageFile(file.path))
       setImages(images.length)
       setImagePath(images[0]?.path)
       setLoading(false)
@@ -118,7 +118,7 @@ const ExplorerGridItem = (props: Props) => {
       <ImageListItemBar
         actionIcon={
           <Box mt={-3} mx={1}>
-            <ContentIcon content={content} size="small" />
+            <FileIcon file={content} size="small" />
           </Box>
         }
         actionPosition="left"

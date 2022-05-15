@@ -1,39 +1,39 @@
 import { CircularProgress } from '@mui/material'
-import ContentIcon from 'components/ContentIcon'
 import FileIcon from 'components/FileIcon'
+import Icon from 'components/Icon'
 import FileTreeItem from 'components/FileTreeItem'
-import { ContentNode } from 'interfaces'
+import { FileNode } from 'interfaces'
 
 const max = 100
 
 type Props = {
-  content: ContentNode
+  file: FileNode
 }
 
 const ExplorerTreeItem = (props: Props) => {
-  const { content, ...others } = props
+  const { file, ...others } = props
 
-  const over = (content.children ?? []).length - max
+  const over = (file.children ?? []).length - max
 
   return (
     <FileTreeItem
       {...others}
-      fileIcon={<ContentIcon content={content} size="small" />}
-      label={content.name}
-      nodeId={content.path}
-      title={content.path}
+      fileIcon={<FileIcon file={file} size="small" />}
+      label={file.name}
+      nodeId={file.path}
+      title={file.path}
     >
-      {content.type === 'directory' &&
-        (content.children ? (
+      {file.type === 'directory' &&
+        (file.children ? (
           <>
-            {content.children.slice(0, max).map((content) => (
-              <ExplorerTreeItem content={content} key={content.path} />
+            {file.children.slice(0, max).map((file) => (
+              <ExplorerTreeItem file={file} key={file.path} />
             ))}
             {over > 0 && (
               <FileTreeItem
-                fileIcon={<FileIcon size="small" type="file" />}
+                fileIcon={<Icon size="small" type="file" />}
                 label={`Other ${over} items`}
-                nodeId={`${content.path}<others>`}
+                nodeId={`${file.path}<others>`}
               />
             )}
           </>
@@ -41,7 +41,7 @@ const ExplorerTreeItem = (props: Props) => {
           <FileTreeItem
             fileIcon={<CircularProgress size={20} />}
             label="Loading items..."
-            nodeId={`${content.path}<loader>`}
+            nodeId={`${file.path}<loader>`}
           />
         ))}
     </FileTreeItem>

@@ -1,47 +1,24 @@
 import { useMemo } from 'react'
-import { colors } from '@mui/material'
-import {
-  Folder as FolderIcon,
-  InsertDriveFile as InsertDriveFileIcon,
-  Photo as PhotoIcon,
-  Star as StarIcon,
-} from '@mui/icons-material'
+import Icon from 'components/Icon'
+import { File } from 'interfaces'
+import { isImageFile } from 'utils/image'
 
 type Props = {
+  file: File
   size?: 'small' | 'medium'
-  type: 'favorite' | 'directory' | 'image' | 'file'
 }
 
 const FileIcon = (props: Props) => {
-  const { size, type } = props
+  const { file, size } = props
 
-  const Icon = useMemo(() => {
-    switch (type) {
-      case 'favorite':
-        return StarIcon
-      case 'directory':
-        return FolderIcon
-      case 'image':
-        return PhotoIcon
-      case 'file':
-        return InsertDriveFileIcon
+  const type = useMemo(() => {
+    if (file.type === 'directory') {
+      return 'directory'
     }
-  }, [type])
+    return isImageFile(file.path) ? 'image' : 'file'
+  }, [file.path, file.type])
 
-  const color = useMemo(() => {
-    switch (type) {
-      case 'favorite':
-        return '#faaf00'
-      case 'directory':
-        return colors.blue['200']
-      case 'image':
-        return colors.green['200']
-      case 'file':
-        return colors.grey['400']
-    }
-  }, [type])
-
-  return <Icon fontSize={size} sx={{ color }} />
+  return <Icon size={size} type={type} />
 }
 
 export default FileIcon

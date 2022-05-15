@@ -8,12 +8,13 @@
 export interface IElectronAPI {
   doubleClickTitleBar: () => Promise<void>
   getBasename: (path: string) => Promise<string>
-  getContentNode: (path: string) => Promise<ContentNode>
   getDirname: (path: string) => Promise<string>
+  getFileNode: (path: string) => Promise<FileNode>
   getHomePath: () => Promise<string>
   isDarwin: () => Promise<boolean>
   listContents: (path: string) => Promise<Content[]>
-  listContentsForPath: (path: string) => Promise<Content[]>
+  listFiles: (path: string) => Promise<File[]>
+  listFilesWithPath: (path: string) => Promise<File[]>
   openPath: (path: string) => Promise<void>
   sendParamsForContextMenu: (params?: unknown) => Promise<void>
   subscribeRemoveFavorite: (callback: (path: string) => void) => () => void
@@ -34,13 +35,11 @@ declare module '@mui/material/styles/createMixins' {
   }
 }
 
-export type Content = {
-  dateModified: number
+export type File = {
   name: string
   path: string
-  type: 'file' | 'directory'
+  type: 'file' | 'directory' | 'other'
 }
-
-export type ContentNode = Content & { children?: ContentNode[] }
-
+export type FileNode = File & { children?: FileNode[] }
+export type Content = File & { dateModified: number }
 export type ExplorerContent = Content & { rating: number }

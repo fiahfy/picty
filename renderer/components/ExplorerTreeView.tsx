@@ -5,7 +5,7 @@ import {
 } from '@mui/icons-material'
 import { TreeView } from '@mui/lab'
 import ExplorerTreeItem from 'components/ExplorerTreeItem'
-import { ContentNode } from 'interfaces'
+import { FileNode } from 'interfaces'
 import { useStore } from 'contexts/StoreContext'
 
 const ExplorerTreeView = () => {
@@ -13,12 +13,12 @@ const ExplorerTreeView = () => {
 
   const [expanded, setExpanded] = useState<string[]>([])
   const [selected, setSelected] = useState<string[]>([])
-  const [contentNodes, setContentNodes] = useState<ContentNode[]>([])
+  const [fileNodes, setFileNodes] = useState<FileNode[]>([])
 
   useEffect(() => {
     ;(async () => {
-      const node = await window.electronAPI.getContentNode(history.directory)
-      const reducer = (carry: string[], node: ContentNode): string[] => {
+      const node = await window.electronAPI.getFileNode(history.directory)
+      const reducer = (carry: string[], node: FileNode): string[] => {
         if (!node.children) {
           return carry
         }
@@ -27,22 +27,22 @@ const ExplorerTreeView = () => {
       const expanded = [node].reduce(reducer, [])
       setExpanded(expanded)
       setSelected([history.directory])
-      setContentNodes([node])
+      setFileNodes([node])
     })()
   }, [history.directory])
 
   const contentNodeMap = useMemo(() => {
     const reducer = (
-      carry: { [path: string]: ContentNode },
-      node: ContentNode
-    ): { [path: string]: ContentNode } => {
+      carry: { [path: string]: FileNode },
+      node: FileNode
+    ): { [path: string]: FileNode } => {
       return {
         [node.path]: node,
         ...(node.children ?? []).reduce(reducer, carry),
       }
     }
-    return contentNodes.reduce(reducer, {})
-  }, [contentNodes])
+    return fileNodes.reduce(reducer, {})
+  }, [fileNodes])
 
   const handleSelect = (_event: SyntheticEvent, nodeIds: string[] | string) => {
     if (Array.isArray(nodeIds)) {
@@ -65,7 +65,7 @@ const ExplorerTreeView = () => {
       return
     }
     const children = await window.electronAPI.listContents(content.path)
-    const mapper = (node: ContentNode): ContentNode => {
+    const mapper = (node: FileNode): FileNode => {
       if (node.path === content.path) {
         return {
           ...node,
@@ -80,7 +80,7 @@ const ExplorerTreeView = () => {
       }
       return node
     }
-    setContentNodes((prevNodes) => prevNodes.map(mapper))
+    setFileNodes((prevNodes) => prevNodes.map(mapper))
   }
 
   return (
@@ -92,8 +92,8 @@ const ExplorerTreeView = () => {
       onNodeToggle={handleToggle}
       selected={selected}
     >
-      {contentNodes.map((node) => (
-        <ExplorerTreeItem content={node} key={node.path} />
+      {fileNodes.map((node) => (
+        <ExplorerTreeItem file={node} key={node.path} />
       ))}
     </TreeView>
   )

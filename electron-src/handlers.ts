@@ -1,4 +1,4 @@
-import { Stats, readdirSync, statSync } from 'fs'
+import { Dirent, Stats, promises } from 'fs'
 import { basename, dirname, join, sep } from 'path'
 import {
   BrowserWindow,
@@ -9,30 +9,29 @@ import {
   systemPreferences,
 } from 'electron'
 
-type Content = {
-  dateModified: number
+const { readdir, stat } = promises
+
+type File = {
   name: string
   path: string
-  type: 'file' | 'directory'
+  type: 'file' | 'directory' | 'other'
 }
-type ContentNode = Content & { children?: ContentNode[] }
+type FileNode = File & { children?: FileNode[] }
+type Content = File & { dateModified: number }
 
-const getContentType = (stats: Stats) => {
-  if (stats.isFile()) {
+const getFileType = (obj: Stats | Dirent) => {
+  if (obj.isFile()) {
     return 'file'
-  } else if (stats.isDirectory()) {
+  } else if (obj.isDirectory()) {
     return 'directory'
   } else {
     return 'other'
   }
 }
 
-const getContent = (path: string): Content | undefined => {
-  const stats = statSync(path)
-  const type = getContentType(stats)
-  if (type === 'other') {
-    return undefined
-  }
+const getContent = async (path: string): Promise<Content> => {
+  const stats = await stat(path)
+  const type = getFileType(stats)
   return {
     dateModified: stats.mtimeMs,
     name: basename(path).normalize('NFC'),
@@ -41,27 +40,31 @@ const getContent = (path: string): Content | undefined => {
   }
 }
 
-const listContents = (path: string, recursive = false): Content[] => {
-  const filenames = readdirSync(path)
-  return filenames.reduce((carry, filename) => {
-    try {
-      if (filename.match(/^\./)) {
-        return carry
-      }
-      const childPath = join(path, filename)
-      const content = getContent(childPath)
-      if (!content) {
-        return carry
-      }
-      if (!recursive || content.type === 'file') {
-        return [...carry, content]
-      }
-      const contents = listContents(childPath, recursive)
-      return [...carry, content, ...contents]
-    } catch (e) {
-      return carry
-    }
-  }, [] as Content[])
+const listContents = async (path: string): Promise<Content[]> => {
+  const filenames = await readdir(path)
+  const contents = await filenames.reduce(async (c, filename) => {
+    const carry = await c
+    const childPath = join(path, filename)
+    const content = await getContent(childPath)
+    return [...carry, content]
+  }, Promise.resolve([]) as Promise<Content[]>)
+  return contents.filter(
+    (content) => !content.name.match(/^\./) && content.type !== 'other'
+  )
+}
+
+const listFiles = async (path: string): Promise<File[]> => {
+  const dirents = await readdir(path, { withFileTypes: true })
+  return dirents
+    .map(
+      (dirent) =>
+        ({
+          name: dirent.name,
+          path: join(path, dirent.name),
+          type: getFileType(dirent),
+        } as const)
+    )
+    .filter((file) => !file.name.match(/^\./) && file.type !== 'other')
 }
 
 export const addHandlers = (browserWindow: BrowserWindow) => {
@@ -90,27 +93,9 @@ export const addHandlers = (browserWindow: BrowserWindow) => {
   ipcMain.handle('get-dirname', (_event: IpcMainInvokeEvent, path: string) =>
     dirname(path)
   )
-  ipcMain.handle('get-home-path', () => app.getPath('home'))
-  ipcMain.handle('is-darwin', () => process.platform === 'darwin')
   ipcMain.handle(
-    'list-contents',
-    (_event: IpcMainInvokeEvent, path: string, recursive = false) =>
-      listContents(path, recursive)
-  )
-  ipcMain.handle(
-    'list-contents-for-path',
-    (_event: IpcMainInvokeEvent, path: string, recursive = false) => {
-      const directory = statSync(path).isDirectory()
-      if (directory) {
-        return listContents(path, recursive)
-      } else {
-        return listContents(dirname(path), recursive)
-      }
-    }
-  )
-  ipcMain.handle(
-    'get-content-node',
-    (_event: IpcMainInvokeEvent, path: string) => {
+    'get-file-node',
+    async (_event: IpcMainInvokeEvent, path: string) => {
       const dirnames = path.split(sep)
 
       let rootPath = dirnames[0]
@@ -120,37 +105,52 @@ export const addHandlers = (browserWindow: BrowserWindow) => {
       }
       dirnames[0] = rootPath
 
-      let node: ContentNode = {
+      let node: FileNode = {
         children: [
           {
-            dateModified: Date.now(),
             name: rootPath,
             path: rootPath,
             type: 'directory',
           },
         ],
-        dateModified: Date.now(),
         name: '',
         path: '',
         type: 'directory',
       }
 
-      node = dirnames.reduce((node, _dirname, i) => {
+      node = await dirnames.reduce(async (n, _dirname, i) => {
+        const node = await n
         const targetNode = dirnames
           .slice(0, i + 1)
           .reduce(
-            (carry: ContentNode | undefined, dirname) =>
+            (carry: FileNode | undefined, dirname) =>
               carry?.children?.find((node) => node.name === dirname),
             node
           )
         if (targetNode) {
           const path = dirnames.slice(0, i + 1).join(sep)
-          targetNode.children = listContents(path)
+          targetNode.children = await listFiles(path)
         }
         return node
-      }, node)
+      }, Promise.resolve(node))
 
       return node.children?.[0]
+    }
+  )
+  ipcMain.handle('get-home-path', () => app.getPath('home'))
+  ipcMain.handle('is-darwin', () => process.platform === 'darwin')
+  ipcMain.handle('list-contents', (_event: IpcMainInvokeEvent, path: string) =>
+    listContents(path)
+  )
+  ipcMain.handle('list-files', (_event: IpcMainInvokeEvent, path: string) =>
+    listFiles(path)
+  )
+  ipcMain.handle(
+    'list-files-with-path',
+    async (_event: IpcMainInvokeEvent, path: string) => {
+      const stats = await stat(path)
+      const directory = stats.isDirectory()
+      return directory ? listFiles(path) : listFiles(dirname(path))
     }
   )
   ipcMain.handle('open-path', (_event: IpcMainInvokeEvent, path: string) =>

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
-import FileIcon from 'components/FileIcon'
 import FileTreeItem from 'components/FileTreeItem'
+import Icon from 'components/Icon'
 
 type Props = {
   children?: ReactNode
@@ -16,9 +16,9 @@ const FavoriteTreeItem = (props: Props) => {
       {...others}
       fileIcon={
         others.nodeId === 'root' ? (
-          <FileIcon size="small" type="favorite" />
+          <Icon size="small" type="favorite" />
         ) : (
-          <FileIcon size="small" type="directory" />
+          <Icon size="small" type="directory" />
         )
       }
     >

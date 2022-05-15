@@ -16,7 +16,7 @@ import {
   Typography,
   alpha,
 } from '@mui/material'
-import ContentIcon from 'components/ContentIcon'
+import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent } from 'interfaces'
 import { useStore } from 'contexts/StoreContext'
@@ -221,7 +221,7 @@ const ExplorerTable = (props: Props) => {
               name: (
                 <Box sx={{ alignItems: 'center', display: 'flex' }}>
                   <Box sx={{ alignItems: 'center', display: 'flex', mr: 1 }}>
-                    <ContentIcon content={rowData} size="small" />
+                    <FileIcon file={rowData} size="small" />
                   </Box>
                   <Typography noWrap title={rowData.name} variant="caption">
                     {rowData.name}

@@ -25,7 +25,7 @@ import {
 } from '@mui/icons-material'
 import Layout from 'components/Layout'
 import { useTheme } from 'contexts/ThemeContext'
-import { Content } from 'interfaces'
+import { File } from 'interfaces'
 import { isImageFile } from 'utils/image'
 
 type Props = {
@@ -40,7 +40,7 @@ const PresentationDialog = (props: Props) => {
   const { forceMode, resetMode } = useTheme()
 
   const [index, setIndex] = useState(0)
-  const [contents, setContents] = useState<Content[]>([])
+  const [images, setImages] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
   const [toolbar, setToolbar] = useState(false)
   const timer = useRef<number>()
@@ -76,13 +76,12 @@ const PresentationDialog = (props: Props) => {
         forceMode('dark')
         resetTimer()
         setIndex(0)
-        setContents([])
+        setImages([])
         setLoading(true)
-        const contents = (
-          await window.electronAPI.listContentsForPath(path)
-        ).filter((content) => isImageFile(content.path))
-        setContents(contents)
-        const index = contents.findIndex((content) => content.path === path)
+        const files = await window.electronAPI.listFilesWithPath(path)
+        const images = files.filter((file) => isImageFile(file.path))
+        setImages(images)
+        const index = images.findIndex((image) => image.path === path)
         setIndex(index > -1 ? index : 0)
         setLoading(false)
       } else {
@@ -93,13 +92,13 @@ const PresentationDialog = (props: Props) => {
     })()
   }, [clearTimer, forceMode, open, path, resetMode, resetTimer])
 
-  const content = useMemo(() => contents[index], [contents, index])
+  const image = useMemo(() => images[index], [images, index])
 
   const movePrevious = () => {
     setIndex((prevIndex) => {
       let index = prevIndex - 1
       if (index < 0) {
-        index = contents.length - 1
+        index = images.length - 1
       }
       return index
     })
@@ -108,7 +107,7 @@ const PresentationDialog = (props: Props) => {
   const moveNext = () => {
     setIndex((prevIndex) => {
       let index = prevIndex + 1
-      if (index > contents.length - 1) {
+      if (index > images.length - 1) {
         index = 0
       }
       return index
@@ -167,13 +166,15 @@ const PresentationDialog = (props: Props) => {
                 >
                   <CloseIcon />
                 </IconButton>
-                <Typography
-                  component="div"
-                  sx={{ ml: 2, flex: 1 }}
-                  variant="subtitle1"
-                >
-                  {content?.name}
-                </Typography>
+                {image && (
+                  <Typography
+                    component="div"
+                    sx={{ ml: 2, flex: 1 }}
+                    variant="subtitle1"
+                  >
+                    {image.name}
+                  </Typography>
+                )}
               </Toolbar>
             </Box>
           </AppBar>
@@ -183,10 +184,10 @@ const PresentationDialog = (props: Props) => {
             <LinearProgress />
           </Box>
         )}
-        {content && (
+        {image && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={fileUrl(content.path)}
+            src={fileUrl(image.path)}
             style={{
               display: 'block',
               height: '100%',
@@ -211,7 +212,7 @@ const PresentationDialog = (props: Props) => {
             >
               <Toolbar variant="dense">
                 <Slider
-                  max={contents.length - 1}
+                  max={images.length - 1}
                   min={0}
                   onChange={handleChange}
                   size="small"
@@ -236,7 +237,7 @@ const PresentationDialog = (props: Props) => {
                   <ChevronRightIcon />
                 </IconButton>
                 <Typography component="div" sx={{ ml: 1 }} variant="body1">
-                  {index + 1} / {contents.length}
+                  {index + 1} / {images.length}
                 </Typography>
               </Toolbar>
             </Box>
