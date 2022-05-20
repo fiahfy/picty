@@ -233,7 +233,7 @@ const ExplorerTable = (props: Props) => {
                   <NoOutlineRating
                     color="primary"
                     onChange={(_e, value) =>
-                      rating.setRating(rowData.path, value ?? 0)
+                      rating.rate(rowData.path, value ?? 0)
                     }
                     precision={0.5}
                     size="small"
@@ -269,12 +269,7 @@ const ExplorerTable = (props: Props) => {
         '.ReactVirtualized__Table__row': {
           cursor: 'pointer',
           display: 'flex',
-          '&:focus': {
-            outlineColor: (theme) => theme.palette.primary.main,
-            outlineOffset: '-1px',
-            outlineStyle: 'solid',
-            outlineWidth: '1px',
-          },
+          outline: 'none',
           '&:hover': {
             backgroundColor: (theme) => theme.palette.action.hover,
           },

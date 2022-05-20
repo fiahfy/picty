@@ -10,6 +10,7 @@ import { StoreProvider } from 'contexts/StoreContext'
 import { ThemeProvider } from 'contexts/ThemeContext'
 import { TitleBarProvider } from 'contexts/TitleBarContext'
 import createEmotionCache from 'utils/createEmotionCache'
+import 'styles.css'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()

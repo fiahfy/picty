@@ -89,11 +89,6 @@ const ExplorerGridItem = (props: Props) => {
           outlineStyle: 'solid',
           outlineWidth: '1px',
         },
-        '&:focus': {
-          outlineColor: (theme) => theme.palette.primary.main,
-          outlineStyle: 'solid',
-          outlineWidth: '2px',
-        },
       }}
       tabIndex={0}
     >
@@ -131,9 +126,7 @@ const ExplorerGridItem = (props: Props) => {
           >
             <NoOutlineRating
               color="primary"
-              onChange={(_e, value) =>
-                rating.setRating(content.path, value ?? 0)
-              }
+              onChange={(_e, value) => rating.rate(content.path, value ?? 0)}
               precision={0.5}
               size="small"
               sx={{ my: 0.25 }}
