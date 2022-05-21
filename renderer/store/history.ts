@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 import { AppState } from 'store'
 
 type State = {
@@ -35,8 +35,19 @@ export const { go, push } = historySlice.actions
 
 export default historySlice.reducer
 
-export const selectCurrentDirectory = (state: AppState) =>
-  state.history.directories[state.history.index] ?? ''
-export const selectCanBack = (state: AppState) => state.history.index > 0
-export const selectCanForward = (state: AppState) =>
-  state.history.index < state.history.directories.length - 1
+export const selectHistory = (state: AppState) => state.history
+
+export const selectCurrentDirectory = createSelector(
+  selectHistory,
+  (history) => history.directories[history.index] ?? ''
+)
+
+export const selectCanBack = createSelector(
+  selectHistory,
+  (history) => history.index > 0
+)
+
+export const selectCanForward = createSelector(
+  selectHistory,
+  (history) => history.index < history.directories.length - 1
+)

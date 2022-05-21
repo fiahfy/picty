@@ -6,7 +6,7 @@ import { ExplorerContent } from 'interfaces'
 import { useStore } from 'contexts/StoreContext'
 import { isImageFile } from 'utils/image'
 import { useAppDispatch, useAppSelector } from 'store'
-import { isContentSelected, select, selectExplorer } from 'store/explorer'
+import { select, selectExplorer, selectIsContentSelected } from 'store/explorer'
 import { selectSettings } from 'store/settings'
 import { push, selectCurrentDirectory } from 'store/history'
 
@@ -15,6 +15,7 @@ const IndexPage = () => {
 
   const { contents, loading, query, selectedContents } =
     useAppSelector(selectExplorer)
+  const isContentSelected = useAppSelector(selectIsContentSelected)
   const currentDirectory = useAppSelector(selectCurrentDirectory)
   const { explorerLayout } = useAppSelector(selectSettings)
   const dispatch = useAppDispatch()
@@ -69,7 +70,7 @@ const IndexPage = () => {
   )
 
   const contentSelected = (content: ExplorerContent) =>
-    isContentSelected(selectedContents, content)
+    isContentSelected(content)
 
   const handleKeyDownEnter = () => {
     const content = selectedContents[0]

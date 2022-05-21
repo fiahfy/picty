@@ -53,7 +53,7 @@ import {
   selectCanForward,
   selectCurrentDirectory,
 } from 'store/history'
-import { selectFavorite, toggle } from 'store/favorite'
+import { selectFavorite, selectIsFavorite, toggle } from 'store/favorite'
 
 const sortOptions = [
   { text: 'Name Ascending', value: 'name-asc' },
@@ -74,7 +74,7 @@ const ExplorerBar = () => {
     currentDirectory: selectCurrentDirectory(state),
   }))
   const favorite = useAppSelector((state) =>
-    selectFavorite(state, currentDirectory)
+    selectIsFavorite(state)(currentDirectory)
   )
   const { drawerHidden, explorerLayout } = useAppSelector(selectSettings)
   const dispatch = useAppDispatch()

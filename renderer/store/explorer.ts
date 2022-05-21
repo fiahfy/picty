@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 import { Content } from 'interfaces'
 import { AppState, AppThunk } from 'store'
 
@@ -45,14 +45,18 @@ export default explorerSlice.reducer
 
 export const selectExplorer = (state: AppState) => state.explorer
 
-// TODO: better way?
-export const isContentSelected = (
-  selectedContents: Content[],
-  content: Content
-) =>
-  selectedContents.findIndex(
-    (selectedContent) => selectedContent.path === content.path
-  ) > -1
+export const selectSelectedContents = createSelector(
+  selectExplorer,
+  (explorer) => explorer.selectedContents
+)
+
+export const selectIsContentSelected = createSelector(
+  selectSelectedContents,
+  (selectedContents) => (content: Content) =>
+    selectedContents.findIndex(
+      (selectedContent) => selectedContent.path === content.path
+    ) > -1
+)
 
 export const load =
   (path: string): AppThunk =>
