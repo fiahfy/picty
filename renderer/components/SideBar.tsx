@@ -8,7 +8,8 @@ import {
 } from '@mui/material'
 import ExplorerTreeView from 'components/ExplorerTreeView'
 import FavoriteTreeView from 'components/FavoriteTreeView'
-import { useStore } from 'contexts/StoreContext'
+import { useAppDispatch, useAppSelector } from 'store'
+import { selectSettings, setDrawerHidden, setDrawerWidth } from 'store/settings'
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -24,7 +25,8 @@ const Drawer = styled(MuiDrawer, {
 const minContentWidth = 64
 
 const SideBar = () => {
-  const { settings } = useStore()
+  const { drawerHidden, drawerWidth } = useAppSelector(selectSettings)
+  const dispatch = useAppDispatch()
 
   const handleMouseDown = () => {
     document.addEventListener('mouseup', handleMouseUp, true)
@@ -42,17 +44,17 @@ const SideBar = () => {
       newWidth > minContentWidth &&
       newWidth < document.body.offsetWidth - minContentWidth
     ) {
-      settings.setDrawerWidth(newWidth)
+      dispatch(setDrawerWidth(newWidth))
     }
-    settings.setDrawerHidden(newWidth < minContentWidth / 2)
+    dispatch(setDrawerHidden(newWidth < minContentWidth / 2))
   })
 
   return (
     <Drawer
-      PaperProps={{ style: { width: settings.drawerWidth } }}
+      PaperProps={{ style: { width: drawerWidth } }}
       anchor="left"
-      open={!settings.drawerHidden}
-      style={{ width: settings.drawerWidth }}
+      open={!drawerHidden}
+      style={{ width: drawerWidth }}
       variant="permanent"
     >
       <Toolbar

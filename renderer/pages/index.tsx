@@ -5,9 +5,19 @@ import PresentationDialog from 'components/PresentationDialog'
 import { ExplorerContent } from 'interfaces'
 import { useStore } from 'contexts/StoreContext'
 import { isImageFile } from 'utils/image'
+import { useAppDispatch, useAppSelector } from 'store'
+import { isContentSelected, select, selectExplorer } from 'store/explorer'
+import { selectSettings } from 'store/settings'
+import { push, selectCurrentDirectory } from 'store/history'
 
 const IndexPage = () => {
-  const { explorer, history, rating, settings, sorting } = useStore()
+  const { rating, sorting } = useStore()
+
+  const { contents, loading, query, selectedContents } =
+    useAppSelector(selectExplorer)
+  const currentDirectory = useAppSelector(selectCurrentDirectory)
+  const { explorerLayout } = useAppSelector(selectSettings)
+  const dispatch = useAppDispatch()
 
   const [dialogState, setDialogState] = useState<{
     open: boolean
@@ -22,8 +32,8 @@ const IndexPage = () => {
   }, [])
 
   const sortOption = useMemo(
-    () => sorting.getOption(history.directory),
-    [history.directory, sorting]
+    () => sorting.getOption(currentDirectory),
+    [currentDirectory, sorting]
   )
 
   const comparator = useCallback(
@@ -46,22 +56,23 @@ const IndexPage = () => {
     [sortOption]
   )
 
-  const contents = useMemo(
+  const explorerContents = useMemo(
     () =>
-      explorer.contents
-        .filter(
-          (content) => !explorer.query || content.name.includes(explorer.query)
-        )
+      contents
+        .filter((content) => !query || content.name.includes(query))
         .map((content) => ({
           ...content,
           rating: rating.getRating(content.path),
         }))
         .sort((a, b) => comparator(a, b)),
-    [comparator, explorer.contents, explorer.query, rating]
+    [comparator, contents, query, rating]
   )
 
+  const contentSelected = (content: ExplorerContent) =>
+    isContentSelected(selectedContents, content)
+
   const handleKeyDownEnter = () => {
-    const content = explorer.selected[0]
+    const content = selectedContents[0]
     if (
       content &&
       (content.type === 'directory' || isImageFile(content.path))
@@ -74,41 +85,35 @@ const IndexPage = () => {
     order: 'asc' | 'desc'
     orderBy: 'name' | 'rating' | 'dateModified'
   }) => {
-    sorting.sort(history.directory, sortOption)
+    sorting.sort(currentDirectory, sortOption)
   }
 
   const handleClickContent = (content: ExplorerContent) =>
-    explorer.setSelected([content])
+    dispatch(select(content))
 
   const handleDoubleClickContent = async (content: ExplorerContent) =>
     content.type === 'directory'
-      ? history.push(content.path)
+      ? dispatch(push(content.path))
       : await window.electronAPI.openPath(content.path)
 
   const handleFocusContent = (content: ExplorerContent) =>
-    explorer.setSelected([content])
-
-  const isContentSelected = (content: ExplorerContent) =>
-    explorer.isSelected(content)
+    dispatch(select(content))
 
   const handleRequestClose = () => setDialogState({ open: false, path: '' })
 
   return (
     <>
-      {createElement(
-        settings.explorerLayout === 'list' ? ExplorerTable : ExplorerGrid,
-        {
-          contentSelected: isContentSelected,
-          contents,
-          loading: explorer.loading,
-          onChangeSortOption: handleChangeSortOption,
-          onClickContent: handleClickContent,
-          onDoubleClickContent: handleDoubleClickContent,
-          onFocusContent: handleFocusContent,
-          onKeyDownEnter: handleKeyDownEnter,
-          sortOption,
-        }
-      )}
+      {createElement(explorerLayout === 'list' ? ExplorerTable : ExplorerGrid, {
+        contentSelected,
+        contents: explorerContents,
+        loading,
+        onChangeSortOption: handleChangeSortOption,
+        onClickContent: handleClickContent,
+        onDoubleClickContent: handleDoubleClickContent,
+        onFocusContent: handleFocusContent,
+        onKeyDownEnter: handleKeyDownEnter,
+        sortOption,
+      })}
       <PresentationDialog
         onRequestClose={handleRequestClose}
         open={dialogState.open}

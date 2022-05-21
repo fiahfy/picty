@@ -5,37 +5,38 @@ import {
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material'
 import FavoriteTreeItem from 'components/FavoriteTreeItem'
-import { useStore } from 'contexts/StoreContext'
+import { useAppDispatch, useAppSelector } from 'store'
+import { remove, selectFavorites } from 'store/favorite'
+import { push } from 'store/history'
 
 const FavoriteTreeView = () => {
-  const { favorite, history } = useStore()
+  const favorites = useAppSelector(selectFavorites)
+  const dispatch = useAppDispatch()
 
   const [selected, setSelected] = useState<string[]>([])
-  const [favorites, setFavorites] = useState<{ name: string; path: string }[]>(
-    []
-  )
+  const [items, setItems] = useState<{ name: string; path: string }[]>([])
 
   useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeRemoveFavorite((path) =>
-      favorite.remove(path)
+      dispatch(remove(path))
     )
     return () => unsubscribe()
-  }, [favorite])
+  }, [])
 
   useEffect(() => {
     ;(async () => {
       const names = await Promise.all(
-        favorite.list.map((path) => window.electronAPI.getBasename(path))
+        favorites.map((path) => window.electronAPI.getBasename(path))
       )
-      const favorites = favorite.list
+      const items = favorites
         .map((path, i) => ({
           name: names[i] ?? '',
           path,
         }))
         .sort((a, b) => (a.name > b.name ? 1 : -1))
-      setFavorites(favorites)
+      setItems(items)
     })()
-  }, [favorite.list])
+  }, [])
 
   const handleSelect = (_event: SyntheticEvent, nodeIds: string[] | string) => {
     setSelected([])
@@ -45,7 +46,7 @@ const FavoriteTreeView = () => {
     if (nodeIds === 'root') {
       return
     }
-    history.push(nodeIds)
+    dispatch(push(nodeIds))
   }
 
   return (
@@ -57,16 +58,16 @@ const FavoriteTreeView = () => {
       selected={selected}
     >
       <FavoriteTreeItem label="Favorites" nodeId="root">
-        {favorites.map((favorite) => (
+        {items.map((item) => (
           <FavoriteTreeItem
             data-params={JSON.stringify({
               id: 'favorite',
-              path: favorite.path,
+              path: item.path,
             })}
-            key={favorite.path}
-            label={favorite.name}
-            nodeId={favorite.path}
-            title={favorite.path}
+            key={item.path}
+            label={item.name}
+            nodeId={item.path}
+            title={item.path}
           />
         ))}
       </FavoriteTreeItem>

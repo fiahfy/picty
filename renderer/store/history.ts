@@ -1,6 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from 'store'
+import { AppState } from 'store'
 
 type State = {
   directories: string[]
@@ -32,47 +31,12 @@ export const historySlice = createSlice({
   },
 })
 
-export const actions = historySlice.actions
+export const { go, push } = historySlice.actions
 
 export default historySlice.reducer
 
-export const useHistory = () => {
-  const state = useAppSelector((state) => state.history)
-  const dispatch = useAppDispatch()
-
-  const canBack = useMemo(() => state.index > 0, [state.index])
-  const canForward = useMemo(
-    () => state.index < state.directories.length - 1,
-    [state.directories.length, state.index]
-  )
-  const directory = useMemo(
-    () => state.directories[state.index] ?? '',
-    [state.directories, state.index]
-  )
-
-  const push = useCallback(
-    (dir: string) => {
-      if (dir !== directory) {
-        dispatch(actions.push(dir))
-      }
-    },
-    [directory, dispatch]
-  )
-  const go = useCallback(
-    (offset: number) => dispatch(actions.go(offset)),
-    [dispatch]
-  )
-  const back = useCallback(() => go(-1), [go])
-  const forward = useCallback(() => go(1), [go])
-
-  return {
-    back,
-    canBack,
-    canForward,
-    directory,
-    forward,
-    go,
-    push,
-    state,
-  }
-}
+export const selectCurrentDirectory = (state: AppState) =>
+  state.history.directories[state.history.index] ?? ''
+export const selectCanBack = (state: AppState) => state.history.index > 0
+export const selectCanForward = (state: AppState) =>
+  state.history.index < state.history.directories.length - 1

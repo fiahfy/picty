@@ -1,4 +1,9 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import {
+  Action,
+  ThunkAction,
+  combineReducers,
+  configureStore,
+} from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import {
   FLUSH,
@@ -11,11 +16,11 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
-import explorerReducer, { useExplorer } from './explorer'
-import favoriteReducer, { useFavorite } from './favorite'
-import historyReducer, { useHistory } from './history'
+import explorerReducer from './explorer'
+import favoriteReducer from './favorite'
+import historyReducer from './history'
 import ratingReducer, { useRating } from './rating'
-import settingsReducer, { useSettings } from './settings'
+import settingsReducer from './settings'
 import sortingReducer, { useSorting } from './sorting'
 
 const reducers = combineReducers({
@@ -51,9 +56,16 @@ export function makeStore() {
 
 const store = makeStore()
 
-type AppState = ReturnType<typeof store.getState>
+export type AppState = ReturnType<typeof store.getState>
 
-type AppDispatch = typeof store.dispatch
+export type AppDispatch = typeof store.dispatch
+
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  AppState,
+  unknown,
+  Action<string>
+>
 
 export default store
 
@@ -63,11 +75,7 @@ export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector
 
 export const useStore = () => {
   return {
-    explorer: useExplorer(),
-    favorite: useFavorite(),
-    history: useHistory(),
     rating: useRating(),
-    settings: useSettings(),
     sorting: useSorting(),
   }
 }

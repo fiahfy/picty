@@ -1,6 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from 'store'
+import { AppState } from 'store'
 
 type State = {
   darkMode: boolean
@@ -20,55 +19,28 @@ export const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    set(state, action: PayloadAction<Partial<State>>) {
-      return { ...state, ...action.payload }
+    setDarkMode(state, action: PayloadAction<boolean>) {
+      return { ...state, darkMode: action.payload }
+    },
+    setDrawerHidden(state, action: PayloadAction<boolean>) {
+      return { ...state, drawerHidden: action.payload }
+    },
+    setDrawerWidth(state, action: PayloadAction<number>) {
+      return { ...state, drawerWidth: action.payload }
+    },
+    setExplorerLayout(state, action: PayloadAction<'list' | 'thumbnail'>) {
+      return { ...state, explorerLayout: action.payload }
     },
   },
 })
 
-export const actions = settingsSlice.actions
+export const {
+  setDarkMode,
+  setDrawerHidden,
+  setDrawerWidth,
+  setExplorerLayout,
+} = settingsSlice.actions
 
 export default settingsSlice.reducer
 
-export const useSettings = () => {
-  const state = useAppSelector((state) => state.settings)
-  const dispatch = useAppDispatch()
-
-  const darkMode = useMemo(() => state.darkMode, [state.darkMode])
-  const drawerHidden = useMemo(() => state.drawerHidden, [state.drawerHidden])
-  const drawerWidth = useMemo(() => state.drawerWidth, [state.drawerWidth])
-  const explorerLayout = useMemo(
-    () => state.explorerLayout,
-    [state.explorerLayout]
-  )
-
-  const setDarkMode = useCallback(
-    (darkMode: boolean) => dispatch(actions.set({ darkMode })),
-    [dispatch]
-  )
-  const setDrawerHidden = useCallback(
-    (drawerHidden: boolean) => dispatch(actions.set({ drawerHidden })),
-    [dispatch]
-  )
-  const setDrawerWidth = useCallback(
-    (drawerWidth: number) => dispatch(actions.set({ drawerWidth })),
-    [dispatch]
-  )
-  const setExplorerLayout = useCallback(
-    (explorerLayout: 'list' | 'thumbnail') =>
-      dispatch(actions.set({ explorerLayout })),
-    [dispatch]
-  )
-
-  return {
-    darkMode,
-    drawerHidden,
-    drawerWidth,
-    explorerLayout,
-    setDarkMode,
-    setDrawerHidden,
-    setDrawerWidth,
-    setExplorerLayout,
-    state,
-  }
-}
+export const selectSettings = (state: AppState) => state.settings

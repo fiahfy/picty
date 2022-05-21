@@ -18,7 +18,8 @@ import {
 } from '@mui/material'
 import { Close as CloseIcon } from '@mui/icons-material'
 import Layout from 'components/Layout'
-import { useStore } from 'contexts/StoreContext'
+import { useAppDispatch, useAppSelector } from 'store'
+import { selectSettings, setDarkMode, setExplorerLayout } from 'store/settings'
 
 const explorerLayoutOptions = [
   { text: 'List View', value: 'list' },
@@ -33,18 +34,19 @@ type Props = {
 const SettingsDialog = (props: Props) => {
   const { onRequestClose, open } = props
 
-  const { settings } = useStore()
+  const { darkMode, explorerLayout } = useAppSelector(selectSettings)
+  const dispatch = useAppDispatch()
 
   const handleChangeDarkMode = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.checked
-    settings.setDarkMode(value)
+    dispatch(setDarkMode(value))
   }
 
   const handleChangeExplorerLayout = (
     e: SelectChangeEvent<'list' | 'thumbnail'>
   ) => {
     const value = e.target.value as 'list' | 'thumbnail'
-    settings.setExplorerLayout(value)
+    dispatch(setExplorerLayout(value))
   }
 
   return (
@@ -68,7 +70,7 @@ const SettingsDialog = (props: Props) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={settings.darkMode}
+                    checked={darkMode}
                     onChange={handleChangeDarkMode}
                   />
                 }
@@ -83,7 +85,7 @@ const SettingsDialog = (props: Props) => {
               <Select
                 label="Layout"
                 onChange={handleChangeExplorerLayout}
-                value={settings.explorerLayout}
+                value={explorerLayout}
               >
                 {explorerLayoutOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value}>

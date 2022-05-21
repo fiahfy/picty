@@ -13,8 +13,9 @@ import {
   Theme,
   createTheme,
 } from '@mui/material'
-import { useStore } from 'contexts/StoreContext'
 import { useTitleBar } from 'contexts/TitleBarContext'
+import { useAppSelector } from 'store'
+import { selectSettings } from 'store/settings'
 
 const ThemeContext = createContext<
   | {
@@ -30,7 +31,7 @@ type Props = { children: ReactNode }
 export const ThemeProvider = (props: Props) => {
   const { children } = props
 
-  const { settings } = useStore()
+  const { darkMode } = useAppSelector(selectSettings)
   const { shown } = useTitleBar()
 
   const [mode, setMode] = useState<PaletteMode>()
@@ -42,8 +43,8 @@ export const ThemeProvider = (props: Props) => {
     if (mode) {
       return mode
     }
-    return settings.darkMode ? 'dark' : 'light'
-  }, [mode, settings.darkMode])
+    return darkMode ? 'dark' : 'light'
+  }, [darkMode, mode])
 
   const theme = useMemo(
     () =>

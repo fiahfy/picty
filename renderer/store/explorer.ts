@@ -1,79 +1,112 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { Content } from 'interfaces'
-import { useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from 'store'
+import { AppState, AppThunk } from 'store'
 
 type State = {
   contents: Content[]
   loading: boolean
   query: string
-  selected: Content[]
+  selectedContents: Content[]
 }
 
 const initialState: State = {
   contents: [],
   loading: false,
   query: '',
-  selected: [],
+  selectedContents: [],
 }
 
 export const explorerSlice = createSlice({
   name: 'explorer',
   initialState,
   reducers: {
-    set(state, action: PayloadAction<Partial<State>>) {
-      return { ...state, ...action.payload }
+    loaded(state, action: PayloadAction<Content[]>) {
+      return { ...state, contents: action.payload, loading: false }
+    },
+    loading(state) {
+      return { ...state, contents: [], loading: true }
+    },
+    select(state, action: PayloadAction<Content>) {
+      return { ...state, selectedContents: [action.payload] }
+    },
+    setQuery(state, action: PayloadAction<string>) {
+      return { ...state, query: action.payload }
+    },
+    unselectAll(state) {
+      return { ...state, selectedContents: [] }
     },
   },
 })
 
-export const actions = explorerSlice.actions
+export const { loaded, loading, select, setQuery, unselectAll } =
+  explorerSlice.actions
 
 export default explorerSlice.reducer
 
-export const useExplorer = () => {
-  const state = useAppSelector((state) => state.explorer)
-  const dispatch = useAppDispatch()
+export const selectExplorer = (state: AppState) => state.explorer
 
-  const contents = useMemo(() => state.contents, [state.contents])
-  const loading = useMemo(() => state.loading, [state.loading])
-  const query = useMemo(() => state.query, [state.query])
-  const selected = useMemo(() => state.selected, [state.selected])
+// TODO: better way?
+export const isContentSelected = (
+  selectedContents: Content[],
+  content: Content
+) =>
+  selectedContents.findIndex(
+    (selectedContent) => selectedContent.path === content.path
+  ) > -1
 
-  const isSelected = useCallback(
-    (content: Content) =>
-      state.selected.findIndex((selected) => selected.path === content.path) >
-      -1,
-    [state.selected]
-  )
-
-  const setContents = useCallback(
-    (contents: Content[]) => dispatch(actions.set({ contents })),
-    [dispatch]
-  )
-  const setLoading = useCallback(
-    (loading: boolean) => dispatch(actions.set({ loading })),
-    [dispatch]
-  )
-  const setQuery = useCallback(
-    (query: string) => dispatch(actions.set({ query })),
-    [dispatch]
-  )
-  const setSelected = useCallback(
-    (selected: Content[]) => dispatch(actions.set({ selected })),
-    [dispatch]
-  )
-
-  return {
-    contents,
-    isSelected,
-    loading,
-    query,
-    selected,
-    setContents,
-    setLoading,
-    setQuery,
-    setSelected,
-    state,
+export const load =
+  (path: string): AppThunk =>
+  async (dispatch) => {
+    dispatch(loading())
+    const contents = await window.electronAPI.listContents(path)
+    dispatch(loaded(contents))
   }
-}
+
+// const actions = explorerSlice.actions
+
+// export const useExplorer = () => {
+//   const state = useAppSelector((state) => state.explorer)
+//   const dispatch = useAppDispatch()
+
+//   const contents = useMemo(() => state.contents, [state.contents])
+//   const loading = useMemo(() => state.loading, [state.loading])
+//   const query = useMemo(() => state.query, [state.query])
+//   const selected = useMemo(() => state.selected, [state.selected])
+
+//   const isSelected = useCallback(
+//     (content: Content) =>
+//       state.selected.findIndex((selected) => selected.path === content.path) >
+//       -1,
+//     [state.selected]
+//   )
+
+//   const setContents = useCallback(
+//     (contents: Content[]) => dispatch(actions.set({ contents })),
+//     [dispatch]
+//   )
+//   const setLoading = useCallback(
+//     (loading: boolean) => dispatch(actions.set({ loading })),
+//     [dispatch]
+//   )
+//   const setQuery = useCallback(
+//     (query: string) => dispatch(actions.set({ query })),
+//     [dispatch]
+//   )
+//   const setSelected = useCallback(
+//     (selected: Content[]) => dispatch(actions.set({ selected })),
+//     [dispatch]
+//   )
+
+//   return {
+//     contents,
+//     isSelected,
+//     loading,
+//     query,
+//     selected,
+//     setContents,
+//     setLoading,
+//     setQuery,
+//     setSelected,
+//     state,
+//   }
+// }

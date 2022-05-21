@@ -40,6 +40,20 @@ import RoundedFilledInput from 'components/RoundedFilledInput'
 import RoundedFilledSelect from 'components/RoundedFilledSelect'
 import SettingsDialog from 'components/SettingsDialog'
 import { useStore } from 'contexts/StoreContext'
+import { useAppDispatch, useAppSelector } from 'store'
+import { load, selectExplorer, setQuery, unselectAll } from 'store/explorer'
+import {
+  selectSettings,
+  setDrawerHidden,
+  setExplorerLayout,
+} from 'store/settings'
+import {
+  push,
+  selectCanBack,
+  selectCanForward,
+  selectCurrentDirectory,
+} from 'store/history'
+import { selectFavorite, toggle } from 'store/favorite'
 
 const sortOptions = [
   { text: 'Name Ascending', value: 'name-asc' },
@@ -51,7 +65,19 @@ const sortOptions = [
 ]
 
 const ExplorerBar = () => {
-  const { explorer, favorite, history, settings, sorting } = useStore()
+  const { sorting } = useStore()
+
+  const { query } = useAppSelector(selectExplorer)
+  const { canBack, canForward, currentDirectory } = useAppSelector((state) => ({
+    canBack: selectCanBack(state),
+    canForward: selectCanForward(state),
+    currentDirectory: selectCurrentDirectory(state),
+  }))
+  const favorite = useAppSelector((state) =>
+    selectFavorite(state, currentDirectory)
+  )
+  const { drawerHidden, explorerLayout } = useAppSelector(selectSettings)
+  const dispatch = useAppDispatch()
 
   const [directory, setDirectory] = useState('')
   const [open, setOpen] = useState(false)
@@ -66,7 +92,7 @@ const ExplorerBar = () => {
 
   useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeSearch(() => {
-      explorer.setQuery(document.getSelection()?.toString() ?? '')
+      dispatch(setQuery(document.getSelection()?.toString() ?? ''))
       ref.current && ref.current?.focus()
     })
     const handler = (e: globalThis.KeyboardEvent) => {
@@ -74,7 +100,7 @@ const ExplorerBar = () => {
         e.key === 'f' &&
         ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey))
       ) {
-        explorer.setQuery(document.getSelection()?.toString() ?? '')
+        dispatch(setQuery(document.getSelection()?.toString() ?? ''))
         ref.current && ref.current?.focus()
       }
     }
@@ -83,39 +109,30 @@ const ExplorerBar = () => {
       document.removeEventListener('keydown', handler)
       unsubscribe()
     }
-  }, [explorer])
+  }, [dispatch])
 
-  const load = useCallback(async () => {
-    if (!history.directory) {
+  const loadContents = useCallback(async () => {
+    if (!currentDirectory) {
       return
     }
-    explorer.setContents.call(null, [])
-    explorer.setLoading.call(null, true)
-    const contents = await window.electronAPI.listContents(history.directory)
-    explorer.setContents.call(null, contents)
-    explorer.setLoading.call(null, false)
-  }, [explorer.setContents, explorer.setLoading, history.directory])
+    dispatch(load(currentDirectory))
+  }, [dispatch, currentDirectory])
 
   useEffect(() => {
     ;(async () => {
-      if (!history.directory) {
+      if (!currentDirectory) {
         const homePath = await window.electronAPI.getHomePath()
-        return history.push.call(null, homePath)
+        return dispatch(push(homePath))
       }
-      setDirectory(history.directory)
-      explorer.setSelected.call(null, [])
-      await load()
+      setDirectory(currentDirectory)
+      dispatch(unselectAll())
+      await loadContents()
     })()
-  }, [explorer.setSelected, history.directory, history.push, load])
-
-  const favorited = useMemo(
-    () => favorite.isFavorited(history.directory),
-    [favorite, history.directory]
-  )
+  }, [currentDirectory, dispatch, loadContents])
 
   const sortOption = useMemo(
-    () => sorting.getOption(history.directory),
-    [history.directory, sorting]
+    () => sorting.getOption(currentDirectory),
+    [currentDirectory, sorting]
   )
 
   // click handlers
@@ -125,22 +142,22 @@ const ExplorerBar = () => {
 
   const handleClickUpward = async () => {
     const dirPath = await window.electronAPI.getDirname(directory)
-    history.push(dirPath)
+    dispatch(push(dirPath))
   }
 
   const handleClickRefresh = async () => {
-    setDirectory(history.directory)
-    await load()
+    setDirectory(currentDirectory)
+    await loadContents()
   }
 
   const handleClickSettings = async () => setOpen(true)
 
   const handleClickFolder = async () =>
-    await window.electronAPI.openPath(history.directory)
+    await window.electronAPI.openPath(currentDirectory)
 
-  const handleClickFavorite = () => favorite.toggle(history.directory)
+  const handleClickFavorite = () => dispatch(toggle(currentDirectory))
 
-  const handleClickClearQuery = () => explorer.setQuery('')
+  const handleClickClearQuery = () => dispatch(setQuery(''))
 
   // change handlers
   const handleChangeDirectory = (e: ChangeEvent<HTMLInputElement>) => {
@@ -150,30 +167,30 @@ const ExplorerBar = () => {
 
   const handleChangeQuery = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value
-    explorer.setQuery(value)
+    dispatch(setQuery(value))
   }
 
   const handleChangeViewSidebar = (
     _e: MouseEvent<HTMLElement>,
     value: 'sidebar'[]
-  ) => settings.setDrawerHidden(!value.includes('sidebar'))
+  ) => dispatch(setDrawerHidden(!value.includes('sidebar')))
 
   const handleChangeExplorerLayout = (
     _e: MouseEvent<HTMLElement>,
     value: 'list' | 'thumbnail'
-  ) => settings.setExplorerLayout(value)
+  ) => dispatch(setExplorerLayout(value))
 
   const handleChangeSortOption = (e: SelectChangeEvent) => {
     const [orderBy, order] = e.target.value.split('-') as [
       'name' | 'rating' | 'dateModified',
       'asc' | 'desc'
     ]
-    sorting.sort(history.directory, { orderBy, order })
+    sorting.sort(currentDirectory, { orderBy, order })
   }
 
   const handleKeyDownDirectory = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing && directory) {
-      history.push(directory)
+      dispatch(push(directory))
     }
   }
 
@@ -187,7 +204,7 @@ const ExplorerBar = () => {
       <Toolbar disableGutters sx={{ minHeight: '32px!important', px: 1 }}>
         <IconButton
           color="inherit"
-          disabled={!history.canBack}
+          disabled={!canBack}
           onClick={handleClickBack}
           size="small"
           sx={{ mr: 0.5 }}
@@ -197,7 +214,7 @@ const ExplorerBar = () => {
         </IconButton>
         <IconButton
           color="inherit"
-          disabled={!history.canForward}
+          disabled={!canForward}
           onClick={handleClickForward}
           size="small"
           sx={{ mr: 0.5 }}
@@ -232,7 +249,7 @@ const ExplorerBar = () => {
                     onClick={handleClickFavorite}
                     size="small"
                   >
-                    {favorited ? (
+                    {favorite ? (
                       <StarIcon fontSize="small" sx={{ color: '#faaf00' }} />
                     ) : (
                       <StarBorderIcon fontSize="small" />
@@ -264,7 +281,7 @@ const ExplorerBar = () => {
           <Box sx={{ display: 'flex', flex: '1 1 0' }}>
             <RoundedFilledInput
               endAdornment={
-                explorer.query && (
+                query && (
                   <InputAdornment position="end">
                     <IconButton
                       color="inherit"
@@ -288,7 +305,7 @@ const ExplorerBar = () => {
                 </InputAdornment>
               }
               sx={{ ml: 0.5 }}
-              value={explorer.query}
+              value={query}
             />
           </Box>
         </Box>
@@ -305,7 +322,7 @@ const ExplorerBar = () => {
         <FilledToggleButtonGroup
           onChange={handleChangeViewSidebar}
           size="small"
-          value={settings.drawerHidden ? [] : ['sidebar']}
+          value={drawerHidden ? [] : ['sidebar']}
         >
           <ToggleButton
             sx={{ height: (theme) => theme.spacing(3.5), py: 0 }}
@@ -321,7 +338,7 @@ const ExplorerBar = () => {
           onChange={handleChangeExplorerLayout}
           size="small"
           sx={{ mr: 1 }}
-          value={settings.explorerLayout}
+          value={explorerLayout}
         >
           <ToggleButton
             sx={{ height: (theme) => theme.spacing(3.5), py: 0 }}

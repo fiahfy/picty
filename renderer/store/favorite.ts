@@ -1,6 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { useCallback, useMemo } from 'react'
-import { useAppDispatch, useAppSelector } from 'store'
+import { AppState, AppThunk } from 'store'
 
 type State = {
   [path: string]: boolean
@@ -26,40 +25,57 @@ export const favoriteSlice = createSlice({
   },
 })
 
-export const actions = favoriteSlice.actions
+export const { add, remove } = favoriteSlice.actions
 
 export default favoriteSlice.reducer
 
-export const useFavorite = () => {
-  const state = useAppSelector((state) => state.favorite)
-  const dispatch = useAppDispatch()
+export const selectFavorite = (state: AppState, path: string) =>
+  state.favorite[path] ?? false
 
-  const list = useMemo(
-    () =>
-      Object.keys(state).reduce(
-        (carry, path) => [...carry, path],
-        [] as string[]
-      ),
-    [state]
+export const selectFavorites = (state: AppState) =>
+  Object.keys(state.favorite).reduce(
+    (carry, path) => [...carry, path],
+    [] as string[]
   )
 
-  const isFavorited = useCallback(
-    (path: string) => state[path] ?? false,
-    [state]
-  )
+export const toggle =
+  (path: string): AppThunk =>
+  async (dispatch, getState) => {
+    const favorite = selectFavorite(getState(), path)
+    const action = favorite ? remove(path) : add(path)
+    dispatch(action)
+  }
 
-  const add = useCallback(
-    (path: string) => dispatch(actions.add(path)),
-    [dispatch]
-  )
-  const remove = useCallback(
-    (path: string) => dispatch(actions.remove(path)),
-    [dispatch]
-  )
-  const toggle = useCallback(
-    (path: string) => (isFavorited(path) ? remove(path) : add(path)),
-    [add, isFavorited, remove]
-  )
+// export const useFavorite = () => {
+//   const state = useAppSelector((state) => state.favorite)
+//   const dispatch = useAppDispatch()
 
-  return { add, isFavorited, list, remove, state, toggle }
-}
+//   const list = useMemo(
+//     () =>
+//       Object.keys(state).reduce(
+//         (carry, path) => [...carry, path],
+//         [] as string[]
+//       ),
+//     [state]
+//   )
+
+//   const isFavorited = useCallback(
+//     (path: string) => state[path] ?? false,
+//     [state]
+//   )
+
+//   const add = useCallback(
+//     (path: string) => dispatch(actions.add(path)),
+//     [dispatch]
+//   )
+//   const remove = useCallback(
+//     (path: string) => dispatch(actions.remove(path)),
+//     [dispatch]
+//   )
+//   const toggle = useCallback(
+//     (path: string) => (isFavorited(path) ? remove(path) : add(path)),
+//     [add, isFavorited, remove]
+//   )
+
+//   return { add, isFavorited, list, remove, state, toggle }
+// }

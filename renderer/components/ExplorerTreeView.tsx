@@ -6,10 +6,12 @@ import {
 import { TreeView } from '@mui/lab'
 import ExplorerTreeItem from 'components/ExplorerTreeItem'
 import { FileNode } from 'interfaces'
-import { useStore } from 'contexts/StoreContext'
+import { useAppDispatch, useAppSelector } from 'store'
+import { push, selectCurrentDirectory } from 'store/history'
 
 const ExplorerTreeView = () => {
-  const { history } = useStore()
+  const currentDirectory = useAppSelector(selectCurrentDirectory)
+  const dispatch = useAppDispatch()
 
   const [expanded, setExpanded] = useState<string[]>([])
   const [selected, setSelected] = useState<string[]>([])
@@ -17,7 +19,7 @@ const ExplorerTreeView = () => {
 
   useEffect(() => {
     ;(async () => {
-      const node = await window.electronAPI.getFileNode(history.directory)
+      const node = await window.electronAPI.getFileNode(currentDirectory)
       const reducer = (carry: string[], node: FileNode): string[] => {
         if (!node.children) {
           return carry
@@ -26,10 +28,10 @@ const ExplorerTreeView = () => {
       }
       const expanded = [node].reduce(reducer, [])
       setExpanded(expanded)
-      setSelected([history.directory])
+      setSelected([currentDirectory])
       setFileNodes([node])
     })()
-  }, [history.directory])
+  }, [currentDirectory])
 
   const contentNodeMap = useMemo(() => {
     const reducer = (
@@ -49,7 +51,7 @@ const ExplorerTreeView = () => {
       return
     }
     const content = contentNodeMap[nodeIds]
-    content?.type === 'directory' && history.push(nodeIds)
+    content?.type === 'directory' && dispatch(push(nodeIds))
   }
 
   const handleToggle = async (_event: SyntheticEvent, nodeIds: string[]) => {
