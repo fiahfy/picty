@@ -1,6 +1,5 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { useCallback } from 'react'
-import { useAppDispatch, useAppSelector } from 'store'
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
+import { AppState } from 'store'
 
 type State = {
   [path: string]: number
@@ -22,20 +21,13 @@ export const ratingSlice = createSlice({
   },
 })
 
-export const actions = ratingSlice.actions
+export const { rate } = ratingSlice.actions
 
 export default ratingSlice.reducer
 
-export const useRating = () => {
-  const state = useAppSelector((state) => state.rating)
-  const dispatch = useAppDispatch()
+export const selectRating = (state: AppState) => state.rating
 
-  const getRating = useCallback((path: string) => state[path] ?? 0, [state])
-
-  const rate = useCallback(
-    (path: string, rating: number) => dispatch(actions.rate({ path, rating })),
-    [dispatch]
-  )
-
-  return { getRating, rate, state }
-}
+export const selectGetRating = createSelector(
+  selectRating,
+  (rating) => (path: string) => rating[path] ?? 0
+)

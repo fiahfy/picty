@@ -19,9 +19,9 @@ import storage from 'redux-persist/lib/storage'
 import explorerReducer from './explorer'
 import favoriteReducer from './favorite'
 import historyReducer from './history'
-import ratingReducer, { useRating } from './rating'
+import ratingReducer from './rating'
 import settingsReducer from './settings'
-import sortingReducer, { useSorting } from './sorting'
+import sortingReducer from './sorting'
 
 const reducers = combineReducers({
   explorer: explorerReducer,
@@ -72,10 +72,3 @@ export default store
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
 export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector
-
-export const useStore = () => {
-  return {
-    rating: useRating(),
-    sorting: useSorting(),
-  }
-}

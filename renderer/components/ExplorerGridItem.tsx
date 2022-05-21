@@ -4,9 +4,10 @@ import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
 import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent } from 'interfaces'
-import { useStore } from 'contexts/StoreContext'
 import { isImageFile } from 'utils/image'
 import { semaphore } from 'utils/semaphore'
+import { useAppDispatch } from 'store'
+import { rate } from 'store/rating'
 
 type Props = {
   columnIndex: number
@@ -21,7 +22,7 @@ const ExplorerGridItem = (props: Props) => {
   const { columnIndex, content, onClick, onDoubleClick, rowIndex, selected } =
     props
 
-  const { rating } = useStore()
+  const dispatch = useAppDispatch()
 
   const [loading, setLoading] = useState(false)
   const [images, setImages] = useState(0)
@@ -126,7 +127,9 @@ const ExplorerGridItem = (props: Props) => {
           >
             <NoOutlineRating
               color="primary"
-              onChange={(_e, value) => rating.rate(content.path, value ?? 0)}
+              onChange={(_e, value) =>
+                dispatch(rate({ path: content.path, rating: value ?? 0 }))
+              }
               precision={0.5}
               size="small"
               sx={{ my: 0.25 }}

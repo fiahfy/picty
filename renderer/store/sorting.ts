@@ -1,6 +1,5 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { useCallback } from 'react'
-import { useAppDispatch, useAppSelector } from 'store'
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
+import { AppState } from 'store'
 
 type Option = {
   order: 'asc' | 'desc'
@@ -27,24 +26,14 @@ export const sortingSlice = createSlice({
   },
 })
 
-export const actions = sortingSlice.actions
+export const { sort } = sortingSlice.actions
 
 export default sortingSlice.reducer
 
-export const useSorting = () => {
-  const state = useAppSelector((state) => state.sorting)
-  const dispatch = useAppDispatch()
+export const selectSorting = (state: AppState) => state.sorting
 
-  const getOption = useCallback(
-    (path: string) =>
-      state[path] ?? ({ order: 'asc', orderBy: 'name' } as const),
-    [state]
-  )
-
-  const sort = useCallback(
-    (path: string, option: Option) => dispatch(actions.sort({ path, option })),
-    [dispatch]
-  )
-
-  return { getOption, sort, state }
-}
+export const selectGetSortOption = createSelector(
+  selectSorting,
+  (sorting) => (path: string) =>
+    sorting[path] ?? ({ order: 'asc', orderBy: 'name' } as const)
+)

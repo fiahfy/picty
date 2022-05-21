@@ -3,20 +3,21 @@ import ExplorerGrid from 'components/ExplorerGrid'
 import ExplorerTable from 'components/ExplorerTable'
 import PresentationDialog from 'components/PresentationDialog'
 import { ExplorerContent } from 'interfaces'
-import { useStore } from 'contexts/StoreContext'
 import { isImageFile } from 'utils/image'
 import { useAppDispatch, useAppSelector } from 'store'
 import { select, selectExplorer, selectIsContentSelected } from 'store/explorer'
 import { selectExplorerLayout } from 'store/settings'
 import { push, selectCurrentDirectory } from 'store/history'
+import { selectGetRating } from 'store/rating'
+import { selectGetSortOption, sort } from 'store/sorting'
 
 const IndexPage = () => {
-  const { rating, sorting } = useStore()
-
   const { contents, loading, query, selectedContents } =
     useAppSelector(selectExplorer)
   const isContentSelected = useAppSelector(selectIsContentSelected)
   const currentDirectory = useAppSelector(selectCurrentDirectory)
+  const getRating = useAppSelector(selectGetRating)
+  const getSortOption = useAppSelector(selectGetSortOption)
   const explorerLayout = useAppSelector(selectExplorerLayout)
   const dispatch = useAppDispatch()
 
@@ -33,8 +34,8 @@ const IndexPage = () => {
   }, [])
 
   const sortOption = useMemo(
-    () => sorting.getOption(currentDirectory),
-    [currentDirectory, sorting]
+    () => getSortOption(currentDirectory),
+    [currentDirectory, getSortOption]
   )
 
   const comparator = useCallback(
@@ -63,10 +64,10 @@ const IndexPage = () => {
         .filter((content) => !query || content.name.includes(query))
         .map((content) => ({
           ...content,
-          rating: rating.getRating(content.path),
+          rating: getRating(content.path),
         }))
         .sort((a, b) => comparator(a, b)),
-    [comparator, contents, query, rating]
+    [comparator, contents, getRating, query]
   )
 
   const contentSelected = (content: ExplorerContent) =>
@@ -86,7 +87,7 @@ const IndexPage = () => {
     order: 'asc' | 'desc'
     orderBy: 'name' | 'rating' | 'dateModified'
   }) => {
-    sorting.sort(currentDirectory, sortOption)
+    dispatch(sort({ path: currentDirectory, option: sortOption }))
   }
 
   const handleClickContent = (content: ExplorerContent) =>

@@ -19,8 +19,9 @@ import {
 import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent } from 'interfaces'
-import { useStore } from 'contexts/StoreContext'
 import { isImageFile } from 'utils/image'
+import { useAppDispatch, useAppSelector } from 'store'
+import { rate, selectGetRating } from 'store/rating'
 
 const headerHeight = 32
 const rowHeight = 32
@@ -79,7 +80,8 @@ const ExplorerTable = (props: Props) => {
     sortOption,
   } = props
 
-  const { rating } = useStore()
+  const getRating = useAppSelector(selectGetRating)
+  const dispatch = useAppDispatch()
 
   const ref = useRef<HTMLDivElement>()
 
@@ -233,11 +235,11 @@ const ExplorerTable = (props: Props) => {
                   <NoOutlineRating
                     color="primary"
                     onChange={(_e, value) =>
-                      rating.rate(rowData.path, value ?? 0)
+                      dispatch(rate({ path: rowData.path, rating: value ?? 0 }))
                     }
                     precision={0.5}
                     size="small"
-                    value={rating.getRating(rowData.path)}
+                    value={getRating(rowData.path)}
                   />
                 </Box>
               ),

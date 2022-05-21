@@ -50,37 +50,3 @@ export const toggle =
     const action = favorite ? remove(path) : add(path)
     dispatch(action)
   }
-
-// export const useFavorite = () => {
-//   const state = useAppSelector((state) => state.favorite)
-//   const dispatch = useAppDispatch()
-
-//   const list = useMemo(
-//     () =>
-//       Object.keys(state).reduce(
-//         (carry, path) => [...carry, path],
-//         [] as string[]
-//       ),
-//     [state]
-//   )
-
-//   const isFavorited = useCallback(
-//     (path: string) => state[path] ?? false,
-//     [state]
-//   )
-
-//   const add = useCallback(
-//     (path: string) => dispatch(actions.add(path)),
-//     [dispatch]
-//   )
-//   const remove = useCallback(
-//     (path: string) => dispatch(actions.remove(path)),
-//     [dispatch]
-//   )
-//   const toggle = useCallback(
-//     (path: string) => (isFavorited(path) ? remove(path) : add(path)),
-//     [add, isFavorited, remove]
-//   )
-
-//   return { add, isFavorited, list, remove, state, toggle }
-// }

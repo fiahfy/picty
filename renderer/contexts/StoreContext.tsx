@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import { Provider } from 'react-redux'
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
-import store, { useStore as useOriginalStore } from 'store'
+import store from 'store'
 
 type Props = { children: ReactNode }
 
@@ -17,5 +17,3 @@ export const StoreProvider = (props: Props) => {
     </Provider>
   )
 }
-
-export const useStore = () => useOriginalStore()

@@ -39,7 +39,6 @@ import FilledToggleButtonGroup from 'components/FilledToggleButtonGroup'
 import RoundedFilledInput from 'components/RoundedFilledInput'
 import RoundedFilledSelect from 'components/RoundedFilledSelect'
 import SettingsDialog from 'components/SettingsDialog'
-import { useStore } from 'contexts/StoreContext'
 import { useAppDispatch, useAppSelector } from 'store'
 import { load, selectExplorer, setQuery, unselectAll } from 'store/explorer'
 import {
@@ -55,6 +54,7 @@ import {
   selectCurrentDirectory,
 } from 'store/history'
 import { selectIsFavorite, toggle } from 'store/favorite'
+import { selectGetSortOption, sort } from 'store/sorting'
 
 const sortOptions = [
   { text: 'Name Ascending', value: 'name-asc' },
@@ -66,8 +66,6 @@ const sortOptions = [
 ]
 
 const ExplorerBar = () => {
-  const { sorting } = useStore()
-
   const { query } = useAppSelector(selectExplorer)
   const { canBack, canForward, currentDirectory } = useAppSelector((state) => ({
     canBack: selectCanBack(state),
@@ -77,6 +75,7 @@ const ExplorerBar = () => {
   const favorite = useAppSelector((state) =>
     selectIsFavorite(state)(currentDirectory)
   )
+  const getSortOption = useAppSelector(selectGetSortOption)
   const { drawerHidden, explorerLayout } = useAppSelector((state) => ({
     drawerHidden: selectDrawerHidden(state),
     explorerLayout: selectExplorerLayout(state),
@@ -135,8 +134,8 @@ const ExplorerBar = () => {
   }, [currentDirectory, dispatch, loadContents])
 
   const sortOption = useMemo(
-    () => sorting.getOption(currentDirectory),
-    [currentDirectory, sorting]
+    () => getSortOption(currentDirectory),
+    [currentDirectory, getSortOption]
   )
 
   // click handlers
@@ -189,7 +188,7 @@ const ExplorerBar = () => {
       'name' | 'rating' | 'dateModified',
       'asc' | 'desc'
     ]
-    sorting.sort(currentDirectory, { orderBy, order })
+    dispatch(sort({ path: currentDirectory, option: { orderBy, order } }))
   }
 
   const handleKeyDownDirectory = (e: KeyboardEvent<HTMLInputElement>) => {
