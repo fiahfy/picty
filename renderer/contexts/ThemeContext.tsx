@@ -32,6 +32,7 @@ export const ThemeProvider = (props: Props) => {
   const { children } = props
 
   const darkMode = useAppSelector(selectDarkMode)
+
   const { shown } = useTitleBar()
 
   const [mode, setMode] = useState<PaletteMode>()

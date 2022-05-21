@@ -5,20 +5,32 @@ import PresentationDialog from 'components/PresentationDialog'
 import { ExplorerContent } from 'interfaces'
 import { isImageFile } from 'utils/image'
 import { useAppDispatch, useAppSelector } from 'store'
-import { select, selectExplorer, selectIsContentSelected } from 'store/explorer'
-import { selectExplorerLayout } from 'store/settings'
+import {
+  select,
+  selectContents,
+  selectIsContentSelected,
+  selectLoading,
+  selectQuery,
+  selectSelectedContents,
+} from 'store/explorer'
 import { push, selectCurrentDirectory } from 'store/history'
 import { selectGetRating } from 'store/rating'
+import { selectExplorerLayout } from 'store/settings'
 import { selectGetSortOption, sort } from 'store/sorting'
 
 const IndexPage = () => {
-  const { contents, loading, query, selectedContents } =
-    useAppSelector(selectExplorer)
-  const isContentSelected = useAppSelector(selectIsContentSelected)
+  const { contents, isContentSelected, loading, query, selectedContents } =
+    useAppSelector((state) => ({
+      contents: selectContents(state),
+      isContentSelected: selectIsContentSelected(state),
+      loading: selectLoading(state),
+      query: selectQuery(state),
+      selectedContents: selectSelectedContents(state),
+    }))
   const currentDirectory = useAppSelector(selectCurrentDirectory)
   const getRating = useAppSelector(selectGetRating)
-  const getSortOption = useAppSelector(selectGetSortOption)
   const explorerLayout = useAppSelector(selectExplorerLayout)
+  const getSortOption = useAppSelector(selectGetSortOption)
   const dispatch = useAppDispatch()
 
   const [dialogState, setDialogState] = useState<{

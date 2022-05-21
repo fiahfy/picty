@@ -40,20 +40,20 @@ import RoundedFilledInput from 'components/RoundedFilledInput'
 import RoundedFilledSelect from 'components/RoundedFilledSelect'
 import SettingsDialog from 'components/SettingsDialog'
 import { useAppDispatch, useAppSelector } from 'store'
-import { load, selectExplorer, setQuery, unselectAll } from 'store/explorer'
-import {
-  selectDrawerHidden,
-  selectExplorerLayout,
-  setDrawerHidden,
-  setExplorerLayout,
-} from 'store/settings'
+import { load, selectQuery, setQuery, unselectAll } from 'store/explorer'
+import { selectIsFavorite, toggle } from 'store/favorite'
 import {
   push,
   selectCanBack,
   selectCanForward,
   selectCurrentDirectory,
 } from 'store/history'
-import { selectIsFavorite, toggle } from 'store/favorite'
+import {
+  selectDrawerHidden,
+  selectExplorerLayout,
+  setDrawerHidden,
+  setExplorerLayout,
+} from 'store/settings'
 import { selectGetSortOption, sort } from 'store/sorting'
 
 const sortOptions = [
@@ -66,20 +66,20 @@ const sortOptions = [
 ]
 
 const ExplorerBar = () => {
-  const { query } = useAppSelector(selectExplorer)
+  const query = useAppSelector(selectQuery)
+  const favorite = useAppSelector((state) =>
+    selectIsFavorite(state)(currentDirectory)
+  )
   const { canBack, canForward, currentDirectory } = useAppSelector((state) => ({
     canBack: selectCanBack(state),
     canForward: selectCanForward(state),
     currentDirectory: selectCurrentDirectory(state),
   }))
-  const favorite = useAppSelector((state) =>
-    selectIsFavorite(state)(currentDirectory)
-  )
-  const getSortOption = useAppSelector(selectGetSortOption)
   const { drawerHidden, explorerLayout } = useAppSelector((state) => ({
     drawerHidden: selectDrawerHidden(state),
     explorerLayout: selectExplorerLayout(state),
   }))
+  const getSortOption = useAppSelector(selectGetSortOption)
   const dispatch = useAppDispatch()
 
   const [directory, setDirectory] = useState('')

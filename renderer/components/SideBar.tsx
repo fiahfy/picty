@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import {
   Box,
   Drawer as MuiDrawer,
@@ -14,7 +15,6 @@ import {
   setDrawerHidden,
   setDrawerWidth,
 } from 'store/settings'
-import { useCallback } from 'react'
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== 'open',

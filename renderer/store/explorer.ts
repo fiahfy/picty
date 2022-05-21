@@ -45,6 +45,21 @@ export default explorerSlice.reducer
 
 export const selectExplorer = (state: AppState) => state.explorer
 
+export const selectContents = createSelector(
+  selectExplorer,
+  (explorer) => explorer.contents
+)
+
+export const selectLoading = createSelector(
+  selectExplorer,
+  (explorer) => explorer.loading
+)
+
+export const selectQuery = createSelector(
+  selectExplorer,
+  (explorer) => explorer.query
+)
+
 export const selectSelectedContents = createSelector(
   selectExplorer,
   (explorer) => explorer.selectedContents
