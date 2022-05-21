@@ -19,7 +19,12 @@ import {
 import { Close as CloseIcon } from '@mui/icons-material'
 import Layout from 'components/Layout'
 import { useAppDispatch, useAppSelector } from 'store'
-import { selectSettings, setDarkMode, setExplorerLayout } from 'store/settings'
+import {
+  selectDarkMode,
+  selectExplorerLayout,
+  setDarkMode,
+  setExplorerLayout,
+} from 'store/settings'
 
 const explorerLayoutOptions = [
   { text: 'List View', value: 'list' },
@@ -34,7 +39,10 @@ type Props = {
 const SettingsDialog = (props: Props) => {
   const { onRequestClose, open } = props
 
-  const { darkMode, explorerLayout } = useAppSelector(selectSettings)
+  const { darkMode, explorerLayout } = useAppSelector((state) => ({
+    darkMode: selectDarkMode(state),
+    explorerLayout: selectExplorerLayout(state),
+  }))
   const dispatch = useAppDispatch()
 
   const handleChangeDarkMode = (e: ChangeEvent<HTMLInputElement>) => {

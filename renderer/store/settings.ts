@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 import { AppState } from 'store'
 
 type State = {
@@ -44,3 +44,23 @@ export const {
 export default settingsSlice.reducer
 
 export const selectSettings = (state: AppState) => state.settings
+
+export const selectDarkMode = createSelector(
+  selectSettings,
+  (settings) => settings.darkMode
+)
+
+export const selectDrawerHidden = createSelector(
+  selectSettings,
+  (settings) => settings.drawerHidden
+)
+
+export const selectDrawerWidth = createSelector(
+  selectSettings,
+  (settings) => settings.drawerWidth
+)
+
+export const selectExplorerLayout = createSelector(
+  selectSettings,
+  (settings) => settings.explorerLayout
+)

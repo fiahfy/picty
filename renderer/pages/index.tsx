@@ -7,7 +7,7 @@ import { useStore } from 'contexts/StoreContext'
 import { isImageFile } from 'utils/image'
 import { useAppDispatch, useAppSelector } from 'store'
 import { select, selectExplorer, selectIsContentSelected } from 'store/explorer'
-import { selectSettings } from 'store/settings'
+import { selectExplorerLayout } from 'store/settings'
 import { push, selectCurrentDirectory } from 'store/history'
 
 const IndexPage = () => {
@@ -17,7 +17,7 @@ const IndexPage = () => {
     useAppSelector(selectExplorer)
   const isContentSelected = useAppSelector(selectIsContentSelected)
   const currentDirectory = useAppSelector(selectCurrentDirectory)
-  const { explorerLayout } = useAppSelector(selectSettings)
+  const explorerLayout = useAppSelector(selectExplorerLayout)
   const dispatch = useAppDispatch()
 
   const [dialogState, setDialogState] = useState<{

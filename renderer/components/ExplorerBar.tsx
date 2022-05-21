@@ -43,7 +43,8 @@ import { useStore } from 'contexts/StoreContext'
 import { useAppDispatch, useAppSelector } from 'store'
 import { load, selectExplorer, setQuery, unselectAll } from 'store/explorer'
 import {
-  selectSettings,
+  selectDrawerHidden,
+  selectExplorerLayout,
   setDrawerHidden,
   setExplorerLayout,
 } from 'store/settings'
@@ -53,7 +54,7 @@ import {
   selectCanForward,
   selectCurrentDirectory,
 } from 'store/history'
-import { selectFavorite, selectIsFavorite, toggle } from 'store/favorite'
+import { selectIsFavorite, toggle } from 'store/favorite'
 
 const sortOptions = [
   { text: 'Name Ascending', value: 'name-asc' },
@@ -76,7 +77,10 @@ const ExplorerBar = () => {
   const favorite = useAppSelector((state) =>
     selectIsFavorite(state)(currentDirectory)
   )
-  const { drawerHidden, explorerLayout } = useAppSelector(selectSettings)
+  const { drawerHidden, explorerLayout } = useAppSelector((state) => ({
+    drawerHidden: selectDrawerHidden(state),
+    explorerLayout: selectExplorerLayout(state),
+  }))
   const dispatch = useAppDispatch()
 
   const [directory, setDirectory] = useState('')

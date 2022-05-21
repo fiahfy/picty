@@ -1,4 +1,3 @@
-import { throttle } from 'throttle-debounce'
 import {
   Box,
   Drawer as MuiDrawer,
@@ -9,7 +8,13 @@ import {
 import ExplorerTreeView from 'components/ExplorerTreeView'
 import FavoriteTreeView from 'components/FavoriteTreeView'
 import { useAppDispatch, useAppSelector } from 'store'
-import { selectSettings, setDrawerHidden, setDrawerWidth } from 'store/settings'
+import {
+  selectDrawerHidden,
+  selectDrawerWidth,
+  setDrawerHidden,
+  setDrawerWidth,
+} from 'store/settings'
+import { useCallback } from 'react'
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -25,29 +30,35 @@ const Drawer = styled(MuiDrawer, {
 const minContentWidth = 64
 
 const SideBar = () => {
-  const { drawerHidden, drawerWidth } = useAppSelector(selectSettings)
+  const { drawerHidden, drawerWidth } = useAppSelector((state) => ({
+    drawerHidden: selectDrawerHidden(state),
+    drawerWidth: selectDrawerWidth(state),
+  }))
   const dispatch = useAppDispatch()
 
-  const handleMouseDown = () => {
-    document.addEventListener('mouseup', handleMouseUp, true)
-    document.addEventListener('mousemove', handleMouseMove, true)
-  }
+  const handleMouseMove = useCallback(
+    (e) => {
+      const newWidth = e.clientX - document.body.offsetLeft + 3
+      if (
+        newWidth > minContentWidth &&
+        newWidth < document.body.offsetWidth - minContentWidth
+      ) {
+        dispatch(setDrawerWidth(newWidth))
+      }
+      dispatch(setDrawerHidden(newWidth < minContentWidth / 2))
+    },
+    [dispatch]
+  )
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     document.removeEventListener('mouseup', handleMouseUp, true)
     document.removeEventListener('mousemove', handleMouseMove, true)
-  }
+  }, [handleMouseMove])
 
-  const handleMouseMove = throttle(100, (e) => {
-    const newWidth = e.clientX - document.body.offsetLeft + 3
-    if (
-      newWidth > minContentWidth &&
-      newWidth < document.body.offsetWidth - minContentWidth
-    ) {
-      dispatch(setDrawerWidth(newWidth))
-    }
-    dispatch(setDrawerHidden(newWidth < minContentWidth / 2))
-  })
+  const handleMouseDown = useCallback(() => {
+    document.addEventListener('mouseup', handleMouseUp, true)
+    document.addEventListener('mousemove', handleMouseMove, true)
+  }, [handleMouseMove, handleMouseUp])
 
   return (
     <Drawer

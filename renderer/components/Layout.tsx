@@ -4,7 +4,7 @@ import ExplorerBar from 'components/ExplorerBar'
 import SideBar from 'components/SideBar'
 import TitleBar from 'components/TitleBar'
 import { useAppSelector } from 'store'
-import { selectSettings } from 'store/settings'
+import { selectDarkMode } from 'store/settings'
 
 type Props = {
   children: ReactNode
@@ -14,7 +14,7 @@ type Props = {
 const Layout = (props: Props) => {
   const { children, hideBars = false } = props
 
-  const { darkMode } = useAppSelector(selectSettings)
+  const darkMode = useAppSelector(selectDarkMode)
 
   const getTargetParams = (e: HTMLElement): string | undefined => {
     const params = e.dataset.params

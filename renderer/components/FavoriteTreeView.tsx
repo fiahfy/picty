@@ -21,7 +21,7 @@ const FavoriteTreeView = () => {
       dispatch(remove(path))
     )
     return () => unsubscribe()
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     ;(async () => {
@@ -36,7 +36,7 @@ const FavoriteTreeView = () => {
         .sort((a, b) => (a.name > b.name ? 1 : -1))
       setItems(items)
     })()
-  }, [])
+  }, [favorites])
 
   const handleSelect = (_event: SyntheticEvent, nodeIds: string[] | string) => {
     setSelected([])
