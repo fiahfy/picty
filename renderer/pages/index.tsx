@@ -73,7 +73,10 @@ const IndexPage = () => {
   const explorerContents = useMemo(
     () =>
       contents
-        .filter((content) => !query || content.name.includes(query))
+        .filter(
+          (content) =>
+            !query || content.name.toLowerCase().includes(query.toLowerCase())
+        )
         .map((content) => ({
           ...content,
           rating: getRating(content.path),

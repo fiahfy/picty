@@ -40,7 +40,7 @@ import RoundedFilledInput from 'components/RoundedFilledInput'
 import RoundedFilledSelect from 'components/RoundedFilledSelect'
 import SettingsDialog from 'components/SettingsDialog'
 import { useAppDispatch, useAppSelector } from 'store'
-import { load, selectQuery, setQuery, unselectAll } from 'store/explorer'
+import { load, setQuery, unselectAll } from 'store/explorer'
 import { selectIsFavorite, toggle } from 'store/favorite'
 import {
   back,
@@ -68,7 +68,6 @@ const sortOptions = [
 ]
 
 const ExplorerBar = () => {
-  const query = useAppSelector(selectQuery)
   const favorite = useAppSelector((state) =>
     selectIsFavorite(state)(currentDirectory)
   )
@@ -85,6 +84,7 @@ const ExplorerBar = () => {
   const dispatch = useAppDispatch()
 
   const [directory, setDirectory] = useState('')
+  const [queryInput, setQueryInput] = useState('')
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLInputElement>()
 
@@ -145,6 +145,10 @@ const ExplorerBar = () => {
     })()
   }, [currentDirectory, dispatch, loadContents])
 
+  useEffect(() => {
+    dispatch(setQuery(queryInput))
+  }, [dispatch, queryInput])
+
   const sortOption = useMemo(
     () => getSortOption(currentDirectory),
     [currentDirectory, getSortOption]
@@ -172,7 +176,9 @@ const ExplorerBar = () => {
 
   const handleClickFavorite = () => dispatch(toggle(currentDirectory))
 
-  const handleClickClearQuery = () => dispatch(setQuery(''))
+  const handleClickSearch = () => dispatch(setQuery(queryInput))
+
+  const handleClickClearQuery = () => setQueryInput('')
 
   // change handlers
   const handleChangeDirectory = (e: ChangeEvent<HTMLInputElement>) => {
@@ -182,7 +188,7 @@ const ExplorerBar = () => {
 
   const handleChangeQuery = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value
-    dispatch(setQuery(value))
+    setQueryInput(value)
   }
 
   const handleChangeViewSidebar = (
@@ -296,7 +302,7 @@ const ExplorerBar = () => {
           <Box sx={{ display: 'flex', flex: '1 1 0' }}>
             <RoundedFilledInput
               endAdornment={
-                query && (
+                queryInput && (
                   <InputAdornment position="end">
                     <IconButton
                       color="inherit"
@@ -316,11 +322,17 @@ const ExplorerBar = () => {
               size="small"
               startAdornment={
                 <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
+                  <IconButton
+                    color="inherit"
+                    onClick={handleClickSearch}
+                    size="small"
+                  >
+                    <SearchIcon fontSize="small" />
+                  </IconButton>
                 </InputAdornment>
               }
               sx={{ ml: 0.5 }}
-              value={query}
+              value={queryInput}
             />
           </Box>
         </Box>

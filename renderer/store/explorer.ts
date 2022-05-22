@@ -21,7 +21,7 @@ export const explorerSlice = createSlice({
   initialState,
   reducers: {
     loaded(state, action: PayloadAction<Content[]>) {
-      return { ...state, contents: action.payload, loading: false }
+      return { ...state, contents: action.payload, loading: false, query: '' }
     },
     loading(state) {
       return { ...state, contents: [], loading: true }
