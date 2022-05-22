@@ -3,7 +3,7 @@ import fileUrl from 'file-url'
 import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
 import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
-import { ExplorerContent } from 'interfaces'
+import { ExplorerContent, File } from 'interfaces'
 import { isImageFile } from 'utils/image'
 import { semaphore } from 'utils/semaphore'
 import { useAppDispatch } from 'store'
@@ -43,7 +43,12 @@ const ExplorerGridItem = (props: Props) => {
 
     let unmounted = false
     semaphore.acquire(async () => {
-      const files = await window.electronAPI.listFiles(content.path)
+      let files: File[] = []
+      try {
+        files = await window.electronAPI.listFiles(content.path)
+      } catch (e) {
+        // noop
+      }
       if (unmounted) {
         return
       }
