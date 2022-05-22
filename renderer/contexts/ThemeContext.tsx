@@ -3,6 +3,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -35,17 +36,27 @@ export const ThemeProvider = (props: Props) => {
 
   const { shown } = useTitleBar()
 
-  const [mode, setMode] = useState<PaletteMode>()
+  const [forcedMode, setForcedMode] = useState<PaletteMode>()
 
-  const forceMode = useCallback((mode: PaletteMode) => setMode(mode), [])
-  const resetMode = useCallback(() => setMode(undefined), [])
+  const forceMode = useCallback((mode: PaletteMode) => setForcedMode(mode), [])
+  const resetMode = useCallback(() => setForcedMode(undefined), [])
 
-  const currentMode = useMemo(() => {
-    if (mode) {
-      return mode
+  const mode = useMemo(() => {
+    if (forcedMode) {
+      return forcedMode
     }
     return darkMode ? 'dark' : 'light'
-  }, [darkMode, mode])
+  }, [darkMode, forcedMode])
+
+  useEffect(() => {
+    if (mode === 'dark') {
+      document.body.classList.remove('theme-light')
+      document.body.classList.add('theme-dark')
+    } else {
+      document.body.classList.remove('theme-dark')
+      document.body.classList.add('theme-light')
+    }
+  }, [mode])
 
   const theme = useMemo(
     () =>
@@ -65,7 +76,7 @@ export const ThemeProvider = (props: Props) => {
           },
         },
         palette: {
-          mode: currentMode,
+          mode,
           primary: {
             main: '#ff4081',
           },
@@ -77,7 +88,7 @@ export const ThemeProvider = (props: Props) => {
           // },
         },
       }),
-    [currentMode, shown]
+    [mode, shown]
   )
 
   const value = { forceMode, resetMode, theme }

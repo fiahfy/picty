@@ -3,8 +3,6 @@ import { Box, Toolbar } from '@mui/material'
 import ExplorerBar from 'components/ExplorerBar'
 import SideBar from 'components/SideBar'
 import TitleBar from 'components/TitleBar'
-import { useAppSelector } from 'store'
-import { selectDarkMode } from 'store/settings'
 
 type Props = {
   children: ReactNode
@@ -13,8 +11,6 @@ type Props = {
 
 const Layout = (props: Props) => {
   const { children, hideBars = false } = props
-
-  const darkMode = useAppSelector(selectDarkMode)
 
   const getTargetParams = (e: HTMLElement): string | undefined => {
     const params = e.dataset.params
@@ -32,7 +28,6 @@ const Layout = (props: Props) => {
 
   return (
     <Box
-      className={darkMode ? 'theme-dark' : 'theme-light'}
       onMouseDown={handleMouseDown}
       sx={{ display: 'flex', height: '100%', overflow: 'hidden' }}
     >

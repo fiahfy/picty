@@ -51,11 +51,13 @@ const SideBar = () => {
   )
 
   const handleMouseUp = useCallback(() => {
+    document.body.classList.remove('col-resizing')
     document.removeEventListener('mouseup', handleMouseUp, true)
     document.removeEventListener('mousemove', handleMouseMove, true)
   }, [handleMouseMove])
 
   const handleMouseDown = useCallback(() => {
+    document.body.classList.add('col-resizing')
     document.addEventListener('mouseup', handleMouseUp, true)
     document.addEventListener('mousemove', handleMouseMove, true)
   }, [handleMouseMove, handleMouseUp])
@@ -98,7 +100,7 @@ const SideBar = () => {
               ? colors.grey[100]
               : colors.grey[900],
           bottom: 0,
-          cursor: 'ew-resize',
+          cursor: 'col-resize',
           position: 'absolute',
           right: 0,
           top: 0,

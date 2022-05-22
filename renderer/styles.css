@@ -25,3 +25,7 @@
 .theme-dark ::-webkit-scrollbar-thumb:active {
   background-color: #616161;
 }
+
+.col-resizing * {
+  cursor: col-resize;
+}
