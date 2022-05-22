@@ -1,5 +1,5 @@
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
-import { AppState } from 'store'
+import { AppState, AppThunk } from 'store'
 
 type State = {
   directories: string[]
@@ -51,3 +51,7 @@ export const selectCanForward = createSelector(
   selectHistory,
   (history) => history.index < history.directories.length - 1
 )
+
+export const back = (): AppThunk => async (dispatch) => dispatch(go(-1))
+
+export const forward = (): AppThunk => async (dispatch) => dispatch(go(1))

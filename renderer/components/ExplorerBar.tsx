@@ -43,6 +43,8 @@ import { useAppDispatch, useAppSelector } from 'store'
 import { load, selectQuery, setQuery, unselectAll } from 'store/explorer'
 import { selectIsFavorite, toggle } from 'store/favorite'
 import {
+  back,
+  forward,
   push,
   selectCanBack,
   selectCanForward,
@@ -98,7 +100,7 @@ const ExplorerBar = () => {
       dispatch(setQuery(document.getSelection()?.toString() ?? ''))
       ref.current && ref.current?.focus()
     })
-    const handler = (e: globalThis.KeyboardEvent) => {
+    const handleKeyDown = (e: globalThis.KeyboardEvent) => {
       if (
         e.key === 'f' &&
         ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey))
@@ -107,9 +109,19 @@ const ExplorerBar = () => {
         ref.current && ref.current?.focus()
       }
     }
-    document.addEventListener('keydown', handler)
+    const handleMouseDown = (e: globalThis.MouseEvent) => {
+      switch (e.button) {
+        case 3:
+          return dispatch(back())
+        case 4:
+          return dispatch(forward())
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('mousedown', handleMouseDown)
     return () => {
-      document.removeEventListener('keydown', handler)
+      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('mousedown', handleMouseDown)
       unsubscribe()
     }
   }, [dispatch])
@@ -139,9 +151,9 @@ const ExplorerBar = () => {
   )
 
   // click handlers
-  const handleClickBack = () => history.back()
+  const handleClickBack = () => dispatch(back())
 
-  const handleClickForward = () => history.forward()
+  const handleClickForward = () => dispatch(forward())
 
   const handleClickUpward = async () => {
     const dirPath = await window.electronAPI.getDirname(directory)

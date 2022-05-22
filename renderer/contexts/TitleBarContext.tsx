@@ -26,11 +26,15 @@ export const TitleBarProvider = (props: Props) => {
   const shown = useMemo(() => darwin && !fullScreen, [darwin, fullScreen])
 
   useEffect(() => {
-    const handler = () => setFullScreen(!!document.fullscreenElement)
-    handler()
-    document.body.addEventListener('fullscreenchange', handler)
+    const handleFullscreenChange = () =>
+      setFullScreen(!!document.fullscreenElement)
+    handleFullscreenChange()
+    document.body.addEventListener('fullscreenchange', handleFullscreenChange)
     return () => {
-      document.body.removeEventListener('fullscreenchange', handler)
+      document.body.removeEventListener(
+        'fullscreenchange',
+        handleFullscreenChange
+      )
     }
   }, [])
 

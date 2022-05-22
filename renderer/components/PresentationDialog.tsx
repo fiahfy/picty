@@ -62,10 +62,14 @@ const PresentationDialog = (props: Props) => {
   }, [clearTimer])
 
   useEffect(() => {
-    const handler = () => !document.fullscreenElement && onRequestClose()
-    document.body.addEventListener('fullscreenchange', handler)
+    const handleFullscreenChange = () =>
+      !document.fullscreenElement && onRequestClose()
+    document.body.addEventListener('fullscreenchange', handleFullscreenChange)
     return () => {
-      document.body.removeEventListener('fullscreenchange', handler)
+      document.body.removeEventListener(
+        'fullscreenchange',
+        handleFullscreenChange
+      )
     }
   }, [onRequestClose])
 
