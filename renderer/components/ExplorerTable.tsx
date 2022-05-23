@@ -83,7 +83,7 @@ const ExplorerTable = (props: Props) => {
   const getRating = useAppSelector(selectGetRating)
   const dispatch = useAppDispatch()
 
-  const ref = useRef<HTMLDivElement>()
+  const ref = useRef<HTMLDivElement>(null)
 
   const getWidths = useCallback((wrapperWidth) => {
     const widths = columns.map((column) => column.width)

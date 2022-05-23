@@ -44,8 +44,8 @@ const PresentationDialog = (props: Props) => {
   const [loading, setLoading] = useState(false)
   const [toolbar, setToolbar] = useState(false)
   const timer = useRef<number>()
-  const topToolbar = useRef<HTMLDivElement>()
-  const bottomToolbar = useRef<HTMLDivElement>()
+  const topToolbar = useRef<HTMLDivElement>(null)
+  const bottomToolbar = useRef<HTMLDivElement>(null)
 
   const clearTimer = useCallback(() => window.clearTimeout(timer.current), [])
 
@@ -150,10 +150,11 @@ const PresentationDialog = (props: Props) => {
       onKeyDown={handleKeyDown}
       onMouseMove={handleMouseMove}
       open={open}
+      sx={{ cursor: toolbar ? undefined : 'none' }}
       transitionDuration={0}
     >
       <Layout hideBars>
-        <Fade in={toolbar} ref={topToolbar}>
+        <Fade in={toolbar}>
           <AppBar color="transparent" elevation={0}>
             <Box
               sx={{
@@ -162,7 +163,7 @@ const PresentationDialog = (props: Props) => {
                 pb: 15,
               }}
             >
-              <Toolbar variant="dense">
+              <Toolbar ref={topToolbar} variant="dense">
                 <IconButton
                   color="inherit"
                   edge="start"
@@ -200,7 +201,7 @@ const PresentationDialog = (props: Props) => {
             }}
           />
         )}
-        <Fade in={toolbar} ref={bottomToolbar}>
+        <Fade in={toolbar}>
           <AppBar
             color="transparent"
             component="footer"
@@ -214,7 +215,7 @@ const PresentationDialog = (props: Props) => {
                 pt: 15,
               }}
             >
-              <Toolbar variant="dense">
+              <Toolbar ref={bottomToolbar} variant="dense">
                 <Slider
                   max={images.length - 1}
                   min={0}

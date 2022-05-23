@@ -34,7 +34,7 @@ const ExplorerGrid = (props: Props) => {
     onKeyDownEnter,
   } = props
 
-  const ref = useRef<HTMLDivElement>()
+  const ref = useRef<HTMLDivElement>(null)
   const [wrapperWidth, setWrapperWidth] = useState(0)
 
   useEffect(() => {

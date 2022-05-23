@@ -86,7 +86,7 @@ const ExplorerBar = () => {
   const [directory, setDirectory] = useState('')
   const [queryInput, setQueryInput] = useState('')
   const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLInputElement>()
+  const ref = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeShowSettings(() =>
