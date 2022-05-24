@@ -3,7 +3,6 @@ import ExplorerGrid from 'components/ExplorerGrid'
 import ExplorerTable from 'components/ExplorerTable'
 import PresentationDialog from 'components/PresentationDialog'
 import { ExplorerContent } from 'interfaces'
-import { isImageFile } from 'utils/image'
 import { useAppDispatch, useAppSelector } from 'store'
 import {
   select,
@@ -17,6 +16,7 @@ import { push, selectCurrentDirectory } from 'store/history'
 import { selectGetRating } from 'store/rating'
 import { selectExplorerLayout } from 'store/settings'
 import { selectGetSortOption, sort } from 'store/sorting'
+import { isImageFile } from 'utils/image'
 
 const IndexPage = () => {
   const { contents, isContentSelected, loading, query, selectedContents } =

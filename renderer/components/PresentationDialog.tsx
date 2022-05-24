@@ -76,7 +76,7 @@ const PresentationDialog = (props: Props) => {
   useEffect(() => {
     ;(async () => {
       if (open) {
-        document.body.requestFullscreen()
+        await document.body.requestFullscreen()
         forceMode('dark')
         resetTimer()
         setIndex(0)
@@ -91,7 +91,7 @@ const PresentationDialog = (props: Props) => {
       } else {
         clearTimer()
         resetMode()
-        document.fullscreenElement && document.exitFullscreen()
+        document.fullscreenElement && (await document.exitFullscreen())
       }
     })()
   }, [clearTimer, forceMode, open, path, resetMode, resetTimer])

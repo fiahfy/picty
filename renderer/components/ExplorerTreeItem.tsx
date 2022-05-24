@@ -1,8 +1,11 @@
-import { CircularProgress } from '@mui/material'
+import { useMemo } from 'react'
+import { BoxProps, CircularProgress } from '@mui/material'
 import FileIcon from 'components/FileIcon'
-import Icon from 'components/Icon'
 import FileTreeItem from 'components/FileTreeItem'
+import Icon from 'components/Icon'
 import { FileNode } from 'interfaces'
+import { contextMenuProps } from 'utils/contextMenu'
+import { isImageFile } from 'utils/image'
 
 const max = 100
 
@@ -11,13 +14,26 @@ type Props = {
 }
 
 const ExplorerTreeItem = (props: Props) => {
-  const { file, ...others } = props
+  const { file } = props
 
   const over = (file.children ?? []).length - max
 
+  const enabled = useMemo(
+    () => file.type === 'directory' || isImageFile(file.path),
+    [file.path, file.type]
+  )
+
   return (
     <FileTreeItem
-      {...others}
+      LabelProps={
+        contextMenuProps([
+          {
+            id: 'start-presentation',
+            enabled,
+            value: file.path,
+          },
+        ]) as BoxProps
+      }
       fileIcon={<FileIcon file={file} size="small" />}
       label={file.name}
       nodeId={file.path}

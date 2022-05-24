@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { ReactNode, Ref, forwardRef } from 'react'
-import { Box, Typography } from '@mui/material'
+import { Box, BoxProps, Typography } from '@mui/material'
 import {
   TreeItem,
   TreeItemContentProps,
@@ -73,17 +73,28 @@ const FileTreeItemContent = forwardRef(function FileContent(
   )
 })
 
-type Props = TreeItemProps & { fileIcon: ReactNode }
+type Props = TreeItemProps & {
+  LabelProps?: BoxProps
+  fileIcon: ReactNode
+}
 
 const FileTreeItem = (props: Props) => {
-  const { children, fileIcon, label, ...others } = props
+  const { LabelProps, children, fileIcon, label, ...others } = props
 
   return (
     <TreeItem
       {...others}
       ContentComponent={FileTreeItemContent}
       label={
-        <Box sx={{ alignItems: 'center', display: 'flex', py: 0.75 }}>
+        <Box
+          {...LabelProps}
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            py: 0.75,
+            userSelect: 'none',
+          }}
+        >
           <Box sx={{ alignItems: 'center', display: 'flex', mr: 1 }}>
             {fileIcon}
           </Box>
@@ -96,7 +107,6 @@ const FileTreeItem = (props: Props) => {
           </Typography>
         </Box>
       }
-      sx={{ userSelect: 'none' }}
     >
       {children}
     </TreeItem>

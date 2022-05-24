@@ -60,14 +60,9 @@ const FavoriteTreeView = () => {
       <FavoriteTreeItem label="Favorites" nodeId="root">
         {items.map((item) => (
           <FavoriteTreeItem
-            data-params={JSON.stringify({
-              id: 'favorite',
-              path: item.path,
-            })}
             key={item.path}
             label={item.name}
             nodeId={item.path}
-            title={item.path}
           />
         ))}
       </FavoriteTreeItem>

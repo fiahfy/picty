@@ -68,14 +68,14 @@ const sortOptions = [
 ]
 
 const ExplorerBar = () => {
-  const favorite = useAppSelector((state) =>
-    selectIsFavorite(state)(currentDirectory)
-  )
   const { canBack, canForward, currentDirectory } = useAppSelector((state) => ({
     canBack: selectCanBack(state),
     canForward: selectCanForward(state),
     currentDirectory: selectCurrentDirectory(state),
   }))
+  const favorite = useAppSelector((state) =>
+    selectIsFavorite(state)(currentDirectory)
+  )
   const { drawerHidden, explorerLayout } = useAppSelector((state) => ({
     drawerHidden: selectDrawerHidden(state),
     explorerLayout: selectExplorerLayout(state),

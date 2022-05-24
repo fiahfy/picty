@@ -3,6 +3,7 @@ import { Box, Toolbar } from '@mui/material'
 import ExplorerBar from 'components/ExplorerBar'
 import SideBar from 'components/SideBar'
 import TitleBar from 'components/TitleBar'
+import { getContextMenuParams } from 'utils/contextMenu'
 
 type Props = {
   children: ReactNode
@@ -12,17 +13,8 @@ type Props = {
 const Layout = (props: Props) => {
   const { children, hideBars = false } = props
 
-  const getTargetParams = (e: HTMLElement): string | undefined => {
-    const params = e.dataset.params
-    if (params) {
-      return JSON.parse(params)
-    }
-    const parent = e.parentElement
-    return parent ? getTargetParams(parent) : undefined
-  }
-
   const handleMouseDown = async (e: MouseEvent<HTMLDivElement>) => {
-    const params = getTargetParams(e.target as HTMLElement)
+    const params = getContextMenuParams(e.target as HTMLElement)
     await window.electronAPI.sendParamsForContextMenu(params)
   }
 

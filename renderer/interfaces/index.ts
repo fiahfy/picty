@@ -43,3 +43,9 @@ export type File = {
 export type FileNode = File & { children?: FileNode[] }
 export type Content = File & { dateModified: number }
 export type ExplorerContent = Content & { rating: number }
+
+export type MenuParams = {
+  id: string
+  enabled: boolean
+  value: any // eslint-disable-line @typescript-eslint/no-explicit-any
+}

@@ -4,10 +4,11 @@ import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
 import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent, File } from 'interfaces'
-import { isImageFile } from 'utils/image'
-import { semaphore } from 'utils/semaphore'
 import { useAppDispatch } from 'store'
 import { rate } from 'store/rating'
+import { contextMenuProps } from 'utils/contextMenu'
+import { isImageFile } from 'utils/image'
+import { semaphore } from 'utils/semaphore'
 
 type Props = {
   columnIndex: number
@@ -75,15 +76,17 @@ const ExplorerGridItem = (props: Props) => {
 
   return (
     <ImageListItem
+      {...contextMenuProps([
+        {
+          id: 'start-presentation',
+          enabled,
+          value: content.path,
+        },
+      ])}
       className={selected ? 'selected' : undefined}
       component="div"
       data-grid-column={columnIndex + 1}
       data-grid-row={rowIndex + 1}
-      data-params={JSON.stringify({
-        id: 'content',
-        enabled,
-        path: content.path,
-      })}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
       sx={{

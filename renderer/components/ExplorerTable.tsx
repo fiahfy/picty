@@ -19,9 +19,10 @@ import {
 import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent } from 'interfaces'
-import { isImageFile } from 'utils/image'
 import { useAppDispatch, useAppSelector } from 'store'
 import { rate, selectGetRating } from 'store/rating'
+import { contextMenuProps } from 'utils/contextMenu'
+import { isImageFile } from 'utils/image'
 
 const headerHeight = 32
 const rowHeight = 32
@@ -195,12 +196,14 @@ const ExplorerTable = (props: Props) => {
     const enabled = rowData.type === 'directory' || isImageFile(rowData.path)
     return (
       <TableCell
+        {...contextMenuProps([
+          {
+            id: 'start-presentation',
+            enabled,
+            value: rowData.path,
+          },
+        ])}
         component="div"
-        data-params={JSON.stringify({
-          id: 'content',
-          enabled,
-          path: rowData.path,
-        })}
         sx={{
           alignItems: 'center',
           borderBottom: 'none',
