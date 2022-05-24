@@ -97,7 +97,7 @@ const ExplorerBar = () => {
 
   useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeSearch(() => {
-      dispatch(setQuery(document.getSelection()?.toString() ?? ''))
+      setQueryInput(document.getSelection()?.toString() ?? '')
       ref.current && ref.current?.focus()
     })
     const handleKeyDown = (e: globalThis.KeyboardEvent) => {
@@ -215,6 +215,12 @@ const ExplorerBar = () => {
     }
   }
 
+  const handleKeyDownQuery = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+      dispatch(setQuery(queryInput))
+    }
+  }
+
   return (
     <AppBar
       color="default"
@@ -318,6 +324,7 @@ const ExplorerBar = () => {
               hiddenLabel
               inputRef={ref}
               onChange={handleChangeQuery}
+              onKeyDown={handleKeyDownQuery}
               placeholder="Search..."
               size="small"
               startAdornment={
