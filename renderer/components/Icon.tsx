@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { colors } from '@mui/material'
+import { blue, green, grey } from '@mui/material/colors'
 import {
   Folder as FolderIcon,
   InsertDriveFile as InsertDriveFileIcon,
@@ -33,11 +33,11 @@ const Icon = (props: Props) => {
       case 'favorite':
         return '#faaf00'
       case 'directory':
-        return colors.blue['200']
+        return blue['200']
       case 'image':
-        return colors.green['200']
+        return green['200']
       case 'file':
-        return colors.grey['400']
+        return grey['400']
     }
   }, [type])
 

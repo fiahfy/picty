@@ -14,8 +14,8 @@ import {
   TableCell,
   TableSortLabel,
   Typography,
-  alpha,
 } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent } from 'interfaces'

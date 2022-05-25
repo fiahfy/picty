@@ -1,12 +1,8 @@
 import clsx from 'clsx'
 import { ReactNode, Ref, forwardRef } from 'react'
 import { Box, BoxProps, Typography } from '@mui/material'
-import {
-  TreeItem,
-  TreeItemContentProps,
-  TreeItemProps,
-  useTreeItem,
-} from '@mui/lab'
+import { TreeItem, TreeItemContentProps, TreeItemProps } from '@mui/lab'
+import { useTreeItem } from '@mui/lab/TreeItem'
 
 const FileTreeItemContent = forwardRef(function FileContent(
   props: TreeItemContentProps,

@@ -1,9 +1,5 @@
-import {
-  Theme,
-  ToggleButtonGroup,
-  styled,
-  experimental_sx as sx,
-} from '@mui/material'
+import { Theme, ToggleButtonGroup } from '@mui/material'
+import { styled, experimental_sx as sx } from '@mui/material/styles'
 
 const FilledToggleButtonGroup = styled(ToggleButtonGroup)(
   sx({

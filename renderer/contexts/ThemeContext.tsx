@@ -7,13 +7,11 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { CssBaseline, PaletteMode, Theme } from '@mui/material'
 import {
-  CssBaseline,
   ThemeProvider as MuiThemeProvider,
-  PaletteMode,
-  Theme,
   createTheme,
-} from '@mui/material'
+} from '@mui/material/styles'
 import { useTitleBar } from 'contexts/TitleBarContext'
 import { useAppSelector } from 'store'
 import { selectDarkMode } from 'store/settings'

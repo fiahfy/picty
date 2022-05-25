@@ -1,9 +1,5 @@
-import {
-  Select,
-  SelectProps,
-  styled,
-  experimental_sx as sx,
-} from '@mui/material'
+import { Select, SelectProps } from '@mui/material'
+import { styled, experimental_sx as sx } from '@mui/material/styles'
 
 const RoundedFilledSelect = styled((props) => (
   <Select {...props} variant="filled" />

@@ -1,4 +1,5 @@
-import { FilledInput, styled, experimental_sx as sx } from '@mui/material'
+import { FilledInput } from '@mui/material'
+import { styled, experimental_sx as sx } from '@mui/material/styles'
 
 const RoundedFilledInput = styled(FilledInput)(
   sx({
