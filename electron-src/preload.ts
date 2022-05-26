@@ -14,7 +14,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openPath: (path: string) => ipcRenderer.invoke('open-path', path),
   sendParamsForContextMenu: (params?: unknown) =>
     ipcRenderer.invoke('send-params-for-context-menu', params),
-  subscribeRemoveFavorite: (callback: (path: string) => void) => {
+  subscribeAddToFavorites: (callback: (path: string) => void) => {
+    const cb = (_e: IpcRendererEvent, path: string) => callback(path)
+    ipcRenderer.on('add-favorite', cb)
+    return () => {
+      ipcRenderer.removeListener('add-favorite', cb)
+    }
+  },
+  subscribeRemoveFromFavorites: (callback: (path: string) => void) => {
     const cb = (_e: IpcRendererEvent, path: string) => callback(path)
     ipcRenderer.on('remove-favorite', cb)
     return () => {

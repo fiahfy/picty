@@ -17,7 +17,8 @@ export interface IElectronAPI {
   listFilesWithPath: (path: string) => Promise<File[]>
   openPath: (path: string) => Promise<void>
   sendParamsForContextMenu: (params?: unknown) => Promise<void>
-  subscribeRemoveFavorite: (callback: (path: string) => void) => () => void
+  subscribeAddToFavorites: (callback: (path: string) => void) => () => void
+  subscribeRemoveFromFavorites: (callback: (path: string) => void) => () => void
   subscribeShowSettings: (callback: () => void) => () => void
   subscribeStartPresentation: (callback: (path: string) => void) => () => void
   subscribeSearch: (callback: () => void) => () => void

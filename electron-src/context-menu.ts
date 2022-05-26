@@ -63,6 +63,17 @@ export const createContextMenu = () => {
         },
         { type: 'separator' },
         {
+          id: 'add-favorite',
+          callback: (params) => ({
+            click: () => {
+              const wc = webContents(browserWindow)
+              wc && wc.send('add-favorite', params.value)
+            },
+            enabled: params.enabled,
+            label: 'Add to Favorites',
+          }),
+        },
+        {
           id: 'remove-favorite',
           callback: (params) => ({
             click: () => {

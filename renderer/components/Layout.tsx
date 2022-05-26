@@ -1,17 +1,38 @@
-import { MouseEvent, ReactNode } from 'react'
+import { MouseEvent, ReactNode, useEffect } from 'react'
 import { Box, Toolbar } from '@mui/material'
 import ExplorerBar from 'components/ExplorerBar'
 import SideBar from 'components/SideBar'
 import TitleBar from 'components/TitleBar'
+import { useAppDispatch } from 'store'
+import { add, remove } from 'store/favorite'
 import { getContextMenuParams } from 'utils/contextMenu'
 
 type Props = {
   children: ReactNode
-  hideBars?: boolean
+  dialog?: boolean
 }
 
 const Layout = (props: Props) => {
-  const { children, hideBars = false } = props
+  const { children, dialog = false } = props
+
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (dialog) {
+      return
+    }
+
+    const unsubscribeAddToFavorites =
+      window.electronAPI.subscribeAddToFavorites((path) => dispatch(add(path)))
+    const unsubscribeRemoveFromFavorites =
+      window.electronAPI.subscribeRemoveFromFavorites((path) =>
+        dispatch(remove(path))
+      )
+    return () => {
+      unsubscribeAddToFavorites()
+      unsubscribeRemoveFromFavorites()
+    }
+  }, [dialog, dispatch])
 
   const handleMouseDown = async (e: MouseEvent<HTMLDivElement>) => {
     const params = getContextMenuParams(e.target as HTMLElement)
@@ -20,7 +41,7 @@ const Layout = (props: Props) => {
 
   return (
     <Box
-      onMouseDown={handleMouseDown}
+      onMouseDown={dialog ? undefined : handleMouseDown}
       sx={{ display: 'flex', height: '100%', overflow: 'hidden' }}
     >
       <style global jsx>{`
@@ -33,8 +54,8 @@ const Layout = (props: Props) => {
         }
       `}</style>
       <TitleBar />
-      {!hideBars && <ExplorerBar />}
-      {!hideBars && <SideBar />}
+      {!dialog && <ExplorerBar />}
+      {!dialog && <SideBar />}
       <Box
         component="main"
         sx={{
@@ -49,7 +70,7 @@ const Layout = (props: Props) => {
             minHeight: (theme) => `${theme.mixins.titleBar.height}px!important`,
           }}
         />
-        {!hideBars && (
+        {!dialog && (
           <Toolbar
             sx={{
               flexShrink: 0,

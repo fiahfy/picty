@@ -77,6 +77,10 @@ export const load =
   (path: string): AppThunk =>
   async (dispatch) => {
     dispatch(loading())
-    const contents = await window.electronAPI.listContents(path)
-    dispatch(loaded(contents))
+    try {
+      const contents = await window.electronAPI.listContents(path)
+      dispatch(loaded(contents))
+    } catch (e) {
+      dispatch(loaded([]))
+    }
   }

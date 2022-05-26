@@ -4,6 +4,8 @@ import FileIcon from 'components/FileIcon'
 import FileTreeItem from 'components/FileTreeItem'
 import Icon from 'components/Icon'
 import { FileNode } from 'interfaces'
+import { useAppSelector } from 'store'
+import { selectIsFavorite } from 'store/favorite'
 import { contextMenuProps } from 'utils/contextMenu'
 import { isImageFile } from 'utils/image'
 
@@ -15,6 +17,8 @@ type Props = {
 
 const ExplorerTreeItem = (props: Props) => {
   const { file } = props
+
+  const favorite = useAppSelector((state) => selectIsFavorite(state)(file.path))
 
   const over = (file.children ?? []).length - max
 
@@ -30,6 +34,11 @@ const ExplorerTreeItem = (props: Props) => {
           {
             id: 'start-presentation',
             enabled,
+            value: file.path,
+          },
+          {
+            id: 'add-favorite',
+            enabled: !favorite,
             value: file.path,
           },
         ]) as BoxProps

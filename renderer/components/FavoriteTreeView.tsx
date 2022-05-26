@@ -6,7 +6,7 @@ import {
 } from '@mui/icons-material'
 import FavoriteTreeItem from 'components/FavoriteTreeItem'
 import { useAppDispatch, useAppSelector } from 'store'
-import { remove, selectFavorites } from 'store/favorite'
+import { selectFavorites } from 'store/favorite'
 import { push } from 'store/history'
 
 const FavoriteTreeView = () => {
@@ -15,13 +15,6 @@ const FavoriteTreeView = () => {
 
   const [selected, setSelected] = useState<string[]>([])
   const [items, setItems] = useState<{ name: string; path: string }[]>([])
-
-  useEffect(() => {
-    const unsubscribe = window.electronAPI.subscribeRemoveFavorite((path) =>
-      dispatch(remove(path))
-    )
-    return () => unsubscribe()
-  }, [dispatch])
 
   useEffect(() => {
     ;(async () => {

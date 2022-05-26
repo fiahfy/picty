@@ -59,7 +59,7 @@ const SettingsDialog = (props: Props) => {
 
   return (
     <Dialog fullScreen onClose={onRequestClose} open={open}>
-      <Layout hideBars>
+      <Layout dialog>
         <AppBar color="default">
           <Toolbar variant="dense">
             <IconButton color="inherit" edge="start" onClick={onRequestClose}>

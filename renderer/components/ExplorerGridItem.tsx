@@ -4,7 +4,8 @@ import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
 import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent, File } from 'interfaces'
-import { useAppDispatch } from 'store'
+import { useAppDispatch, useAppSelector } from 'store'
+import { selectIsFavorite } from 'store/favorite'
 import { rate } from 'store/rating'
 import { contextMenuProps } from 'utils/contextMenu'
 import { isImageFile } from 'utils/image'
@@ -23,6 +24,9 @@ const ExplorerGridItem = (props: Props) => {
   const { columnIndex, content, onClick, onDoubleClick, rowIndex, selected } =
     props
 
+  const favorite = useAppSelector((state) =>
+    selectIsFavorite(state)(content.path)
+  )
   const dispatch = useAppDispatch()
 
   const [loading, setLoading] = useState(false)
@@ -80,6 +84,11 @@ const ExplorerGridItem = (props: Props) => {
         {
           id: 'start-presentation',
           enabled,
+          value: content.path,
+        },
+        {
+          id: 'add-favorite',
+          enabled: !favorite,
           value: content.path,
         },
       ])}

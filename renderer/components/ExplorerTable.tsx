@@ -20,6 +20,7 @@ import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent } from 'interfaces'
 import { useAppDispatch, useAppSelector } from 'store'
+import { selectIsFavorite } from 'store/favorite'
 import { rate, selectGetRating } from 'store/rating'
 import { contextMenuProps } from 'utils/contextMenu'
 import { isImageFile } from 'utils/image'
@@ -81,6 +82,7 @@ const ExplorerTable = (props: Props) => {
     sortOption,
   } = props
 
+  const isfavorite = useAppSelector(selectIsFavorite)
   const getRating = useAppSelector(selectGetRating)
   const dispatch = useAppDispatch()
 
@@ -193,13 +195,17 @@ const ExplorerTable = (props: Props) => {
   }
 
   const cellRenderer = ({ dataKey, rowData }: TableCellProps) => {
-    const enabled = rowData.type === 'directory' || isImageFile(rowData.path)
     return (
       <TableCell
         {...contextMenuProps([
           {
             id: 'start-presentation',
-            enabled,
+            enabled: rowData.type === 'directory' || isImageFile(rowData.path),
+            value: rowData.path,
+          },
+          {
+            id: 'add-favorite',
+            enabled: !isfavorite(rowData.path),
             value: rowData.path,
           },
         ])}

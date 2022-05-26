@@ -82,7 +82,12 @@ const PresentationDialog = (props: Props) => {
         setIndex(0)
         setImages([])
         setLoading(true)
-        const files = await window.electronAPI.listFilesWithPath(path)
+        let files: File[] = []
+        try {
+          files = await window.electronAPI.listFilesWithPath(path)
+        } catch (e) {
+          // noop
+        }
         const images = files.filter((file) => isImageFile(file.path))
         setImages(images)
         const index = images.findIndex((image) => image.path === path)
@@ -153,7 +158,7 @@ const PresentationDialog = (props: Props) => {
       sx={{ cursor: toolbar ? undefined : 'none' }}
       transitionDuration={0}
     >
-      <Layout hideBars>
+      <Layout dialog>
         <Fade in={toolbar}>
           <AppBar color="transparent" elevation={0}>
             <Box
