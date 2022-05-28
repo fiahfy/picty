@@ -123,7 +123,6 @@ const IndexPage = () => {
 
   const handleScroll = (e: Event) => {
     if (!loading && e.target instanceof HTMLElement) {
-      console.log(currentDirectory, e.target.scrollTop)
       dispatch(scroll(e.target.scrollTop))
     }
   }

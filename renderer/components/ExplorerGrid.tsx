@@ -151,7 +151,7 @@ const ExplorerGrid = (props: Props) => {
     const content = chunks[rowIndex]?.[columnIndex]
     return (
       content && (
-        <Box key={key} style={style} sx={{ p: 0.25 }}>
+        <Box key={key} style={style} sx={{ p: 0.0625 }}>
           <ExplorerGridItem
             columnIndex={columnIndex}
             content={content}

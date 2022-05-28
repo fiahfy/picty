@@ -1,6 +1,7 @@
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import fileUrl from 'file-url'
 import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
 import { ExplorerContent, File } from 'interfaces'
@@ -100,10 +101,29 @@ const ExplorerGridItem = (props: Props) => {
         cursor: 'pointer',
         height: '100%!important',
         width: '100%',
+        '&:hover': {
+          '.overlay': {
+            backgroundColor: (theme) => theme.palette.action.hover,
+          },
+        },
         '&.selected': {
-          outlineColor: (theme) => theme.palette.primary.main,
-          outlineStyle: 'solid',
-          outlineWidth: '1px',
+          '.overlay': {
+            backgroundColor: (theme) =>
+              alpha(
+                theme.palette.primary.main,
+                theme.palette.action.selectedOpacity
+              ),
+          },
+          '&:hover': {
+            '.overlay': {
+              backgroundColor: (theme) =>
+                alpha(
+                  theme.palette.primary.main,
+                  theme.palette.action.selectedOpacity +
+                    theme.palette.action.hoverOpacity
+                ),
+            },
+          },
         },
       }}
       tabIndex={0}
@@ -184,6 +204,16 @@ const ExplorerGridItem = (props: Props) => {
             </Typography>
           </Box>
         }
+      />
+      <Box
+        className="overlay"
+        sx={{
+          height: '100%',
+          pointerEvents: 'none',
+          position: 'absolute',
+          top: 0,
+          width: '100%',
+        }}
       />
     </ImageListItem>
   )
