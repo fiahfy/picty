@@ -1,13 +1,18 @@
 import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 import { AppState, AppThunk } from 'store'
 
+type History = {
+  directory: string
+  scrollTop: number
+}
+
 type State = {
-  directories: string[]
+  histories: History[]
   index: number
 }
 
 const initialState: State = {
-  directories: [],
+  histories: [],
   index: -1,
 }
 
@@ -17,29 +22,53 @@ export const historySlice = createSlice({
   reducers: {
     go(state, action: PayloadAction<number>) {
       const index = state.index + action.payload
-      const directory = state.directories[index]
-      return directory ? { ...state, index } : state
+      const history = state.histories[index]
+      return history ? { ...state, index } : state
     },
-    push(state, action: PayloadAction<string>) {
+    move(state, action: PayloadAction<string>) {
       const index = state.index + 1
       return {
         ...state,
-        directories: [...state.directories.slice(0, index), action.payload],
+        histories: [
+          ...state.histories.slice(0, index),
+          { directory: action.payload, scrollTop: 0 },
+        ],
         index,
+      }
+    },
+    scroll(state, action: PayloadAction<number>) {
+      return {
+        ...state,
+        histories: state.histories.map((history, i) =>
+          i === state.index
+            ? { ...history, scrollTop: action.payload }
+            : history
+        ),
       }
     },
   },
 })
 
-export const { go, push } = historySlice.actions
+export const { go, move, scroll } = historySlice.actions
 
 export default historySlice.reducer
 
 export const selectHistory = (state: AppState) => state.history
 
-export const selectCurrentDirectory = createSelector(
+export const selectCurrentHistory = createSelector(
   selectHistory,
-  (history) => history.directories[history.index] ?? ''
+  (history) =>
+    history.histories[history.index] ?? { directory: '', scrollTop: 0 }
+)
+
+export const selectCurrentDirectory = createSelector(
+  selectCurrentHistory,
+  (currentHistory) => currentHistory.directory
+)
+
+export const selectCurrentScrollTop = createSelector(
+  selectCurrentHistory,
+  (currentHistory) => currentHistory.scrollTop
 )
 
 export const selectCanBack = createSelector(
@@ -49,7 +78,7 @@ export const selectCanBack = createSelector(
 
 export const selectCanForward = createSelector(
   selectHistory,
-  (history) => history.index < history.directories.length - 1
+  (history) => history.index < history.histories.length - 1
 )
 
 export const back = (): AppThunk => async (dispatch) => dispatch(go(-1))

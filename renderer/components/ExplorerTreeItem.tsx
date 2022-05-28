@@ -18,7 +18,7 @@ type Props = {
 const ExplorerTreeItem = (props: Props) => {
   const { file } = props
 
-  const favorite = useAppSelector((state) => selectIsFavorite(state)(file.path))
+  const favorite = useAppSelector(selectIsFavorite)(file.path)
 
   const over = (file.children ?? []).length - max
 

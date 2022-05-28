@@ -7,7 +7,7 @@ import { TreeView } from '@mui/lab'
 import ExplorerTreeItem from 'components/ExplorerTreeItem'
 import { FileNode } from 'interfaces'
 import { useAppDispatch, useAppSelector } from 'store'
-import { push, selectCurrentDirectory } from 'store/history'
+import { move, selectCurrentDirectory } from 'store/history'
 
 const ExplorerTreeView = () => {
   const currentDirectory = useAppSelector(selectCurrentDirectory)
@@ -51,7 +51,7 @@ const ExplorerTreeView = () => {
       return
     }
     const content = contentNodeMap[nodeIds]
-    content?.type === 'directory' && dispatch(push(nodeIds))
+    content?.type === 'directory' && dispatch(move(nodeIds))
   }
 
   const handleToggle = async (_event: SyntheticEvent, nodeIds: string[]) => {

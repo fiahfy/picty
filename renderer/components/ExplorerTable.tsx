@@ -1,4 +1,10 @@
-import { FocusEvent, KeyboardEvent, useCallback, useRef } from 'react'
+import {
+  FocusEvent,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react'
 import {
   AutoSizer,
   Column,
@@ -66,6 +72,8 @@ type Props = {
   onDoubleClickContent: (content: ExplorerContent) => void
   onFocusContent: (content: ExplorerContent) => void
   onKeyDownEnter: (e: KeyboardEvent<HTMLDivElement>) => void
+  onScroll: (e: Event) => void
+  scrollTop: number
   sortOption: { order: Order; orderBy: Key }
 }
 
@@ -79,14 +87,33 @@ const ExplorerTable = (props: Props) => {
     onDoubleClickContent,
     onFocusContent,
     onKeyDownEnter,
+    onScroll,
+    scrollTop,
     sortOption,
   } = props
 
-  const isfavorite = useAppSelector(selectIsFavorite)
+  const isFavorite = useAppSelector(selectIsFavorite)
   const getRating = useAppSelector(selectGetRating)
   const dispatch = useAppDispatch()
 
   const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = ref.current?.querySelector('.ReactVirtualized__Grid')
+    if (!el) {
+      return
+    }
+    el.addEventListener('scroll', onScroll)
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [onScroll])
+
+  useEffect(() => {
+    const el = ref.current?.querySelector('.ReactVirtualized__Grid')
+    if (!el) {
+      return
+    }
+    el.scrollTop = scrollTop
+  }, [loading, scrollTop])
 
   const getWidths = useCallback((wrapperWidth) => {
     const widths = columns.map((column) => column.width)
@@ -205,7 +232,7 @@ const ExplorerTable = (props: Props) => {
           },
           {
             id: 'add-favorite',
-            enabled: !isfavorite(rowData.path),
+            enabled: !isFavorite(rowData.path),
             value: rowData.path,
           },
         ])}

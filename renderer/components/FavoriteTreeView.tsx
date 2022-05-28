@@ -7,7 +7,7 @@ import {
 import FavoriteTreeItem from 'components/FavoriteTreeItem'
 import { useAppDispatch, useAppSelector } from 'store'
 import { selectFavorites } from 'store/favorite'
-import { push } from 'store/history'
+import { move } from 'store/history'
 
 const FavoriteTreeView = () => {
   const favorites = useAppSelector(selectFavorites)
@@ -39,7 +39,7 @@ const FavoriteTreeView = () => {
     if (nodeIds === 'root') {
       return
     }
-    dispatch(push(nodeIds))
+    dispatch(move(nodeIds))
   }
 
   return (

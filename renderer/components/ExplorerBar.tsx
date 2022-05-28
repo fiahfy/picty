@@ -45,7 +45,7 @@ import { selectIsFavorite, toggle } from 'store/favorite'
 import {
   back,
   forward,
-  push,
+  move,
   selectCanBack,
   selectCanForward,
   selectCurrentDirectory,
@@ -68,20 +68,14 @@ const sortOptions = [
 ]
 
 const ExplorerBar = () => {
-  const { canBack, canForward, currentDirectory } = useAppSelector((state) => ({
-    canBack: selectCanBack(state),
-    canForward: selectCanForward(state),
-    currentDirectory: selectCurrentDirectory(state),
-  }))
-  const favorite = useAppSelector((state) =>
-    selectIsFavorite(state)(currentDirectory)
-  )
-  const { drawerHidden, explorerLayout } = useAppSelector((state) => ({
-    drawerHidden: selectDrawerHidden(state),
-    explorerLayout: selectExplorerLayout(state),
-  }))
-  const getSortOption = useAppSelector(selectGetSortOption)
+  const canBack = useAppSelector(selectCanBack)
+  const canForward = useAppSelector(selectCanForward)
+  const currentDirectory = useAppSelector(selectCurrentDirectory)
   const dispatch = useAppDispatch()
+  const drawerHidden = useAppSelector(selectDrawerHidden)
+  const explorerLayout = useAppSelector(selectExplorerLayout)
+  const favorite = useAppSelector(selectIsFavorite)(currentDirectory)
+  const getSortOption = useAppSelector(selectGetSortOption)
 
   const [directory, setDirectory] = useState('')
   const [queryInput, setQueryInput] = useState('')
@@ -137,7 +131,7 @@ const ExplorerBar = () => {
     ;(async () => {
       if (!currentDirectory) {
         const homePath = await window.electronAPI.getHomePath()
-        return dispatch(push(homePath))
+        return dispatch(move(homePath))
       }
       setDirectory(currentDirectory)
       dispatch(unselectAll())
@@ -161,7 +155,7 @@ const ExplorerBar = () => {
 
   const handleClickUpward = async () => {
     const dirPath = await window.electronAPI.getDirname(directory)
-    dispatch(push(dirPath))
+    dispatch(move(dirPath))
   }
 
   const handleClickRefresh = async () => {
@@ -211,7 +205,7 @@ const ExplorerBar = () => {
 
   const handleKeyDownDirectory = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing && directory) {
-      dispatch(push(directory))
+      dispatch(move(directory))
     }
   }
 

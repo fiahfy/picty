@@ -39,10 +39,8 @@ type Props = {
 const SettingsDialog = (props: Props) => {
   const { onRequestClose, open } = props
 
-  const { darkMode, explorerLayout } = useAppSelector((state) => ({
-    darkMode: selectDarkMode(state),
-    explorerLayout: selectExplorerLayout(state),
-  }))
+  const darkMode = useAppSelector(selectDarkMode)
+  const explorerLayout = useAppSelector(selectExplorerLayout)
   const dispatch = useAppDispatch()
 
   const handleChangeDarkMode = (e: ChangeEvent<HTMLInputElement>) => {

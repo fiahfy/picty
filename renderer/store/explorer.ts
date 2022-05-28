@@ -6,14 +6,14 @@ type State = {
   contents: Content[]
   loading: boolean
   query: string
-  selectedContents: Content[]
+  selected: string[]
 }
 
 const initialState: State = {
   contents: [],
   loading: false,
   query: '',
-  selectedContents: [],
+  selected: [],
 }
 
 export const explorerSlice = createSlice({
@@ -26,14 +26,14 @@ export const explorerSlice = createSlice({
     loading(state) {
       return { ...state, contents: [], loading: true }
     },
-    select(state, action: PayloadAction<Content>) {
-      return { ...state, selectedContents: [action.payload] }
+    select(state, action: PayloadAction<string>) {
+      return { ...state, selected: [action.payload] }
     },
     setQuery(state, action: PayloadAction<string>) {
       return { ...state, query: action.payload }
     },
     unselectAll(state) {
-      return { ...state, selectedContents: [] }
+      return { ...state, selected: [] }
     },
   },
 })
@@ -60,17 +60,16 @@ export const selectQuery = createSelector(
   (explorer) => explorer.query
 )
 
-export const selectSelectedContents = createSelector(
+export const selectIsSelected = createSelector(
   selectExplorer,
-  (explorer) => explorer.selectedContents
+  (explorer) => (path: string) => explorer.selected.includes(path)
 )
 
-export const selectIsContentSelected = createSelector(
-  selectSelectedContents,
-  (selectedContents) => (content: Content) =>
-    selectedContents.findIndex(
-      (selectedContent) => selectedContent.path === content.path
-    ) > -1
+export const selectSelectedContents = createSelector(
+  selectExplorer,
+  selectIsSelected,
+  (explorer, isSelected) =>
+    explorer.contents.filter((content) => isSelected(content.path))
 )
 
 export const load =

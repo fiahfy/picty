@@ -7,30 +7,33 @@ import { useAppDispatch, useAppSelector } from 'store'
 import {
   select,
   selectContents,
-  selectIsContentSelected,
+  selectIsSelected,
   selectLoading,
   selectQuery,
   selectSelectedContents,
 } from 'store/explorer'
-import { push, selectCurrentDirectory } from 'store/history'
+import {
+  move,
+  scroll,
+  selectCurrentDirectory,
+  selectCurrentScrollTop,
+} from 'store/history'
 import { selectGetRating } from 'store/rating'
 import { selectExplorerLayout } from 'store/settings'
 import { selectGetSortOption, sort } from 'store/sorting'
 import { isImageFile } from 'utils/image'
 
 const IndexPage = () => {
-  const { contents, isContentSelected, loading, query, selectedContents } =
-    useAppSelector((state) => ({
-      contents: selectContents(state),
-      isContentSelected: selectIsContentSelected(state),
-      loading: selectLoading(state),
-      query: selectQuery(state),
-      selectedContents: selectSelectedContents(state),
-    }))
+  const contents = useAppSelector(selectContents)
   const currentDirectory = useAppSelector(selectCurrentDirectory)
-  const getRating = useAppSelector(selectGetRating)
+  const currentScrollTop = useAppSelector(selectCurrentScrollTop)
   const explorerLayout = useAppSelector(selectExplorerLayout)
+  const getRating = useAppSelector(selectGetRating)
   const getSortOption = useAppSelector(selectGetSortOption)
+  const isSelected = useAppSelector(selectIsSelected)
+  const loading = useAppSelector(selectLoading)
+  const query = useAppSelector(selectQuery)
+  const selectedContents = useAppSelector(selectSelectedContents)
   const dispatch = useAppDispatch()
 
   const [dialogState, setDialogState] = useState<{
@@ -85,8 +88,8 @@ const IndexPage = () => {
     [comparator, contents, getRating, query]
   )
 
-  const contentSelected = (content: ExplorerContent) =>
-    isContentSelected(content)
+  const isContentSelected = (content: ExplorerContent) =>
+    isSelected(content.path)
 
   const handleKeyDownEnter = () => {
     const content = selectedContents[0]
@@ -106,22 +109,29 @@ const IndexPage = () => {
   }
 
   const handleClickContent = (content: ExplorerContent) =>
-    dispatch(select(content))
+    dispatch(select(content.path))
 
   const handleDoubleClickContent = async (content: ExplorerContent) =>
     content.type === 'directory'
-      ? dispatch(push(content.path))
+      ? dispatch(move(content.path))
       : await window.electronAPI.openPath(content.path)
 
   const handleFocusContent = (content: ExplorerContent) =>
-    dispatch(select(content))
+    dispatch(select(content.path))
 
   const handleRequestClose = () => setDialogState({ open: false, path: '' })
+
+  const handleScroll = (e: Event) => {
+    if (!loading && e.target instanceof HTMLElement) {
+      console.log(currentDirectory, e.target.scrollTop)
+      dispatch(scroll(e.target.scrollTop))
+    }
+  }
 
   return (
     <>
       {createElement(explorerLayout === 'list' ? ExplorerTable : ExplorerGrid, {
-        contentSelected,
+        contentSelected: isContentSelected,
         contents: explorerContents,
         loading,
         onChangeSortOption: handleChangeSortOption,
@@ -129,6 +139,8 @@ const IndexPage = () => {
         onDoubleClickContent: handleDoubleClickContent,
         onFocusContent: handleFocusContent,
         onKeyDownEnter: handleKeyDownEnter,
+        onScroll: handleScroll,
+        scrollTop: currentScrollTop,
         sortOption,
       })}
       <PresentationDialog

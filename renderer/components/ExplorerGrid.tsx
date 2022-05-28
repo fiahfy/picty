@@ -21,6 +21,8 @@ type Props = {
   onDoubleClickContent: (content: ExplorerContent) => void
   onFocusContent: (content: ExplorerContent) => void
   onKeyDownEnter: (e: KeyboardEvent<HTMLDivElement>) => void
+  onScroll: (e: Event) => void
+  scrollTop: number
 }
 
 const ExplorerGrid = (props: Props) => {
@@ -32,6 +34,8 @@ const ExplorerGrid = (props: Props) => {
     onDoubleClickContent,
     onFocusContent,
     onKeyDownEnter,
+    onScroll,
+    scrollTop,
   } = props
 
   const ref = useRef<HTMLDivElement>(null)
@@ -42,6 +46,7 @@ const ExplorerGrid = (props: Props) => {
     if (!el) {
       return
     }
+    el.addEventListener('scroll', onScroll)
     const handleResize = (entries: ResizeObserverEntry[]) => {
       const entry = entries[0]
       if (entry) {
@@ -50,8 +55,19 @@ const ExplorerGrid = (props: Props) => {
     }
     const observer = new ResizeObserver(handleResize)
     observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
+    return () => {
+      el.removeEventListener('scroll', onScroll)
+      observer.disconnect()
+    }
+  }, [onScroll])
+
+  useEffect(() => {
+    const el = ref.current?.querySelector('.ReactVirtualized__Grid')
+    if (!el) {
+      return
+    }
+    el.scrollTop = scrollTop
+  }, [loading, scrollTop])
 
   const size = useMemo(
     () => Math.ceil(wrapperWidth / rowHeight) || 1,

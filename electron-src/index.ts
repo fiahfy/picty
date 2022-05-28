@@ -13,10 +13,7 @@ let mainWindow: BrowserWindow
 app.on('ready', async () => {
   await prepareNext('./renderer')
 
-  const windowState = windowStateKeeper({
-    defaultWidth: 800,
-    defaultHeight: 600,
-  })
+  const windowState = windowStateKeeper({})
 
   mainWindow = new BrowserWindow({
     ...windowState,

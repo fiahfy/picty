@@ -24,9 +24,7 @@ const ExplorerGridItem = (props: Props) => {
   const { columnIndex, content, onClick, onDoubleClick, rowIndex, selected } =
     props
 
-  const favorite = useAppSelector((state) =>
-    selectIsFavorite(state)(content.path)
-  )
+  const favorite = useAppSelector(selectIsFavorite)(content.path)
   const dispatch = useAppDispatch()
 
   const [loading, setLoading] = useState(false)

@@ -26,10 +26,8 @@ const Drawer = styled(MuiDrawer, {
 const minContentWidth = 64
 
 const SideBar = () => {
-  const { drawerHidden, drawerWidth } = useAppSelector((state) => ({
-    drawerHidden: selectDrawerHidden(state),
-    drawerWidth: selectDrawerWidth(state),
-  }))
+  const drawerHidden = useAppSelector(selectDrawerHidden)
+  const drawerWidth = useAppSelector(selectDrawerWidth)
   const dispatch = useAppDispatch()
 
   const handleMouseMove = useCallback(
@@ -82,7 +80,8 @@ const SideBar = () => {
         sx={{
           flexGrow: 1,
           marginRight: '5px',
-          overflow: 'auto',
+          overflowX: 'hidden',
+          overflowY: 'auto',
         }}
       >
         <FavoriteTreeView />
