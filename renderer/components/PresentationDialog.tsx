@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useReducer,
   useRef,
   useState,
 } from 'react'
@@ -28,6 +29,50 @@ import { useTheme } from 'contexts/ThemeContext'
 import { File } from 'interfaces'
 import { isImageFile } from 'utils/image'
 
+type State = { images: File[]; index: number; loading: boolean }
+
+type Action =
+  | { type: 'loaded'; payload: { images: File[]; index: number } }
+  | { type: 'loading' }
+  | { type: 'moveNext' }
+  | { type: 'movePrevious' }
+  | { type: 'moveTo'; payload: number }
+  | { type: 'reset' }
+
+const reducer = (state: State, action: Action) => {
+  switch (action.type) {
+    case 'loaded':
+      return {
+        ...state,
+        images: action.payload.images,
+        index: action.payload.index,
+        loading: false,
+      }
+    case 'loading':
+      return { ...state, images: [], index: 0, loading: true }
+    case 'moveNext': {
+      let index = state.index + 1
+      if (index > state.images.length - 1) {
+        index = 0
+      }
+      return { ...state, index }
+    }
+    case 'movePrevious': {
+      let index = state.index - 1
+      if (index < 0) {
+        index = state.images.length - 1
+      }
+      return { ...state, index }
+    }
+    case 'moveTo':
+      return { ...state, index: action.payload }
+    case 'reset':
+      return { images: [], index: 0, loading: false }
+    default:
+      return state
+  }
+}
+
 type Props = {
   onRequestClose: () => void
   open: boolean
@@ -39,9 +84,11 @@ const PresentationDialog = (props: Props) => {
 
   const { forceMode, resetMode } = useTheme()
 
-  const [index, setIndex] = useState(0)
-  const [images, setImages] = useState<File[]>([])
-  const [loading, setLoading] = useState(false)
+  const [{ images, index, loading }, dispatch] = useReducer(reducer, {
+    images: [],
+    index: 0,
+    loading: false,
+  })
   const [toolbar, setToolbar] = useState(false)
   const timer = useRef<number>()
   const topToolbar = useRef<HTMLDivElement>(null)
@@ -76,12 +123,10 @@ const PresentationDialog = (props: Props) => {
   useEffect(() => {
     ;(async () => {
       if (open) {
+        dispatch({ type: 'loading' })
         await document.body.requestFullscreen()
         forceMode('dark')
         resetTimer()
-        setIndex(0)
-        setImages([])
-        setLoading(true)
         let files: File[] = []
         try {
           files = await window.electronAPI.listFilesWithPath(path)
@@ -89,11 +134,13 @@ const PresentationDialog = (props: Props) => {
           // noop
         }
         const images = files.filter((file) => isImageFile(file.path))
-        setImages(images)
-        const index = images.findIndex((image) => image.path === path)
-        setIndex(index > -1 ? index : 0)
-        setLoading(false)
+        const index = Math.max(
+          0,
+          images.findIndex((image) => image.path === path)
+        )
+        dispatch({ type: 'loaded', payload: { images, index } })
       } else {
+        dispatch({ type: 'reset' })
         clearTimer()
         resetMode()
         document.fullscreenElement && (await document.exitFullscreen())
@@ -103,25 +150,9 @@ const PresentationDialog = (props: Props) => {
 
   const image = useMemo(() => images[index], [images, index])
 
-  const movePrevious = () => {
-    setIndex((prevIndex) => {
-      let index = prevIndex - 1
-      if (index < 0) {
-        index = images.length - 1
-      }
-      return index
-    })
-  }
+  const movePrevious = () => dispatch({ type: 'movePrevious' })
 
-  const moveNext = () => {
-    setIndex((prevIndex) => {
-      let index = prevIndex + 1
-      if (index > images.length - 1) {
-        index = 0
-      }
-      return index
-    })
-  }
+  const moveNext = () => dispatch({ type: 'moveNext' })
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     switch (e.key) {
@@ -144,7 +175,7 @@ const PresentationDialog = (props: Props) => {
 
   const handleChange = (_e: Event, value: number | number[]) => {
     if (!Array.isArray(value)) {
-      setIndex(value)
+      dispatch({ type: 'moveTo', payload: value })
     }
   }
 
