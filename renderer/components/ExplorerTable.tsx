@@ -24,6 +24,7 @@ import {
 import { alpha } from '@mui/material/styles'
 import FileIcon from 'components/FileIcon'
 import NoOutlineRating from 'components/NoOutlineRating'
+import usePrevious from 'hooks/usePrevious'
 import { ExplorerContent } from 'interfaces'
 import { useAppDispatch, useAppSelector } from 'store'
 import { selectIsFavorite } from 'store/favorite'
@@ -97,6 +98,7 @@ const ExplorerTable = (props: Props) => {
   const dispatch = useAppDispatch()
 
   const ref = useRef<HTMLDivElement>(null)
+  const previousLoading = usePrevious(loading)
 
   useEffect(() => {
     const el = ref.current?.querySelector('.ReactVirtualized__Grid')
@@ -112,8 +114,10 @@ const ExplorerTable = (props: Props) => {
     if (!el) {
       return
     }
-    el.scrollTop = scrollTop
-  }, [loading, scrollTop])
+    if (previousLoading && !loading) {
+      el.scrollTop = scrollTop
+    }
+  }, [loading, previousLoading, scrollTop])
 
   const getWidths = useCallback((wrapperWidth) => {
     const widths = columns.map((column) => column.width)
@@ -307,7 +311,6 @@ const ExplorerTable = (props: Props) => {
         '.ReactVirtualized__Table__row': {
           cursor: 'pointer',
           display: 'flex',
-          outline: 'none',
           '&:hover': {
             backgroundColor: (theme) => theme.palette.action.hover,
           },

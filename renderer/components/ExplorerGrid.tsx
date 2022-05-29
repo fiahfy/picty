@@ -9,6 +9,7 @@ import {
 import { AutoSizer, Grid, GridCellProps } from 'react-virtualized'
 import { Box, LinearProgress } from '@mui/material'
 import ExplorerGridItem from 'components/ExplorerGridItem'
+import usePrevious from 'hooks/usePrevious'
 import { ExplorerContent } from 'interfaces'
 
 const rowHeight = 256
@@ -40,6 +41,7 @@ const ExplorerGrid = (props: Props) => {
 
   const ref = useRef<HTMLDivElement>(null)
   const [wrapperWidth, setWrapperWidth] = useState(0)
+  const previousLoading = usePrevious(loading)
 
   useEffect(() => {
     const el = ref.current?.querySelector('.ReactVirtualized__Grid')
@@ -66,8 +68,10 @@ const ExplorerGrid = (props: Props) => {
     if (!el) {
       return
     }
-    el.scrollTop = scrollTop
-  }, [loading, scrollTop])
+    if (previousLoading && !loading) {
+      el.scrollTop = scrollTop
+    }
+  }, [loading, previousLoading, scrollTop])
 
   const size = useMemo(
     () => Math.ceil(wrapperWidth / rowHeight) || 1,
