@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   KeyboardEvent,
   MouseEvent,
+  SyntheticEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -10,12 +11,12 @@ import {
 } from 'react'
 import {
   AppBar,
+  Autocomplete,
   Box,
   Divider,
   IconButton,
   InputAdornment,
   MenuItem,
-  SelectChangeEvent,
   ToggleButton,
   Toolbar,
 } from '@mui/material'
@@ -29,15 +30,13 @@ import {
   Search as SearchIcon,
   Settings as SettingsIcon,
   Sort as SortIcon,
-  StarBorder as StarBorderIcon,
-  Star as StarIcon,
   TableRows as TableRowsIcon,
   ViewComfy as ViewComfyIcon,
   ViewSidebar as ViewSidebarIcon,
 } from '@mui/icons-material'
 import FilledToggleButtonGroup from 'components/FilledToggleButtonGroup'
-import RoundedFilledInput from 'components/RoundedFilledInput'
-import RoundedFilledSelect from 'components/RoundedFilledSelect'
+import Icon from 'components/Icon'
+import RoundedFilledTextField from 'components/RoundedFilledTextField'
 import SettingsDialog from 'components/SettingsDialog'
 import { useAppDispatch, useAppSelector } from 'store'
 import { load, setQuery, unselectAll } from 'store/explorer'
@@ -50,6 +49,7 @@ import {
   selectCanForward,
   selectCurrentDirectory,
 } from 'store/history'
+import { add, selectQueryHistories } from 'store/queryHistory'
 import {
   selectDrawerHidden,
   selectExplorerLayout,
@@ -76,6 +76,7 @@ const ExplorerBar = () => {
   const explorerLayout = useAppSelector(selectExplorerLayout)
   const favorite = useAppSelector(selectIsFavorite)(currentDirectory)
   const getSortOption = useAppSelector(selectGetSortOption)
+  const queryHistories = useAppSelector(selectQueryHistories)
 
   const [directory, setDirectory] = useState('')
   const [queryInput, setQueryInput] = useState('')
@@ -89,9 +90,18 @@ const ExplorerBar = () => {
     return () => unsubscribe()
   }, [])
 
+  const search = useCallback(
+    (query: string) => {
+      setQueryInput(query)
+      dispatch(setQuery(query))
+      dispatch(add(query))
+    },
+    [dispatch]
+  )
+
   useEffect(() => {
     const unsubscribe = window.electronAPI.subscribeSearch(() => {
-      setQueryInput(document.getSelection()?.toString() ?? '')
+      search(document.getSelection()?.toString() ?? '')
       ref.current && ref.current?.focus()
     })
     const handleKeyDown = (e: globalThis.KeyboardEvent) => {
@@ -99,7 +109,7 @@ const ExplorerBar = () => {
         e.key === 'f' &&
         ((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey))
       ) {
-        dispatch(setQuery(document.getSelection()?.toString() ?? ''))
+        search(document.getSelection()?.toString() ?? '')
         ref.current && ref.current?.focus()
       }
     }
@@ -118,14 +128,14 @@ const ExplorerBar = () => {
       document.removeEventListener('mousedown', handleMouseDown)
       unsubscribe()
     }
-  }, [dispatch])
+  }, [dispatch, search])
 
   const loadContents = useCallback(async () => {
     if (!currentDirectory) {
       return
     }
     dispatch(load(currentDirectory))
-  }, [dispatch, currentDirectory])
+  }, [currentDirectory, dispatch])
 
   useEffect(() => {
     ;(async () => {
@@ -138,10 +148,6 @@ const ExplorerBar = () => {
       await loadContents()
     })()
   }, [currentDirectory, dispatch, loadContents])
-
-  useEffect(() => {
-    dispatch(setQuery(queryInput))
-  }, [dispatch, queryInput])
 
   const sortOption = useMemo(
     () => getSortOption(currentDirectory),
@@ -170,19 +176,12 @@ const ExplorerBar = () => {
 
   const handleClickFavorite = () => dispatch(toggle(currentDirectory))
 
-  const handleClickSearch = () => dispatch(setQuery(queryInput))
-
-  const handleClickClearQuery = () => setQueryInput('')
+  const handleClickSearch = () => search(queryInput)
 
   // change handlers
   const handleChangeDirectory = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value
     setDirectory(value)
-  }
-
-  const handleChangeQuery = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value
-    setQueryInput(value)
   }
 
   const handleChangeViewSidebar = (
@@ -195,13 +194,19 @@ const ExplorerBar = () => {
     value: 'list' | 'thumbnail'
   ) => dispatch(setExplorerLayout(value))
 
-  const handleChangeSortOption = (e: SelectChangeEvent) => {
+  const handleChangeSortOption = (e: ChangeEvent<HTMLInputElement>) => {
     const [orderBy, order] = e.target.value.split('-') as [
       'name' | 'rating' | 'dateModified',
       'asc' | 'desc'
     ]
     dispatch(sort({ path: currentDirectory, option: { orderBy, order } }))
   }
+
+  const handleChangeQuery = (_e: SyntheticEvent, value: string | null) =>
+    search(value ?? '')
+
+  const handleInputChangeQuery = (_e: SyntheticEvent, value: string) =>
+    value ? setQueryInput(value) : search(value)
 
   const handleKeyDownDirectory = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing && directory) {
@@ -211,7 +216,7 @@ const ExplorerBar = () => {
 
   const handleKeyDownQuery = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-      dispatch(setQuery(queryInput))
+      search(queryInput)
     }
   }
 
@@ -262,78 +267,90 @@ const ExplorerBar = () => {
         </IconButton>
         <Box sx={{ display: 'flex', flexGrow: 1, mx: 1 }}>
           <Box sx={{ display: 'flex', flex: '2 1 0' }}>
-            <RoundedFilledInput
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    color="inherit"
-                    onClick={handleClickFavorite}
-                    size="small"
-                  >
-                    {favorite ? (
-                      <StarIcon fontSize="small" sx={{ color: '#faaf00' }} />
-                    ) : (
-                      <StarBorderIcon fontSize="small" />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              }
+            <RoundedFilledTextField
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      color="inherit"
+                      onClick={handleClickFavorite}
+                      size="small"
+                    >
+                      <Icon
+                        size="small"
+                        type={favorite ? 'star' : 'star-border'}
+                      />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconButton
+                      color="inherit"
+                      onClick={handleClickFolder}
+                      size="small"
+                    >
+                      <FolderIcon fontSize="small" />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               fullWidth
               hiddenLabel
               onChange={handleChangeDirectory}
               onKeyDown={handleKeyDownDirectory}
               size="small"
               spellCheck={false}
-              startAdornment={
-                <InputAdornment position="start">
-                  <IconButton
-                    color="inherit"
-                    onClick={handleClickFolder}
-                    size="small"
-                  >
-                    <FolderIcon fontSize="small" />
-                  </IconButton>
-                </InputAdornment>
-              }
               sx={{ mr: 0.5 }}
               value={directory}
             />
           </Box>
           <Box sx={{ display: 'flex', flex: '1 1 0' }}>
-            <RoundedFilledInput
-              endAdornment={
-                queryInput && (
-                  <InputAdornment position="end">
-                    <IconButton
-                      color="inherit"
-                      onClick={handleClickClearQuery}
-                      size="small"
-                    >
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }
+            <Autocomplete
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ListboxProps={{ sx: { typography: 'body2' } } as any}
+              clearIcon={<CloseIcon fontSize="small" />}
+              freeSolo
               fullWidth
-              hiddenLabel
-              inputRef={ref}
+              inputValue={queryInput}
               onChange={handleChangeQuery}
+              onInputChange={handleInputChangeQuery}
               onKeyDown={handleKeyDownQuery}
-              placeholder="Search..."
+              options={queryHistories.concat().reverse()}
+              renderInput={(params) => (
+                <RoundedFilledTextField
+                  {...params}
+                  InputProps={{
+                    ...params.InputProps,
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconButton
+                          color="inherit"
+                          onClick={handleClickSearch}
+                          size="small"
+                        >
+                          <SearchIcon fontSize="small" />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  fullWidth
+                  hiddenLabel
+                  inputRef={ref}
+                  placeholder="Search..."
+                />
+              )}
               size="small"
-              startAdornment={
-                <InputAdornment position="start">
-                  <IconButton
-                    color="inherit"
-                    onClick={handleClickSearch}
-                    size="small"
-                  >
-                    <SearchIcon fontSize="small" />
-                  </IconButton>
-                </InputAdornment>
-              }
-              sx={{ ml: 0.5 }}
-              value={queryInput}
+              sx={{
+                ml: 0.5,
+                '.MuiFormControl-root': {
+                  '.MuiFilledInput-root': {
+                    px: 1.5,
+                    py: 0,
+                    '.MuiFilledInput-input': { px: 0, py: 0.5 },
+                  },
+                },
+              }}
             />
           </Box>
         </Box>
@@ -383,13 +400,17 @@ const ExplorerBar = () => {
             <ViewComfyIcon fontSize="small" />
           </ToggleButton>
         </FilledToggleButtonGroup>
-        <RoundedFilledSelect
+        <RoundedFilledTextField
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SortIcon fontSize="small" />
+              </InputAdornment>
+            ),
+          }}
+          hiddenLabel
           onChange={handleChangeSortOption}
-          startAdornment={
-            <InputAdornment position="start">
-              <SortIcon fontSize="small" />
-            </InputAdornment>
-          }
+          select
           value={`${sortOption.orderBy}-${sortOption.order}`}
         >
           {sortOptions.map((option, index) => (
@@ -397,7 +418,7 @@ const ExplorerBar = () => {
               {option.text}
             </MenuItem>
           ))}
-        </RoundedFilledSelect>
+        </RoundedFilledTextField>
       </Toolbar>
       <Divider />
       <SettingsDialog onRequestClose={() => setOpen(false)} open={open} />

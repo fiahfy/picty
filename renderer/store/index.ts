@@ -19,6 +19,7 @@ import storage from 'redux-persist/lib/storage'
 import explorerReducer from './explorer'
 import favoriteReducer from './favorite'
 import historyReducer from './history'
+import queryHistoryReducer from './queryHistory'
 import ratingReducer from './rating'
 import settingsReducer from './settings'
 import sortingReducer from './sorting'
@@ -27,6 +28,7 @@ const reducers = combineReducers({
   explorer: explorerReducer,
   favorite: favoriteReducer,
   history: historyReducer,
+  queryHistory: queryHistoryReducer,
   rating: ratingReducer,
   settings: settingsReducer,
   sorting: sortingReducer,
@@ -36,7 +38,14 @@ const persistConfig = {
   key: 'root',
   storage,
   version: 1,
-  whitelist: ['favorite', 'history', 'rating', 'settings', 'sorting'],
+  whitelist: [
+    'favorite',
+    'history',
+    'queryHistory',
+    'rating',
+    'settings',
+    'sorting',
+  ],
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers)

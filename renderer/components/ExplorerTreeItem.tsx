@@ -56,7 +56,7 @@ const ExplorerTreeItem = (props: Props) => {
             ))}
             {over > 0 && (
               <FileTreeItem
-                fileIcon={<Icon size="small" type="file" />}
+                fileIcon={<Icon size="small" type="insert-drive-file" />}
                 label={`Other ${over} items`}
                 nodeId={`${file.path}<others>`}
               />

@@ -13,9 +13,9 @@ const FileIcon = (props: Props) => {
 
   const type = useMemo(() => {
     if (file.type === 'directory') {
-      return 'directory'
+      return 'folder'
     }
-    return isImageFile(file.path) ? 'image' : 'file'
+    return isImageFile(file.path) ? 'photo' : 'insert-drive-file'
   }, [file.path, file.type])
 
   return <Icon size={size} type={type} />

@@ -35,9 +35,9 @@ const FavoriteTreeItem = (props: Props) => {
       }
       fileIcon={
         root ? (
-          <Icon size="small" type="favorite" />
+          <Icon size="small" type="star" />
         ) : (
-          <Icon size="small" type="directory" />
+          <Icon size="small" type="folder" />
         )
       }
       label={label}
