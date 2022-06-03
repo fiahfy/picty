@@ -10,7 +10,6 @@ import { selectIsFavorite } from 'store/favorite'
 import { rate } from 'store/rating'
 import { contextMenuProps } from 'utils/contextMenu'
 import { isImageFile } from 'utils/image'
-import { semaphore } from 'utils/semaphore'
 
 type Props = {
   columnIndex: number
@@ -29,24 +28,23 @@ const ExplorerGridItem = (props: Props) => {
   const dispatch = useAppDispatch()
 
   const [loading, setLoading] = useState(false)
-  const [images, setImages] = useState(0)
-  const [imagePath, setImagePath] = useState<string>()
+  const [images, setImages] = useState<File[]>([])
 
   useEffect(() => {
-    setLoading(true)
-    setImages(0)
-    setImagePath(undefined)
-
-    if (content.type === 'file') {
-      if (isImageFile(content.path)) {
-        setImagePath(content.path)
-      }
-      setLoading(false)
-      return
-    }
-
     let unmounted = false
-    semaphore.acquire(async () => {
+
+    ;(async () => {
+      setLoading(true)
+      setImages([])
+
+      if (content.type === 'file') {
+        if (isImageFile(content.path)) {
+          setImages([content])
+        }
+        setLoading(false)
+        return
+      }
+
       let files: File[] = []
       try {
         files = await window.electronAPI.listFiles(content.path)
@@ -57,15 +55,16 @@ const ExplorerGridItem = (props: Props) => {
         return
       }
       const images = files.filter((file) => isImageFile(file.path))
-      setImages(images.length)
-      setImagePath(images[0]?.path)
       setLoading(false)
-    })
+      setImages(images)
+    })()
 
     return () => {
       unmounted = true
     }
-  }, [content.path, content.type])
+  }, [content])
+
+  const imagePath = useMemo(() => images[0]?.path, [images])
 
   const message = useMemo(
     () => (loading ? 'Loading...' : 'No Images'),
@@ -172,7 +171,7 @@ const ExplorerGridItem = (props: Props) => {
             />
             {!loading && content.type === 'directory' && (
               <Typography ml={1} noWrap variant="caption">
-                {images} images
+                {images.length} images
               </Typography>
             )}
           </Box>
