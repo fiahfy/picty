@@ -31,7 +31,7 @@ const SideBar = () => {
   const dispatch = useAppDispatch()
 
   const handleMouseMove = useCallback(
-    (e) => {
+    (e: MouseEvent) => {
       const newWidth = e.clientX - document.body.offsetLeft + 3
       if (
         newWidth > minContentWidth &&

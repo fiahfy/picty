@@ -19,9 +19,9 @@
     "electron-next": "^3.1.5",
     "electron-window-state": "^5.0.3",
     "file-url": "^4.0.0",
-    "next": "^12.1.6",
-    "react": "~17.0.2",
-    "react-dom": "~17.0.2",
+    "next": "^12.1.7-canary.29",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
     "react-redux": "^8.0.2",
     "react-virtualized": "^9.22.3",
     "redux-persist": "^6.0.0"
@@ -31,8 +31,8 @@
     "@fiahfy/prettier-config": "^0.0.2",
     "@fiahfy/tsconfig": "^0.0.1",
     "@types/node": "^17.0.39",
-    "@types/react": "~17.0.44",
-    "@types/react-dom": "~17.0.15",
+    "@types/react": "^18.0.11",
+    "@types/react-dom": "^18.0.5",
     "@types/react-redux": "^7.1.24",
     "@types/react-virtualized": "^9.21.21",
     "babel-plugin-import": "^1.13.5",
@@ -48,7 +48,7 @@
   "private": true,
   "productName": "Picty",
   "resolutions": {
-    "@types/react": "^17.0.44"
+    "@types/react": "^18.0.11"
   },
   "scripts": {
     "build": "npm run build-renderer && npm run build-electron",

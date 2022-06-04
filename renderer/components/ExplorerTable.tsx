@@ -119,7 +119,7 @@ const ExplorerTable = (props: Props) => {
     }
   }, [loading, previousLoading, scrollTop])
 
-  const getWidths = useCallback((wrapperWidth) => {
+  const getWidths = useCallback((wrapperWidth: number) => {
     const widths = columns.map((column) => column.width)
     const flexibleNum = widths.filter((width) => width === undefined).length
     if (flexibleNum === 0) {
