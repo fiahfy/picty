@@ -28,18 +28,18 @@ const ExplorerGridItem = (props: Props) => {
   const dispatch = useAppDispatch()
 
   const [loading, setLoading] = useState(false)
-  const [images, setImages] = useState<File[]>([])
+  const [imagePaths, setImagePaths] = useState<string[]>([])
 
   useEffect(() => {
     let unmounted = false
 
     ;(async () => {
       setLoading(true)
-      setImages([])
+      setImagePaths([])
 
       if (content.type === 'file') {
         if (isImageFile(content.path)) {
-          setImages([content])
+          setImagePaths([content.path])
         }
         setLoading(false)
         return
@@ -54,17 +54,19 @@ const ExplorerGridItem = (props: Props) => {
       if (unmounted) {
         return
       }
-      const images = files.filter((file) => isImageFile(file.path))
+      const imagePaths = files
+        .filter((file) => isImageFile(file.path))
+        .map((file) => file.path)
       setLoading(false)
-      setImages(images)
+      setImagePaths(imagePaths)
     })()
 
     return () => {
       unmounted = true
     }
-  }, [content])
+  }, [content.path, content.type])
 
-  const imagePath = useMemo(() => images[0]?.path, [images])
+  const imagePath = useMemo(() => imagePaths[0], [imagePaths])
 
   const message = useMemo(
     () => (loading ? 'Loading...' : 'No Images'),
@@ -171,7 +173,7 @@ const ExplorerGridItem = (props: Props) => {
             />
             {!loading && content.type === 'directory' && (
               <Typography ml={1} noWrap variant="caption">
-                {images.length} images
+                {imagePaths.length} images
               </Typography>
             )}
           </Box>
