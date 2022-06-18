@@ -24,18 +24,6 @@ export interface IElectronAPI {
   subscribeSearch: (callback: () => void) => () => void
 }
 
-declare global {
-  interface Window {
-    electronAPI: IElectronAPI
-  }
-}
-
-declare module '@mui/material/styles/createMixins' {
-  interface Mixins {
-    titleBar: CSSProperties
-  }
-}
-
 export type File = {
   name: string
   path: string
