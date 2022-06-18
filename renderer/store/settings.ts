@@ -2,6 +2,7 @@ import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 import { AppState } from 'store'
 
 type State = {
+  contentLayout: 'default' | 'aspectFit' | 'aspectFill'
   darkMode: boolean
   explorerLayout: 'list' | 'thumbnail'
   fullscreen: boolean
@@ -10,6 +11,7 @@ type State = {
 }
 
 const initialState: State = {
+  contentLayout: 'default',
   darkMode: false,
   explorerLayout: 'list',
   fullscreen: true,
@@ -21,10 +23,13 @@ export const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
+    setContentLayout(state, action: PayloadAction<State['contentLayout']>) {
+      return { ...state, contentLayout: action.payload }
+    },
     setDarkMode(state, action: PayloadAction<boolean>) {
       return { ...state, darkMode: action.payload }
     },
-    setExplorerLayout(state, action: PayloadAction<'list' | 'thumbnail'>) {
+    setExplorerLayout(state, action: PayloadAction<State['explorerLayout']>) {
       return { ...state, explorerLayout: action.payload }
     },
     setFullscreen(state, action: PayloadAction<boolean>) {
@@ -40,6 +45,7 @@ export const settingsSlice = createSlice({
 })
 
 export const {
+  setContentLayout,
   setDarkMode,
   setExplorerLayout,
   setFullscreen,
@@ -50,6 +56,11 @@ export const {
 export default settingsSlice.reducer
 
 export const selectSettings = (state: AppState) => state.settings
+
+export const selectContentLayout = createSelector(
+  selectSettings,
+  (settings) => settings.contentLayout
+)
 
 export const selectDarkMode = createSelector(
   selectSettings,

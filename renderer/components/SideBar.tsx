@@ -60,6 +60,7 @@ const Sidebar = () => {
     <Drawer
       PaperProps={{ style: { width: sidebarWidth } }}
       anchor="left"
+      className="scrollbar"
       open={!sidebarHidden}
       style={{ width: sidebarWidth }}
       variant="permanent"

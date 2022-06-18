@@ -171,6 +171,7 @@ const ExplorerGrid = (props: Props) => {
 
   return (
     <Box
+      className="scrollbar"
       onFocus={handleFocus}
       onKeyDown={handleKeyDown}
       ref={ref}

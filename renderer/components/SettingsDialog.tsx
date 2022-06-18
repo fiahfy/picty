@@ -20,10 +20,12 @@ import { Close as CloseIcon } from '@mui/icons-material'
 import Layout from 'components/Layout'
 import { useAppDispatch, useAppSelector } from 'store'
 import {
+  selectContentLayout,
   selectDarkMode,
   selectExplorerLayout,
   selectFullscreen,
   selectSidebarHidden,
+  setContentLayout,
   setDarkMode,
   setExplorerLayout,
   setFullscreen,
@@ -35,6 +37,12 @@ const explorerLayoutOptions = [
   { text: 'Thumbnail View', value: 'thumbnail' },
 ]
 
+const contentLayoutOptions = [
+  { text: 'Default', value: 'default' },
+  { text: 'Aspect Fit', value: 'aspectFit' },
+  { text: 'Aspect Fill', value: 'aspectFill' },
+]
+
 type Props = {
   onRequestClose: () => void
   open: boolean
@@ -43,6 +51,7 @@ type Props = {
 const SettingsDialog = (props: Props) => {
   const { onRequestClose, open } = props
 
+  const contentLayout = useAppSelector(selectContentLayout)
   const darkMode = useAppSelector(selectDarkMode)
   const explorerLayout = useAppSelector(selectExplorerLayout)
   const fullscreen = useAppSelector(selectFullscreen)
@@ -69,6 +78,13 @@ const SettingsDialog = (props: Props) => {
   const handleChangeFullscreen = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.checked
     dispatch(setFullscreen(value))
+  }
+
+  const handleChangeContentLayout = (
+    e: SelectChangeEvent<'default' | 'aspectFit' | 'aspectFill'>
+  ) => {
+    const value = e.target.value as 'default' | 'aspectFit' | 'aspectFill'
+    dispatch(setContentLayout(value))
   }
 
   return (
@@ -114,9 +130,9 @@ const SettingsDialog = (props: Props) => {
               />
             </FormGroup>
             <FormControl sx={{ mt: 2 }}>
-              <InputLabel>Layout</InputLabel>
+              <InputLabel>Explorer Layout</InputLabel>
               <Select
-                label="Layout"
+                label="Explorer Layout"
                 onChange={handleChangeExplorerLayout}
                 value={explorerLayout}
               >
@@ -141,6 +157,20 @@ const SettingsDialog = (props: Props) => {
                 label="Enter Fullscreen"
               />
             </FormGroup>
+            <FormControl sx={{ mt: 2 }}>
+              <InputLabel>Content Layout</InputLabel>
+              <Select
+                label="Content Layout"
+                onChange={handleChangeContentLayout}
+                value={contentLayout}
+              >
+                {contentLayoutOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.text}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
         </Container>
       </Layout>

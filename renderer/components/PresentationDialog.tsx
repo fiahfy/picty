@@ -1,5 +1,6 @@
 import {
   KeyboardEvent,
+  MouseEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -15,20 +16,30 @@ import {
   Fade,
   IconButton,
   LinearProgress,
+  Popover,
   Slider,
+  ToggleButton,
   Toolbar,
   Typography,
 } from '@mui/material'
 import {
+  AspectRatio as AspectRatioIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
   Close as CloseIcon,
+  Expand as ExpandIcon,
+  FitScreen as FitScreenIcon,
 } from '@mui/icons-material'
+import FilledToggleButtonGroup from 'components/FilledToggleButtonGroup'
 import Layout from 'components/Layout'
 import { useTheme } from 'contexts/ThemeContext'
 import { File } from 'interfaces'
-import { useAppSelector } from 'store'
-import { selectFullscreen } from 'store/settings'
+import { useAppDispatch, useAppSelector } from 'store'
+import {
+  selectContentLayout,
+  selectFullscreen,
+  setContentLayout,
+} from 'store/settings'
 import { isImageFile } from 'utils/image'
 
 type State = { images: File[]; index: number; loading: boolean; title: string }
@@ -88,7 +99,9 @@ const PresentationDialog = (props: Props) => {
 
   const { forceMode, resetMode } = useTheme()
 
+  const contentLayout = useAppSelector(selectContentLayout)
   const fullscreen = useAppSelector(selectFullscreen)
+  const appDispatch = useAppDispatch()
 
   const [{ images, index, loading, title }, dispatch] = useReducer(reducer, {
     images: [],
@@ -97,9 +110,12 @@ const PresentationDialog = (props: Props) => {
     title: '',
   })
   const [toolbar, setToolbar] = useState(false)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const timer = useRef<number>()
+  const wrapper = useRef<HTMLDivElement>(null)
   const topToolbar = useRef<HTMLDivElement>(null)
   const bottomToolbar = useRef<HTMLDivElement>(null)
+  const popover = useRef<HTMLDivElement>(null)
 
   const clearTimer = useCallback(() => window.clearTimeout(timer.current), [])
 
@@ -108,11 +124,15 @@ const PresentationDialog = (props: Props) => {
     clearTimer()
     const hovered =
       !!topToolbar.current?.querySelector(':hover') ||
-      !!bottomToolbar.current?.querySelector(':hover')
+      !!bottomToolbar.current?.querySelector(':hover') ||
+      !!popover.current?.querySelector(':hover')
     if (hovered) {
       return
     }
-    timer.current = window.setTimeout(() => setToolbar(false), 2000)
+    timer.current = window.setTimeout(() => {
+      setToolbar(false)
+      setAnchorEl(null)
+    }, 2000)
   }, [clearTimer])
 
   useEffect(() => {
@@ -158,6 +178,26 @@ const PresentationDialog = (props: Props) => {
 
   const image = useMemo(() => images[index], [images, index])
 
+  const ContentLayoutIcon = useMemo(() => {
+    switch (contentLayout) {
+      case 'default':
+        return FitScreenIcon
+      case 'aspectFit':
+        return AspectRatioIcon
+      case 'aspectFill':
+        return ExpandIcon
+    }
+  }, [contentLayout])
+
+  useEffect(() => {
+    const el = wrapper.current
+    if (!el) {
+      return
+    }
+    el.scrollLeft = (el.scrollWidth - el.offsetWidth) / 2
+    el.scrollTop = (el.scrollHeight - el.offsetHeight) / 2
+  }, [contentLayout, image])
+
   const movePrevious = () => dispatch({ type: 'movePrevious' })
 
   const moveNext = () => dispatch({ type: 'moveNext' })
@@ -185,6 +225,19 @@ const PresentationDialog = (props: Props) => {
     if (!Array.isArray(value)) {
       dispatch({ type: 'moveTo', payload: value })
     }
+  }
+
+  const handleClickContentLayout = (e: MouseEvent<HTMLButtonElement>) =>
+    setAnchorEl(e.currentTarget)
+
+  const handleClose = () => setAnchorEl(null)
+
+  const handleChangeContentLayout = (
+    _e: MouseEvent<HTMLElement>,
+    value: 'default' | 'aspectFit' | 'aspectFill'
+  ) => {
+    appDispatch(setContentLayout(value))
+    setAnchorEl(null)
   }
 
   return (
@@ -231,18 +284,26 @@ const PresentationDialog = (props: Props) => {
             <LinearProgress />
           </Box>
         )}
-        {image && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={fileUrl(image.path)}
-            style={{
-              display: 'block',
-              height: '100%',
-              objectFit: 'scale-down',
-              width: '100%',
-            }}
-          />
-        )}
+        <Box
+          ref={wrapper}
+          sx={{ height: '100%', overflow: 'auto', width: '100%' }}
+        >
+          {image && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={fileUrl(image.path)}
+              style={{
+                display: 'block',
+                height: contentLayout !== 'aspectFill' ? '100%' : undefined,
+                minHeight: contentLayout === 'aspectFill' ? '100%' : undefined,
+                minWidth: contentLayout === 'aspectFill' ? '100%' : undefined,
+                objectFit:
+                  contentLayout === 'default' ? 'scale-down' : 'contain',
+                width: contentLayout !== 'aspectFill' ? '100%' : undefined,
+              }}
+            />
+          )}
+        </Box>
         <Fade in={toolbar}>
           <AppBar
             color="transparent"
@@ -306,6 +367,47 @@ const PresentationDialog = (props: Props) => {
                     </Typography>
                   </>
                 )}
+                <Box sx={{ flexGrow: 1 }} />
+                <IconButton
+                  color="inherit"
+                  edge="end"
+                  onClick={handleClickContentLayout}
+                >
+                  <ContentLayoutIcon />
+                </IconButton>
+                <Popover
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                  onClose={handleClose}
+                  open={!!anchorEl}
+                  transformOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                >
+                  <Box ref={popover}>
+                    <FilledToggleButtonGroup
+                      exclusive
+                      onChange={handleChangeContentLayout}
+                      size="small"
+                      sx={{ m: 0.5 }}
+                      value={contentLayout}
+                    >
+                      <ToggleButton title="Default" value="default">
+                        <FitScreenIcon />
+                      </ToggleButton>
+                      <ToggleButton title="Aspect Fit" value="aspectFit">
+                        <AspectRatioIcon />
+                      </ToggleButton>
+                      <ToggleButton title="Aspect Fill" value="aspectFill">
+                        <ExpandIcon />
+                      </ToggleButton>
+                    </FilledToggleButtonGroup>
+                  </Box>
+                </Popover>
               </Toolbar>
             </Box>
           </AppBar>
