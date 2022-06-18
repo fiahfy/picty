@@ -2,7 +2,7 @@ import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
 import { AppState } from 'store'
 
 type State = {
-  contentLayout: 'default' | 'aspectFit' | 'aspectFill'
+  contentLayout: 'default' | 'contain' | 'cover'
   darkMode: boolean
   explorerLayout: 'list' | 'thumbnail'
   fullscreen: boolean

@@ -182,9 +182,9 @@ const PresentationDialog = (props: Props) => {
     switch (contentLayout) {
       case 'default':
         return FitScreenIcon
-      case 'aspectFit':
+      case 'contain':
         return AspectRatioIcon
-      case 'aspectFill':
+      case 'cover':
         return ExpandIcon
     }
   }, [contentLayout])
@@ -234,7 +234,7 @@ const PresentationDialog = (props: Props) => {
 
   const handleChangeContentLayout = (
     _e: MouseEvent<HTMLElement>,
-    value: 'default' | 'aspectFit' | 'aspectFill'
+    value: 'default' | 'contain' | 'cover'
   ) => {
     appDispatch(setContentLayout(value))
     setAnchorEl(null)
@@ -254,13 +254,14 @@ const PresentationDialog = (props: Props) => {
         <Fade in={toolbar}>
           <AppBar color="transparent" elevation={0}>
             <Box
+              ref={topToolbar}
               sx={{
                 background:
                   'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))',
                 pb: 15,
               }}
             >
-              <Toolbar ref={topToolbar} variant="dense">
+              <Toolbar variant="dense">
                 <IconButton
                   color="inherit"
                   edge="start"
@@ -294,12 +295,12 @@ const PresentationDialog = (props: Props) => {
               src={fileUrl(image.path)}
               style={{
                 display: 'block',
-                height: contentLayout !== 'aspectFill' ? '100%' : undefined,
-                minHeight: contentLayout === 'aspectFill' ? '100%' : undefined,
-                minWidth: contentLayout === 'aspectFill' ? '100%' : undefined,
+                height: contentLayout !== 'cover' ? '100%' : undefined,
+                minHeight: contentLayout === 'cover' ? '100%' : undefined,
+                minWidth: contentLayout === 'cover' ? '100%' : undefined,
                 objectFit:
                   contentLayout === 'default' ? 'scale-down' : 'contain',
-                width: contentLayout !== 'aspectFill' ? '100%' : undefined,
+                width: contentLayout !== 'cover' ? '100%' : undefined,
               }}
             />
           )}
@@ -312,13 +313,14 @@ const PresentationDialog = (props: Props) => {
             sx={{ top: 'auto', bottom: 0 }}
           >
             <Box
+              ref={bottomToolbar}
               sx={{
                 background:
                   'linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5))',
                 pt: 15,
               }}
             >
-              <Toolbar ref={bottomToolbar} variant="dense">
+              <Toolbar variant="dense">
                 <Slider
                   max={images.length - 1}
                   min={0}
@@ -399,10 +401,10 @@ const PresentationDialog = (props: Props) => {
                       <ToggleButton title="Default" value="default">
                         <FitScreenIcon />
                       </ToggleButton>
-                      <ToggleButton title="Aspect Fit" value="aspectFit">
+                      <ToggleButton title="Contain" value="contain">
                         <AspectRatioIcon />
                       </ToggleButton>
-                      <ToggleButton title="Aspect Fill" value="aspectFill">
+                      <ToggleButton title="Cover" value="cover">
                         <ExpandIcon />
                       </ToggleButton>
                     </FilledToggleButtonGroup>

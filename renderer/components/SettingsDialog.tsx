@@ -39,8 +39,8 @@ const explorerLayoutOptions = [
 
 const contentLayoutOptions = [
   { text: 'Default', value: 'default' },
-  { text: 'Aspect Fit', value: 'aspectFit' },
-  { text: 'Aspect Fill', value: 'aspectFill' },
+  { text: 'Contain', value: 'contain' },
+  { text: 'Cover', value: 'cover' },
 ]
 
 type Props = {
@@ -81,9 +81,9 @@ const SettingsDialog = (props: Props) => {
   }
 
   const handleChangeContentLayout = (
-    e: SelectChangeEvent<'default' | 'aspectFit' | 'aspectFill'>
+    e: SelectChangeEvent<'default' | 'contain' | 'cover'>
   ) => {
-    const value = e.target.value as 'default' | 'aspectFit' | 'aspectFill'
+    const value = e.target.value as 'default' | 'contain' | 'cover'
     dispatch(setContentLayout(value))
   }
 
@@ -134,6 +134,7 @@ const SettingsDialog = (props: Props) => {
               <Select
                 label="Explorer Layout"
                 onChange={handleChangeExplorerLayout}
+                sx={{ minWidth: (theme) => theme.spacing(20) }}
                 value={explorerLayout}
               >
                 {explorerLayoutOptions.map((option) => (
@@ -162,6 +163,7 @@ const SettingsDialog = (props: Props) => {
               <Select
                 label="Content Layout"
                 onChange={handleChangeContentLayout}
+                sx={{ minWidth: (theme) => theme.spacing(20) }}
                 value={contentLayout}
               >
                 {contentLayoutOptions.map((option) => (
