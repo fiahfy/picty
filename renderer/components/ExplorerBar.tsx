@@ -51,10 +51,10 @@ import {
 } from 'store/history'
 import { add, selectQueryHistories } from 'store/queryHistory'
 import {
-  selectDrawerHidden,
   selectExplorerLayout,
-  setDrawerHidden,
+  selectSidebarHidden,
   setExplorerLayout,
+  setSidebarHidden,
 } from 'store/settings'
 import { selectGetSortOption, sort } from 'store/sorting'
 
@@ -72,8 +72,8 @@ const ExplorerBar = () => {
   const canForward = useAppSelector(selectCanForward)
   const currentDirectory = useAppSelector(selectCurrentDirectory)
   const dispatch = useAppDispatch()
-  const drawerHidden = useAppSelector(selectDrawerHidden)
   const explorerLayout = useAppSelector(selectExplorerLayout)
+  const sidebarHidden = useAppSelector(selectSidebarHidden)
   const favorite = useAppSelector(selectIsFavorite)(currentDirectory)
   const getSortOption = useAppSelector(selectGetSortOption)
   const queryHistories = useAppSelector(selectQueryHistories)
@@ -187,7 +187,7 @@ const ExplorerBar = () => {
   const handleChangeViewSidebar = (
     _e: MouseEvent<HTMLElement>,
     value: 'sidebar'[]
-  ) => dispatch(setDrawerHidden(!value.includes('sidebar')))
+  ) => dispatch(setSidebarHidden(!value.includes('sidebar')))
 
   const handleChangeExplorerLayout = (
     _e: MouseEvent<HTMLElement>,
@@ -367,7 +367,7 @@ const ExplorerBar = () => {
         <FilledToggleButtonGroup
           onChange={handleChangeViewSidebar}
           size="small"
-          value={drawerHidden ? [] : ['sidebar']}
+          value={sidebarHidden ? [] : ['sidebar']}
         >
           <ToggleButton
             sx={{ height: (theme) => theme.spacing(3.5), py: 0 }}

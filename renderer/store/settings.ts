@@ -3,16 +3,16 @@ import { AppState } from 'store'
 
 type State = {
   darkMode: boolean
-  drawerHidden: boolean
-  drawerWidth: number
   explorerLayout: 'list' | 'thumbnail'
+  sidebarHidden: boolean
+  sidebarWidth: number
 }
 
 const initialState: State = {
   darkMode: false,
-  drawerHidden: false,
-  drawerWidth: 256,
   explorerLayout: 'list',
+  sidebarHidden: false,
+  sidebarWidth: 256,
 }
 
 export const settingsSlice = createSlice({
@@ -22,23 +22,23 @@ export const settingsSlice = createSlice({
     setDarkMode(state, action: PayloadAction<boolean>) {
       return { ...state, darkMode: action.payload }
     },
-    setDrawerHidden(state, action: PayloadAction<boolean>) {
-      return { ...state, drawerHidden: action.payload }
-    },
-    setDrawerWidth(state, action: PayloadAction<number>) {
-      return { ...state, drawerWidth: action.payload }
-    },
     setExplorerLayout(state, action: PayloadAction<'list' | 'thumbnail'>) {
       return { ...state, explorerLayout: action.payload }
+    },
+    setSidebarHidden(state, action: PayloadAction<boolean>) {
+      return { ...state, sidebarHidden: action.payload }
+    },
+    setSidebarWidth(state, action: PayloadAction<number>) {
+      return { ...state, sidebarWidth: action.payload }
     },
   },
 })
 
 export const {
   setDarkMode,
-  setDrawerHidden,
-  setDrawerWidth,
   setExplorerLayout,
+  setSidebarHidden,
+  setSidebarWidth,
 } = settingsSlice.actions
 
 export default settingsSlice.reducer
@@ -50,17 +50,17 @@ export const selectDarkMode = createSelector(
   (settings) => settings.darkMode
 )
 
-export const selectDrawerHidden = createSelector(
-  selectSettings,
-  (settings) => settings.drawerHidden
-)
-
-export const selectDrawerWidth = createSelector(
-  selectSettings,
-  (settings) => settings.drawerWidth
-)
-
 export const selectExplorerLayout = createSelector(
   selectSettings,
   (settings) => settings.explorerLayout
+)
+
+export const selectSidebarHidden = createSelector(
+  selectSettings,
+  (settings) => settings.sidebarHidden
+)
+
+export const selectSidebarWidth = createSelector(
+  selectSettings,
+  (settings) => settings.sidebarWidth
 )

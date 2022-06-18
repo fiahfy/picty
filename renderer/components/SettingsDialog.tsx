@@ -22,8 +22,10 @@ import { useAppDispatch, useAppSelector } from 'store'
 import {
   selectDarkMode,
   selectExplorerLayout,
+  selectSidebarHidden,
   setDarkMode,
   setExplorerLayout,
+  setSidebarHidden,
 } from 'store/settings'
 
 const explorerLayoutOptions = [
@@ -41,11 +43,17 @@ const SettingsDialog = (props: Props) => {
 
   const darkMode = useAppSelector(selectDarkMode)
   const explorerLayout = useAppSelector(selectExplorerLayout)
+  const sidebarHidden = useAppSelector(selectSidebarHidden)
   const dispatch = useAppDispatch()
 
   const handleChangeDarkMode = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.checked
     dispatch(setDarkMode(value))
+  }
+
+  const handleChangeSidebarHidden = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = !e.currentTarget.checked
+    dispatch(setSidebarHidden(value))
   }
 
   const handleChangeExplorerLayout = (
@@ -86,6 +94,17 @@ const SettingsDialog = (props: Props) => {
           </Box>
           <Box sx={{ my: 2 }}>
             <Typography variant="subtitle2">Explorer</Typography>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={!sidebarHidden}
+                    onChange={handleChangeSidebarHidden}
+                  />
+                }
+                label="Show Sidebar"
+              />
+            </FormGroup>
             <FormControl sx={{ mt: 2 }}>
               <InputLabel>Layout</InputLabel>
               <Select

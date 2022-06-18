@@ -1,7 +1,7 @@
 import { MouseEvent, ReactNode, useEffect } from 'react'
 import { Box, Toolbar } from '@mui/material'
 import ExplorerBar from 'components/ExplorerBar'
-import SideBar from 'components/SideBar'
+import Sidebar from 'components/Sidebar'
 import TitleBar from 'components/TitleBar'
 import { useAppDispatch } from 'store'
 import { add, remove } from 'store/favorite'
@@ -55,7 +55,7 @@ const Layout = (props: Props) => {
       `}</style>
       <TitleBar />
       {!dialog && <ExplorerBar />}
-      {!dialog && <SideBar />}
+      {!dialog && <Sidebar />}
       <Box
         component="main"
         sx={{

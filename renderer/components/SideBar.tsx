@@ -6,10 +6,10 @@ import ExplorerTreeView from 'components/ExplorerTreeView'
 import FavoriteTreeView from 'components/FavoriteTreeView'
 import { useAppDispatch, useAppSelector } from 'store'
 import {
-  selectDrawerHidden,
-  selectDrawerWidth,
-  setDrawerHidden,
-  setDrawerWidth,
+  selectSidebarHidden,
+  selectSidebarWidth,
+  setSidebarHidden,
+  setSidebarWidth,
 } from 'store/settings'
 
 const Drawer = styled(MuiDrawer, {
@@ -25,9 +25,9 @@ const Drawer = styled(MuiDrawer, {
 
 const minContentWidth = 64
 
-const SideBar = () => {
-  const drawerHidden = useAppSelector(selectDrawerHidden)
-  const drawerWidth = useAppSelector(selectDrawerWidth)
+const Sidebar = () => {
+  const sidebarHidden = useAppSelector(selectSidebarHidden)
+  const sidebarWidth = useAppSelector(selectSidebarWidth)
   const dispatch = useAppDispatch()
 
   const handleMouseMove = useCallback(
@@ -37,9 +37,9 @@ const SideBar = () => {
         newWidth > minContentWidth &&
         newWidth < document.body.offsetWidth - minContentWidth
       ) {
-        dispatch(setDrawerWidth(newWidth))
+        dispatch(setSidebarWidth(newWidth))
       }
-      dispatch(setDrawerHidden(newWidth < minContentWidth / 2))
+      dispatch(setSidebarHidden(newWidth < minContentWidth / 2))
     },
     [dispatch]
   )
@@ -58,10 +58,10 @@ const SideBar = () => {
 
   return (
     <Drawer
-      PaperProps={{ style: { width: drawerWidth } }}
+      PaperProps={{ style: { width: sidebarWidth } }}
       anchor="left"
-      open={!drawerHidden}
-      style={{ width: drawerWidth }}
+      open={!sidebarHidden}
+      style={{ width: sidebarWidth }}
       variant="permanent"
     >
       <Toolbar
@@ -104,4 +104,4 @@ const SideBar = () => {
   )
 }
 
-export default SideBar
+export default Sidebar
