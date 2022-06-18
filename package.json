@@ -31,24 +31,24 @@
     "@fiahfy/prettier-config": "^0.0.2",
     "@fiahfy/tsconfig": "^0.0.1",
     "@types/node": "^18.0.0",
-    "@types/react": "^18.0.13",
+    "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "@types/react-redux": "^7.1.24",
     "@types/react-virtualized": "^9.21.21",
     "babel-plugin-import": "^1.13.5",
     "electron": "^19.0.4",
     "electron-builder": "^23.0.7",
-    "eslint": "^8.17.0",
+    "eslint": "^8.18.0",
     "husky": "^8.0.1",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.7.3"
+    "typescript": "^4.7.4"
   },
   "main": "main/index.js",
   "private": true,
   "productName": "Picty",
   "resolutions": {
-    "@types/react": "^18.0.13"
+    "@types/react": "^18.0.14"
   },
   "scripts": {
     "build": "npm run build-renderer && npm run build-electron",
