@@ -140,7 +140,7 @@ const ExplorerBar = () => {
   useEffect(() => {
     ;(async () => {
       if (!currentDirectory) {
-        const homePath = await window.electronAPI.getHomePath()
+        const homePath = await window.electronAPI.homePath()
         return dispatch(move(homePath))
       }
       setDirectory(currentDirectory)
@@ -160,7 +160,7 @@ const ExplorerBar = () => {
   const handleClickForward = () => dispatch(forward())
 
   const handleClickUpward = async () => {
-    const dirPath = await window.electronAPI.getDirname(directory)
+    const dirPath = await window.electronAPI.dirname(directory)
     dispatch(move(dirPath))
   }
 

@@ -40,7 +40,7 @@ export const TitleBarProvider = (props: Props) => {
 
   useEffect(() => {
     ;(async () => {
-      const darwin = await window.electronAPI.isDarwin()
+      const darwin = await window.electronAPI.darwin()
       setDarwin(darwin)
       // for initial rendering
       setReady(true)

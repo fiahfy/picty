@@ -1,16 +1,17 @@
 import { IpcRendererEvent, contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  doubleClickTitleBar: () => ipcRenderer.invoke('double-click-title-bar'),
-  getBasename: (path: string) => ipcRenderer.invoke('get-basename', path),
-  getDirname: (path: string) => ipcRenderer.invoke('get-dirname', path),
+  basename: (path: string) => ipcRenderer.invoke('basename', path),
+  darwin: () => ipcRenderer.invoke('darwin'),
+  dirname: (path: string) => ipcRenderer.invoke('dirname', path),
   getFileNode: (path: string) => ipcRenderer.invoke('get-file-node', path),
-  getHomePath: () => ipcRenderer.invoke('get-home-path'),
-  isDarwin: () => ipcRenderer.invoke('is-darwin'),
+  getPresentationData: (path: string) =>
+    ipcRenderer.invoke('get-presentation-data', path),
+  handleDoubleClickTitleBar: () =>
+    ipcRenderer.invoke('handle-double-click-title-bar'),
+  homePath: () => ipcRenderer.invoke('home-path'),
   listContents: (path: string) => ipcRenderer.invoke('list-contents', path),
   listFiles: (path: string) => ipcRenderer.invoke('list-files', path),
-  listFilesWithPath: (path: string) =>
-    ipcRenderer.invoke('list-files-with-path', path),
   openPath: (path: string) => ipcRenderer.invoke('open-path', path),
   sendParamsForContextMenu: (params?: unknown) =>
     ipcRenderer.invoke('send-params-for-context-menu', params),

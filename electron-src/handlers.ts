@@ -1,4 +1,4 @@
-import { Dirent, Stats, promises } from 'fs'
+import { Dirent, promises } from 'fs'
 import { basename, dirname, join, sep } from 'path'
 import {
   BrowserWindow,
@@ -19,57 +19,51 @@ type File = {
 type FileNode = File & { children?: FileNode[] }
 type Content = File & { dateModified: number }
 
-const getFileType = (obj: Stats | Dirent) => {
+const getFileType = (obj: Dirent) => {
   if (obj.isFile()) {
-    return 'file'
+    return 'file' as const
   } else if (obj.isDirectory()) {
-    return 'directory'
+    return 'directory' as const
   } else {
-    return 'other'
+    return 'other' as const
   }
 }
 
-const getContent = async (path: string): Promise<Content> => {
+const getDateModified = async (path: string) => {
   const stats = await stat(path)
-  const type = getFileType(stats)
-  return {
-    dateModified: stats.mtimeMs,
-    name: basename(path).normalize('NFC'),
-    path,
-    type,
-  }
+  return stats.mtimeMs
 }
 
 const listContents = async (path: string): Promise<Content[]> => {
-  const filenames = await readdir(path)
-  const contents = await filenames.reduce(async (c, filename) => {
+  const files = await listFiles(path)
+  return await files.reduce(async (c, file) => {
     const carry = await c
-    const childPath = join(path, filename)
-    const content = await getContent(childPath)
-    return [...carry, content]
+    const dateModified = await getDateModified(file.path)
+    return [...carry, { ...file, dateModified }]
   }, Promise.resolve([]) as Promise<Content[]>)
-  return contents.filter(
-    (content) => !content.name.match(/^\./) && content.type !== 'other'
-  )
 }
 
 const listFiles = async (path: string): Promise<File[]> => {
   const dirents = await readdir(path, { withFileTypes: true })
   return dirents
-    .map(
-      (dirent) =>
-        ({
-          name: dirent.name,
-          path: join(path, dirent.name),
-          type: getFileType(dirent),
-        } as const)
-    )
+    .map((dirent) => ({
+      name: dirent.name.normalize('NFC'),
+      path: join(path, dirent.name),
+      type: getFileType(dirent),
+    }))
     .filter((file) => !file.name.match(/^\./) && file.type !== 'other')
 }
 
 export const addHandlers = (browserWindow: BrowserWindow) => {
+  ipcMain.handle('basename', (_event: IpcMainInvokeEvent, path: string) =>
+    basename(path)
+  )
+  ipcMain.handle('darwin', () => process.platform === 'darwin')
+  ipcMain.handle('dirname', (_event: IpcMainInvokeEvent, path: string) =>
+    dirname(path)
+  )
   // @see https://github.com/electron/electron/issues/16385
-  ipcMain.handle('double-click-title-bar', () => {
+  ipcMain.handle('handle-double-click-title-bar', () => {
     const action = systemPreferences.getUserDefault(
       'AppleActionOnDoubleClick',
       'string'
@@ -87,12 +81,7 @@ export const addHandlers = (browserWindow: BrowserWindow) => {
       }
     }
   })
-  ipcMain.handle('get-basename', (_event: IpcMainInvokeEvent, path: string) =>
-    basename(path)
-  )
-  ipcMain.handle('get-dirname', (_event: IpcMainInvokeEvent, path: string) =>
-    dirname(path)
-  )
+  ipcMain.handle('home-path', () => app.getPath('home'))
   ipcMain.handle(
     'get-file-node',
     async (_event: IpcMainInvokeEvent, path: string) => {
@@ -137,21 +126,21 @@ export const addHandlers = (browserWindow: BrowserWindow) => {
       return node.children?.[0]
     }
   )
-  ipcMain.handle('get-home-path', () => app.getPath('home'))
-  ipcMain.handle('is-darwin', () => process.platform === 'darwin')
+  ipcMain.handle(
+    'get-presentation-data',
+    async (_event: IpcMainInvokeEvent, path: string) => {
+      const stats = await stat(path)
+      const directory = stats.isDirectory()
+      const dirPath = directory ? path : dirname(path)
+      const files = await listFiles(dirPath)
+      return { title: basename(dirPath), files }
+    }
+  )
   ipcMain.handle('list-contents', (_event: IpcMainInvokeEvent, path: string) =>
     listContents(path)
   )
   ipcMain.handle('list-files', (_event: IpcMainInvokeEvent, path: string) =>
     listFiles(path)
-  )
-  ipcMain.handle(
-    'list-files-with-path',
-    async (_event: IpcMainInvokeEvent, path: string) => {
-      const stats = await stat(path)
-      const directory = stats.isDirectory()
-      return directory ? listFiles(path) : listFiles(dirname(path))
-    }
   )
   ipcMain.handle('open-path', (_event: IpcMainInvokeEvent, path: string) =>
     shell.openPath(path)

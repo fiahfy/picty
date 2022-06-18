@@ -19,7 +19,7 @@ const FavoriteTreeView = () => {
   useEffect(() => {
     ;(async () => {
       const names = await Promise.all(
-        favorites.map((path) => window.electronAPI.getBasename(path))
+        favorites.map((path) => window.electronAPI.basename(path))
       )
       const items = favorites
         .map((path, i) => ({

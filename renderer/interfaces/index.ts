@@ -6,15 +6,17 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export interface IElectronAPI {
-  doubleClickTitleBar: () => Promise<void>
-  getBasename: (path: string) => Promise<string>
-  getDirname: (path: string) => Promise<string>
+  basename: (path: string) => Promise<string>
+  darwin: () => Promise<boolean>
+  dirname: (path: string) => Promise<string>
   getFileNode: (path: string) => Promise<FileNode>
-  getHomePath: () => Promise<string>
-  isDarwin: () => Promise<boolean>
+  getPresentationData: (
+    path: string
+  ) => Promise<{ title: string; files: File[] }>
+  handleDoubleClickTitleBar: () => Promise<void>
+  homePath: () => Promise<string>
   listContents: (path: string) => Promise<Content[]>
   listFiles: (path: string) => Promise<File[]>
-  listFilesWithPath: (path: string) => Promise<File[]>
   openPath: (path: string) => Promise<void>
   sendParamsForContextMenu: (params?: unknown) => Promise<void>
   subscribeAddToFavorites: (callback: (path: string) => void) => () => void

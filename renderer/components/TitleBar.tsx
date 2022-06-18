@@ -5,7 +5,7 @@ const TitleBar = () => {
   const { shown } = useTitleBar()
 
   const handleDoubleClick = async () => {
-    await window.electronAPI.doubleClickTitleBar()
+    await window.electronAPI.handleDoubleClickTitleBar()
   }
 
   return (

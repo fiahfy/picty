@@ -31,10 +31,13 @@ import { useAppSelector } from 'store'
 import { selectFullscreen } from 'store/settings'
 import { isImageFile } from 'utils/image'
 
-type State = { images: File[]; index: number; loading: boolean }
+type State = { images: File[]; index: number; loading: boolean; title: string }
 
 type Action =
-  | { type: 'loaded'; payload: { images: File[]; index: number } }
+  | {
+      type: 'loaded'
+      payload: { images: File[]; index: number; title: string }
+    }
   | { type: 'loading' }
   | { type: 'moveNext' }
   | { type: 'movePrevious' }
@@ -46,12 +49,11 @@ const reducer = (state: State, action: Action) => {
     case 'loaded':
       return {
         ...state,
-        images: action.payload.images,
-        index: action.payload.index,
+        ...action.payload,
         loading: false,
       }
     case 'loading':
-      return { ...state, images: [], index: 0, loading: true }
+      return { ...state, images: [], index: 0, loading: true, title: '' }
     case 'moveNext': {
       let index = state.index + 1
       if (index > state.images.length - 1) {
@@ -69,7 +71,7 @@ const reducer = (state: State, action: Action) => {
     case 'moveTo':
       return { ...state, index: action.payload }
     case 'reset':
-      return { images: [], index: 0, loading: false }
+      return { images: [], index: 0, loading: false, title: '' }
     default:
       return state
   }
@@ -88,10 +90,11 @@ const PresentationDialog = (props: Props) => {
 
   const fullscreen = useAppSelector(selectFullscreen)
 
-  const [{ images, index, loading }, dispatch] = useReducer(reducer, {
+  const [{ images, index, loading, title }, dispatch] = useReducer(reducer, {
     images: [],
     index: 0,
     loading: false,
+    title: '',
   })
   const [toolbar, setToolbar] = useState(false)
   const timer = useRef<number>()
@@ -131,18 +134,19 @@ const PresentationDialog = (props: Props) => {
         fullscreen && (await document.body.requestFullscreen())
         forceMode('dark')
         resetTimer()
-        let files: File[] = []
         try {
-          files = await window.electronAPI.listFilesWithPath(path)
+          const { files, title } = await window.electronAPI.getPresentationData(
+            path
+          )
+          const images = files.filter((file) => isImageFile(file.path))
+          const index = Math.max(
+            0,
+            images.findIndex((image) => image.path === path)
+          )
+          dispatch({ type: 'loaded', payload: { images, index, title } })
         } catch (e) {
-          // noop
+          dispatch({ type: 'reset' })
         }
-        const images = files.filter((file) => isImageFile(file.path))
-        const index = Math.max(
-          0,
-          images.findIndex((image) => image.path === path)
-        )
-        dispatch({ type: 'loaded', payload: { images, index } })
       } else {
         dispatch({ type: 'reset' })
         clearTimer()
@@ -150,7 +154,7 @@ const PresentationDialog = (props: Props) => {
         document.fullscreenElement && (await document.exitFullscreen())
       }
     })()
-  }, [clearTimer, forceMode, open, path, resetMode, resetTimer])
+  }, [clearTimer, forceMode, fullscreen, open, path, resetMode, resetTimer])
 
   const image = useMemo(() => images[index], [images, index])
 
@@ -211,15 +215,13 @@ const PresentationDialog = (props: Props) => {
                 >
                   <CloseIcon />
                 </IconButton>
-                {image && (
-                  <Typography
-                    component="div"
-                    sx={{ ml: 2, flex: 1 }}
-                    variant="subtitle1"
-                  >
-                    {image.name}
-                  </Typography>
-                )}
+                <Typography
+                  component="div"
+                  sx={{ ml: 2, flex: 1 }}
+                  variant="subtitle1"
+                >
+                  {title}
+                </Typography>
               </Toolbar>
             </Box>
           </AppBar>
@@ -281,9 +283,29 @@ const PresentationDialog = (props: Props) => {
                 <IconButton color="inherit" onClick={handleClickNext}>
                   <ChevronRightIcon />
                 </IconButton>
-                <Typography component="div" sx={{ ml: 1 }} variant="body1">
+                <Typography
+                  component="div"
+                  noWrap
+                  sx={{ flexShrink: 0, ml: 1 }}
+                  variant="body1"
+                >
                   {index + 1} / {images.length}
                 </Typography>
+                {image && (
+                  <>
+                    <Typography component="div" sx={{ ml: 1 }} variant="body1">
+                      ・
+                    </Typography>
+                    <Typography
+                      component="div"
+                      noWrap
+                      sx={{ ml: 1 }}
+                      variant="body1"
+                    >
+                      {image.name}
+                    </Typography>
+                  </>
+                )}
               </Toolbar>
             </Box>
           </AppBar>
