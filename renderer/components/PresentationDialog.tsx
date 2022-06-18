@@ -27,6 +27,8 @@ import {
 import Layout from 'components/Layout'
 import { useTheme } from 'contexts/ThemeContext'
 import { File } from 'interfaces'
+import { useAppSelector } from 'store'
+import { selectFullscreen } from 'store/settings'
 import { isImageFile } from 'utils/image'
 
 type State = { images: File[]; index: number; loading: boolean }
@@ -84,6 +86,8 @@ const PresentationDialog = (props: Props) => {
 
   const { forceMode, resetMode } = useTheme()
 
+  const fullscreen = useAppSelector(selectFullscreen)
+
   const [{ images, index, loading }, dispatch] = useReducer(reducer, {
     images: [],
     index: 0,
@@ -124,7 +128,7 @@ const PresentationDialog = (props: Props) => {
     ;(async () => {
       if (open) {
         dispatch({ type: 'loading' })
-        await document.body.requestFullscreen()
+        fullscreen && (await document.body.requestFullscreen())
         forceMode('dark')
         resetTimer()
         let files: File[] = []

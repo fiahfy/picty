@@ -1,5 +1,3 @@
-declare global {
-  interface Window {
-    electronAPI: IElectronAPI
-  }
+interface Window {
+  electronAPI: IElectronAPI
 }
