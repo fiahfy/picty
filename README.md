@@ -6,9 +6,10 @@
 
 ## Features
 
-- Favorite directories
-- Rating images
-- Presentation mode
+- Explorer
+- Favorites
+- Rating
+- Presentation
 - Light/Dark mode
 - Cross platform support
 
