@@ -1,7 +1,7 @@
 import { MouseEvent, ReactNode, useEffect } from 'react'
 import { Box, Toolbar } from '@mui/material'
 import ExplorerBar from 'components/ExplorerBar'
-import Sidebar from 'components/Sidebar'
+import Sidebar from 'components/TempSidebar'
 import TitleBar from 'components/TitleBar'
 import { useAppDispatch } from 'store'
 import { add, remove } from 'store/favorite'
