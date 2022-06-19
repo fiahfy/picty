@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useMemo, useState } from 'react'
+import { MouseEvent, useEffect, useMemo, useReducer, useState } from 'react'
 import fileUrl from 'file-url'
 import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
@@ -10,6 +10,28 @@ import { selectIsFavorite } from 'store/favorite'
 import { rate } from 'store/rating'
 import { contextMenuProps } from 'utils/contextMenu'
 import { isImageFile } from 'utils/image'
+
+type State = { paths: string[]; loading: boolean }
+
+type Action =
+  | {
+      type: 'loaded'
+      payload: string[]
+    }
+  | { type: 'loading' }
+
+const reducer = (state: State, action: Action) => {
+  switch (action.type) {
+    case 'loaded':
+      return {
+        ...state,
+        paths: action.payload,
+        loading: false,
+      }
+    case 'loading':
+      return { ...state, paths: [], loading: true }
+  }
+}
 
 type Props = {
   columnIndex: number
@@ -25,24 +47,21 @@ const ExplorerGridItem = (props: Props) => {
     props
 
   const favorite = useAppSelector(selectIsFavorite)(content.path)
-  const dispatch = useAppDispatch()
+  const appDispatch = useAppDispatch()
 
-  const [loading, setLoading] = useState(false)
-  const [imagePaths, setImagePaths] = useState<string[]>([])
+  const [{ paths, loading }, dispatch] = useReducer(reducer, {
+    paths: [],
+    loading: false,
+  })
 
   useEffect(() => {
     let unmounted = false
 
     ;(async () => {
-      setLoading(true)
-      setImagePaths([])
+      dispatch({ type: 'loading' })
 
       if (content.type === 'file') {
-        if (isImageFile(content.path)) {
-          setImagePaths([content.path])
-        }
-        setLoading(false)
-        return
+        return dispatch({ type: 'loaded', payload: [content.path] })
       }
 
       let files: File[] = []
@@ -54,11 +73,8 @@ const ExplorerGridItem = (props: Props) => {
       if (unmounted) {
         return
       }
-      const imagePaths = files
-        .filter((file) => isImageFile(file.path))
-        .map((file) => file.path)
-      setLoading(false)
-      setImagePaths(imagePaths)
+      const paths = files.map((file) => file.path)
+      return dispatch({ type: 'loaded', payload: paths })
     })()
 
     return () => {
@@ -66,7 +82,10 @@ const ExplorerGridItem = (props: Props) => {
     }
   }, [content.path, content.type])
 
-  const imagePath = useMemo(() => imagePaths[0], [imagePaths])
+  const imagePath = useMemo(
+    () => paths.filter((path) => isImageFile(path))[0],
+    [paths]
+  )
 
   const message = useMemo(
     () => (loading ? 'Loading...' : 'No Images'),
@@ -164,7 +183,7 @@ const ExplorerGridItem = (props: Props) => {
             <NoOutlineRating
               color="primary"
               onChange={(_e, value) =>
-                dispatch(rate({ path: content.path, rating: value ?? 0 }))
+                appDispatch(rate({ path: content.path, rating: value ?? 0 }))
               }
               precision={0.5}
               size="small"
@@ -173,7 +192,7 @@ const ExplorerGridItem = (props: Props) => {
             />
             {!loading && content.type === 'directory' && (
               <Typography ml={1} noWrap variant="caption">
-                {imagePaths.length} images
+                {paths.length} items
               </Typography>
             )}
           </Box>
