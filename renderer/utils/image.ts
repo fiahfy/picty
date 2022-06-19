@@ -29,6 +29,6 @@ const imageExtensions = [
 ]
 
 export const isImageFile = (path: string) => {
-  const extension = path.match(/\.([^.]+)$/)?.[1] ?? ''
+  const extension = (path.match(/\.([^.]+)$/)?.[1] ?? '').toLocaleLowerCase()
   return imageExtensions.includes(extension)
 }
