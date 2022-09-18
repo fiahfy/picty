@@ -44,6 +44,7 @@ const Layout = (props: Props) => {
       onMouseDown={dialog ? undefined : handleMouseDown}
       sx={{ display: 'flex', height: '100%', overflow: 'hidden' }}
     >
+      {/* eslint-disable-next-line react/no-unknown-property */}
       <style global jsx>{`
         html,
         body,

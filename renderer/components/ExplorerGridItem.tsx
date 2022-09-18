@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useMemo, useReducer, useState } from 'react'
+import { MouseEvent, useEffect, useMemo, useReducer } from 'react'
 import fileUrl from 'file-url'
 import { Box, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
