@@ -1,10 +1,10 @@
 import { TextField, TextFieldProps } from '@mui/material'
-import { styled, experimental_sx as sx } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 const RoundedFilledTextField = styled((props: TextFieldProps) => (
   <TextField {...props} variant="filled" />
-))(
-  sx({
+))(({ theme }) =>
+  theme.unstable_sx({
     '& .MuiFilledInput-root': {
       borderRadius: 4,
       '::after': {

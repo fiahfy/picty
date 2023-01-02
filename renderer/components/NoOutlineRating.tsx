@@ -1,8 +1,8 @@
 import { Rating } from '@mui/material'
-import { styled, experimental_sx as sx } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
-const NoOutlineRating = styled(Rating)(
-  sx({
+const NoOutlineRating = styled(Rating)(({ theme }) =>
+  theme.unstable_sx({
     '&': {
       '&.Mui-focusVisible': {
         '.MuiRating-iconActive': {

@@ -1,8 +1,8 @@
 import { Theme, ToggleButtonGroup } from '@mui/material'
-import { styled, experimental_sx as sx } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
-const FilledToggleButtonGroup = styled(ToggleButtonGroup)(
-  sx({
+const FilledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) =>
+  theme.unstable_sx({
     '.MuiToggleButtonGroup-grouped': {
       border: 0,
       '&.Mui-disabled': {
