@@ -1,6 +1,6 @@
 # Picty
 
-![badge](https://github.com/fiahfy/picty/workflows/Electron%20CI/badge.svg)
+![badge](https://github.com/fiahfy/picty/workflows/Electron/badge.svg)
 
 > Simple Image Viewer based on Electron.
 
@@ -20,7 +20,7 @@
 
 ## Installation
 
-Download the app from [release page](https://github.com/fiahfy/picty/releases) and install it.  
+Download the app from [release page](https://github.com/fiahfy/picty/releases) and install it.
 :warning: For macOS, this app is not signed, so a warning will be displayed at startup.
 
 ## Development

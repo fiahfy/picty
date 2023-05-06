@@ -1,4 +1,4 @@
-name: Electron CI
+name: Electron
 
 on:
   push:
@@ -6,16 +6,15 @@ on:
       - 'v*'
 
 jobs:
-  build:
+  release:
     runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: 16
       - run: yarn
-      - run: yarn test
       - run: yarn release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -344,11 +344,12 @@ const ExplorerBar = () => {
               sx={{
                 ml: 0.5,
                 '.MuiFormControl-root': {
-                  '.MuiFilledInput-root': {
-                    px: 1.5,
-                    py: 0,
-                    '.MuiFilledInput-input': { px: 0, py: 0.5 },
-                  },
+                  '.MuiFilledInput-root.MuiInputBase-hiddenLabel.MuiInputBase-sizeSmall':
+                    {
+                      px: 1.5,
+                      py: 0,
+                      '.MuiFilledInput-input': { px: 0, py: 0.5 },
+                    },
                 },
               }}
             />
@@ -411,6 +412,7 @@ const ExplorerBar = () => {
           hiddenLabel
           onChange={handleChangeSortOption}
           select
+          size="small"
           value={`${sortOption.orderBy}-${sortOption.order}`}
         >
           {sortOptions.map((option, index) => (

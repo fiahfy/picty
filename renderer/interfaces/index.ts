@@ -3,7 +3,6 @@
 // example, to import the interface below do:
 //
 // import User from 'path/to/interfaces';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 export interface IElectronAPI {
   basename: (path: string) => Promise<string>
